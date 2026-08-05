@@ -154,6 +154,16 @@ svg.chart { display: block; }
 }
 .negocio-nome .pill.atrasada { background: #fdeaea; color: var(--critical); }
 .pill.retro { background: #fdeaea; color: var(--critical); }
+.tag-pill {
+  font-size: .68rem; padding: 2px 8px; border-radius: 999px; font-weight: 600; color: white;
+  display: inline-block;
+}
+.tag-toggle {
+  font-size: .74rem; padding: 3px 10px; border-radius: 999px; font-weight: 600; cursor: pointer;
+  border: 2px solid transparent; opacity: .45; color: white; user-select: none;
+}
+.tag-toggle.selecionada { opacity: 1; border-color: var(--text-primary); }
+.kanban-card .tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
 .data-venc { color: var(--muted); font-size: .74rem; display: block; margin-top: 1px; }
 .negocio-valor { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; font-size: .88rem; }
 .negocio-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; margin-left: auto; }
@@ -352,6 +362,7 @@ form.form-grid button { grid-column: 1 / -1; }
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="add-toggle" onclick="abrirGerenciarFunis()">⚙️ Funis</button>
             <button class="add-toggle" onclick="abrirGerenciarCampos()">⚙️ Campos personalizados</button>
+            <button class="add-toggle" onclick="abrirGerenciarTags()">⚙️ Tags</button>
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px;">
@@ -603,6 +614,10 @@ form.form-grid button { grid-column: 1 / -1; }
         <label>E-mail</label>
         <input type="text" id="crm-pessoa-email">
       </div>
+      <div class="full">
+        <label style="font-weight:700; display:block; margin-bottom:6px;">Tags</label>
+        <div id="crm-tags-wrap" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+      </div>
       <div class="full" id="crm-campos-personalizados-wrap"></div>
       <div class="full">
         <label>Observação</label>
@@ -674,6 +689,28 @@ form.form-grid button { grid-column: 1 / -1; }
     </form>
     <div style="margin-top:14px;">
       <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-campos')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal de gerenciar tags -->
+<div id="modal-tags" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-tags')">
+  <div class="modal-card" style="max-width:480px; text-align:left;">
+    <h2>Tags</h2>
+    <div id="tags-lista" style="border:1px solid var(--border); border-radius:8px; padding:8px 10px; background:var(--field-bg); max-height:260px; overflow-y:auto; margin-bottom:12px;"></div>
+    <form class="form-grid" onsubmit="return criarTag(event)">
+      <div>
+        <label>Nome da tag</label>
+        <input type="text" id="nova-tag-nome" required>
+      </div>
+      <div>
+        <label>Cor</label>
+        <input type="color" id="nova-tag-cor" value="#2a78d6" style="width:100%; height:38px; padding:2px;">
+      </div>
+      <button class="btn" type="submit">+ Criar tag</button>
+    </form>
+    <div style="margin-top:14px;">
+      <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-tags')">Fechar</button>
     </div>
   </div>
 </div>
@@ -1103,16 +1140,21 @@ let crmCampos = [];
 let crmCards = [];
 let crmFunilAtualId = null;
 let crmCardAtualId = null;
+let crmTags = [];
+let crmCardTagsMap = {};
+let crmTagsSelecionadasAtual = [];
 
 async function carregarCRM() {
-  const [{ data: funis }, { data: estagios }, { data: campos }] = await Promise.all([
+  const [{ data: funis }, { data: estagios }, { data: campos }, { data: tags }] = await Promise.all([
     sb.from('com_funis').select('*').eq('ativo', true).order('ordem'),
     sb.from('com_estagios').select('*').eq('ativo', true).order('ordem'),
     sb.from('com_campos_personalizados').select('*').eq('ativo', true).order('ordem'),
+    sb.from('com_tags').select('*').eq('ativo', true).order('nome'),
   ]);
   crmFunis = funis || [];
   crmEstagios = estagios || [];
   crmCampos = campos || [];
+  crmTags = tags || [];
   if (!crmFunilAtualId || !crmFunis.find(f => f.id === crmFunilAtualId)) {
     crmFunilAtualId = crmFunis[0] ? crmFunis[0].id : null;
   }
@@ -1123,9 +1165,16 @@ async function carregarCRM() {
 }
 
 async function carregarCardsDoFunil() {
-  if (!crmFunilAtualId) { crmCards = []; renderCRMBoard(); return; }
+  if (!crmFunilAtualId) { crmCards = []; crmCardTagsMap = {}; renderCRMBoard(); return; }
   const { data } = await sb.from('com_cards').select('*').eq('funil_id', crmFunilAtualId).order('created_at', { ascending: false });
   crmCards = data || [];
+  crmCardTagsMap = {};
+  if (crmCards.length) {
+    const { data: relacoes } = await sb.from('com_card_tags').select('card_id, tag_id').in('card_id', crmCards.map(c => c.id));
+    (relacoes || []).forEach(r => {
+      (crmCardTagsMap[r.card_id] = crmCardTagsMap[r.card_id] || []).push(r.tag_id);
+    });
+  }
   renderCRMBoard();
 }
 
@@ -1159,13 +1208,28 @@ function crmCartao(c) {
   const resp = perfis.find(p => p.id === c.responsavel_id);
   const pill = c.status_negocio === 'ganho' ? '<span class="pill" style="background:var(--accent-wash); color:var(--good);">ganho</span>'
     : c.status_negocio === 'perdido' ? '<span class="pill retro">perdido</span>' : '';
+  const tagsDoCard = (crmCardTagsMap[c.id] || []).map(tid => crmTags.find(t => t.id === tid)).filter(Boolean);
+  const tagsHtml = tagsDoCard.length ? `<div class="tags-row">${tagsDoCard.map(t => `<span class="tag-pill" style="background:${t.cor}">${t.nome}</span>`).join('')}</div>` : '';
   return `
     <div class="kanban-card" draggable="true" ondragstart="crmDragStart(event, ${c.id})" ondragend="event.target.classList.remove('arrastando')" onclick="crmAbrirCard(${c.id})">
       <div class="cliente">${c.titulo} ${pill}</div>
       <div class="info">${c.pessoa_nome || ''}${c.valor ? (c.pessoa_nome ? ' · ' : '') + fmtBRL(c.valor) : ''}</div>
       ${resp ? `<div class="info">${resp.nome}</div>` : ''}
+      ${tagsHtml}
     </div>
   `;
+}
+
+function crmRenderTagsSelector() {
+  const wrap = document.getElementById('crm-tags-wrap');
+  wrap.innerHTML = crmTags.length ? crmTags.map(t => `
+    <span class="tag-toggle ${crmTagsSelecionadasAtual.includes(t.id) ? 'selecionada' : ''}" style="background:${t.cor}" onclick="crmToggleTag(${t.id})">${t.nome}</span>
+  `).join('') : '<span class="muted">Nenhuma tag criada ainda — use "⚙️ Tags".</span>';
+}
+function crmToggleTag(tagId) {
+  const idx = crmTagsSelecionadasAtual.indexOf(tagId);
+  if (idx === -1) crmTagsSelecionadasAtual.push(tagId); else crmTagsSelecionadasAtual.splice(idx, 1);
+  crmRenderTagsSelector();
 }
 
 function crmDragStart(ev, id) {
@@ -1237,6 +1301,8 @@ function crmAbrirNovoCard(estagioId) {
   document.getElementById('crm-estagio').value = estagioId || (estagiosDoFunil[0] && estagiosDoFunil[0].id) || '';
   document.getElementById('crm-responsavel').value = '';
   crmRenderCamposPersonalizados({});
+  crmTagsSelecionadasAtual = [];
+  crmRenderTagsSelector();
   document.getElementById('crm-historico-wrap').style.display = 'none';
   document.getElementById('modal-card-crm').classList.add('open');
 }
@@ -1258,6 +1324,8 @@ function crmAbrirCard(id) {
   document.getElementById('crm-estagio').value = c.estagio_id;
   document.getElementById('crm-responsavel').value = c.responsavel_id || '';
   crmRenderCamposPersonalizados(c.campos_valores || {});
+  crmTagsSelecionadasAtual = [...(crmCardTagsMap[id] || [])];
+  crmRenderTagsSelector();
   document.getElementById('crm-historico-wrap').style.display = 'block';
   crmCarregarAtividades(id);
   document.getElementById('modal-card-crm').classList.add('open');
@@ -1289,13 +1357,23 @@ function crmSalvarCard(ev) {
     updated_at: new Date().toISOString(),
   };
   if (!patch.titulo) return false;
+  // snapshot imediato (antes de qualquer await) — evita que abrir/editar outro card
+  // enquanto este salvamento ainda está em voo troque a seleção de tags no meio do caminho
+  const tagsParaSalvar = [...crmTagsSelecionadasAtual];
   (async () => {
-    if (crmCardAtualId) {
-      await sb.from('com_cards').update(patch).eq('id', crmCardAtualId);
+    let cardId = crmCardAtualId;
+    if (cardId) {
+      await sb.from('com_cards').update(patch).eq('id', cardId);
     } else {
       const { data } = await sb.from('com_cards').insert([patch]).select();
       const novo = data && data[0];
-      if (novo) await crmLogAtividade(novo.id, 'criacao', 'Card criado');
+      if (novo) { cardId = novo.id; await crmLogAtividade(cardId, 'criacao', 'Card criado'); }
+    }
+    if (cardId) {
+      await sb.from('com_card_tags').delete().eq('card_id', cardId);
+      if (tagsParaSalvar.length) {
+        await sb.from('com_card_tags').insert(tagsParaSalvar.map(tagId => ({ card_id: cardId, tag_id: tagId })));
+      }
     }
     fecharModal('modal-card-crm');
     await carregarCardsDoFunil();
@@ -1452,6 +1530,45 @@ async function excluirCampoPersonalizado(id) {
   await sb.from('com_campos_personalizados').delete().eq('id', id);
   await carregarCRM();
   renderListaCampos();
+}
+
+// ---------- GERENCIAR TAGS ----------
+function abrirGerenciarTags() {
+  renderListaTags();
+  document.getElementById('modal-tags').classList.add('open');
+}
+function renderListaTags() {
+  document.getElementById('tags-lista').innerHTML = crmTags.length ? crmTags.map(t => `
+    <div class="negocio-row" style="padding:6px 0;">
+      <div class="negocio-nome"><span class="tag-pill" style="background:${t.cor}">${t.nome}</span></div>
+      <div class="negocio-actions">
+        <button class="btn-del" onclick="excluirTag(${t.id})" title="Excluir">✕</button>
+      </div>
+    </div>
+  `).join('') : '<div class="empty">Nenhuma tag criada ainda.</div>';
+}
+function criarTag(ev) {
+  ev.preventDefault();
+  const nome = document.getElementById('nova-tag-nome').value.trim();
+  const cor = document.getElementById('nova-tag-cor').value;
+  if (!nome) return false;
+  (async () => {
+    const { error } = await sb.from('com_tags').insert([{ nome, cor }]);
+    if (error) {
+      alert(error.code === '23505' ? 'Já existe uma tag com esse nome.' : 'Erro ao criar tag: ' + error.message);
+      return;
+    }
+    document.getElementById('nova-tag-nome').value = '';
+    await carregarCRM();
+    renderListaTags();
+  })();
+  return false;
+}
+async function excluirTag(id) {
+  if (!confirm('Excluir essa tag? Ela some de todos os cards que a usam.')) return;
+  await sb.from('com_tags').delete().eq('id', id);
+  await carregarCRM();
+  renderListaTags();
 }
 
 // ---------- IMPORTAÇÃO EM MASSA (CSV) ----------
