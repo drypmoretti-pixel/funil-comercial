@@ -148,11 +148,12 @@ svg.chart { display: block; }
 }
 .negocio-row:last-child { border-bottom: none; }
 .negocio-nome { font-size: .88rem; flex: 1 1 140px; min-width: 0; }
-.negocio-nome .pill {
+.pill {
   font-size: .65rem; padding: 1px 6px; border-radius: 999px; margin-left: 6px;
-  background: var(--grid); color: var(--text-secondary);
+  background: var(--grid); color: var(--text-secondary); display: inline-block;
 }
 .negocio-nome .pill.atrasada { background: #fdeaea; color: var(--critical); }
+.pill.retro { background: #fdeaea; color: var(--critical); }
 .data-venc { color: var(--muted); font-size: .74rem; display: block; margin-top: 1px; }
 .negocio-valor { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; font-size: .88rem; }
 .negocio-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; margin-left: auto; }
@@ -308,7 +309,10 @@ form.form-grid button { grid-column: 1 / -1; }
       <section class="card">
         <div class="section-title">
           <h2>Negócios em andamento</h2>
-          <button class="add-toggle" onclick="toggleForm('form-negocio')">+ Novo negócio</button>
+          <div style="display:flex; gap:8px;">
+            <button class="add-toggle" onclick="abrirModalImport()">Importar CSV em massa</button>
+            <button class="add-toggle" onclick="toggleForm('form-negocio')">+ Novo negócio</button>
+          </div>
         </div>
         <p class="muted">A SDR agenda e marca realizada. O vendedor lança proposta e fecha a venda. Independe do mês selecionado acima.</p>
         <form class="form-grid form-collapse" id="form-negocio" onsubmit="return criarNegocio(event)">
@@ -344,11 +348,18 @@ form.form-grid button { grid-column: 1 / -1; }
     <div class="tab-panel" id="tab-crm">
       <section class="card">
         <div class="section-title">
-          <h2>CRM (kanban)</h2>
-          <button class="add-toggle" onclick="abrirModalImport()">Importar CSV em massa</button>
+          <h2>CRM</h2>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="add-toggle" onclick="abrirGerenciarFunis()">⚙️ Funis</button>
+            <button class="add-toggle" onclick="abrirGerenciarCampos()">⚙️ Campos personalizados</button>
+          </div>
         </div>
-        <p class="muted">Arraste os cards entre as colunas pra mudar o estágio (independe do mês selecionado). Pra criar um negócio novo, use "+ Novo negócio" na aba Dashboard.</p>
-        <div class="kanban" id="kanban-board"></div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px;">
+          <select id="crm-funil-select" onchange="crmMudaFunil()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600;"></select>
+          <button class="btn" style="width:auto; padding:8px 14px;" onclick="crmAbrirNovoCard(null)">+ Novo card</button>
+        </div>
+        <p class="muted">Arraste os cards entre as colunas pra mudar o estágio. Clique num card pra ver detalhes, campos personalizados e histórico.</p>
+        <div class="kanban" id="crm-board"></div>
       </section>
     </div>
 
@@ -550,6 +561,123 @@ form.form-grid button { grid-column: 1 / -1; }
   </div>
 </div>
 
+<!-- modal de detalhe do card do CRM -->
+<div id="modal-card-crm" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-card-crm')">
+  <div class="modal-card" style="max-width:560px; text-align:left;">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+      <h2 id="crm-card-titulo-header">Card</h2>
+      <div style="display:flex; gap:6px;">
+        <button type="button" class="btn" style="width:auto; padding:6px 12px; background:var(--good);" onclick="crmMarcarDesfecho('ganho')">Ganho</button>
+        <button type="button" class="btn" style="width:auto; padding:6px 12px; background:var(--critical);" onclick="crmMarcarDesfecho('perdido')">Perdido</button>
+      </div>
+    </div>
+    <div id="crm-card-pill-desfecho" style="margin:4px 0 12px;"></div>
+    <form class="form-grid" id="form-crm-card" onsubmit="return crmSalvarCard(event)">
+      <div class="full">
+        <label>Título</label>
+        <input type="text" id="crm-titulo" required>
+      </div>
+      <div>
+        <label>Valor (R$)</label>
+        <input type="number" step="0.01" id="crm-valor">
+      </div>
+      <div>
+        <label>Estágio</label>
+        <select id="crm-estagio"></select>
+      </div>
+      <div>
+        <label>Responsável</label>
+        <select id="crm-responsavel"><option value="">—</option></select>
+      </div>
+      <div></div>
+      <div class="full"><label style="font-weight:700; margin-top:4px;">Pessoa</label></div>
+      <div>
+        <label>Nome</label>
+        <input type="text" id="crm-pessoa-nome">
+      </div>
+      <div>
+        <label>Telefone</label>
+        <input type="text" id="crm-pessoa-telefone">
+      </div>
+      <div class="full">
+        <label>E-mail</label>
+        <input type="text" id="crm-pessoa-email">
+      </div>
+      <div class="full" id="crm-campos-personalizados-wrap"></div>
+      <div class="full">
+        <label>Observação</label>
+        <textarea id="crm-observacao" rows="2"></textarea>
+      </div>
+      <div class="full" style="display:flex; gap:8px;">
+        <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-card-crm')">Cancelar</button>
+        <button type="submit" class="btn">Salvar</button>
+        <button type="button" class="btn" style="background:var(--critical); width:auto; padding:8px 14px;" onclick="crmExcluirCard()">Excluir</button>
+      </div>
+    </form>
+    <div id="crm-historico-wrap" style="margin-top:16px; display:none;">
+      <h3 style="font-size:.9rem;">Histórico</h3>
+      <div style="display:flex; gap:6px; margin-bottom:10px;">
+        <input type="text" id="crm-nota-texto" placeholder="Adicionar uma nota..." style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
+        <button type="button" class="btn" style="width:auto; padding:8px 14px;" onclick="crmAdicionarNota()">Adicionar</button>
+      </div>
+      <div id="crm-lista-atividades" style="max-height:220px; overflow-y:auto;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- modal de gerenciar funis e estágios -->
+<div id="modal-funis" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-funis')">
+  <div class="modal-card" style="max-width:520px; text-align:left;">
+    <h2>Funis e estágios</h2>
+    <div style="display:flex; gap:6px; margin-bottom:12px;">
+      <input type="text" id="novo-funil-nome" placeholder="Nome do novo funil" style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
+      <button type="button" class="btn" style="width:auto; padding:8px 14px;" onclick="criarFunil()">+ Criar funil</button>
+    </div>
+    <label style="font-size:.78rem; color:var(--text-secondary); display:block; margin-bottom:6px;">Editando funil:</label>
+    <select id="funis-select-editar" onchange="renderEstagiosEdicao()" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); margin-bottom:10px;"></select>
+    <div id="estagios-lista" style="border:1px solid var(--border); border-radius:8px; padding:8px 10px; background:var(--field-bg); max-height:220px; overflow-y:auto;"></div>
+    <div style="display:flex; gap:6px; margin-top:10px;">
+      <input type="text" id="novo-estagio-nome" placeholder="Nome do novo estágio" style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
+      <button type="button" class="btn" style="width:auto; padding:8px 14px;" onclick="criarEstagio()">+ Adicionar</button>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-funis')">Fechar</button>
+      <button type="button" class="btn" style="background:var(--critical);" onclick="excluirFunilAtual()">Excluir este funil</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal de gerenciar campos personalizados -->
+<div id="modal-campos" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-campos')">
+  <div class="modal-card" style="max-width:480px; text-align:left;">
+    <h2>Campos personalizados</h2>
+    <div id="campos-lista" style="border:1px solid var(--border); border-radius:8px; padding:8px 10px; background:var(--field-bg); max-height:220px; overflow-y:auto; margin-bottom:12px;"></div>
+    <form class="form-grid" onsubmit="return criarCampoPersonalizado(event)">
+      <div class="full">
+        <label>Nome do campo</label>
+        <input type="text" id="novo-campo-nome" required>
+      </div>
+      <div>
+        <label>Tipo</label>
+        <select id="novo-campo-tipo" onchange="document.getElementById('novo-campo-opcoes-wrap').style.display = this.value === 'lista' ? 'block' : 'none'">
+          <option value="texto">Texto</option>
+          <option value="numero">Número</option>
+          <option value="data">Data</option>
+          <option value="lista">Lista de opções</option>
+        </select>
+      </div>
+      <div class="full" id="novo-campo-opcoes-wrap" style="display:none;">
+        <label>Opções (separadas por vírgula)</label>
+        <input type="text" id="novo-campo-opcoes" placeholder="Opção 1, Opção 2, Opção 3">
+      </div>
+      <button class="btn" type="submit">+ Criar campo</button>
+    </form>
+    <div style="margin-top:14px;">
+      <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-campos')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPA_URL = 'https://okolawlvmfyxzvnnpvtv.supabase.co';
 const SUPA_KEY = 'sb_publishable_IsQdhzWIou3tBX9qxak1VQ_m-wEHCFZ';
@@ -616,6 +744,7 @@ async function entrarNoApp(user) {
   document.getElementById('user-email').textContent = user.email;
   await carregarDadosBase(user.id);
   await carregarTudo();
+  await carregarCRM();
   initTally();
 }
 (async function initSession() {
@@ -658,7 +787,6 @@ function renderTudo() {
   renderFunil();
   renderAndamento();
   renderFechados();
-  renderKanban();
   renderCalendario();
   renderDicas();
   renderHistorico();
@@ -968,55 +1096,362 @@ function salvarEdicao(ev) {
   return false;
 }
 
-// ---------- CRM (KANBAN) ----------
-const ORDEM_KANBAN = ['agendada','realizada','proposta','no_show','remarcada','venda','perdida'];
-function renderKanban() {
-  const el = document.getElementById('kanban-board');
-  el.innerHTML = ORDEM_KANBAN.map(status => {
-    const itens = negocios.filter(n => n.status === status)
-      .sort((a,b) => (b.data_agendada||'').localeCompare(a.data_agendada||''));
-    const meta = STATUS_META[status];
-    const soma = itens.reduce((s,n) => s + Number(n.valor_venda || n.valor_proposta || 0), 0);
+// ---------- CRM ROBUSTO (funis, estágios, campos personalizados, cards) ----------
+let crmFunis = [];
+let crmEstagios = [];
+let crmCampos = [];
+let crmCards = [];
+let crmFunilAtualId = null;
+let crmCardAtualId = null;
+
+async function carregarCRM() {
+  const [{ data: funis }, { data: estagios }, { data: campos }] = await Promise.all([
+    sb.from('com_funis').select('*').eq('ativo', true).order('ordem'),
+    sb.from('com_estagios').select('*').eq('ativo', true).order('ordem'),
+    sb.from('com_campos_personalizados').select('*').eq('ativo', true).order('ordem'),
+  ]);
+  crmFunis = funis || [];
+  crmEstagios = estagios || [];
+  crmCampos = campos || [];
+  if (!crmFunilAtualId || !crmFunis.find(f => f.id === crmFunilAtualId)) {
+    crmFunilAtualId = crmFunis[0] ? crmFunis[0].id : null;
+  }
+  const sel = document.getElementById('crm-funil-select');
+  sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.nome}</option>`).join('')
+    || '<option value="">Nenhum funil — crie um em "⚙️ Funis"</option>';
+  await carregarCardsDoFunil();
+}
+
+async function carregarCardsDoFunil() {
+  if (!crmFunilAtualId) { crmCards = []; renderCRMBoard(); return; }
+  const { data } = await sb.from('com_cards').select('*').eq('funil_id', crmFunilAtualId).order('created_at', { ascending: false });
+  crmCards = data || [];
+  renderCRMBoard();
+}
+
+function crmMudaFunil() {
+  crmFunilAtualId = parseInt(document.getElementById('crm-funil-select').value) || null;
+  carregarCardsDoFunil();
+}
+
+function renderCRMBoard() {
+  const el = document.getElementById('crm-board');
+  const estagiosDoFunil = crmEstagios.filter(e => e.funil_id === crmFunilAtualId).sort((a,b) => a.ordem - b.ordem);
+  if (!estagiosDoFunil.length) {
+    el.innerHTML = '<div class="empty">Esse funil ainda não tem estágios. Abra "⚙️ Funis" pra adicionar.</div>';
+    return;
+  }
+  el.innerHTML = estagiosDoFunil.map(estagio => {
+    const itens = crmCards.filter(c => c.estagio_id === estagio.id);
+    const soma = itens.reduce((s,c) => s + Number(c.valor || 0), 0);
     return `
-      <div class="kanban-coluna" ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropCard(event, '${status}')">
-        <div class="kanban-coluna-header"><span>${meta.icone} ${meta.label}</span><span class="muted">${itens.length}</span></div>
+      <div class="kanban-coluna" ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="crmDropCard(event, ${estagio.id})">
+        <div class="kanban-coluna-header"><span>${estagio.nome}</span><span class="muted">${itens.length}</span></div>
         ${soma ? `<div class="kanban-soma">${fmtBRL(soma)}</div>` : ''}
-        ${itens.map(cartaoKanban).join('') || '<div class="empty" style="padding:6px 0;">vazio</div>'}
+        ${itens.map(crmCartao).join('') || '<div class="empty" style="padding:6px 0;">vazio</div>'}
+        <button class="add-toggle" style="width:100%; margin-top:6px;" onclick="crmAbrirNovoCard(${estagio.id})">+ card</button>
       </div>
     `;
   }).join('');
 }
-function cartaoKanban(n) {
-  const sdr = perfis.find(p => p.id === n.sdr_id);
-  const vend = perfis.find(p => p.id === n.vendedor_id);
-  const valor = n.status === 'venda' ? fmtBRL(n.valor_venda) : (n.status === 'proposta' ? fmtBRL(n.valor_proposta) : '');
-  const responsaveis = [sdr && `SDR: ${sdr.nome}`, vend && `Vend: ${vend.nome}`].filter(Boolean).join(' · ');
+
+function crmCartao(c) {
+  const resp = perfis.find(p => p.id === c.responsavel_id);
+  const pill = c.status_negocio === 'ganho' ? '<span class="pill" style="background:var(--accent-wash); color:var(--good);">ganho</span>'
+    : c.status_negocio === 'perdido' ? '<span class="pill retro">perdido</span>' : '';
   return `
-    <div class="kanban-card" draggable="true" ondragstart="dragStart(event, ${n.id})" ondragend="event.target.classList.remove('arrastando')" onclick="abrirEdicao(${n.id})">
-      <div class="cliente">${n.cliente_nome}</div>
-      <div class="info">${fmtDataCurta(n.data_agendada)}${n.hora_agendada ? ' ' + n.hora_agendada.slice(0,5) : ''}${valor ? ' · ' + valor : ''}</div>
-      ${responsaveis ? `<div class="info">${responsaveis}</div>` : ''}
+    <div class="kanban-card" draggable="true" ondragstart="crmDragStart(event, ${c.id})" ondragend="event.target.classList.remove('arrastando')" onclick="crmAbrirCard(${c.id})">
+      <div class="cliente">${c.titulo} ${pill}</div>
+      <div class="info">${c.pessoa_nome || ''}${c.valor ? (c.pessoa_nome ? ' · ' : '') + fmtBRL(c.valor) : ''}</div>
+      ${resp ? `<div class="info">${resp.nome}</div>` : ''}
     </div>
   `;
 }
-function dragStart(ev, id) {
+
+function crmDragStart(ev, id) {
   ev.dataTransfer.setData('text/plain', id);
   ev.target.classList.add('arrastando');
 }
-function dropCard(ev, novoStatus) {
+async function crmDropCard(ev, novoEstagioId) {
   ev.preventDefault();
   ev.currentTarget.classList.remove('dragover');
   const id = parseInt(ev.dataTransfer.getData('text/plain'));
-  moverEstagio(id, novoStatus);
+  const card = crmCards.find(c => c.id === id);
+  if (!card || card.estagio_id === novoEstagioId) return;
+  const estagioAntigo = crmEstagios.find(e => e.id === card.estagio_id);
+  const estagioNovo = crmEstagios.find(e => e.id === novoEstagioId);
+  await sb.from('com_cards').update({ estagio_id: novoEstagioId, updated_at: new Date().toISOString() }).eq('id', id);
+  await crmLogAtividade(id, 'mudanca_estagio', `Etapa: ${estagioAntigo ? estagioAntigo.nome : '?'} → ${estagioNovo ? estagioNovo.nome : '?'}`);
+  await carregarCardsDoFunil();
 }
-function moverEstagio(id, novoStatus) {
-  const n = negocios.find(x => x.id === id);
-  if (!n || n.status === novoStatus) return;
-  if (novoStatus === 'venda') { abrirModalEstagio(id, 'venda'); return; }
-  const patch = { status: novoStatus };
-  if (novoStatus === 'realizada' && !n.data_realizacao) patch.data_realizacao = hojeStr();
-  if (novoStatus === 'perdida' && !n.data_perdida) patch.data_perdida = hojeStr();
-  (async () => { await sb.from('com_negocios').update(patch).eq('id', id); await carregarTudo(); })();
+
+async function crmLogAtividade(cardId, tipo, descricao) {
+  await sb.from('com_card_atividades').insert([{ card_id: cardId, tipo, descricao, autor_id: currentPerfil ? currentPerfil.id : null }]);
+}
+
+function crmPopularSelectsBase() {
+  const estagiosDoFunil = crmEstagios.filter(e => e.funil_id === crmFunilAtualId).sort((a,b) => a.ordem - b.ordem);
+  document.getElementById('crm-estagio').innerHTML = estagiosDoFunil.map(e => `<option value="${e.id}">${e.nome}</option>`).join('');
+  document.getElementById('crm-responsavel').innerHTML = '<option value="">—</option>' + perfis.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+}
+
+function crmRenderCamposPersonalizados(valores) {
+  const wrap = document.getElementById('crm-campos-personalizados-wrap');
+  if (!crmCampos.length) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = '<label style="font-weight:700; margin-top:4px; display:block;">Campos personalizados</label>' +
+    '<div class="form-grid" style="margin-top:6px;">' +
+    crmCampos.map(campo => {
+      const val = (valores && valores[campo.chave]) || '';
+      const id = `crmcampo-${campo.chave}`;
+      if (campo.tipo === 'lista') {
+        const opcoes = campo.opcoes || [];
+        return `<div><label>${campo.nome}</label><select id="${id}" data-chave="${campo.chave}"><option value="">—</option>${opcoes.map(o => `<option value="${o}" ${o===val?'selected':''}>${o}</option>`).join('')}</select></div>`;
+      }
+      const tipoInput = campo.tipo === 'numero' ? 'number' : campo.tipo === 'data' ? 'date' : 'text';
+      return `<div><label>${campo.nome}</label><input type="${tipoInput}" id="${id}" data-chave="${campo.chave}" value="${val}"></div>`;
+    }).join('') + '</div>';
+}
+
+function crmColetarCamposPersonalizados() {
+  const valores = {};
+  crmCampos.forEach(campo => {
+    const el = document.getElementById(`crmcampo-${campo.chave}`);
+    if (el && el.value !== '') valores[campo.chave] = el.value;
+  });
+  return valores;
+}
+
+function crmAbrirNovoCard(estagioId) {
+  if (!crmFunilAtualId) { alert('Crie um funil primeiro em "⚙️ Funis".'); return; }
+  crmCardAtualId = null;
+  document.getElementById('crm-card-titulo-header').textContent = 'Novo card';
+  document.getElementById('crm-card-pill-desfecho').innerHTML = '';
+  document.getElementById('crm-titulo').value = '';
+  document.getElementById('crm-valor').value = '';
+  document.getElementById('crm-pessoa-nome').value = '';
+  document.getElementById('crm-pessoa-telefone').value = '';
+  document.getElementById('crm-pessoa-email').value = '';
+  document.getElementById('crm-observacao').value = '';
+  crmPopularSelectsBase();
+  const estagiosDoFunil = crmEstagios.filter(e => e.funil_id === crmFunilAtualId).sort((a,b) => a.ordem - b.ordem);
+  document.getElementById('crm-estagio').value = estagioId || (estagiosDoFunil[0] && estagiosDoFunil[0].id) || '';
+  document.getElementById('crm-responsavel').value = '';
+  crmRenderCamposPersonalizados({});
+  document.getElementById('crm-historico-wrap').style.display = 'none';
+  document.getElementById('modal-card-crm').classList.add('open');
+}
+
+function crmAbrirCard(id) {
+  const c = crmCards.find(x => x.id === id);
+  if (!c) return;
+  crmCardAtualId = id;
+  document.getElementById('crm-card-titulo-header').textContent = c.titulo;
+  const pillMap = { ganho: '<span class="pill" style="background:var(--accent-wash); color:var(--good);">Ganho</span>', perdido: '<span class="pill retro">Perdido</span>' };
+  document.getElementById('crm-card-pill-desfecho').innerHTML = pillMap[c.status_negocio] || '';
+  document.getElementById('crm-titulo').value = c.titulo;
+  document.getElementById('crm-valor').value = c.valor || '';
+  document.getElementById('crm-pessoa-nome').value = c.pessoa_nome || '';
+  document.getElementById('crm-pessoa-telefone').value = c.pessoa_telefone || '';
+  document.getElementById('crm-pessoa-email').value = c.pessoa_email || '';
+  document.getElementById('crm-observacao').value = c.observacao || '';
+  crmPopularSelectsBase();
+  document.getElementById('crm-estagio').value = c.estagio_id;
+  document.getElementById('crm-responsavel').value = c.responsavel_id || '';
+  crmRenderCamposPersonalizados(c.campos_valores || {});
+  document.getElementById('crm-historico-wrap').style.display = 'block';
+  crmCarregarAtividades(id);
+  document.getElementById('modal-card-crm').classList.add('open');
+}
+
+async function crmCarregarAtividades(cardId) {
+  const { data } = await sb.from('com_card_atividades').select('*').eq('card_id', cardId).order('created_at', { ascending: false });
+  const lista = data || [];
+  document.getElementById('crm-lista-atividades').innerHTML = lista.length ? lista.map(a => {
+    const autor = perfis.find(p => p.id === a.autor_id);
+    const quando = new Date(a.created_at).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+    return `<div class="dica" style="padding:8px 0;"><div class="texto"><b>${quando}</b>${autor ? ' · ' + autor.nome : ''}<br>${a.descricao}</div></div>`;
+  }).join('') : '<div class="empty">Sem atividades ainda.</div>';
+}
+
+function crmSalvarCard(ev) {
+  ev.preventDefault();
+  const patch = {
+    funil_id: crmFunilAtualId,
+    titulo: document.getElementById('crm-titulo').value.trim(),
+    valor: parseFloat(document.getElementById('crm-valor').value) || null,
+    estagio_id: parseInt(document.getElementById('crm-estagio').value),
+    responsavel_id: document.getElementById('crm-responsavel').value || null,
+    pessoa_nome: document.getElementById('crm-pessoa-nome').value.trim() || null,
+    pessoa_telefone: document.getElementById('crm-pessoa-telefone').value.trim() || null,
+    pessoa_email: document.getElementById('crm-pessoa-email').value.trim() || null,
+    observacao: document.getElementById('crm-observacao').value.trim() || null,
+    campos_valores: crmColetarCamposPersonalizados(),
+    updated_at: new Date().toISOString(),
+  };
+  if (!patch.titulo) return false;
+  (async () => {
+    if (crmCardAtualId) {
+      await sb.from('com_cards').update(patch).eq('id', crmCardAtualId);
+    } else {
+      const { data } = await sb.from('com_cards').insert([patch]).select();
+      const novo = data && data[0];
+      if (novo) await crmLogAtividade(novo.id, 'criacao', 'Card criado');
+    }
+    fecharModal('modal-card-crm');
+    await carregarCardsDoFunil();
+  })();
+  return false;
+}
+
+async function crmMarcarDesfecho(status) {
+  if (!crmCardAtualId) { alert('Salve o card primeiro.'); return; }
+  await sb.from('com_cards').update({ status_negocio: status, data_fechamento: hojeStr() }).eq('id', crmCardAtualId);
+  await crmLogAtividade(crmCardAtualId, status, status === 'ganho' ? 'Marcado como Ganho' : 'Marcado como Perdido');
+  fecharModal('modal-card-crm');
+  await carregarCardsDoFunil();
+}
+
+async function crmAdicionarNota() {
+  const texto = document.getElementById('crm-nota-texto').value.trim();
+  if (!texto || !crmCardAtualId) return;
+  await crmLogAtividade(crmCardAtualId, 'nota', texto);
+  document.getElementById('crm-nota-texto').value = '';
+  crmCarregarAtividades(crmCardAtualId);
+}
+
+async function crmExcluirCard() {
+  if (!crmCardAtualId || !confirm('Excluir este card?')) return;
+  await sb.from('com_cards').delete().eq('id', crmCardAtualId);
+  fecharModal('modal-card-crm');
+  await carregarCardsDoFunil();
+}
+
+// ---------- GERENCIAR FUNIS E ESTÁGIOS ----------
+function abrirGerenciarFunis() {
+  const sel = document.getElementById('funis-select-editar');
+  sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.nome}</option>`).join('');
+  renderEstagiosEdicao();
+  document.getElementById('modal-funis').classList.add('open');
+}
+
+function renderEstagiosEdicao() {
+  const funilId = parseInt(document.getElementById('funis-select-editar').value);
+  const lista = crmEstagios.filter(e => e.funil_id === funilId).sort((a,b) => a.ordem - b.ordem);
+  document.getElementById('estagios-lista').innerHTML = lista.length ? lista.map((e, i) => `
+    <div class="negocio-row" style="padding:6px 0;">
+      <div class="negocio-nome">${e.nome}</div>
+      <div class="negocio-actions">
+        <button class="btn-edit" onclick="moverEstagioOrdem(${e.id}, -1)" title="Subir" ${i===0?'disabled':''}>↑</button>
+        <button class="btn-edit" onclick="moverEstagioOrdem(${e.id}, 1)" title="Descer" ${i===lista.length-1?'disabled':''}>↓</button>
+        <button class="btn-del" onclick="excluirEstagio(${e.id})" title="Excluir">✕</button>
+      </div>
+    </div>
+  `).join('') : '<div class="empty">Nenhum estágio ainda.</div>';
+}
+
+async function criarFunil() {
+  const nome = document.getElementById('novo-funil-nome').value.trim();
+  if (!nome) return;
+  const ordem = crmFunis.length ? Math.max(...crmFunis.map(f => f.ordem)) + 1 : 1;
+  const { data } = await sb.from('com_funis').insert([{ nome, ordem }]).select();
+  document.getElementById('novo-funil-nome').value = '';
+  await carregarCRM();
+  if (data && data[0]) {
+    crmFunilAtualId = data[0].id;
+    document.getElementById('crm-funil-select').value = crmFunilAtualId;
+    await carregarCardsDoFunil();
+  }
+  abrirGerenciarFunis();
+}
+
+async function excluirFunilAtual() {
+  const funilId = parseInt(document.getElementById('funis-select-editar').value);
+  if (!funilId || !confirm('Excluir esse funil e todos os cards/estágios dele?')) return;
+  await sb.from('com_funis').delete().eq('id', funilId);
+  await carregarCRM();
+  abrirGerenciarFunis();
+}
+
+async function criarEstagio() {
+  const funilId = parseInt(document.getElementById('funis-select-editar').value);
+  const nome = document.getElementById('novo-estagio-nome').value.trim();
+  if (!funilId || !nome) return;
+  const doFunil = crmEstagios.filter(e => e.funil_id === funilId);
+  const ordem = doFunil.length ? Math.max(...doFunil.map(e => e.ordem)) + 1 : 1;
+  const cores = ['var(--chip-1)','var(--chip-2)','var(--chip-3)','var(--chip-4)','var(--chip-5)','var(--chip-6)','var(--chip-7)'];
+  await sb.from('com_estagios').insert([{ funil_id: funilId, nome, ordem, cor: cores[ordem % cores.length] }]);
+  document.getElementById('novo-estagio-nome').value = '';
+  await carregarCRM();
+  document.getElementById('funis-select-editar').value = funilId;
+  renderEstagiosEdicao();
+}
+
+async function excluirEstagio(id) {
+  if (!confirm('Excluir esse estágio? Cards nele ficarão sem estágio válido.')) return;
+  await sb.from('com_estagios').delete().eq('id', id);
+  const funilId = parseInt(document.getElementById('funis-select-editar').value);
+  await carregarCRM();
+  document.getElementById('funis-select-editar').value = funilId;
+  renderEstagiosEdicao();
+}
+
+async function moverEstagioOrdem(id, delta) {
+  const e = crmEstagios.find(x => x.id === id);
+  if (!e) return;
+  const doFunil = crmEstagios.filter(x => x.funil_id === e.funil_id).sort((a,b) => a.ordem - b.ordem);
+  const idx = doFunil.findIndex(x => x.id === id);
+  const vizinho = doFunil[idx + delta];
+  if (!vizinho) return;
+  await sb.from('com_estagios').update({ ordem: vizinho.ordem }).eq('id', e.id);
+  await sb.from('com_estagios').update({ ordem: e.ordem }).eq('id', vizinho.id);
+  const funilId = e.funil_id;
+  await carregarCRM();
+  document.getElementById('funis-select-editar').value = funilId;
+  renderEstagiosEdicao();
+}
+
+// ---------- GERENCIAR CAMPOS PERSONALIZADOS ----------
+function abrirGerenciarCampos() {
+  renderListaCampos();
+  document.getElementById('modal-campos').classList.add('open');
+}
+function renderListaCampos() {
+  document.getElementById('campos-lista').innerHTML = crmCampos.length ? crmCampos.map(c => `
+    <div class="negocio-row" style="padding:6px 0;">
+      <div class="negocio-nome">${c.nome} <span class="pill">${c.tipo}</span></div>
+      <div class="negocio-actions">
+        <button class="btn-del" onclick="excluirCampoPersonalizado(${c.id})" title="Excluir">✕</button>
+      </div>
+    </div>
+  `).join('') : '<div class="empty">Nenhum campo personalizado ainda.</div>';
+}
+function criarCampoPersonalizado(ev) {
+  ev.preventDefault();
+  const nome = document.getElementById('novo-campo-nome').value.trim();
+  const tipo = document.getElementById('novo-campo-tipo').value;
+  const opcoesTxt = document.getElementById('novo-campo-opcoes').value.trim();
+  if (!nome) return false;
+  const chave = nome.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+  const opcoes = tipo === 'lista' ? opcoesTxt.split(',').map(o => o.trim()).filter(Boolean) : null;
+  const ordem = crmCampos.length ? Math.max(...crmCampos.map(c => c.ordem)) + 1 : 1;
+  (async () => {
+    const { error } = await sb.from('com_campos_personalizados').insert([{ nome, chave, tipo, opcoes, ordem }]);
+    if (error) {
+      alert(error.code === '23505' ? 'Já existe um campo com esse nome (ou muito parecido). Escolha outro nome.' : 'Erro ao criar campo: ' + error.message);
+      return;
+    }
+    document.getElementById('novo-campo-nome').value = '';
+    document.getElementById('novo-campo-opcoes').value = '';
+    await carregarCRM();
+    renderListaCampos();
+  })();
+  return false;
+}
+async function excluirCampoPersonalizado(id) {
+  if (!confirm('Excluir esse campo? Os valores já salvos nos cards continuam no banco, só somem da tela.')) return;
+  await sb.from('com_campos_personalizados').delete().eq('id', id);
+  await carregarCRM();
+  renderListaCampos();
 }
 
 // ---------- IMPORTAÇÃO EM MASSA (CSV) ----------
