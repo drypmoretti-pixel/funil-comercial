@@ -231,6 +231,27 @@ form.form-grid button { grid-column: 1 / -1; }
 
 .empty { color: var(--muted); font-size: .85rem; padding: 10px 0; }
 
+/* ---- celebração ---- */
+.celebracao-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 300; overflow: hidden; display: none; }
+.celebracao-overlay.ativa { display: block; }
+.confete {
+  position: absolute; top: -20px; width: 8px; height: 14px; opacity: .9; border-radius: 2px;
+  animation-name: confete-cair; animation-timing-function: ease-in; animation-fill-mode: forwards;
+}
+@keyframes confete-cair { to { transform: translateY(110vh) rotate(360deg); opacity: .15; } }
+.celebracao-mensagem {
+  position: fixed; top: 38%; left: 50%; transform: translate(-50%,-50%); text-align: center;
+  animation: celebracao-pop .35s ease-out;
+}
+.celebracao-emoji { font-size: 3.6rem; animation: celebracao-bounce .6s ease-in-out infinite; }
+@keyframes celebracao-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+.celebracao-frase {
+  margin-top: 10px; font-size: 1.05rem; font-weight: 800; color: var(--text-primary);
+  background: var(--surface-1); padding: 9px 20px; border-radius: 999px; box-shadow: 0 6px 20px rgba(11,11,11,0.18);
+  white-space: nowrap;
+}
+@keyframes celebracao-pop { from { transform: translate(-50%,-50%) scale(.5); opacity: 0; } to { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
+
 /* ---- calendário ---- */
 .cal-cabecalho { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
 .cal-cabecalho span { text-align: center; font-size: .72rem; color: var(--muted); font-weight: 600; }
@@ -306,6 +327,8 @@ form.form-grid button { grid-column: 1 / -1; }
   </div>
 </div>
 
+<div id="celebracao-overlay" class="celebracao-overlay"></div>
+
 <div id="app">
   <div class="app-shell">
     <aside class="sidebar">
@@ -317,6 +340,7 @@ form.form-grid button { grid-column: 1 / -1; }
         <button data-tab="formulario" title="Formulário"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></button>
         <button data-tab="dicas" title="Dicas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
         <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
+        <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
       </nav>
     </aside>
     <div class="main-content">
@@ -485,6 +509,37 @@ form.form-grid button { grid-column: 1 / -1; }
           <div class="chart-wrap"><svg id="chart-faturamento" class="chart"></svg></div>
           <div class="tabela-wrap historico-tabela"><table class="tabela-leads" id="tabela-faturamento"></table></div>
         </div>
+      </section>
+    </div>
+
+    <div class="tab-panel" id="tab-checklist">
+      <section class="card">
+        <div class="section-title">
+          <h2>Checklist de produtividade</h2>
+          <select id="checklist-perfil-select" onchange="checklistMudaPerfil()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600;"></select>
+        </div>
+        <p class="muted">Ações diárias do time que ajudam a bater a meta de R$30k. Lance os números do dia e acompanhe a consistência.</p>
+
+        <div class="card" style="background:var(--field-bg); margin-top:12px; box-shadow:none;">
+          <div class="section-title" style="margin-bottom:8px;">
+            <h3 style="margin:0; font-size:.95rem;">Lançar</h3>
+            <div class="month-nav">
+              <button onclick="mudaDiaChecklist(-1)">‹</button>
+              <div id="checklist-data-label"></div>
+              <button onclick="mudaDiaChecklist(1)">›</button>
+            </div>
+          </div>
+          <div class="form-grid" id="checklist-form-campos" style="margin-top:0;"></div>
+          <button class="btn" style="margin-top:10px; width:auto; padding:8px 18px;" onclick="salvarRegistrosChecklist()">Salvar dia</button>
+        </div>
+
+        <div class="tiles" id="checklist-tiles" style="margin-top:16px;"></div>
+
+        <h3 style="margin-top:22px;">Últimos 14 dias</h3>
+        <div class="tabela-wrap"><table class="tabela-leads" id="tabela-checklist"></table></div>
+
+        <h3 style="margin-top:22px;">O que mais puxa resultado</h3>
+        <div id="checklist-insight"></div>
       </section>
     </div>
 
@@ -800,6 +855,57 @@ function fmtMesLabel(d) {
 }
 function fmtBRL(v) { return (v ?? 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 function toggleForm(id) { document.getElementById(id).classList.toggle('open'); }
+
+// ---------- CELEBRAÇÃO ----------
+const FRASES_REUNIAO = [
+  'Mandou bem! Reunião marcada! 🎯', 'Isso aí! Mais uma no funil! 🚀', 'Boa! Sequência de agendamentos! 🔥',
+  'Aeee! Bora encher a agenda! 📅', 'Show! Mais uma chance de fechar negócio! 💪',
+];
+const FRASES_VENDA = [
+  'Fechou! Parabéns pela venda! 💰', 'Mais uma pro placar! 🏆', 'Isso é que é vendedor! 🎉',
+  'Excelente! Rumo à meta! 📈', 'Vendeu! Bora pra próxima! 🥳',
+];
+function celebrar(tipo) {
+  const overlay = document.getElementById('celebracao-overlay');
+  if (!overlay) return;
+  const frases = tipo === 'venda' ? FRASES_VENDA : FRASES_REUNIAO;
+  const frase = frases[Math.floor(Math.random() * frases.length)];
+  const emoji = tipo === 'venda' ? '🤑' : '🙌';
+  const cores = ['#0ca30c', '#2a78d6', '#eda100', '#e87ba4', '#4a3aa7', '#eb6834'];
+  let confetiHtml = '';
+  for (let i = 0; i < 60; i++) {
+    const esquerda = Math.random() * 100;
+    const atraso = (Math.random() * 0.4).toFixed(2);
+    const duracao = (1.8 + Math.random() * 1.2).toFixed(2);
+    const cor = cores[i % cores.length];
+    const rot = Math.floor(Math.random() * 360);
+    confetiHtml += `<div class="confete" style="left:${esquerda}%; background:${cor}; animation-delay:${atraso}s; animation-duration:${duracao}s; transform:rotate(${rot}deg)"></div>`;
+  }
+  overlay.innerHTML = confetiHtml + `<div class="celebracao-mensagem"><div class="celebracao-emoji">${emoji}</div><div class="celebracao-frase">${frase}</div></div>`;
+  overlay.classList.add('ativa');
+  tocarSino();
+  setTimeout(() => { overlay.classList.remove('ativa'); overlay.innerHTML = ''; }, 3000);
+}
+function tocarSino() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    const nota = (freq, inicio, duracao) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime + inicio);
+      gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + inicio + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + inicio + duracao);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + inicio);
+      osc.stop(ctx.currentTime + inicio + duracao + 0.05);
+    };
+    nota(1318.5, 0, 0.25);
+    nota(1567.98, 0.12, 0.32);
+  } catch (e) { /* autoplay/audio pode falhar silenciosamente, celebração visual continua */ }
+}
 function noMes(dataStr, mesRef) { return !!dataStr && dataStr.startsWith(mesRef); }
 
 // ---------- AUTH ----------
@@ -824,6 +930,7 @@ async function entrarNoApp(user) {
   await carregarDadosBase(user.id);
   await carregarTudo();
   await carregarCRM();
+  await carregarChecklist();
   initTally();
 }
 (async function initSession() {
@@ -859,6 +966,7 @@ async function carregarTudo() {
   const { data } = await sb.from('com_negocios').select('*').order('data_agendada', { ascending: true });
   negocios = data || [];
   renderTudo();
+  if (checklistMetricas.length) renderChecklist();
 }
 
 function renderTudo() {
@@ -1105,6 +1213,7 @@ function salvarEstagio(ev) {
     await sb.from('com_negocios').update(patch).eq('id', id);
     fecharModal('modal-estagio');
     await carregarTudo();
+    if (tipo === 'venda') celebrar('venda');
   })();
   return false;
 }
@@ -1124,6 +1233,7 @@ function criarNegocio(ev) {
     document.getElementById('neg-data').value = hojeStr();
     document.getElementById('form-negocio').classList.remove('open');
     await carregarTudo();
+    celebrar('reuniao');
   })();
   return false;
 }
@@ -1436,6 +1546,7 @@ async function crmMarcarDesfecho(status) {
   await crmLogAtividade(crmCardAtualId, status, status === 'ganho' ? 'Marcado como Ganho' : 'Marcado como Perdido');
   fecharModal('modal-card-crm');
   await carregarCardsDoFunil();
+  if (status === 'ganho') celebrar('venda');
 }
 
 async function crmAdicionarNota() {
@@ -1889,6 +2000,187 @@ function desenharLeadsPorDia(leadsMes, mesRef) {
   svg.setAttribute('width', w);
   svg.setAttribute('height', h);
   svg.innerHTML = `<line x1="0" y1="${h-24}" x2="${w}" y2="${h-24}" stroke="${corGrid}" stroke-width="1"/>${bars}`;
+}
+
+// ---------- CHECKLIST DE PRODUTIVIDADE ----------
+let checklistMetricas = [];
+let checklistPerfilAtualId = null;
+let checklistRegistros = [];
+let checklistDiaAtual = hojeStr();
+
+async function carregarChecklist() {
+  const { data } = await sb.from('com_checklist_metricas').select('*').eq('ativo', true).order('ordem');
+  checklistMetricas = data || [];
+  const elegiveis = perfis.filter(p => (p.papel === 'sdr' || p.papel === 'vendedor') && !p.nome.toLowerCase().includes('n8n'));
+  document.getElementById('checklist-perfil-select').innerHTML = elegiveis.map(p => `<option value="${p.id}">${p.nome} (${p.papel === 'sdr' ? 'SDR' : 'Vendedor'})</option>`).join('')
+    || '<option value="">Nenhum SDR/vendedor cadastrado</option>';
+  if (!checklistPerfilAtualId || !elegiveis.find(p => p.id === checklistPerfilAtualId)) {
+    const meu = currentPerfil && elegiveis.find(p => p.id === currentPerfil.id);
+    checklistPerfilAtualId = meu ? meu.id : (elegiveis[0] && elegiveis[0].id) || null;
+  }
+  if (checklistPerfilAtualId) document.getElementById('checklist-perfil-select').value = checklistPerfilAtualId;
+  await carregarRegistrosChecklist();
+}
+
+function checklistMudaPerfil() {
+  checklistPerfilAtualId = document.getElementById('checklist-perfil-select').value || null;
+  carregarRegistrosChecklist();
+}
+
+function diasUltimos14() {
+  const dias = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    dias.push(d.toISOString().slice(0, 10));
+  }
+  return dias;
+}
+
+async function carregarRegistrosChecklist() {
+  if (!checklistPerfilAtualId) { checklistRegistros = []; renderChecklist(); return; }
+  const desde = diasUltimos14()[0];
+  const { data } = await sb.from('com_checklist_registros').select('*').eq('perfil_id', checklistPerfilAtualId).gte('data', desde).order('data');
+  checklistRegistros = data || [];
+  renderChecklist();
+}
+
+function metricasDoPerfilAtual() {
+  const perfil = perfis.find(p => p.id === checklistPerfilAtualId);
+  if (!perfil) return [];
+  return checklistMetricas.filter(m => m.papel === perfil.papel);
+}
+
+function renderChecklist() {
+  if (!checklistMetricas.length) return;
+  renderFormChecklist();
+  renderTilesChecklist();
+  renderTabelaChecklist();
+  renderInsightChecklist();
+}
+
+function mudaDiaChecklist(delta) {
+  const d = new Date(checklistDiaAtual + 'T00:00:00');
+  d.setDate(d.getDate() + delta);
+  checklistDiaAtual = d.toISOString().slice(0, 10);
+  renderFormChecklist();
+}
+
+function renderFormChecklist() {
+  document.getElementById('checklist-data-label').textContent = fmtDataCurta(checklistDiaAtual) + (checklistDiaAtual === hojeStr() ? ' (hoje)' : '');
+  const metricas = metricasDoPerfilAtual();
+  document.getElementById('checklist-form-campos').innerHTML = metricas.map(m => {
+    const existente = checklistRegistros.find(r => r.metrica_id === m.id && r.data === checklistDiaAtual);
+    return `
+      <div>
+        <label>${m.nome} <span class="muted">(${m.meta_min}${m.meta_max ? '–' + m.meta_max : '+'} ${m.unidade})</span></label>
+        <input type="number" min="0" id="checklist-campo-${m.id}" value="${existente ? existente.valor : ''}">
+      </div>
+    `;
+  }).join('') || '<div class="empty">Esse perfil não tem métricas de checklist configuradas.</div>';
+}
+
+function salvarRegistrosChecklist() {
+  const metricas = metricasDoPerfilAtual();
+  if (!metricas.length || !checklistPerfilAtualId) return;
+  const linhas = metricas.map(m => {
+    const el = document.getElementById(`checklist-campo-${m.id}`);
+    const valor = parseInt(el.value);
+    return { perfil_id: checklistPerfilAtualId, data: checklistDiaAtual, metrica_id: m.id, valor: isNaN(valor) ? 0 : valor, updated_at: new Date().toISOString() };
+  });
+  (async () => {
+    await sb.from('com_checklist_registros').upsert(linhas, { onConflict: 'perfil_id,data,metrica_id' });
+    await carregarRegistrosChecklist();
+  })();
+}
+
+function corMetaChecklist(valor, metrica) {
+  if (valor >= metrica.meta_min) return 'var(--good)';
+  if (valor >= metrica.meta_min * 0.7) return 'var(--warning)';
+  return 'var(--critical)';
+}
+
+function renderTilesChecklist() {
+  const metricas = metricasDoPerfilAtual();
+  const dias = diasUltimos14();
+  document.getElementById('checklist-tiles').innerHTML = metricas.map(m => {
+    const valores = dias.map(d => {
+      const r = checklistRegistros.find(x => x.metrica_id === m.id && x.data === d);
+      return r ? r.valor : 0;
+    });
+    const media = valores.reduce((s, v) => s + v, 0) / dias.length;
+    const pctBateram = Math.round((valores.filter(v => v >= m.meta_min).length / dias.length) * 100);
+    return `
+      <div class="tile">
+        <div class="label">${m.nome} — média/dia (14d)</div>
+        <div class="value ${media >= m.meta_min ? 'good' : 'bad'}">${media.toFixed(1)}</div>
+        <div class="sub">meta: ${m.meta_min}${m.meta_max ? '–' + m.meta_max : '+'} · bateu em ${pctBateram}% dos dias</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderTabelaChecklist() {
+  const metricas = metricasDoPerfilAtual();
+  if (!metricas.length) { document.getElementById('tabela-checklist').innerHTML = ''; return; }
+  const dias = [...diasUltimos14()].reverse();
+  const cabecalho = `<tr><th>Dia</th>${metricas.map(m => `<th>${m.nome}</th>`).join('')}</tr>`;
+  const linhas = dias.map(d => {
+    const celulas = metricas.map(m => {
+      const r = checklistRegistros.find(x => x.metrica_id === m.id && x.data === d);
+      const valor = r ? r.valor : 0;
+      return `<td style="color:${corMetaChecklist(valor, m)}; font-weight:700;">${valor}</td>`;
+    }).join('');
+    return `<tr><td>${fmtDataCurta(d)}${d === hojeStr() ? ' (hoje)' : ''}</td>${celulas}</tr>`;
+  }).join('');
+  document.getElementById('tabela-checklist').innerHTML = cabecalho + linhas;
+}
+
+function renderInsightChecklist() {
+  const perfil = perfis.find(p => p.id === checklistPerfilAtualId);
+  const el = document.getElementById('checklist-insight');
+  if (!perfil) { el.innerHTML = ''; return; }
+  const dias = diasUltimos14();
+  let metricaChave, outcomeFn, outcomeLabel;
+  if (perfil.papel === 'sdr') {
+    metricaChave = 'ligacoes';
+    outcomeFn = (d) => negocios.filter(n => n.sdr_id === perfil.id && n.data_agendada === d).length;
+    outcomeLabel = 'reuniões agendadas de verdade';
+  } else {
+    metricaChave = 'follow_ups';
+    outcomeFn = (d) => negocios.filter(n => n.vendedor_id === perfil.id && n.data_venda === d).length;
+    outcomeLabel = 'vendas fechadas';
+  }
+  const metrica = checklistMetricas.find(m => m.chave === metricaChave);
+  if (!metrica) { el.innerHTML = ''; return; }
+  const diasComMeta = [], diasSemMeta = [];
+  dias.forEach(d => {
+    const r = checklistRegistros.find(x => x.metrica_id === metrica.id && x.data === d);
+    const valor = r ? r.valor : 0;
+    (valor >= metrica.meta_min ? diasComMeta : diasSemMeta).push(outcomeFn(d));
+  });
+  const media = arr => arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null;
+  const mediaCom = media(diasComMeta), mediaSem = media(diasSemMeta);
+  if (mediaCom === null || mediaSem === null) {
+    el.innerHTML = `<div class="empty">Ainda faltam dias batendo e não batendo a meta de "${metrica.nome}" pra comparar o efeito — vai lançando que o painel aprende sozinho.</div>`;
+    return;
+  }
+  let conclusao;
+  if (mediaCom > mediaSem * 1.15) {
+    conclusao = `Isso é <b>${(mediaSem ? mediaCom / mediaSem : mediaCom).toFixed(1)}x mais</b> — forte indício de que essa ação puxa resultado de verdade.`;
+  } else if (mediaCom < mediaSem * 0.85) {
+    conclusao = 'Curiosamente o resultado não acompanha — vale investigar se a meta está calibrada certo ou se outro fator pesa mais nos dias bons.';
+  } else {
+    conclusao = 'Ainda sem diferença clara — bater essa meta parece necessário, mas não é a única coisa que decide o resultado.';
+  }
+  el.innerHTML = `
+    <div class="dica">
+      <div class="icone">🔍</div>
+      <div class="texto">
+        Nos últimos 14 dias, quando <b>${perfil.nome}</b> bate a meta de "${metrica.nome}" (${metrica.meta_min}+/dia), a média de <b>${outcomeLabel}</b> no mesmo dia é <b>${mediaCom.toFixed(1)}</b> — contra <b>${mediaSem.toFixed(1)}</b> nos dias que não bate. ${conclusao}
+      </div>
+    </div>
+  `;
 }
 
 // ---------- CALENDÁRIO ----------
