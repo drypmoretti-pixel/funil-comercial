@@ -374,18 +374,11 @@ form.form-grid button { grid-column: 1 / -1; }
       <section class="card">
         <div class="section-title">
           <h2>Geração de demanda (Tally)</h2>
-          <button class="add-toggle" onclick="toggleForm('tally-config')">⚙️ Configurar</button>
+          <button class="add-toggle" onclick="toggleForm('tally-config')">⚙️ Formulários</button>
         </div>
-        <p class="muted">Sua chave de API do Tally fica só no seu navegador (localStorage) — nunca é salva no código do painel.</p>
+        <p class="muted">Conecta sozinho. Escolha abaixo quais formulários contam como geração de demanda.</p>
         <div class="form-collapse" id="tally-config">
-          <form class="form-grid" onsubmit="return conectarTally(event)">
-            <div class="full">
-              <label>Chave de API do Tally</label>
-              <input type="password" id="tally-key" placeholder="tly-...">
-            </div>
-            <button class="btn" type="submit">Conectar</button>
-          </form>
-          <div id="tally-forms-wrap" style="display:none; margin-top:14px;">
+          <div id="tally-forms-wrap" style="margin-top:4px;">
             <label style="font-size:.78rem; color:var(--text-secondary); display:block; margin-bottom:6px;">Quais formulários contam como geração de demanda?</label>
             <input type="text" id="tally-filtro" placeholder="filtrar por nome..." oninput="renderListaFormularios()"
               style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); margin-bottom:8px;">
@@ -393,7 +386,7 @@ form.form-grid button { grid-column: 1 / -1; }
             <button class="btn" style="margin-top:10px;" onclick="salvarSelecaoFormularios()">Salvar seleção e atualizar</button>
           </div>
         </div>
-        <div id="tally-vazio" class="empty">Cole sua chave de API do Tally acima pra começar a ver os leads gerados por dia.</div>
+        <div id="tally-vazio" class="empty">Carregando formulários do Tally...</div>
         <div id="tally-dashboard" style="display:none; margin-top:16px;">
           <div class="tiles" id="tally-tiles"></div>
           <h3>Leads por dia — <span id="tally-mes-label"></span></h3>
@@ -1110,28 +1103,16 @@ function importarCSV() {
 }
 
 // ---------- GERAÇÃO DE DEMANDA (TALLY) ----------
-let tallyApiKey = localStorage.getItem('tally_api_key') || '';
+const TALLY_API_KEY = 'tly-KAnqNo7F4OpEqAvB6tv4XhEiRsjlgPN7';
 let tallyFormsAll = [];
 let tallySelecionados = JSON.parse(localStorage.getItem('tally_formularios_selecionados') || '[]');
 let tallySubmissions = [];
 let tallyCarregando = false;
 
-function tallyHeaders() { return { Authorization: `Bearer ${tallyApiKey}` }; }
+function tallyHeaders() { return { Authorization: `Bearer ${TALLY_API_KEY}` }; }
 
 async function initTally() {
-  if (!tallyApiKey) return;
-  document.getElementById('tally-key').placeholder = 'chave já salva neste navegador — cole outra pra trocar';
   await carregarListaFormularios();
-}
-
-function conectarTally(ev) {
-  if (ev) ev.preventDefault();
-  const digitada = document.getElementById('tally-key').value.trim();
-  if (digitada) { tallyApiKey = digitada; localStorage.setItem('tally_api_key', tallyApiKey); }
-  if (!tallyApiKey) { alert('Cole sua chave de API do Tally primeiro.'); return false; }
-  document.getElementById('tally-key').value = '';
-  carregarListaFormularios();
-  return false;
 }
 
 async function carregarListaFormularios() {
@@ -1142,7 +1123,13 @@ async function carregarListaFormularios() {
     tallyFormsAll = (data.items || []).map(f => ({ id: f.id, nome: f.name, submissoes: f.numberOfSubmissions }));
     document.getElementById('tally-forms-wrap').style.display = 'block';
     renderListaFormularios();
-    if (tallySelecionados.length) await carregarSubmissionsSelecionadas();
+    if (tallySelecionados.length) {
+      await carregarSubmissionsSelecionadas();
+    } else {
+      document.getElementById('tally-config').classList.add('open');
+      document.getElementById('tally-vazio').textContent = 'Marque abaixo quais formulários contam como geração de demanda.';
+      document.getElementById('tally-vazio').style.display = 'block';
+    }
   } catch (e) {
     document.getElementById('tally-vazio').textContent = 'Erro ao conectar no Tally: ' + e.message;
     document.getElementById('tally-vazio').style.display = 'block';
