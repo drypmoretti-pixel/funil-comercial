@@ -1126,7 +1126,7 @@ async function carregarListaFormularios() {
     const resp = await fetch('https://api.tally.so/forms?limit=200', { headers: tallyHeaders() });
     if (!resp.ok) throw new Error(resp.status === 401 ? 'chave inválida' : `erro ${resp.status}`);
     const data = await resp.json();
-    tallyFormsAll = (data.items || []).map(f => ({ id: f.id, nome: f.name, submissoes: f.numberOfSubmissions }));
+    tallyFormsAll = (data.items || []).map(f => ({ id: f.id, nome: f.name || '(sem nome — rascunho)', submissoes: f.numberOfSubmissions }));
     document.getElementById('tally-forms-wrap').style.display = 'block';
     renderListaFormularios();
     if (tallySelecionados.length) {
