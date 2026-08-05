@@ -596,8 +596,9 @@ form.form-grid button { grid-column: 1 / -1; }
               </div>
             </div>
             <div style="padding:0 10px 8px;">
-              <input type="text" id="whats-nova-conversa" placeholder="Novo contato (telefone)..."
+              <input type="text" id="whats-nova-conversa" placeholder="Buscar contato ou digitar novo número..."
                 style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);"
+                oninput="renderListaConversas()"
                 onkeydown="if(event.key==='Enter'){event.preventDefault(); abrirNovaConversaWhats();}">
             </div>
             <div id="whats-lista-conversas" class="whats-lista-conversas"></div>
@@ -2226,12 +2227,21 @@ function assinarRealtimeWhats() {
 function conversasAgrupadasWhats() {
   const porTelefone = {};
   whatsMensagens.forEach(m => { (porTelefone[m.telefone] = porTelefone[m.telefone] || []).push(m); });
-  return Object.entries(porTelefone).map(([telefone, msgs]) => {
+  const comMensagens = Object.entries(porTelefone).map(([telefone, msgs]) => {
     const ordenadas = [...msgs].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     const ultima = ordenadas[ordenadas.length - 1];
     const comNome = [...ordenadas].reverse().find(m => m.nome_contato);
-    return { telefone, nome: comNome ? comNome.nome_contato : null, ultima, mensagens: ordenadas };
+    const contato = whatsContatos.find(c => c.telefone === telefone);
+    return { telefone, nome: (contato && contato.nome) || (comNome && comNome.nome_contato) || null, ultima, mensagens: ordenadas, temMensagem: true };
   }).sort((a, b) => new Date(b.ultima.created_at) - new Date(a.ultima.created_at));
+
+  const telefonesComMsg = new Set(comMensagens.map(c => c.telefone));
+  const soContatos = whatsContatos
+    .filter(c => !telefonesComMsg.has(c.telefone))
+    .map(c => ({ telefone: c.telefone, nome: c.nome, ultima: null, mensagens: [], temMensagem: false }))
+    .sort((a, b) => (a.nome || a.telefone).localeCompare(b.nome || b.telefone));
+
+  return [...comMensagens, ...soContatos];
 }
 
 function tagsDaConversaHtml(telefone, classe) {
@@ -2241,19 +2251,26 @@ function tagsDaConversaHtml(telefone, classe) {
 }
 
 function renderListaConversas() {
-  const conversas = conversasAgrupadasWhats();
+  const filtro = (document.getElementById('whats-nova-conversa').value || '').toLowerCase().trim();
+  const filtroDigitos = filtro.replace(/\D/g, '');
+  let conversas = conversasAgrupadasWhats();
+  if (filtro) {
+    conversas = conversas.filter(c =>
+      (c.nome || '').toLowerCase().includes(filtro) || (filtroDigitos && c.telefone.includes(filtroDigitos))
+    );
+  }
   document.getElementById('whats-lista-conversas').innerHTML = conversas.length ? conversas.map(c => `
     <div class="whats-conversa-item ${c.telefone === whatsConversaAtual ? 'ativa' : ''}" onclick="abrirConversaWhats('${c.telefone}')">
       <div class="whats-avatar" data-foto-telefone="${c.telefone}" style="background-color:${corAvatar(c.telefone)}">${(c.nome || c.telefone).charAt(0).toUpperCase()}</div>
       <div class="whats-conversa-corpo">
-        <div class="whats-conversa-hora">${fmtDataCurta(c.ultima.created_at.slice(0, 10))}</div>
+        ${c.temMensagem ? `<div class="whats-conversa-hora">${fmtDataCurta(c.ultima.created_at.slice(0, 10))}</div>` : ''}
         <div class="whats-conversa-nome">${c.nome || c.telefone}</div>
-        <div class="whats-conversa-preview">${c.ultima.direcao === 'enviada' ? 'Você: ' : ''}${(c.ultima.mensagem || '').slice(0, 40)}</div>
+        <div class="whats-conversa-preview">${c.temMensagem ? (c.ultima.direcao === 'enviada' ? 'Você: ' : '') + (c.ultima.mensagem || '').slice(0, 40) : '<span class="muted">Sem mensagens ainda</span>'}</div>
         ${tagsDaConversaHtml(c.telefone, 'tags-row')}
       </div>
     </div>
-  `).join('') : '<div class="empty" style="padding:14px;">Nenhuma conversa ainda.</div>';
-  aplicarFotosNaTela(conversas.map(c => c.telefone));
+  `).join('') : '<div class="empty" style="padding:14px;">Nenhum contato encontrado.</div>';
+  aplicarFotosNaTela(conversas.slice(0, 60).map(c => c.telefone));
 }
 
 function abrirConversaWhats(telefone) {
@@ -2351,8 +2368,23 @@ function enviarMensagemThread(ev) {
   return false;
 }
 
+let whatsContatos = [];
+async function carregarContatosWhats() {
+  try {
+    const resp = await fetch(`${EVOLUTION_URL}/chat/findContacts/${EVOLUTION_INSTANCE}`, {
+      method: 'POST', headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify({}),
+    });
+    const data = await resp.json().catch(() => []);
+    whatsContatos = (Array.isArray(data) ? data : [])
+      .filter(c => !c.isGroup && c.remoteJid && c.remoteJid.endsWith('@s.whatsapp.net'))
+      .map(c => ({ telefone: c.remoteJid.split('@')[0], nome: (c.pushName || '').trim() || null, foto: c.profilePicUrl || null }));
+    whatsContatos.forEach(c => { if (c.foto && fotosPerfilCache[c.telefone] === undefined) fotosPerfilCache[c.telefone] = c.foto; });
+  } catch (e) { whatsContatos = []; }
+}
+
 async function initWhatsApp() {
   await verificarStatusWhats();
+  await carregarContatosWhats();
   await carregarMensagensWhats();
   assinarRealtimeWhats();
 }
