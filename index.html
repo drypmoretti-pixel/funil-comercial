@@ -518,15 +518,14 @@ async function carregarDadosBase(userId) {
   perfis = p || [];
   currentPerfil = perfis.find(x => x.id === userId) || null;
 
-  const popularSelect = (id, papel, permitirVazio) => {
+  const popularSelect = (id, permitirVazio) => {
     const el = document.getElementById(id);
-    const opcoes = perfis.filter(x => x.papel === papel);
     el.innerHTML = (permitirVazio ? '<option value="">—</option>' : '') +
-      opcoes.map(x => `<option value="${x.id}">${x.nome}</option>`).join('');
+      perfis.map(x => `<option value="${x.id}">${x.nome}</option>`).join('');
   };
-  popularSelect('neg-sdr', 'sdr', false);
-  popularSelect('edit-sdr', 'sdr', true);
-  popularSelect('edit-vendedor', 'vendedor', true);
+  popularSelect('neg-sdr', false);
+  popularSelect('edit-sdr', true);
+  popularSelect('edit-vendedor', true);
 
   if (currentPerfil && currentPerfil.papel === 'sdr') {
     document.getElementById('neg-sdr').value = currentPerfil.id;
