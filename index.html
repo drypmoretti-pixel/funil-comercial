@@ -625,7 +625,7 @@ form.form-grid button { grid-column: 1 / -1; }
             <div id="whats-thread-mensagens" class="whats-thread-mensagens"></div>
             <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
               <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
-              <button type="button" id="whats-btn-audio" class="btn btn-secondary" style="width:auto; padding:9px 12px;" onclick="alternarGravacaoAudio()" title="Gravar áudio">🎤</button>
+              <button type="button" id="whats-btn-audio" class="btn btn-secondary" style="width:auto; padding:9px 12px; display:flex; align-items:center;" onclick="alternarGravacaoAudio()" title="Gravar áudio"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
               <button class="btn" type="submit" style="width:auto; padding:9px 18px;">Enviar</button>
             </form>
             <div id="whats-gravando-aviso" class="muted" style="display:none; padding:0 14px 8px; font-size:.78rem; color:var(--critical);">🔴 Gravando... clique no microfone de novo pra parar e enviar.</div>
@@ -2335,11 +2335,80 @@ function renderThreadWhats() {
   const el = document.getElementById('whats-thread-mensagens');
   el.innerHTML = msgs.length ? msgs.map(m => `
     <div class="whats-bolha ${m.direcao}">
-      ${m.mensagem}
+      ${corpoBolhaWhats(m)}
       <div class="whats-bolha-hora">${new Date(m.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
     </div>
   `).join('') : '<div class="empty">Nenhuma mensagem ainda — manda a primeira!</div>';
   el.scrollTop = el.scrollHeight;
+  msgs.filter(m => m.midia_tipo === 'audio').forEach(m => carregarMidiaBolhaWhats(m.id, 'audio'));
+}
+
+function corpoBolhaWhats(m) {
+  if (m.midia_tipo === 'audio') {
+    return `<audio controls id="midia-${m.id}" style="max-width:230px; height:36px;"></audio>`;
+  }
+  if (m.midia_tipo === 'image') {
+    const legenda = m.mensagem && m.mensagem !== '📷 Imagem' ? `<div style="margin-top:4px;">${m.mensagem}</div>` : '';
+    return `<div id="midia-wrap-${m.id}"><button type="button" class="add-toggle" onclick="carregarMidiaBolhaWhats(${m.id}, 'image')">🖼️ Ver imagem</button>${legenda}</div>`;
+  }
+  if (m.midia_tipo === 'video') {
+    const legenda = m.mensagem && m.mensagem !== '🎥 Vídeo' ? `<div style="margin-top:4px;">${m.mensagem}</div>` : '';
+    return `<div id="midia-wrap-${m.id}"><button type="button" class="add-toggle" onclick="carregarMidiaBolhaWhats(${m.id}, 'video')">🎥 Ver vídeo</button>${legenda}</div>`;
+  }
+  if (m.midia_tipo === 'document') {
+    return `<div id="midia-wrap-${m.id}"><button type="button" class="add-toggle" onclick="carregarMidiaBolhaWhats(${m.id}, 'document')">📄 ${m.midia_nome || 'Documento'} — baixar</button></div>`;
+  }
+  return m.mensagem;
+}
+
+async function buscarMidiaWhats(mensagem) {
+  if (midiaCache[mensagem.mensagem_id]) return midiaCache[mensagem.mensagem_id];
+  if (!mensagem.mensagem_id) return null;
+  try {
+    const resp = await fetch(`${EVOLUTION_URL}/chat/getBase64FromMediaMessage/${EVOLUTION_INSTANCE}`, {
+      method: 'POST',
+      headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: { key: { remoteJid: `${mensagem.telefone}@s.whatsapp.net`, id: mensagem.mensagem_id, fromMe: mensagem.direcao === 'enviada' } },
+      }),
+    });
+    if (!resp.ok) return null;
+    const data = await resp.json().catch(() => null);
+    const base64 = data && (data.base64 || data.data || (typeof data === 'string' ? data : null));
+    if (!base64) return null;
+    const dataUri = `data:${mensagem.midia_mimetype || 'application/octet-stream'};base64,${base64}`;
+    midiaCache[mensagem.mensagem_id] = dataUri;
+    return dataUri;
+  } catch (e) { return null; }
+}
+
+async function carregarMidiaBolhaWhats(msgId, tipo) {
+  const m = whatsMensagens.find(x => x.id === msgId);
+  if (!m) return;
+  const uri = await buscarMidiaWhats(m);
+  if (!uri) {
+    if (tipo !== 'audio') {
+      const wrap = document.getElementById(`midia-wrap-${msgId}`);
+      if (wrap) wrap.innerHTML = '<span class="muted" style="font-size:.76rem;">Não consegui carregar essa mídia.</span>';
+    }
+    return;
+  }
+  if (tipo === 'audio') {
+    const audioEl = document.getElementById(`midia-${msgId}`);
+    if (audioEl) audioEl.src = uri;
+  } else if (tipo === 'image') {
+    const wrap = document.getElementById(`midia-wrap-${msgId}`);
+    const legenda = m.mensagem && m.mensagem !== '📷 Imagem' ? `<div style="margin-top:4px;">${m.mensagem}</div>` : '';
+    if (wrap) wrap.innerHTML = `<img src="${uri}" style="max-width:230px; border-radius:8px; display:block;">${legenda}`;
+  } else if (tipo === 'video') {
+    const wrap = document.getElementById(`midia-wrap-${msgId}`);
+    const legenda = m.mensagem && m.mensagem !== '🎥 Vídeo' ? `<div style="margin-top:4px;">${m.mensagem}</div>` : '';
+    if (wrap) wrap.innerHTML = `<video src="${uri}" controls style="max-width:230px; border-radius:8px; display:block;"></video>${legenda}`;
+  } else if (tipo === 'document') {
+    const a = document.createElement('a');
+    a.href = uri; a.download = m.midia_nome || 'documento';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
 }
 
 function renderThreadTagsWhats() {
@@ -2405,6 +2474,9 @@ function enviarMensagemThread(ev) {
 // ---------- ÁUDIO ----------
 let whatsMediaRecorder = null;
 let whatsAudioChunks = [];
+const ICONE_MIC = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
+const ICONE_STOP = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+const midiaCache = {}; // mensagem_id -> data URI ou object URL, cache de sessão
 
 async function alternarGravacaoAudio() {
   const btn = document.getElementById('whats-btn-audio');
@@ -2428,25 +2500,25 @@ async function alternarGravacaoAudio() {
     whatsMediaRecorder.onstop = async () => {
       stream.getTracks().forEach(t => t.stop());
       aviso.style.display = 'none';
-      btn.textContent = '🎤';
+      btn.innerHTML = ICONE_MIC;
       const blob = new Blob(whatsAudioChunks, { type: whatsMediaRecorder.mimeType || 'audio/webm' });
       const base64 = await new Promise((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(String(reader.result).split(',')[1]);
         reader.readAsDataURL(blob);
       });
-      await enviarAudioWhatsApp(whatsConversaAtual, base64);
+      await enviarAudioWhatsApp(whatsConversaAtual, base64, blob);
     };
     whatsMediaRecorder.start();
     aviso.style.display = 'block';
-    btn.textContent = '⏹️';
+    btn.innerHTML = ICONE_STOP;
   } catch (e) {
     alert('Não consegui acessar o microfone: ' + e.message);
   }
 }
 
-async function enviarAudioWhatsApp(telefone, base64Audio) {
-  let ok = true, erro = null;
+async function enviarAudioWhatsApp(telefone, base64Audio, blobLocal) {
+  let ok = true, erro = null, mensagemId = null;
   try {
     const resp = await fetch(`${EVOLUTION_URL}/message/sendWhatsAppAudio/${EVOLUTION_INSTANCE}`, {
       method: 'POST',
@@ -2454,11 +2526,18 @@ async function enviarAudioWhatsApp(telefone, base64Audio) {
       body: JSON.stringify({ number: telefone, audio: base64Audio }),
     });
     if (!resp.ok) { ok = false; erro = `erro ${resp.status}`; }
+    else {
+      const data = await resp.json().catch(() => null);
+      const item = Array.isArray(data) ? data[0] : data;
+      mensagemId = (item && item.key && item.key.id) || null;
+    }
   } catch (e) {
     ok = false; erro = e.message;
   }
+  if (ok && mensagemId && blobLocal) midiaCache[mensagemId] = URL.createObjectURL(blobLocal);
   await sb.from('com_whatsapp_mensagens').insert([{
-    telefone, mensagem: '🎤 Mensagem de voz', direcao: 'enviada', origem: 'chat',
+    telefone, mensagem: '🎤 Mensagem de voz', direcao: 'enviada', origem: 'chat', mensagem_id: mensagemId,
+    midia_tipo: 'audio', midia_mimetype: blobLocal ? blobLocal.type : 'audio/webm',
     enviado_por: currentPerfil ? currentPerfil.id : null, status: ok ? 'enviado' : 'erro', erro,
   }]);
   if (!ok) alert('Erro ao enviar áudio: ' + erro);
