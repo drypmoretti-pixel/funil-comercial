@@ -596,10 +596,20 @@ form.form-grid button { grid-column: 1 / -1; }
               </div>
             </div>
             <div style="padding:0 10px 8px;">
-              <input type="text" id="whats-nova-conversa" placeholder="Buscar contato ou digitar novo número..."
-                style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);"
-                oninput="renderListaConversas()"
-                onkeydown="if(event.key==='Enter'){event.preventDefault(); abrirNovaConversaWhats();}">
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="whats-nova-conversa" placeholder="Buscar contato ou telefone..."
+                  style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);"
+                  oninput="renderListaConversas()"
+                  onkeydown="if(event.key==='Enter'){event.preventDefault(); abrirNovaConversaWhats();}">
+                <button type="button" class="add-toggle" style="padding:0 10px; font-size:1rem;" title="Novo contato" onclick="toggleForm('whats-novo-contato-form')">+</button>
+              </div>
+              <form class="form-collapse" id="whats-novo-contato-form" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;" onsubmit="return criarContatoWhats(event)">
+                <input type="text" id="whats-novo-nome" placeholder="Nome do contato" required
+                  style="padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);">
+                <input type="text" id="whats-novo-telefone" placeholder="Telefone (com DDD)" required
+                  style="padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);">
+                <button class="btn" type="submit" style="padding:7px;">Iniciar conversa</button>
+              </form>
             </div>
             <div id="whats-lista-conversas" class="whats-lista-conversas"></div>
           </div>
@@ -615,8 +625,10 @@ form.form-grid button { grid-column: 1 / -1; }
             <div id="whats-thread-mensagens" class="whats-thread-mensagens"></div>
             <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
               <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
+              <button type="button" id="whats-btn-audio" class="btn btn-secondary" style="width:auto; padding:9px 12px;" onclick="alternarGravacaoAudio()" title="Gravar áudio">🎤</button>
               <button class="btn" type="submit" style="width:auto; padding:9px 18px;">Enviar</button>
             </form>
+            <div id="whats-gravando-aviso" class="muted" style="display:none; padding:0 14px 8px; font-size:.78rem; color:var(--critical);">🔴 Gravando... clique no microfone de novo pra parar e enviar.</div>
           </div>
         </div>
       </section>
@@ -2232,16 +2244,22 @@ function conversasAgrupadasWhats() {
     const ultima = ordenadas[ordenadas.length - 1];
     const comNome = [...ordenadas].reverse().find(m => m.nome_contato);
     const contato = whatsContatos.find(c => c.telefone === telefone);
-    return { telefone, nome: (contato && contato.nome) || (comNome && comNome.nome_contato) || null, ultima, mensagens: ordenadas, temMensagem: true };
+    const nome = whatsNomesManual[telefone] || (contato && contato.nome) || (comNome && comNome.nome_contato) || null;
+    return { telefone, nome, ultima, mensagens: ordenadas, temMensagem: true };
   }).sort((a, b) => new Date(b.ultima.created_at) - new Date(a.ultima.created_at));
 
   const telefonesComMsg = new Set(comMensagens.map(c => c.telefone));
   const soContatos = whatsContatos
     .filter(c => !telefonesComMsg.has(c.telefone))
-    .map(c => ({ telefone: c.telefone, nome: c.nome, ultima: null, mensagens: [], temMensagem: false }))
-    .sort((a, b) => (a.nome || a.telefone).localeCompare(b.nome || b.telefone));
+    .map(c => ({ telefone: c.telefone, nome: whatsNomesManual[c.telefone] || c.nome, ultima: null, mensagens: [], temMensagem: false }));
 
-  return [...comMensagens, ...soContatos];
+  const cobertos = new Set([...telefonesComMsg, ...whatsContatos.map(c => c.telefone)]);
+  const soManual = Object.keys(whatsNomesManual)
+    .filter(t => !cobertos.has(t))
+    .map(t => ({ telefone: t, nome: whatsNomesManual[t], ultima: null, mensagens: [], temMensagem: false }));
+
+  const semMensagem = [...soContatos, ...soManual].sort((a, b) => (a.nome || a.telefone).localeCompare(b.nome || b.telefone));
+  return [...comMensagens, ...semMensagem];
 }
 
 function tagsDaConversaHtml(telefone, classe) {
@@ -2287,6 +2305,22 @@ function abrirNovaConversaWhats() {
   if (!numero) return;
   input.value = '';
   abrirConversaWhats(numero);
+}
+
+function criarContatoWhats(ev) {
+  ev.preventDefault();
+  const nome = document.getElementById('whats-novo-nome').value.trim();
+  const numero = normalizarTelefoneWhats(document.getElementById('whats-novo-telefone').value.trim());
+  if (!nome || !numero) return false;
+  (async () => {
+    await sb.from('com_whatsapp_nomes').upsert([{ telefone: numero, nome }]);
+    whatsNomesManual[numero] = nome;
+    document.getElementById('whats-novo-nome').value = '';
+    document.getElementById('whats-novo-telefone').value = '';
+    document.getElementById('whats-novo-contato-form').classList.remove('open');
+    abrirConversaWhats(numero);
+  })();
+  return false;
 }
 
 function renderThreadWhats() {
@@ -2368,7 +2402,75 @@ function enviarMensagemThread(ev) {
   return false;
 }
 
+// ---------- ÁUDIO ----------
+let whatsMediaRecorder = null;
+let whatsAudioChunks = [];
+
+async function alternarGravacaoAudio() {
+  const btn = document.getElementById('whats-btn-audio');
+  const aviso = document.getElementById('whats-gravando-aviso');
+  if (whatsMediaRecorder && whatsMediaRecorder.state === 'recording') {
+    whatsMediaRecorder.stop();
+    return;
+  }
+  if (!whatsConversaAtual) { alert('Abra uma conversa primeiro.'); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder) {
+    alert('Seu navegador não suporta gravação de áudio.');
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mimeCandidatos = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
+    const mime = mimeCandidatos.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+    whatsMediaRecorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+    whatsAudioChunks = [];
+    whatsMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) whatsAudioChunks.push(e.data); };
+    whatsMediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      aviso.style.display = 'none';
+      btn.textContent = '🎤';
+      const blob = new Blob(whatsAudioChunks, { type: whatsMediaRecorder.mimeType || 'audio/webm' });
+      const base64 = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(String(reader.result).split(',')[1]);
+        reader.readAsDataURL(blob);
+      });
+      await enviarAudioWhatsApp(whatsConversaAtual, base64);
+    };
+    whatsMediaRecorder.start();
+    aviso.style.display = 'block';
+    btn.textContent = '⏹️';
+  } catch (e) {
+    alert('Não consegui acessar o microfone: ' + e.message);
+  }
+}
+
+async function enviarAudioWhatsApp(telefone, base64Audio) {
+  let ok = true, erro = null;
+  try {
+    const resp = await fetch(`${EVOLUTION_URL}/message/sendWhatsAppAudio/${EVOLUTION_INSTANCE}`, {
+      method: 'POST',
+      headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number: telefone, audio: base64Audio }),
+    });
+    if (!resp.ok) { ok = false; erro = `erro ${resp.status}`; }
+  } catch (e) {
+    ok = false; erro = e.message;
+  }
+  await sb.from('com_whatsapp_mensagens').insert([{
+    telefone, mensagem: '🎤 Mensagem de voz', direcao: 'enviada', origem: 'chat',
+    enviado_por: currentPerfil ? currentPerfil.id : null, status: ok ? 'enviado' : 'erro', erro,
+  }]);
+  if (!ok) alert('Erro ao enviar áudio: ' + erro);
+}
+
 let whatsContatos = [];
+let whatsNomesManual = {};
+async function carregarNomesManualWhats() {
+  const { data } = await sb.from('com_whatsapp_nomes').select('*');
+  whatsNomesManual = {};
+  (data || []).forEach(r => { whatsNomesManual[r.telefone] = r.nome; });
+}
 async function carregarContatosWhats() {
   try {
     const resp = await fetch(`${EVOLUTION_URL}/chat/findContacts/${EVOLUTION_INSTANCE}`, {
@@ -2384,6 +2486,7 @@ async function carregarContatosWhats() {
 
 async function initWhatsApp() {
   await verificarStatusWhats();
+  await carregarNomesManualWhats();
   await carregarContatosWhats();
   await carregarMensagensWhats();
   assinarRealtimeWhats();
