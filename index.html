@@ -197,16 +197,15 @@ form.form-grid button { grid-column: 1 / -1; }
 /* ---- sidebar de navegação ---- */
 .app-shell { display: flex; align-items: stretch; min-height: 100vh; }
 .sidebar {
-  width: 100px; flex-shrink: 0; background: var(--accent); display: flex; flex-direction: column;
-  padding: 16px 0;
+  width: 56px; flex-shrink: 0; background: var(--accent); display: flex; flex-direction: column;
+  padding: 14px 0;
 }
-.sidebar .logo-sidebar { margin: 0 0 16px; text-align: center; }
-.sidebar .logo-sidebar .logo { width: 38px; height: 33px; margin: 0 auto; }
+.sidebar .logo-sidebar { margin: 0 0 14px; text-align: center; }
+.sidebar .logo-sidebar .logo { width: 28px; height: 24px; margin: 0 auto; }
 .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
 .sidebar nav button {
   background: none; border: none; border-left: 3px solid transparent; color: rgba(255,255,255,0.82);
-  text-align: center; padding: 10px 6px; font-size: .76rem; font-weight: 600; cursor: pointer;
-  line-height: 1.25;
+  text-align: center; padding: 10px 0; font-size: 1.25rem; cursor: pointer; line-height: 1;
 }
 .sidebar nav button:hover { background: rgba(255,255,255,0.08); color: white; }
 .sidebar nav button.active { background: rgba(255,255,255,0.16); color: white; border-left-color: white; }
@@ -220,7 +219,7 @@ form.form-grid button { grid-column: 1 / -1; }
   .sidebar .logo-sidebar { margin: 0 10px 0 4px; flex-shrink: 0; }
   .sidebar .logo-sidebar .logo { width: 34px; height: 30px; }
   .sidebar nav { flex-direction: row; }
-  .sidebar nav button { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; padding: 8px 12px; }
+  .sidebar nav button { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; padding: 8px 14px; }
   .sidebar nav button.active { border-left-color: transparent; border-bottom-color: white; }
 }
 
@@ -306,12 +305,12 @@ form.form-grid button { grid-column: 1 / -1; }
     <aside class="sidebar">
       <div class="logo-sidebar"><div class="logo logo-topo" style="filter:brightness(0) invert(1);"></div></div>
       <nav>
-        <button data-tab="dashboard" class="active">Dashboard</button>
-        <button data-tab="crm">CRM</button>
-        <button data-tab="calendario">Calendário</button>
-        <button data-tab="formulario">Formulário</button>
-        <button data-tab="dicas">Dicas</button>
-        <button data-tab="historico">Histórico</button>
+        <button data-tab="dashboard" class="active" title="Dashboard">📊</button>
+        <button data-tab="crm" title="CRM">💼</button>
+        <button data-tab="calendario" title="Calendário">📅</button>
+        <button data-tab="formulario" title="Formulário">📝</button>
+        <button data-tab="dicas" title="Dicas">💡</button>
+        <button data-tab="historico" title="Histórico">🕒</button>
       </nav>
     </aside>
     <div class="main-content">
