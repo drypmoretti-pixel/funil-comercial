@@ -170,6 +170,32 @@ svg.chart { display: block; }
 .tag-toggle.selecionada { opacity: 1; border-color: var(--text-primary); }
 .kanban-card .tags-row { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }
 .tag-stripe { width: 18px; height: 5px; border-radius: 3px; display: inline-block; cursor: default; }
+
+/* ---- whatsapp (chat) ---- */
+.whats-chat-shell { display: flex; height: 74vh; min-height: 420px; }
+.whats-conversas { width: 280px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; background: var(--field-bg); }
+.whats-conversas-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 10px 10px; }
+.whats-lista-conversas { flex: 1; overflow-y: auto; }
+.whats-conversa-item { padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; position: relative; }
+.whats-conversa-item:hover { background: var(--surface-1); }
+.whats-conversa-item.ativa { background: var(--surface-1); border-left: 3px solid var(--accent); }
+.whats-conversa-nome { font-weight: 700; font-size: .86rem; padding-right: 50px; }
+.whats-conversa-preview { font-size: .76rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.whats-conversa-hora { font-size: .66rem; color: var(--muted); position: absolute; top: 10px; right: 12px; }
+.whats-thread { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.whats-thread-header { padding: 14px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: .92rem; }
+.whats-thread-mensagens { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: var(--plane); }
+.whats-bolha { max-width: 72%; padding: 8px 12px; border-radius: 14px; font-size: .87rem; line-height: 1.35; word-wrap: break-word; }
+.whats-bolha.recebida { align-self: flex-start; background: var(--field-bg); border-bottom-left-radius: 3px; }
+.whats-bolha.enviada { align-self: flex-end; background: var(--accent-wash); border-bottom-right-radius: 3px; }
+.whats-bolha-hora { font-size: .62rem; color: var(--muted); margin-top: 3px; text-align: right; }
+.whats-thread-input { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--border); }
+.whats-thread-input input { flex: 1; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); }
+@media (max-width: 700px) {
+  .whats-chat-shell { flex-direction: column; height: auto; }
+  .whats-conversas { width: 100%; border-right: none; border-bottom: 1px solid var(--border); max-height: 220px; }
+  .whats-thread { height: 60vh; }
+}
 .data-venc { color: var(--muted); font-size: .74rem; display: block; margin-top: 1px; }
 .negocio-valor { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; font-size: .88rem; }
 .negocio-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; margin-left: auto; }
@@ -545,28 +571,29 @@ form.form-grid button { grid-column: 1 / -1; }
     </div>
 
     <div class="tab-panel" id="tab-whatsapp">
-      <section class="card">
-        <div class="section-title">
-          <h2>WhatsApp</h2>
-          <div id="whats-status" class="pill">verificando...</div>
+      <section class="card" style="padding:0; overflow:hidden;">
+        <div class="whats-chat-shell">
+          <div class="whats-conversas">
+            <div class="whats-conversas-header">
+              <h2 style="margin:0; font-size:1rem;">WhatsApp</h2>
+              <div id="whats-status" class="pill">verificando...</div>
+            </div>
+            <div style="padding:0 10px 8px;">
+              <input type="text" id="whats-nova-conversa" placeholder="Novo contato (telefone)..."
+                style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);"
+                onkeydown="if(event.key==='Enter'){event.preventDefault(); abrirNovaConversaWhats();}">
+            </div>
+            <div id="whats-lista-conversas" class="whats-lista-conversas"></div>
+          </div>
+          <div class="whats-thread">
+            <div id="whats-thread-header" class="whats-thread-header">Selecione uma conversa</div>
+            <div id="whats-thread-mensagens" class="whats-thread-mensagens"></div>
+            <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
+              <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
+              <button class="btn" type="submit" style="width:auto; padding:9px 18px;">Enviar</button>
+            </form>
+          </div>
         </div>
-        <p class="muted">Manda mensagem direto pro lead. Instância "SDR" (Evolution API).</p>
-
-        <form class="form-grid" onsubmit="return enviarWhatsAppManual(event)">
-          <div class="full">
-            <label>Telefone (com DDD)</label>
-            <input type="text" id="whats-telefone" placeholder="ex: 11987654321" required>
-          </div>
-          <div class="full">
-            <label>Mensagem</label>
-            <textarea id="whats-mensagem" rows="3" required></textarea>
-          </div>
-          <button class="btn" type="submit">Enviar</button>
-        </form>
-        <div id="whats-resultado" class="muted" style="margin-top:8px;"></div>
-
-        <h3 style="margin-top:22px;">Últimas mensagens enviadas</h3>
-        <div class="tabela-wrap"><table class="tabela-leads" id="tabela-whatsapp"></table></div>
       </section>
     </div>
 
@@ -1574,15 +1601,12 @@ function crmSalvarCard(ev) {
 function crmEnviarWhatsApp() {
   const telefone = document.getElementById('crm-pessoa-telefone').value.trim();
   if (!telefone) { alert('Preenche o telefone da pessoa primeiro.'); return; }
-  const nome = document.getElementById('crm-pessoa-nome').value.trim() || document.getElementById('crm-titulo').value.trim();
-  const mensagem = prompt('Mensagem pra ' + (nome || 'o lead') + ':', `Oi ${nome || ''}, tudo bem? Aqui é da Demanda Infinita 🙂`.trim());
-  if (!mensagem) return;
-  (async () => {
-    const card = crmCards.find(c => c.id === crmCardAtualId);
-    const r = await enviarWhatsApp(telefone, mensagem, 'card', crmCardAtualId, card ? card.titulo : nome);
-    alert(r.ok ? 'Mensagem enviada!' : 'Erro ao enviar: ' + r.erro);
-    renderHistoricoWhats();
-  })();
+  const numero = normalizarTelefoneWhats(telefone);
+  if (!numero) { alert('Telefone inválido.'); return; }
+  fecharModal('modal-card-crm');
+  document.querySelector('.sidebar nav button[data-tab="whatsapp"]').click();
+  abrirConversaWhats(numero);
+  setTimeout(() => document.getElementById('whats-thread-texto').focus(), 100);
 }
 
 async function crmMarcarDesfecho(status) {
@@ -2083,7 +2107,7 @@ async function verificarStatusWhats() {
 async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) {
   const numero = normalizarTelefoneWhats(telefone);
   if (!numero) return { ok: false, erro: 'telefone inválido' };
-  let ok = true, erro = null;
+  let ok = true, erro = null, mensagemId = null;
   try {
     const resp = await fetch(`${EVOLUTION_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
       method: 'POST',
@@ -2091,47 +2115,114 @@ async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) 
       body: JSON.stringify({ number: numero, text: mensagem }),
     });
     if (!resp.ok) { ok = false; erro = `erro ${resp.status}`; }
+    else {
+      const data = await resp.json().catch(() => null);
+      const item = Array.isArray(data) ? data[0] : data;
+      mensagemId = (item && item.key && item.key.id) || null;
+    }
   } catch (e) {
     ok = false; erro = e.message;
   }
   await sb.from('com_whatsapp_mensagens').insert([{
-    telefone: numero, mensagem, origem: origem || 'manual', origem_id: origemId || null, origem_nome: origemNome || null,
-    enviado_por: currentPerfil ? currentPerfil.id : null, status: ok ? 'enviado' : 'erro', erro,
+    telefone: numero, mensagem, direcao: 'enviada', origem: origem || 'manual', origem_id: origemId || null, origem_nome: origemNome || null,
+    enviado_por: currentPerfil ? currentPerfil.id : null, status: ok ? 'enviado' : 'erro', erro, mensagem_id: mensagemId,
   }]);
   return { ok, erro };
 }
 
-function enviarWhatsAppManual(ev) {
+// ---------- CHAT ----------
+let whatsMensagens = [];
+let whatsConversaAtual = null;
+let whatsCanalRealtime = null;
+
+async function carregarMensagensWhats() {
+  const { data } = await sb.from('com_whatsapp_mensagens').select('*').order('created_at', { ascending: true }).limit(500);
+  whatsMensagens = data || [];
+  renderListaConversas();
+  if (whatsConversaAtual) renderThreadWhats();
+}
+
+function assinarRealtimeWhats() {
+  if (whatsCanalRealtime) return;
+  try {
+    whatsCanalRealtime = sb.channel('whatsapp-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'com_whatsapp_mensagens' }, (payload) => {
+        whatsMensagens.push(payload.new);
+        renderListaConversas();
+        if (payload.new.telefone === whatsConversaAtual) renderThreadWhats();
+        if (payload.new.direcao === 'recebida') tocarSino();
+      })
+      .subscribe();
+  } catch (e) { /* realtime é um extra — se o navegador/ambiente não suportar, o chat ainda funciona por reload manual */ }
+}
+
+function conversasAgrupadasWhats() {
+  const porTelefone = {};
+  whatsMensagens.forEach(m => { (porTelefone[m.telefone] = porTelefone[m.telefone] || []).push(m); });
+  return Object.entries(porTelefone).map(([telefone, msgs]) => {
+    const ordenadas = [...msgs].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    const ultima = ordenadas[ordenadas.length - 1];
+    const comNome = [...ordenadas].reverse().find(m => m.nome_contato);
+    return { telefone, nome: comNome ? comNome.nome_contato : null, ultima, mensagens: ordenadas };
+  }).sort((a, b) => new Date(b.ultima.created_at) - new Date(a.ultima.created_at));
+}
+
+function renderListaConversas() {
+  const conversas = conversasAgrupadasWhats();
+  document.getElementById('whats-lista-conversas').innerHTML = conversas.length ? conversas.map(c => `
+    <div class="whats-conversa-item ${c.telefone === whatsConversaAtual ? 'ativa' : ''}" onclick="abrirConversaWhats('${c.telefone}')">
+      <div class="whats-conversa-hora">${fmtDataCurta(c.ultima.created_at.slice(0, 10))}</div>
+      <div class="whats-conversa-nome">${c.nome || c.telefone}</div>
+      <div class="whats-conversa-preview">${c.ultima.direcao === 'enviada' ? 'Você: ' : ''}${(c.ultima.mensagem || '').slice(0, 40)}</div>
+    </div>
+  `).join('') : '<div class="empty" style="padding:14px;">Nenhuma conversa ainda.</div>';
+}
+
+function abrirConversaWhats(telefone) {
+  whatsConversaAtual = telefone;
+  renderListaConversas();
+  renderThreadWhats();
+}
+
+function abrirNovaConversaWhats() {
+  const input = document.getElementById('whats-nova-conversa');
+  const numero = normalizarTelefoneWhats(input.value.trim());
+  if (!numero) return;
+  input.value = '';
+  abrirConversaWhats(numero);
+}
+
+function renderThreadWhats() {
+  const c = conversasAgrupadasWhats().find(x => x.telefone === whatsConversaAtual);
+  document.getElementById('whats-thread-header').textContent = (c && c.nome) || whatsConversaAtual;
+  const msgs = c ? c.mensagens : [];
+  const el = document.getElementById('whats-thread-mensagens');
+  el.innerHTML = msgs.length ? msgs.map(m => `
+    <div class="whats-bolha ${m.direcao}">
+      ${m.mensagem}
+      <div class="whats-bolha-hora">${new Date(m.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+    </div>
+  `).join('') : '<div class="empty">Nenhuma mensagem ainda — manda a primeira!</div>';
+  el.scrollTop = el.scrollHeight;
+}
+
+function enviarMensagemThread(ev) {
   ev.preventDefault();
-  const telefone = document.getElementById('whats-telefone').value.trim();
-  const mensagem = document.getElementById('whats-mensagem').value.trim();
-  if (!telefone || !mensagem) return false;
-  const resEl = document.getElementById('whats-resultado');
-  resEl.textContent = 'Enviando...';
+  const input = document.getElementById('whats-thread-texto');
+  const texto = input.value.trim();
+  if (!texto || !whatsConversaAtual) return false;
+  input.value = '';
   (async () => {
-    const r = await enviarWhatsApp(telefone, mensagem, 'manual', null, null);
-    resEl.textContent = r.ok ? 'Mensagem enviada!' : 'Erro ao enviar: ' + r.erro;
-    if (r.ok) {
-      document.getElementById('whats-telefone').value = '';
-      document.getElementById('whats-mensagem').value = '';
-    }
-    await renderHistoricoWhats();
+    const c = conversasAgrupadasWhats().find(x => x.telefone === whatsConversaAtual);
+    await enviarWhatsApp(whatsConversaAtual, texto, 'chat', null, c && c.nome);
   })();
   return false;
 }
 
-async function renderHistoricoWhats() {
-  const { data } = await sb.from('com_whatsapp_mensagens').select('*').order('created_at', { ascending: false }).limit(30);
-  const lista = data || [];
-  document.getElementById('tabela-whatsapp').innerHTML = `
-    <tr><th>Quando</th><th>Telefone</th><th>Mensagem</th><th>Origem</th><th>Status</th></tr>
-    ${lista.map(m => `<tr><td>${new Date(m.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${m.telefone}</td><td>${(m.mensagem||'').slice(0,40)}${m.mensagem && m.mensagem.length>40?'…':''}</td><td>${m.origem_nome || m.origem || '—'}</td><td style="color:${m.status==='enviado'?'var(--good)':'var(--critical)'}">${m.status}</td></tr>`).join('')}
-  ` || '<tr><td class="empty">Nenhuma mensagem enviada ainda.</td></tr>';
-}
-
 async function initWhatsApp() {
   await verificarStatusWhats();
-  await renderHistoricoWhats();
+  await carregarMensagensWhats();
+  assinarRealtimeWhats();
 }
 
 // ---------- CHECKLIST DE PRODUTIVIDADE ----------
