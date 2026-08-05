@@ -184,6 +184,25 @@ form.form-grid button { grid-column: 1 / -1; }
 
 .empty { color: var(--muted); font-size: .85rem; padding: 10px 0; }
 
+/* ---- calendário ---- */
+.cal-cabecalho { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+.cal-cabecalho span { text-align: center; font-size: .72rem; color: var(--muted); font-weight: 600; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-dia {
+  min-height: 74px; border: 1px solid var(--border); border-radius: 8px; padding: 5px;
+  background: var(--field-bg); display: flex; flex-direction: column; gap: 3px;
+}
+.cal-dia.vazio { border: none; background: none; }
+.cal-dia.hoje { border-color: var(--accent); border-width: 2px; }
+.cal-dia-num { font-size: .74rem; color: var(--text-secondary); font-weight: 600; }
+.cal-pill {
+  font-size: .64rem; padding: 1px 5px; border-radius: 999px; font-weight: 600; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; cursor: default;
+}
+.cal-pill.reuniao { background: var(--accent-wash); color: var(--chip-1); background: rgba(42,120,214,0.12); color: var(--chip-1); }
+.cal-pill.venda { background: rgba(12,163,12,0.12); color: var(--good); }
+.cal-legenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: .78rem; color: var(--text-secondary); margin-top: 12px; }
+
 /* ---- modais ---- */
 .modal-overlay {
   display: none; position: fixed; inset: 0; background: rgba(11,11,11,0.45);
@@ -230,6 +249,7 @@ form.form-grid button { grid-column: 1 / -1; }
 
     <div class="tabs">
       <button data-tab="dashboard" class="active">Dashboard</button>
+      <button data-tab="calendario">Calendário</button>
       <button data-tab="dicas">Dicas</button>
       <button data-tab="historico">Histórico</button>
     </div>
@@ -276,6 +296,24 @@ form.form-grid button { grid-column: 1 / -1; }
         <div class="estagios-grid" id="lista-fechados" style="margin-top:10px;"></div>
       </section>
 
+    </div>
+
+    <div class="tab-panel" id="tab-calendario">
+      <section class="card">
+        <h2>Calendário de <span id="mes-label-3"></span></h2>
+        <p class="muted">Dia da reunião (marcado pela SDR) e dia da venda (marcado pelo vendedor) — atualiza sozinho.</p>
+        <div class="cal-cabecalho">
+          <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+        </div>
+        <div class="cal-grid" id="calendario-grid"></div>
+        <div class="cal-legenda">
+          <span>📅 reunião agendada</span>
+          <span>✅ reunião realizada</span>
+          <span>🚫 no-show</span>
+          <span>🔁 remarcada</span>
+          <span>💰 venda fechada</span>
+        </div>
+      </section>
     </div>
 
     <div class="tab-panel" id="tab-dicas">
@@ -499,6 +537,7 @@ async function carregarDadosBase(userId) {
 async function carregarTudo() {
   document.getElementById('mes-label').textContent = fmtMesLabel(mesAtual);
   document.getElementById('mes-label-2').textContent = fmtMesLabel(mesAtual).toLowerCase();
+  document.getElementById('mes-label-3').textContent = fmtMesLabel(mesAtual).toLowerCase();
   const { data } = await sb.from('com_negocios').select('*').order('data_agendada', { ascending: true });
   negocios = data || [];
   renderTudo();
@@ -509,6 +548,7 @@ function renderTudo() {
   renderFunil();
   renderAndamento();
   renderFechados();
+  renderCalendario();
   renderDicas();
   renderHistorico();
 }
@@ -517,6 +557,7 @@ function mudaMes(delta) {
   mesAtual = new Date(mesAtual.getFullYear(), mesAtual.getMonth() + delta, 1);
   document.getElementById('mes-label').textContent = fmtMesLabel(mesAtual);
   document.getElementById('mes-label-2').textContent = fmtMesLabel(mesAtual).toLowerCase();
+  document.getElementById('mes-label-3').textContent = fmtMesLabel(mesAtual).toLowerCase();
   renderTudo();
 }
 
@@ -813,6 +854,46 @@ function salvarEdicao(ev) {
     await carregarTudo();
   })();
   return false;
+}
+
+// ---------- CALENDÁRIO ----------
+function iconeDominante(reunioesDia) {
+  if (reunioesDia.some(n => n.status === 'no_show')) return '🚫';
+  if (reunioesDia.some(n => ['realizada','proposta','venda','perdida'].includes(n.status))) return '✅';
+  if (reunioesDia.some(n => n.status === 'remarcada')) return '🔁';
+  return '📅';
+}
+function renderCalendario() {
+  const ano = mesAtual.getFullYear(), mes = mesAtual.getMonth();
+  const primeiroDiaSemana = new Date(ano, mes, 1).getDay();
+  const totalDias = new Date(ano, mes + 1, 0).getDate();
+  const hoje = hojeStr();
+
+  let html = '';
+  for (let i = 0; i < primeiroDiaSemana; i++) html += `<div class="cal-dia vazio"></div>`;
+
+  for (let dia = 1; dia <= totalDias; dia++) {
+    const dataStr = `${ano}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+    const reunioesDia = negocios.filter(n => n.data_agendada === dataStr);
+    const vendasDia = negocios.filter(n => n.data_venda === dataStr);
+
+    let pills = '';
+    if (reunioesDia.length) {
+      const titulo = reunioesDia.map(n => `${n.cliente_nome}${n.hora_agendada ? ' ' + n.hora_agendada.slice(0,5) : ''} (${STATUS_META[n.status]?.label || n.status})`).join('\n');
+      pills += `<div class="cal-pill reuniao" title="${titulo.replace(/"/g,'&quot;')}">${iconeDominante(reunioesDia)} ${reunioesDia.length}</div>`;
+    }
+    if (vendasDia.length) {
+      const totalVenda = vendasDia.reduce((s,n) => s + Number(n.valor_venda || 0), 0);
+      const titulo = vendasDia.map(n => `${n.cliente_nome}: ${fmtBRL(n.valor_venda)}`).join('\n');
+      pills += `<div class="cal-pill venda" title="${titulo.replace(/"/g,'&quot;')}">💰 ${fmtBRL(totalVenda)}</div>`;
+    }
+
+    html += `<div class="cal-dia ${dataStr === hoje ? 'hoje' : ''}">
+      <div class="cal-dia-num">${dia}</div>
+      ${pills}
+    </div>`;
+  }
+  document.getElementById('calendario-grid').innerHTML = html;
 }
 
 // ---------- DICAS (regras) ----------
