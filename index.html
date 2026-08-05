@@ -372,24 +372,30 @@ form.form-grid button { grid-column: 1 / -1; }
 
     <div class="tab-panel" id="tab-formulario">
       <section class="card">
-        <div class="section-title">
-          <h2>Geração de demanda (Tally)</h2>
-          <button class="add-toggle" onclick="toggleForm('tally-config')">⚙️ Formulários</button>
-        </div>
-        <p class="muted">Conecta sozinho. Escolha abaixo quais formulários contam como geração de demanda.</p>
-        <div class="form-collapse" id="tally-config">
-          <div id="tally-forms-wrap" style="margin-top:4px;">
-            <label style="font-size:.78rem; color:var(--text-secondary); display:block; margin-bottom:6px;">Quais formulários contam como geração de demanda?</label>
+        <h2>Geração de demanda (Tally)</h2>
+        <p class="muted">Quais formulários contam como geração de demanda?</p>
+        <div id="tally-forms-wrap" style="margin-top:4px;">
+          <div style="display:flex; gap:8px; margin-bottom:8px;">
             <input type="text" id="tally-filtro" placeholder="filtrar por nome..." oninput="renderListaFormularios()"
-              style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); margin-bottom:8px;">
-            <div class="form-lista" id="tally-forms-lista"></div>
-            <button class="btn" style="margin-top:10px;" onclick="salvarSelecaoFormularios()">Salvar seleção e atualizar</button>
+              style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
+            <button class="add-toggle" onclick="selecionarTodosFormularios(true)">Marcar todos</button>
+            <button class="add-toggle" onclick="selecionarTodosFormularios(false)">Desmarcar todos</button>
           </div>
+          <div class="form-lista" id="tally-forms-lista"></div>
+          <button class="btn" style="margin-top:10px;" onclick="salvarSelecaoFormularios()">Salvar seleção e atualizar</button>
         </div>
         <div id="tally-vazio" class="empty">Carregando formulários do Tally...</div>
-        <div id="tally-dashboard" style="display:none; margin-top:16px;">
+        <div id="tally-dashboard" style="display:none; margin-top:20px;">
+          <div class="section-title">
+            <h3 style="margin:0;">Métricas do formulário</h3>
+            <div class="month-nav">
+              <button onclick="mudaMesTally(-1)">‹</button>
+              <div id="tally-mes-label"></div>
+              <button onclick="mudaMesTally(1)">›</button>
+            </div>
+          </div>
           <div class="tiles" id="tally-tiles"></div>
-          <h3>Leads por dia — <span id="tally-mes-label"></span></h3>
+          <h3>Leads por dia</h3>
           <div class="chart-wrap"><svg id="chart-leads" class="chart"></svg></div>
           <h3 style="margin-top:22px;">Últimos leads</h3>
           <div class="tabela-wrap"><table class="tabela-leads" id="tabela-leads"></table></div>
@@ -1126,8 +1132,7 @@ async function carregarListaFormularios() {
     if (tallySelecionados.length) {
       await carregarSubmissionsSelecionadas();
     } else {
-      document.getElementById('tally-config').classList.add('open');
-      document.getElementById('tally-vazio').textContent = 'Marque abaixo quais formulários contam como geração de demanda.';
+      document.getElementById('tally-vazio').textContent = 'Marque acima quais formulários contam como geração de demanda.';
       document.getElementById('tally-vazio').style.display = 'block';
     }
   } catch (e) {
@@ -1146,6 +1151,10 @@ function renderListaFormularios() {
       <span class="sub">${f.submissoes} envio(s)</span>
     </label>
   `).join('') || '<div class="empty">Nenhum formulário com esse nome.</div>';
+}
+
+function selecionarTodosFormularios(marcar) {
+  document.querySelectorAll('#tally-forms-lista input[type=checkbox]').forEach(el => { el.checked = marcar; });
 }
 
 async function salvarSelecaoFormularios() {
@@ -1215,17 +1224,23 @@ async function carregarSubmissionsSelecionadas() {
   }
 }
 
+let tallyMesAtual = primeiroDiaMes(new Date());
+function mudaMesTally(delta) {
+  tallyMesAtual = new Date(tallyMesAtual.getFullYear(), tallyMesAtual.getMonth() + delta, 1);
+  renderFormularioDashboard();
+}
+
 function renderFormularioDashboard() {
   if (!tallySubmissions.length && !tallySelecionados.length) return;
-  const mesRef = fmtMesRef(mesAtual);
+  const mesRef = fmtMesRef(tallyMesAtual);
   const hoje = hojeStr();
   const leadsHoje = tallySubmissions.filter(s => s.data === hoje).length;
   const leadsMes = tallySubmissions.filter(s => s.data.startsWith(mesRef));
   const ehMesAtual = mesRef === fmtMesRef(new Date());
-  const diasBase = ehMesAtual ? new Date().getDate() : new Date(mesAtual.getFullYear(), mesAtual.getMonth()+1, 0).getDate();
+  const diasBase = ehMesAtual ? new Date().getDate() : new Date(tallyMesAtual.getFullYear(), tallyMesAtual.getMonth()+1, 0).getDate();
   const mediaDia = leadsMes.length / Math.max(1, diasBase);
 
-  document.getElementById('tally-mes-label').textContent = fmtMesLabel(mesAtual).toLowerCase();
+  document.getElementById('tally-mes-label').textContent = fmtMesLabel(tallyMesAtual).toLowerCase();
   document.getElementById('tally-tiles').innerHTML = `
     <div class="tile"><div class="label">Leads hoje</div><div class="value">${leadsHoje}</div></div>
     <div class="tile"><div class="label">Leads no mês</div><div class="value">${leadsMes.length}</div></div>
