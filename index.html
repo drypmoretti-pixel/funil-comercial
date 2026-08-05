@@ -258,8 +258,8 @@ form.form-grid button { grid-column: 1 / -1; }
             <input type="date" id="neg-data" required>
           </div>
           <div>
-            <label>Hora (opcional)</label>
-            <input type="time" id="neg-hora">
+            <label>Horário da reunião</label>
+            <input type="time" id="neg-hora" required>
           </div>
           <div class="full">
             <label>SDR responsável</label>
@@ -569,7 +569,6 @@ function renderFunil() {
   const etapas = [
     { nome: 'Agendadas', count: m.agendadas.length, cor: 'var(--chip-1)' },
     { nome: 'Realizadas', count: m.realizadas.length, cor: 'var(--chip-3)' },
-    { nome: 'Propostas', count: m.propostas.length, cor: 'var(--chip-4)' },
     { nome: 'Vendas', count: m.vendas.length, cor: 'var(--good)' },
   ];
   const base = etapas[0].count || 1;
@@ -606,7 +605,7 @@ function botaoPrincipal(n) {
     case 'agendada':
       return `<button class="btn-baixa" onclick="marcarRealizada(${n.id})">Marcar realizada</button>`;
     case 'realizada':
-      return `<button class="btn-baixa" onclick="abrirModalEstagio(${n.id}, 'proposta')">Lançar proposta</button>`;
+      return `<button class="btn-baixa" onclick="abrirModalEstagio(${n.id}, 'venda')">Fechar venda</button>`;
     case 'proposta':
       return `<button class="btn-baixa" onclick="abrirModalEstagio(${n.id}, 'venda')">Fechar venda</button>`;
     case 'no_show':
@@ -750,7 +749,7 @@ function criarNegocio(ev) {
   const data_agendada = document.getElementById('neg-data').value;
   const hora_agendada = document.getElementById('neg-hora').value || null;
   const sdr_id = document.getElementById('neg-sdr').value || null;
-  if (!cliente_nome || !data_agendada) return false;
+  if (!cliente_nome || !data_agendada || !hora_agendada) return false;
   (async () => {
     await sb.from('com_negocios').insert([{ cliente_nome, data_agendada, hora_agendada, sdr_id, status: 'agendada' }]);
     document.getElementById('neg-cliente').value = '';
@@ -846,8 +845,7 @@ function renderDicas() {
   // 3. gargalo do funil
   const etapas = [
     { nome: 'agendada → realizada', de: m.agendadas.length, para: m.realizadas.length },
-    { nome: 'realizada → proposta', de: m.realizadas.length, para: m.propostas.length },
-    { nome: 'proposta → venda', de: m.propostas.length, para: m.vendas.length },
+    { nome: 'realizada → venda', de: m.realizadas.length, para: m.vendas.length },
   ].filter(e => e.de > 0);
   if (etapas.length) {
     const pior = etapas.map(e => ({...e, pct: e.para/e.de})).sort((a,b) => a.pct-b.pct)[0];
