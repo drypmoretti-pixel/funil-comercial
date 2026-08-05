@@ -203,6 +203,23 @@ form.form-grid button { grid-column: 1 / -1; }
 .cal-pill.venda { background: rgba(12,163,12,0.12); color: var(--good); }
 .cal-legenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: .78rem; color: var(--text-secondary); margin-top: 12px; }
 
+/* ---- kanban (CRM) ---- */
+.kanban { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+.kanban-coluna {
+  background: var(--field-bg); border: 1px solid var(--border); border-radius: 12px;
+  padding: 10px; min-width: 220px; max-width: 240px; flex-shrink: 0; transition: outline .1s;
+}
+.kanban-coluna.dragover { outline: 2px dashed var(--accent); outline-offset: -2px; }
+.kanban-coluna-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: .82rem; font-weight: 700; gap: 6px; }
+.kanban-soma { font-size: .72rem; color: var(--text-secondary); margin: -4px 0 8px; }
+.kanban-card {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+  padding: 8px 10px; margin-bottom: 8px; cursor: grab; box-shadow: 0 1px 2px rgba(11,11,11,0.06);
+}
+.kanban-card.arrastando { opacity: .4; }
+.kanban-card .cliente { font-weight: 600; font-size: .84rem; }
+.kanban-card .info { font-size: .7rem; color: var(--text-secondary); margin-top: 2px; }
+
 /* ---- modais ---- */
 .modal-overlay {
   display: none; position: fixed; inset: 0; background: rgba(11,11,11,0.45);
@@ -249,6 +266,7 @@ form.form-grid button { grid-column: 1 / -1; }
 
     <div class="tabs">
       <button data-tab="dashboard" class="active">Dashboard</button>
+      <button data-tab="crm">CRM</button>
       <button data-tab="calendario">Calendário</button>
       <button data-tab="dicas">Dicas</button>
       <button data-tab="historico">Histórico</button>
@@ -296,6 +314,17 @@ form.form-grid button { grid-column: 1 / -1; }
         <div class="estagios-grid" id="lista-fechados" style="margin-top:10px;"></div>
       </section>
 
+    </div>
+
+    <div class="tab-panel" id="tab-crm">
+      <section class="card">
+        <div class="section-title">
+          <h2>CRM (kanban)</h2>
+          <button class="add-toggle" onclick="abrirModalImport()">Importar CSV em massa</button>
+        </div>
+        <p class="muted">Arraste os cards entre as colunas pra mudar o estágio (independe do mês selecionado). Pra criar um negócio novo, use "+ Novo negócio" na aba Dashboard.</p>
+        <div class="kanban" id="kanban-board"></div>
+      </section>
     </div>
 
     <div class="tab-panel" id="tab-calendario">
@@ -446,6 +475,23 @@ form.form-grid button { grid-column: 1 / -1; }
   </div>
 </div>
 
+<!-- modal de importação em massa -->
+<div id="modal-import" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-import')">
+  <div class="modal-card" style="max-width:540px; text-align:left;">
+    <h2>Importar negócios em massa (CSV)</h2>
+    <p class="muted">Primeira linha = cabeçalho. Colunas aceitas: <code>cliente_nome, data_agendada, hora_agendada, status, data_realizacao, valor_venda, data_venda, valor_faturado, data_faturamento, sdr_nome, vendedor_nome</code>.
+    Só <b>cliente_nome</b> e <b>data_agendada</b> (formato AAAA-MM-DD) são obrigatórios — o resto pode ficar em branco. <b>status</b> vazio vira "agendada". <b>sdr_nome</b>/<b>vendedor_nome</b> precisam bater com o nome cadastrado (Dry, Bruno, Igor...).</p>
+    <input type="file" id="import-arquivo" accept=".csv,text/csv" onchange="lerArquivoCSV(event)">
+    <p class="muted" style="margin: 10px 0 4px;">ou cole o CSV direto aqui:</p>
+    <textarea id="import-texto" rows="8" style="width:100%; font-family:monospace; font-size:.76rem; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);"></textarea>
+    <div id="import-resultado" class="muted" style="margin-top:10px;"></div>
+    <div style="display:flex; gap:8px; margin-top:14px;">
+      <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-import')">Fechar</button>
+      <button type="button" class="btn" onclick="importarCSV()">Importar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPA_URL = 'https://okolawlvmfyxzvnnpvtv.supabase.co';
 const SUPA_KEY = 'sb_publishable_IsQdhzWIou3tBX9qxak1VQ_m-wEHCFZ';
@@ -547,6 +593,7 @@ function renderTudo() {
   renderFunil();
   renderAndamento();
   renderFechados();
+  renderKanban();
   renderCalendario();
   renderDicas();
   renderHistorico();
@@ -853,6 +900,146 @@ function salvarEdicao(ev) {
     await carregarTudo();
   })();
   return false;
+}
+
+// ---------- CRM (KANBAN) ----------
+const ORDEM_KANBAN = ['agendada','realizada','proposta','no_show','remarcada','venda','perdida'];
+function renderKanban() {
+  const el = document.getElementById('kanban-board');
+  el.innerHTML = ORDEM_KANBAN.map(status => {
+    const itens = negocios.filter(n => n.status === status)
+      .sort((a,b) => (b.data_agendada||'').localeCompare(a.data_agendada||''));
+    const meta = STATUS_META[status];
+    const soma = itens.reduce((s,n) => s + Number(n.valor_venda || n.valor_proposta || 0), 0);
+    return `
+      <div class="kanban-coluna" ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropCard(event, '${status}')">
+        <div class="kanban-coluna-header"><span>${meta.icone} ${meta.label}</span><span class="muted">${itens.length}</span></div>
+        ${soma ? `<div class="kanban-soma">${fmtBRL(soma)}</div>` : ''}
+        ${itens.map(cartaoKanban).join('') || '<div class="empty" style="padding:6px 0;">vazio</div>'}
+      </div>
+    `;
+  }).join('');
+}
+function cartaoKanban(n) {
+  const sdr = perfis.find(p => p.id === n.sdr_id);
+  const vend = perfis.find(p => p.id === n.vendedor_id);
+  const valor = n.status === 'venda' ? fmtBRL(n.valor_venda) : (n.status === 'proposta' ? fmtBRL(n.valor_proposta) : '');
+  const responsaveis = [sdr && `SDR: ${sdr.nome}`, vend && `Vend: ${vend.nome}`].filter(Boolean).join(' · ');
+  return `
+    <div class="kanban-card" draggable="true" ondragstart="dragStart(event, ${n.id})" ondragend="event.target.classList.remove('arrastando')" onclick="abrirEdicao(${n.id})">
+      <div class="cliente">${n.cliente_nome}</div>
+      <div class="info">${fmtDataCurta(n.data_agendada)}${n.hora_agendada ? ' ' + n.hora_agendada.slice(0,5) : ''}${valor ? ' · ' + valor : ''}</div>
+      ${responsaveis ? `<div class="info">${responsaveis}</div>` : ''}
+    </div>
+  `;
+}
+function dragStart(ev, id) {
+  ev.dataTransfer.setData('text/plain', id);
+  ev.target.classList.add('arrastando');
+}
+function dropCard(ev, novoStatus) {
+  ev.preventDefault();
+  ev.currentTarget.classList.remove('dragover');
+  const id = parseInt(ev.dataTransfer.getData('text/plain'));
+  moverEstagio(id, novoStatus);
+}
+function moverEstagio(id, novoStatus) {
+  const n = negocios.find(x => x.id === id);
+  if (!n || n.status === novoStatus) return;
+  if (novoStatus === 'venda') { abrirModalEstagio(id, 'venda'); return; }
+  const patch = { status: novoStatus };
+  if (novoStatus === 'realizada' && !n.data_realizacao) patch.data_realizacao = hojeStr();
+  if (novoStatus === 'perdida' && !n.data_perdida) patch.data_perdida = hojeStr();
+  (async () => { await sb.from('com_negocios').update(patch).eq('id', id); await carregarTudo(); })();
+}
+
+// ---------- IMPORTAÇÃO EM MASSA (CSV) ----------
+function abrirModalImport() {
+  document.getElementById('import-texto').value = '';
+  document.getElementById('import-arquivo').value = '';
+  document.getElementById('import-resultado').innerHTML = '';
+  document.getElementById('modal-import').classList.add('open');
+}
+function lerArquivoCSV(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('import-texto').value = e.target.result; };
+  reader.readAsText(file, 'UTF-8');
+}
+function parseCSV(texto) {
+  const linhas = texto.split(/\r?\n/).filter(l => l.trim().length);
+  if (!linhas.length) return [];
+  const parseLinha = (linha) => {
+    const campos = [];
+    let atual = '', dentroAspas = false;
+    for (let i = 0; i < linha.length; i++) {
+      const c = linha[i];
+      if (c === '"') dentroAspas = !dentroAspas;
+      else if (c === ',' && !dentroAspas) { campos.push(atual); atual = ''; }
+      else atual += c;
+    }
+    campos.push(atual);
+    return campos.map(c => c.trim());
+  };
+  const cabecalho = parseLinha(linhas[0]).map(h => h.toLowerCase());
+  return linhas.slice(1).map(linha => {
+    const valores = parseLinha(linha);
+    const obj = {};
+    cabecalho.forEach((h, i) => obj[h] = valores[i] ?? '');
+    return obj;
+  });
+}
+function importarCSV() {
+  const texto = document.getElementById('import-texto').value.trim();
+  const resultEl = document.getElementById('import-resultado');
+  if (!texto) { resultEl.textContent = 'Cole ou selecione um CSV primeiro.'; return; }
+  const linhas = parseCSV(texto);
+  const statusValidos = Object.keys(STATUS_META);
+  const erros = [];
+  const registros = [];
+  linhas.forEach((l, i) => {
+    const numLinha = i + 2;
+    const cliente_nome = (l.cliente_nome || '').trim();
+    const data_agendada = (l.data_agendada || '').trim();
+    if (!cliente_nome || !/^\d{4}-\d{2}-\d{2}$/.test(data_agendada)) {
+      erros.push(`Linha ${numLinha}: cliente_nome ou data_agendada inválido/faltando.`);
+      return;
+    }
+    let status = (l.status || 'agendada').trim().toLowerCase();
+    if (!statusValidos.includes(status)) status = 'agendada';
+    const sdr = perfis.find(p => p.nome.toLowerCase() === (l.sdr_nome || '').trim().toLowerCase());
+    const vend = perfis.find(p => p.nome.toLowerCase() === (l.vendedor_nome || '').trim().toLowerCase());
+    registros.push({
+      cliente_nome, data_agendada, status,
+      hora_agendada: (l.hora_agendada || '').trim() || null,
+      data_realizacao: (l.data_realizacao || '').trim() || null,
+      valor_venda: parseFloat(l.valor_venda) || null,
+      data_venda: (l.data_venda || '').trim() || null,
+      valor_faturado: parseFloat(l.valor_faturado) || null,
+      data_faturamento: (l.data_faturamento || '').trim() || null,
+      sdr_id: sdr ? sdr.id : null,
+      vendedor_id: vend ? vend.id : null,
+    });
+  });
+  if (!registros.length) {
+    resultEl.innerHTML = 'Nenhum registro válido.' + (erros.length ? '<br>' + erros.slice(0,10).join('<br>') : '');
+    return;
+  }
+  (async () => {
+    resultEl.textContent = `Importando ${registros.length} negócio(s)...`;
+    const tamanhoLote = 200;
+    let importados = 0;
+    for (let i = 0; i < registros.length; i += tamanhoLote) {
+      const lote = registros.slice(i, i + tamanhoLote);
+      const { error } = await sb.from('com_negocios').insert(lote);
+      if (error) { erros.push(`Linhas do lote ${i+2}-${i+1+lote.length}: ${error.message}`); continue; }
+      importados += lote.length;
+    }
+    resultEl.innerHTML = `${importados} negócio(s) importado(s) com sucesso.` +
+      (erros.length ? `<br>${erros.length} erro(s):<br>${erros.slice(0,10).join('<br>')}` : '');
+    await carregarTudo();
+  })();
 }
 
 // ---------- CALENDÁRIO ----------
