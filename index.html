@@ -163,7 +163,8 @@ svg.chart { display: block; }
   border: 2px solid transparent; opacity: .45; color: white; user-select: none;
 }
 .tag-toggle.selecionada { opacity: 1; border-color: var(--text-primary); }
-.kanban-card .tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.kanban-card .tags-row { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }
+.tag-stripe { width: 18px; height: 5px; border-radius: 3px; display: inline-block; cursor: default; }
 .data-venc { color: var(--muted); font-size: .74rem; display: block; margin-top: 1px; }
 .negocio-valor { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; font-size: .88rem; }
 .negocio-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; margin-left: auto; }
@@ -245,21 +246,21 @@ form.form-grid button { grid-column: 1 / -1; }
 .cal-legenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: .78rem; color: var(--text-secondary); margin-top: 12px; }
 
 /* ---- kanban (CRM) ---- */
-.kanban { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+.kanban { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; }
 .kanban-coluna {
-  background: var(--field-bg); border: 1px solid var(--border); border-radius: 12px;
-  padding: 10px; min-width: 220px; max-width: 240px; flex-shrink: 0; transition: outline .1s;
+  background: var(--field-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 8px; min-width: 190px; max-width: 210px; flex-shrink: 0; transition: outline .1s;
 }
 .kanban-coluna.dragover { outline: 2px dashed var(--accent); outline-offset: -2px; }
-.kanban-coluna-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: .82rem; font-weight: 700; gap: 6px; }
-.kanban-soma { font-size: .72rem; color: var(--text-secondary); margin: -4px 0 8px; }
+.kanban-coluna-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: .78rem; font-weight: 700; gap: 6px; }
+.kanban-soma { font-size: .68rem; color: var(--text-secondary); margin: -2px 0 6px; }
 .kanban-card {
-  background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
-  padding: 8px 10px; margin-bottom: 8px; cursor: grab; box-shadow: 0 1px 2px rgba(11,11,11,0.06);
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;
+  padding: 6px 8px; margin-bottom: 6px; cursor: grab; box-shadow: 0 1px 2px rgba(11,11,11,0.06);
 }
 .kanban-card.arrastando { opacity: .4; }
-.kanban-card .cliente { font-weight: 600; font-size: .84rem; }
-.kanban-card .info { font-size: .7rem; color: var(--text-secondary); margin-top: 2px; }
+.kanban-card .cliente { font-weight: 600; font-size: .78rem; line-height: 1.3; }
+.kanban-card .info { font-size: .68rem; color: var(--text-secondary); margin-top: 1px; line-height: 1.3; }
 
 /* ---- formulário (Tally) ---- */
 .form-lista { max-height: 220px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: var(--field-bg); }
@@ -393,7 +394,7 @@ form.form-grid button { grid-column: 1 / -1; }
           <select id="crm-funil-select" onchange="crmMudaFunil()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600;"></select>
           <button class="btn" style="width:auto; padding:8px 14px;" onclick="crmAbrirNovoCard(null)">+ Novo card</button>
         </div>
-        <p class="muted">Arraste os cards entre as colunas pra mudar o estágio. Clique num card pra ver detalhes, campos personalizados e histórico.</p>
+        <p class="muted" style="font-size:.74rem; margin-bottom:8px;">Arraste pra mudar o estágio · clique pra ver detalhes.</p>
         <div class="kanban" id="crm-board"></div>
       </section>
     </div>
@@ -1224,7 +1225,7 @@ function renderCRMBoard() {
         <div class="kanban-coluna-header"><span>${estagio.nome}</span><span class="muted">${itens.length}</span></div>
         ${soma ? `<div class="kanban-soma">${fmtBRL(soma)}</div>` : ''}
         ${itens.map(crmCartao).join('') || '<div class="empty" style="padding:6px 0;">vazio</div>'}
-        <button class="add-toggle" style="width:100%; margin-top:6px;" onclick="crmAbrirNovoCard(${estagio.id})">+ card</button>
+        <button class="add-toggle" style="width:100%; margin-top:4px; padding:4px; font-size:.7rem;" onclick="crmAbrirNovoCard(${estagio.id})">+ card</button>
       </div>
     `;
   }).join('');
@@ -1235,13 +1236,13 @@ function crmCartao(c) {
   const pill = c.status_negocio === 'ganho' ? '<span class="pill" style="background:var(--accent-wash); color:var(--good);">ganho</span>'
     : c.status_negocio === 'perdido' ? '<span class="pill retro">perdido</span>' : '';
   const tagsDoCard = (crmCardTagsMap[c.id] || []).map(tid => crmTags.find(t => t.id === tid)).filter(Boolean);
-  const tagsHtml = tagsDoCard.length ? `<div class="tags-row">${tagsDoCard.map(t => `<span class="tag-pill" style="background:${t.cor}">${t.nome}</span>`).join('')}</div>` : '';
+  const tagsHtml = tagsDoCard.length ? `<div class="tags-row">${tagsDoCard.map(t => `<span class="tag-stripe" style="background:${t.cor}" title="${t.nome}"></span>`).join('')}</div>` : '';
+  const linha2 = [c.pessoa_nome, resp && resp.nome].filter(Boolean).join(' · ');
   return `
     <div class="kanban-card" draggable="true" ondragstart="crmDragStart(event, ${c.id})" ondragend="event.target.classList.remove('arrastando')" onclick="crmAbrirCard(${c.id})">
-      <div class="cliente">${c.titulo} ${pill}</div>
-      <div class="info">${c.pessoa_nome || ''}${c.valor ? (c.pessoa_nome ? ' · ' : '') + fmtBRL(c.valor) : ''}</div>
-      ${resp ? `<div class="info">${resp.nome}</div>` : ''}
       ${tagsHtml}
+      <div class="cliente">${c.titulo} ${pill}</div>
+      <div class="info">${linha2}${c.valor ? (linha2 ? ' · ' : '') + fmtBRL(c.valor) : ''}</div>
     </div>
   `;
 }
