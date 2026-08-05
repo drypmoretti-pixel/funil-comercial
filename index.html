@@ -191,7 +191,13 @@ svg.chart { display: block; }
 .whats-thread { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .whats-thread-header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
 .whats-thread-header-nome { font-weight: 700; font-size: .92rem; }
-.whats-thread-tags { display: flex; flex-wrap: wrap; gap: 5px; padding: 8px 14px; border-bottom: 1px solid var(--border); align-items: center; }
+.whats-thread-tags { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 14px; border-bottom: 1px solid var(--border); align-items: center; }
+.whats-tags-popover {
+  position: absolute; top: 26px; left: 0; z-index: 20; background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px; box-shadow: 0 6px 20px rgba(11,11,11,0.18); width: 230px; max-height: 200px;
+  overflow-y: auto; flex-wrap: wrap; gap: 5px;
+}
+.whats-tag-atual { font-size: .7rem; padding: 2px 8px; border-radius: 999px; font-weight: 600; color: white; cursor: pointer; white-space: nowrap; }
 .whats-thread-mensagens { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: var(--plane); }
 .whats-bolha { max-width: 72%; padding: 8px 12px; border-radius: 14px; font-size: .87rem; line-height: 1.35; word-wrap: break-word; }
 .whats-bolha.recebida { align-self: flex-start; background: var(--field-bg); border-bottom-left-radius: 3px; }
@@ -598,7 +604,13 @@ form.form-grid button { grid-column: 1 / -1; }
           </div>
           <div class="whats-thread">
             <div id="whats-thread-header" class="whats-thread-header"><span class="muted">Selecione uma conversa</span></div>
-            <div id="whats-thread-tags" class="whats-thread-tags" style="display:none;"></div>
+            <div id="whats-thread-tags" class="whats-thread-tags" style="display:none;">
+              <div id="whats-tags-atuais" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;"></div>
+              <div style="position:relative;">
+                <button type="button" class="add-toggle" style="padding:2px 9px; font-size:.7rem;" onclick="toggleTagsPopoverWhats(event)">+ tag</button>
+                <div id="whats-tags-popover" class="whats-tags-popover" style="display:none;"></div>
+              </div>
+            </div>
             <div id="whats-thread-mensagens" class="whats-thread-mensagens"></div>
             <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
               <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
@@ -2284,10 +2296,32 @@ function renderThreadTagsWhats() {
   if (!whatsConversaAtual) { el.style.display = 'none'; return; }
   el.style.display = 'flex';
   const selecionadas = whatsConversaTagsMap[whatsConversaAtual] || [];
-  el.innerHTML = crmTags.length ? crmTags.map(t => `
-    <span class="tag-toggle ${selecionadas.includes(t.id) ? 'selecionada' : ''}" style="background:${t.cor}" onclick="toggleTagConversaWhats(${t.id})">${t.nome}</span>
-  `).join('') : '<span class="muted" style="font-size:.74rem;">Nenhuma tag criada — use "⚙️ Tags".</span>';
+  const tagsAtuais = selecionadas.map(tid => crmTags.find(t => t.id === tid)).filter(Boolean);
+  document.getElementById('whats-tags-atuais').innerHTML = tagsAtuais.length
+    ? tagsAtuais.map(t => `<span class="whats-tag-atual" style="background:${t.cor}" onclick="toggleTagConversaWhats(${t.id})" title="Clique pra remover">${t.nome} ✕</span>`).join('')
+    : '<span class="muted" style="font-size:.74rem;">Sem tags</span>';
+  renderTagsPopoverWhats();
 }
+
+function renderTagsPopoverWhats() {
+  const pop = document.getElementById('whats-tags-popover');
+  const selecionadas = whatsConversaTagsMap[whatsConversaAtual] || [];
+  pop.innerHTML = crmTags.length ? crmTags.map(t => `
+    <span class="tag-toggle ${selecionadas.includes(t.id) ? 'selecionada' : ''}" style="background:${t.cor}" onclick="toggleTagConversaWhats(${t.id})">${t.nome}</span>
+  `).join('') : '<span class="muted" style="font-size:.72rem;">Nenhuma tag criada — use "⚙️ Tags".</span>';
+}
+
+function toggleTagsPopoverWhats(ev) {
+  ev.stopPropagation();
+  const pop = document.getElementById('whats-tags-popover');
+  pop.style.display = pop.style.display === 'none' ? 'flex' : 'none';
+}
+document.addEventListener('click', (ev) => {
+  const pop = document.getElementById('whats-tags-popover');
+  if (pop && pop.style.display !== 'none' && !pop.contains(ev.target) && ev.target.getAttribute('onclick') !== 'toggleTagsPopoverWhats(event)') {
+    pop.style.display = 'none';
+  }
+});
 
 async function toggleTagConversaWhats(tagId) {
   if (!whatsConversaAtual) return;
