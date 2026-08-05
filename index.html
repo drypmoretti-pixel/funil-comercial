@@ -341,6 +341,7 @@ form.form-grid button { grid-column: 1 / -1; }
         <button data-tab="dicas" title="Dicas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
         <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
         <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
+        <button data-tab="whatsapp" title="WhatsApp"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></button>
       </nav>
     </aside>
     <div class="main-content">
@@ -543,6 +544,32 @@ form.form-grid button { grid-column: 1 / -1; }
       </section>
     </div>
 
+    <div class="tab-panel" id="tab-whatsapp">
+      <section class="card">
+        <div class="section-title">
+          <h2>WhatsApp</h2>
+          <div id="whats-status" class="pill">verificando...</div>
+        </div>
+        <p class="muted">Manda mensagem direto pro lead. Instância "SDR" (Evolution API).</p>
+
+        <form class="form-grid" onsubmit="return enviarWhatsAppManual(event)">
+          <div class="full">
+            <label>Telefone (com DDD)</label>
+            <input type="text" id="whats-telefone" placeholder="ex: 11987654321" required>
+          </div>
+          <div class="full">
+            <label>Mensagem</label>
+            <textarea id="whats-mensagem" rows="3" required></textarea>
+          </div>
+          <button class="btn" type="submit">Enviar</button>
+        </form>
+        <div id="whats-resultado" class="muted" style="margin-top:8px;"></div>
+
+        <h3 style="margin-top:22px;">Últimas mensagens enviadas</h3>
+        <div class="tabela-wrap"><table class="tabela-leads" id="tabela-whatsapp"></table></div>
+      </section>
+    </div>
+
     </div>
     </div>
   </div>
@@ -705,7 +732,10 @@ form.form-grid button { grid-column: 1 / -1; }
       </div>
       <div>
         <label>Telefone</label>
-        <input type="text" id="crm-pessoa-telefone">
+        <div style="display:flex; gap:6px;">
+          <input type="text" id="crm-pessoa-telefone" style="flex:1;">
+          <button type="button" class="btn-edit" style="border:1px solid var(--border); border-radius:8px; padding:0 10px;" onclick="crmEnviarWhatsApp()" title="Enviar WhatsApp">📱</button>
+        </div>
       </div>
       <div class="full">
         <label>E-mail</label>
@@ -932,6 +962,7 @@ async function entrarNoApp(user) {
   await carregarCRM();
   await carregarChecklist();
   initTally();
+  initWhatsApp();
 }
 (async function initSession() {
   const { data } = await sb.auth.getSession();
@@ -1540,6 +1571,20 @@ function crmSalvarCard(ev) {
   return false;
 }
 
+function crmEnviarWhatsApp() {
+  const telefone = document.getElementById('crm-pessoa-telefone').value.trim();
+  if (!telefone) { alert('Preenche o telefone da pessoa primeiro.'); return; }
+  const nome = document.getElementById('crm-pessoa-nome').value.trim() || document.getElementById('crm-titulo').value.trim();
+  const mensagem = prompt('Mensagem pra ' + (nome || 'o lead') + ':', `Oi ${nome || ''}, tudo bem? Aqui é da Demanda Infinita 🙂`.trim());
+  if (!mensagem) return;
+  (async () => {
+    const card = crmCards.find(c => c.id === crmCardAtualId);
+    const r = await enviarWhatsApp(telefone, mensagem, 'card', crmCardAtualId, card ? card.titulo : nome);
+    alert(r.ok ? 'Mensagem enviada!' : 'Erro ao enviar: ' + r.erro);
+    renderHistoricoWhats();
+  })();
+}
+
 async function crmMarcarDesfecho(status) {
   if (!crmCardAtualId) { alert('Salve o card primeiro.'); return; }
   await sb.from('com_cards').update({ status_negocio: status, data_fechamento: hojeStr() }).eq('id', crmCardAtualId);
@@ -2000,6 +2045,93 @@ function desenharLeadsPorDia(leadsMes, mesRef) {
   svg.setAttribute('width', w);
   svg.setAttribute('height', h);
   svg.innerHTML = `<line x1="0" y1="${h-24}" x2="${w}" y2="${h-24}" stroke="${corGrid}" stroke-width="1"/>${bars}`;
+}
+
+// ---------- WHATSAPP (Evolution API) ----------
+const EVOLUTION_URL = 'https://evolution.gruponexusmind.com.br';
+const EVOLUTION_INSTANCE = 'SDR';
+const EVOLUTION_TOKEN = '9DEA436276D9-40A9-AD31-FAAD630598C8';
+
+function normalizarTelefoneWhats(tel) {
+  let digitos = (tel || '').replace(/\D/g, '');
+  if (!digitos) return null;
+  if (!digitos.startsWith('55') && (digitos.length === 10 || digitos.length === 11)) {
+    digitos = '55' + digitos;
+  }
+  return digitos;
+}
+
+async function verificarStatusWhats() {
+  const el = document.getElementById('whats-status');
+  try {
+    const resp = await fetch(`${EVOLUTION_URL}/instance/connectionState/${EVOLUTION_INSTANCE}`, { headers: { apikey: EVOLUTION_TOKEN } });
+    const data = await resp.json();
+    const estado = data && data.instance && data.instance.state;
+    if (estado === 'open') {
+      el.textContent = '✓ Conectado';
+      el.style.background = 'var(--accent-wash)'; el.style.color = 'var(--good)';
+    } else {
+      el.textContent = 'Desconectado — escaneie o QR no manager da Evolution';
+      el.style.background = '#fdeaea'; el.style.color = 'var(--critical)';
+    }
+  } catch (e) {
+    el.textContent = 'Erro ao checar status';
+    el.style.background = '#fdeaea'; el.style.color = 'var(--critical)';
+  }
+}
+
+async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) {
+  const numero = normalizarTelefoneWhats(telefone);
+  if (!numero) return { ok: false, erro: 'telefone inválido' };
+  let ok = true, erro = null;
+  try {
+    const resp = await fetch(`${EVOLUTION_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
+      method: 'POST',
+      headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number: numero, text: mensagem }),
+    });
+    if (!resp.ok) { ok = false; erro = `erro ${resp.status}`; }
+  } catch (e) {
+    ok = false; erro = e.message;
+  }
+  await sb.from('com_whatsapp_mensagens').insert([{
+    telefone: numero, mensagem, origem: origem || 'manual', origem_id: origemId || null, origem_nome: origemNome || null,
+    enviado_por: currentPerfil ? currentPerfil.id : null, status: ok ? 'enviado' : 'erro', erro,
+  }]);
+  return { ok, erro };
+}
+
+function enviarWhatsAppManual(ev) {
+  ev.preventDefault();
+  const telefone = document.getElementById('whats-telefone').value.trim();
+  const mensagem = document.getElementById('whats-mensagem').value.trim();
+  if (!telefone || !mensagem) return false;
+  const resEl = document.getElementById('whats-resultado');
+  resEl.textContent = 'Enviando...';
+  (async () => {
+    const r = await enviarWhatsApp(telefone, mensagem, 'manual', null, null);
+    resEl.textContent = r.ok ? 'Mensagem enviada!' : 'Erro ao enviar: ' + r.erro;
+    if (r.ok) {
+      document.getElementById('whats-telefone').value = '';
+      document.getElementById('whats-mensagem').value = '';
+    }
+    await renderHistoricoWhats();
+  })();
+  return false;
+}
+
+async function renderHistoricoWhats() {
+  const { data } = await sb.from('com_whatsapp_mensagens').select('*').order('created_at', { ascending: false }).limit(30);
+  const lista = data || [];
+  document.getElementById('tabela-whatsapp').innerHTML = `
+    <tr><th>Quando</th><th>Telefone</th><th>Mensagem</th><th>Origem</th><th>Status</th></tr>
+    ${lista.map(m => `<tr><td>${new Date(m.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${m.telefone}</td><td>${(m.mensagem||'').slice(0,40)}${m.mensagem && m.mensagem.length>40?'…':''}</td><td>${m.origem_nome || m.origem || '—'}</td><td style="color:${m.status==='enviado'?'var(--good)':'var(--critical)'}">${m.status}</td></tr>`).join('')}
+  ` || '<tr><td class="empty">Nenhuma mensagem enviada ainda.</td></tr>';
+}
+
+async function initWhatsApp() {
+  await verificarStatusWhats();
+  await renderHistoricoWhats();
 }
 
 // ---------- CHECKLIST DE PRODUTIVIDADE ----------
