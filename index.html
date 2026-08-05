@@ -1927,13 +1927,23 @@ function importarCSV() {
 }
 
 // ---------- GERAÇÃO DE DEMANDA (TALLY) ----------
-const TALLY_API_KEY = 'tly-KAnqNo7F4OpEqAvB6tv4XhEiRsjlgPN7';
+// as chamadas passam pelo proxy no n8n — a chave real do Tally nunca fica no código público
+const N8N_PROXY_URL = 'https://srv5224724.stayx.cloud/webhook';
+async function chamarTally(path) {
+  return fetch(`${N8N_PROXY_URL}/tally-proxy`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path }),
+  });
+}
+async function chamarEvolution(method, path, payload) {
+  return fetch(`${N8N_PROXY_URL}/evolution-proxy`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ method, path, payload: payload || {} }),
+  });
+}
+
 let tallyFormsAll = [];
 let tallySelecionados = JSON.parse(localStorage.getItem('tally_formularios_selecionados') || '[]');
 let tallySubmissions = [];
 let tallyCarregando = false;
-
-function tallyHeaders() { return { Authorization: `Bearer ${TALLY_API_KEY}` }; }
 
 async function initTally() {
   await carregarListaFormularios();
@@ -1941,7 +1951,7 @@ async function initTally() {
 
 async function carregarListaFormularios() {
   try {
-    const resp = await fetch('https://api.tally.so/forms?limit=200', { headers: tallyHeaders() });
+    const resp = await chamarTally('/forms?limit=200');
     if (!resp.ok) throw new Error(resp.status === 401 ? 'chave inválida' : `erro ${resp.status}`);
     const data = await resp.json();
     tallyFormsAll = (data.items || []).map(f => ({ id: f.id, nome: f.name || '(sem nome — rascunho)', submissoes: f.numberOfSubmissions }));
@@ -2019,7 +2029,7 @@ async function carregarSubmissionsSelecionadas() {
       document.getElementById('tally-vazio').textContent = `Carregando formulários do Tally... (${feitos}/${tallySelecionados.length})`;
       let page = 1, hasMore = true, perguntas = [];
       while (hasMore) {
-        const resp = await fetch(`https://api.tally.so/forms/${formId}/submissions?limit=100&page=${page}`, { headers: tallyHeaders() });
+        const resp = await chamarTally(`/forms/${formId}/submissions?limit=100&page=${page}`);
         if (!resp.ok) {
           throw new Error(`formulário "${formInfo ? formInfo.nome : formId}": erro ${resp.status}${resp.status === 401 ? ' (chave inválida)' : ''}${resp.status === 429 ? ' (limite de requisições do Tally, espere um minuto e tente de novo)' : ''}`);
         }
@@ -2108,10 +2118,8 @@ function desenharLeadsPorDia(leadsMes, mesRef) {
   svg.innerHTML = `<line x1="0" y1="${h-24}" x2="${w}" y2="${h-24}" stroke="${corGrid}" stroke-width="1"/>${bars}`;
 }
 
-// ---------- WHATSAPP (Evolution API) ----------
-const EVOLUTION_URL = 'https://evolution.gruponexusmind.com.br';
+// ---------- WHATSAPP (Evolution API, via proxy — token não fica no código público) ----------
 const EVOLUTION_INSTANCE = 'SDR';
-const EVOLUTION_TOKEN = '9DEA436276D9-40A9-AD31-FAAD630598C8';
 
 function normalizarTelefoneWhats(tel) {
   let digitos = (tel || '').replace(/\D/g, '');
@@ -2125,7 +2133,7 @@ function normalizarTelefoneWhats(tel) {
 async function verificarStatusWhats() {
   const el = document.getElementById('whats-status');
   try {
-    const resp = await fetch(`${EVOLUTION_URL}/instance/connectionState/${EVOLUTION_INSTANCE}`, { headers: { apikey: EVOLUTION_TOKEN } });
+    const resp = await chamarEvolution('GET', `/instance/connectionState/${EVOLUTION_INSTANCE}`);
     const data = await resp.json();
     const estado = data && data.instance && data.instance.state;
     if (estado === 'open') {
@@ -2146,11 +2154,7 @@ async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) 
   if (!numero) return { ok: false, erro: 'telefone inválido' };
   let ok = true, erro = null, mensagemId = null;
   try {
-    const resp = await fetch(`${EVOLUTION_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
-      method: 'POST',
-      headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ number: numero, text: mensagem }),
-    });
+    const resp = await chamarEvolution('POST', `/message/sendText/${EVOLUTION_INSTANCE}`, { number: numero, text: mensagem });
     if (!resp.ok) { ok = false; erro = `erro ${resp.status}`; }
     else {
       const data = await resp.json().catch(() => null);
@@ -2184,11 +2188,7 @@ function corAvatar(telefone) {
 async function buscarFotoPerfilWhats(telefone) {
   if (fotosPerfilCache[telefone] !== undefined) return fotosPerfilCache[telefone];
   try {
-    const resp = await fetch(`${EVOLUTION_URL}/chat/fetchProfilePictureUrl/${EVOLUTION_INSTANCE}`, {
-      method: 'POST',
-      headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ number: telefone }),
-    });
+    const resp = await chamarEvolution('POST', `/chat/fetchProfilePictureUrl/${EVOLUTION_INSTANCE}`, { number: telefone });
     const data = await resp.json().catch(() => null);
     fotosPerfilCache[telefone] = (data && data.profilePictureUrl) || null;
   } catch (e) {
@@ -2365,12 +2365,8 @@ async function buscarMidiaWhats(mensagem) {
   if (midiaCache[mensagem.mensagem_id]) return midiaCache[mensagem.mensagem_id];
   if (!mensagem.mensagem_id) return null;
   try {
-    const resp = await fetch(`${EVOLUTION_URL}/chat/getBase64FromMediaMessage/${EVOLUTION_INSTANCE}`, {
-      method: 'POST',
-      headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: { key: { remoteJid: `${mensagem.telefone}@s.whatsapp.net`, id: mensagem.mensagem_id, fromMe: mensagem.direcao === 'enviada' } },
-      }),
+    const resp = await chamarEvolution('POST', `/chat/getBase64FromMediaMessage/${EVOLUTION_INSTANCE}`, {
+      message: { key: { remoteJid: `${mensagem.telefone}@s.whatsapp.net`, id: mensagem.mensagem_id, fromMe: mensagem.direcao === 'enviada' } },
     });
     if (!resp.ok) return null;
     const data = await resp.json().catch(() => null);
@@ -2520,11 +2516,7 @@ async function alternarGravacaoAudio() {
 async function enviarAudioWhatsApp(telefone, base64Audio, blobLocal) {
   let ok = true, erro = null, mensagemId = null;
   try {
-    const resp = await fetch(`${EVOLUTION_URL}/message/sendWhatsAppAudio/${EVOLUTION_INSTANCE}`, {
-      method: 'POST',
-      headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ number: telefone, audio: base64Audio }),
-    });
+    const resp = await chamarEvolution('POST', `/message/sendWhatsAppAudio/${EVOLUTION_INSTANCE}`, { number: telefone, audio: base64Audio });
     if (!resp.ok) { ok = false; erro = `erro ${resp.status}`; }
     else {
       const data = await resp.json().catch(() => null);
@@ -2552,11 +2544,10 @@ async function carregarNomesManualWhats() {
 }
 async function carregarContatosWhats() {
   try {
-    const resp = await fetch(`${EVOLUTION_URL}/chat/findContacts/${EVOLUTION_INSTANCE}`, {
-      method: 'POST', headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify({}),
-    });
+    const resp = await chamarEvolution('POST', `/chat/findContacts/${EVOLUTION_INSTANCE}`, {});
     const data = await resp.json().catch(() => []);
-    whatsContatos = (Array.isArray(data) ? data : [])
+    const lista = Array.isArray(data) ? data : (data && Array.isArray(data.lista) ? data.lista : []);
+    whatsContatos = lista
       .filter(c => !c.isGroup && c.remoteJid && c.remoteJid.endsWith('@s.whatsapp.net'))
       .map(c => ({ telefone: c.remoteJid.split('@')[0], nome: (c.pushName || '').trim() || null, foto: c.profilePicUrl || null }));
     whatsContatos.forEach(c => { if (c.foto && fotosPerfilCache[c.telefone] === undefined) fotosPerfilCache[c.telefone] = c.foto; });
