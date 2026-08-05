@@ -176,14 +176,22 @@ svg.chart { display: block; }
 .whats-conversas { width: 280px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; background: var(--field-bg); }
 .whats-conversas-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 10px 10px; }
 .whats-lista-conversas { flex: 1; overflow-y: auto; }
-.whats-conversa-item { padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; position: relative; }
+.whats-conversa-item { padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; position: relative; display: flex; gap: 10px; align-items: flex-start; }
 .whats-conversa-item:hover { background: var(--surface-1); }
 .whats-conversa-item.ativa { background: var(--surface-1); border-left: 3px solid var(--accent); }
+.whats-conversa-corpo { flex: 1; min-width: 0; }
 .whats-conversa-nome { font-weight: 700; font-size: .86rem; padding-right: 50px; }
 .whats-conversa-preview { font-size: .76rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 .whats-conversa-hora { font-size: .66rem; color: var(--muted); position: absolute; top: 10px; right: 12px; }
+.whats-avatar {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: .95rem;
+}
+.whats-avatar.grande { width: 34px; height: 34px; }
 .whats-thread { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-.whats-thread-header { padding: 14px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: .92rem; }
+.whats-thread-header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.whats-thread-header-nome { font-weight: 700; font-size: .92rem; }
+.whats-thread-tags { display: flex; flex-wrap: wrap; gap: 5px; padding: 8px 14px; border-bottom: 1px solid var(--border); align-items: center; }
 .whats-thread-mensagens { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: var(--plane); }
 .whats-bolha { max-width: 72%; padding: 8px 12px; border-radius: 14px; font-size: .87rem; line-height: 1.35; word-wrap: break-word; }
 .whats-bolha.recebida { align-self: flex-start; background: var(--field-bg); border-bottom-left-radius: 3px; }
@@ -367,7 +375,7 @@ form.form-grid button { grid-column: 1 / -1; }
         <button data-tab="dicas" title="Dicas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
         <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
         <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
-        <button data-tab="whatsapp" title="WhatsApp"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></button>
+        <button data-tab="whatsapp" title="WhatsApp" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span id="whats-badge" style="display:none; position:absolute; top:6px; right:10px; width:8px; height:8px; border-radius:50%; background:var(--critical);"></span></button>
       </nav>
     </aside>
     <div class="main-content">
@@ -576,7 +584,10 @@ form.form-grid button { grid-column: 1 / -1; }
           <div class="whats-conversas">
             <div class="whats-conversas-header">
               <h2 style="margin:0; font-size:1rem;">WhatsApp</h2>
-              <div id="whats-status" class="pill">verificando...</div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button class="add-toggle" style="padding:3px 8px; font-size:.7rem;" onclick="abrirGerenciarTags()">⚙️ Tags</button>
+                <div id="whats-status" class="pill">verificando...</div>
+              </div>
             </div>
             <div style="padding:0 10px 8px;">
               <input type="text" id="whats-nova-conversa" placeholder="Novo contato (telefone)..."
@@ -586,7 +597,8 @@ form.form-grid button { grid-column: 1 / -1; }
             <div id="whats-lista-conversas" class="whats-lista-conversas"></div>
           </div>
           <div class="whats-thread">
-            <div id="whats-thread-header" class="whats-thread-header">Selecione uma conversa</div>
+            <div id="whats-thread-header" class="whats-thread-header"><span class="muted">Selecione uma conversa</span></div>
+            <div id="whats-thread-tags" class="whats-thread-tags" style="display:none;"></div>
             <div id="whats-thread-mensagens" class="whats-thread-mensagens"></div>
             <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
               <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
@@ -2134,12 +2146,51 @@ async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) 
 let whatsMensagens = [];
 let whatsConversaAtual = null;
 let whatsCanalRealtime = null;
+let whatsConversaTagsMap = {};
+const fotosPerfilCache = {};
+const CORES_AVATAR = ['var(--chip-1)','var(--chip-2)','var(--chip-3)','var(--chip-4)','var(--chip-5)','var(--chip-6)','var(--chip-7)'];
+
+function corAvatar(telefone) {
+  let soma = 0;
+  for (let i = 0; i < telefone.length; i++) soma += telefone.charCodeAt(i);
+  return CORES_AVATAR[soma % CORES_AVATAR.length];
+}
+
+async function buscarFotoPerfilWhats(telefone) {
+  if (fotosPerfilCache[telefone] !== undefined) return fotosPerfilCache[telefone];
+  try {
+    const resp = await fetch(`${EVOLUTION_URL}/chat/fetchProfilePictureUrl/${EVOLUTION_INSTANCE}`, {
+      method: 'POST',
+      headers: { apikey: EVOLUTION_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number: telefone }),
+    });
+    const data = await resp.json().catch(() => null);
+    fotosPerfilCache[telefone] = (data && data.profilePictureUrl) || null;
+  } catch (e) {
+    fotosPerfilCache[telefone] = null;
+  }
+  return fotosPerfilCache[telefone];
+}
+
+function aplicarFotosNaTela(telefones) {
+  [...new Set(telefones)].forEach(async (telefone) => {
+    const url = await buscarFotoPerfilWhats(telefone);
+    if (!url) return;
+    document.querySelectorAll(`[data-foto-telefone="${telefone}"]`).forEach(el => {
+      el.style.backgroundImage = `url('${url}')`;
+      el.textContent = '';
+    });
+  });
+}
 
 async function carregarMensagensWhats() {
   const { data } = await sb.from('com_whatsapp_mensagens').select('*').order('created_at', { ascending: true }).limit(500);
   whatsMensagens = data || [];
+  const { data: tags } = await sb.from('com_whatsapp_conversa_tags').select('*');
+  whatsConversaTagsMap = {};
+  (tags || []).forEach(r => { (whatsConversaTagsMap[r.telefone] = whatsConversaTagsMap[r.telefone] || []).push(r.tag_id); });
   renderListaConversas();
-  if (whatsConversaAtual) renderThreadWhats();
+  if (whatsConversaAtual) { renderThreadWhats(); renderThreadTagsWhats(); }
 }
 
 function assinarRealtimeWhats() {
@@ -2150,7 +2201,11 @@ function assinarRealtimeWhats() {
         whatsMensagens.push(payload.new);
         renderListaConversas();
         if (payload.new.telefone === whatsConversaAtual) renderThreadWhats();
-        if (payload.new.direcao === 'recebida') tocarSino();
+        if (payload.new.direcao === 'recebida') {
+          tocarSino();
+          const painelAtivo = document.getElementById('tab-whatsapp').classList.contains('active');
+          if (!painelAtivo) document.getElementById('whats-badge').style.display = 'block';
+        }
       })
       .subscribe();
   } catch (e) { /* realtime é um extra — se o navegador/ambiente não suportar, o chat ainda funciona por reload manual */ }
@@ -2167,21 +2222,34 @@ function conversasAgrupadasWhats() {
   }).sort((a, b) => new Date(b.ultima.created_at) - new Date(a.ultima.created_at));
 }
 
+function tagsDaConversaHtml(telefone, classe) {
+  const tags = (whatsConversaTagsMap[telefone] || []).map(tid => crmTags.find(t => t.id === tid)).filter(Boolean);
+  if (!tags.length) return '';
+  return `<div class="${classe}">${tags.map(t => `<span class="tag-stripe" style="background:${t.cor}" title="${t.nome}"></span>`).join('')}</div>`;
+}
+
 function renderListaConversas() {
   const conversas = conversasAgrupadasWhats();
   document.getElementById('whats-lista-conversas').innerHTML = conversas.length ? conversas.map(c => `
     <div class="whats-conversa-item ${c.telefone === whatsConversaAtual ? 'ativa' : ''}" onclick="abrirConversaWhats('${c.telefone}')">
-      <div class="whats-conversa-hora">${fmtDataCurta(c.ultima.created_at.slice(0, 10))}</div>
-      <div class="whats-conversa-nome">${c.nome || c.telefone}</div>
-      <div class="whats-conversa-preview">${c.ultima.direcao === 'enviada' ? 'Você: ' : ''}${(c.ultima.mensagem || '').slice(0, 40)}</div>
+      <div class="whats-avatar" data-foto-telefone="${c.telefone}" style="background-color:${corAvatar(c.telefone)}">${(c.nome || c.telefone).charAt(0).toUpperCase()}</div>
+      <div class="whats-conversa-corpo">
+        <div class="whats-conversa-hora">${fmtDataCurta(c.ultima.created_at.slice(0, 10))}</div>
+        <div class="whats-conversa-nome">${c.nome || c.telefone}</div>
+        <div class="whats-conversa-preview">${c.ultima.direcao === 'enviada' ? 'Você: ' : ''}${(c.ultima.mensagem || '').slice(0, 40)}</div>
+        ${tagsDaConversaHtml(c.telefone, 'tags-row')}
+      </div>
     </div>
   `).join('') : '<div class="empty" style="padding:14px;">Nenhuma conversa ainda.</div>';
+  aplicarFotosNaTela(conversas.map(c => c.telefone));
 }
 
 function abrirConversaWhats(telefone) {
   whatsConversaAtual = telefone;
+  document.getElementById('whats-badge').style.display = 'none';
   renderListaConversas();
   renderThreadWhats();
+  renderThreadTagsWhats();
 }
 
 function abrirNovaConversaWhats() {
@@ -2194,7 +2262,12 @@ function abrirNovaConversaWhats() {
 
 function renderThreadWhats() {
   const c = conversasAgrupadasWhats().find(x => x.telefone === whatsConversaAtual);
-  document.getElementById('whats-thread-header').textContent = (c && c.nome) || whatsConversaAtual;
+  const nome = (c && c.nome) || whatsConversaAtual;
+  document.getElementById('whats-thread-header').innerHTML = `
+    <div class="whats-avatar grande" data-foto-telefone="${whatsConversaAtual}" style="background-color:${corAvatar(whatsConversaAtual)}">${nome.charAt(0).toUpperCase()}</div>
+    <div class="whats-thread-header-nome">${nome}</div>
+  `;
+  aplicarFotosNaTela([whatsConversaAtual]);
   const msgs = c ? c.mensagens : [];
   const el = document.getElementById('whats-thread-mensagens');
   el.innerHTML = msgs.length ? msgs.map(m => `
@@ -2204,6 +2277,31 @@ function renderThreadWhats() {
     </div>
   `).join('') : '<div class="empty">Nenhuma mensagem ainda — manda a primeira!</div>';
   el.scrollTop = el.scrollHeight;
+}
+
+function renderThreadTagsWhats() {
+  const el = document.getElementById('whats-thread-tags');
+  if (!whatsConversaAtual) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  const selecionadas = whatsConversaTagsMap[whatsConversaAtual] || [];
+  el.innerHTML = crmTags.length ? crmTags.map(t => `
+    <span class="tag-toggle ${selecionadas.includes(t.id) ? 'selecionada' : ''}" style="background:${t.cor}" onclick="toggleTagConversaWhats(${t.id})">${t.nome}</span>
+  `).join('') : '<span class="muted" style="font-size:.74rem;">Nenhuma tag criada — use "⚙️ Tags".</span>';
+}
+
+async function toggleTagConversaWhats(tagId) {
+  if (!whatsConversaAtual) return;
+  const atual = whatsConversaTagsMap[whatsConversaAtual] || [];
+  if (atual.includes(tagId)) {
+    await sb.from('com_whatsapp_conversa_tags').delete().eq('telefone', whatsConversaAtual).eq('tag_id', tagId);
+  } else {
+    await sb.from('com_whatsapp_conversa_tags').insert([{ telefone: whatsConversaAtual, tag_id: tagId }]);
+  }
+  const { data: tags } = await sb.from('com_whatsapp_conversa_tags').select('*');
+  whatsConversaTagsMap = {};
+  (tags || []).forEach(r => { (whatsConversaTagsMap[r.telefone] = whatsConversaTagsMap[r.telefone] || []).push(r.tag_id); });
+  renderThreadTagsWhats();
+  renderListaConversas();
 }
 
 function enviarMensagemThread(ev) {
@@ -2631,6 +2729,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'whatsapp') document.getElementById('whats-badge').style.display = 'none';
   });
 });
 </script>
