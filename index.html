@@ -464,7 +464,13 @@ form.form-grid button { grid-column: 1 / -1; }
           <select id="crm-funil-select" onchange="crmMudaFunil()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600;"></select>
           <button class="btn" style="width:auto; padding:8px 14px;" onclick="crmAbrirNovoCard(null)">+ Novo card</button>
         </div>
-        <p class="muted" style="font-size:.74rem; margin-bottom:8px;">Arraste pra mudar o estágio · clique pra ver detalhes.</p>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+          <p class="muted" style="font-size:.74rem; margin:0;">Arraste pra mudar o estágio · clique pra ver detalhes.</p>
+          <div class="month-nav">
+            <button onclick="scrollKanban(-1)" title="Ver colunas anteriores">‹</button>
+            <button onclick="scrollKanban(1)" title="Ver próximas colunas">›</button>
+          </div>
+        </div>
         <div class="kanban" id="crm-board"></div>
       </section>
     </div>
@@ -1435,6 +1441,12 @@ async function carregarCardsDoFunil() {
 function crmMudaFunil() {
   crmFunilAtualId = parseInt(document.getElementById('crm-funil-select').value) || null;
   carregarCardsDoFunil();
+}
+
+function scrollKanban(direcao) {
+  const board = document.getElementById('crm-board');
+  if (!board) return;
+  board.scrollBy({ left: direcao * 240, behavior: 'smooth' });
 }
 
 function renderCRMBoard() {
