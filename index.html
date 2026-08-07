@@ -1034,6 +1034,7 @@ let notificacoes = [];
 let notifLidasSet = new Set();
 let notifFiltroEscopo = 'geral';
 let mesAtual = primeiroDiaMes(new Date());
+let negociacoesMesa = { qtd: 0, valor: 0 };
 
 function primeiroDiaMes(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
 function fmtMesRef(d) { return d.toISOString().slice(0,7); }
@@ -1204,14 +1205,9 @@ function renderTiles() {
   const m = metricasDoMes();
   const pctMeta = Math.max(0, Math.min(100, (m.faturamentoTotal / META_FATURAMENTO) * 100));
 
-  // "na mesa" = propostas enviadas aguardando decisão do cliente — não depende do mês selecionado,
-  // é o estado atual do pipeline, igual à seção "Negócios em andamento" mais abaixo
-  const propostasAbertas = negocios.filter(n => n.status === 'proposta');
-  const valorPropostas = propostasAbertas.reduce((s, n) => s + Number(n.valor_proposta || 0), 0);
-
   const tiles = [
     { label: 'Reuniões do mês', value: `${m.realizadas.length}/${m.agendadas.length}`, sub: 'realizadas / agendadas' },
-    { label: 'Negociações na mesa', value: propostasAbertas.length, sub: fmtBRL(valorPropostas) },
+    { label: 'Negociações na mesa', value: negociacoesMesa.qtd, sub: fmtBRL(negociacoesMesa.valor) },
     { label: 'Vendas fechadas', value: m.vendas.length, sub: fmtBRL(m.vendaTotal) },
     { label: 'Ticket médio', value: fmtBRL(m.ticketMedio), sub: `${m.vendas.length} venda(s) no mês` },
   ];
@@ -1232,6 +1228,22 @@ function renderTiles() {
     </div>
   `;
   document.getElementById('tiles').innerHTML = tilesHtml + faturamentoHtml;
+}
+
+// "na mesa" = valor do campo "valor" dentro do card do CRM, em qualquer funil, enquanto o card
+// ainda não foi marcado como ganho nem perdido — reflete o pipeline real (ex: call feita, cliente
+// disse que retorna na segunda, valor já estimado, mas ainda não é venda), independe de já ter
+// virado um registro formal de "proposta" em com_negocios.
+async function carregarNegociacoesMesa() {
+  const idsFunisAtivos = crmFunis.map(f => f.id);
+  if (!idsFunisAtivos.length) { negociacoesMesa = { qtd: 0, valor: 0 }; renderTiles(); return; }
+  try {
+    const { data } = await sb.from('com_cards').select('valor')
+      .eq('status_negocio', 'aberto').gt('valor', 0).in('funil_id', idsFunisAtivos);
+    const linhas = data || [];
+    negociacoesMesa = { qtd: linhas.length, valor: linhas.reduce((s, c) => s + Number(c.valor || 0), 0) };
+  } catch (e) { negociacoesMesa = { qtd: 0, valor: 0 }; }
+  renderTiles();
 }
 
 // ---------- FUNIL VISUAL ----------
@@ -1537,6 +1549,7 @@ async function carregarCardsDoFunil() {
   }
   renderCRMBoard();
   renderFunilComparativo();
+  carregarNegociacoesMesa();
 }
 
 function crmMudaFunil() {
