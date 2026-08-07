@@ -916,6 +916,15 @@ form.form-grid button { grid-column: 1 / -1; }
         <button type="button" class="btn" style="background:var(--critical); width:auto; padding:8px 14px;" onclick="crmExcluirCard()">Excluir</button>
       </div>
     </form>
+    <div id="crm-mover-funil-wrap" style="display:none; margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
+      <label style="font-weight:700; display:block; margin-bottom:6px;">Mover para outro funil</label>
+      <p class="muted" style="font-size:.74rem; margin:-2px 0 8px;">Tira o card daqui e joga pra outro funil, no estágio escolhido.</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <select id="crm-mover-funil-select" onchange="crmPopularEstagiosDestino()" style="flex:1; min-width:150px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);"></select>
+        <select id="crm-mover-estagio-select" style="flex:1; min-width:150px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);"></select>
+        <button type="button" class="btn" style="width:auto; padding:8px 14px;" onclick="crmMoverParaFunil()">Mover</button>
+      </div>
+    </div>
     <div id="crm-historico-wrap" style="margin-top:16px; display:none;">
       <h3 style="font-size:.9rem;">Histórico</h3>
       <div style="display:flex; gap:6px; margin-bottom:10px;">
@@ -1673,6 +1682,7 @@ function crmAbrirNovoCard(estagioId) {
   crmTagsSelecionadasAtual = [];
   crmRenderTagsSelector();
   document.getElementById('crm-historico-wrap').style.display = 'none';
+  document.getElementById('crm-mover-funil-wrap').style.display = 'none';
   document.getElementById('modal-card-crm').classList.add('open');
 }
 
@@ -1697,7 +1707,36 @@ function crmAbrirCard(id) {
   crmRenderTagsSelector();
   document.getElementById('crm-historico-wrap').style.display = 'block';
   crmCarregarAtividades(id);
+  document.getElementById('crm-mover-funil-wrap').style.display = crmFunis.length > 1 ? 'block' : 'none';
+  crmPopularSelectMoverFunil();
   document.getElementById('modal-card-crm').classList.add('open');
+}
+
+function crmPopularSelectMoverFunil() {
+  const sel = document.getElementById('crm-mover-funil-select');
+  const outros = crmFunis.filter(f => f.id !== crmFunilAtualId);
+  sel.innerHTML = outros.map(f => `<option value="${f.id}">${f.nome}</option>`).join('');
+  crmPopularEstagiosDestino();
+}
+
+function crmPopularEstagiosDestino() {
+  const funilId = parseInt(document.getElementById('crm-mover-funil-select').value) || null;
+  const estagiosDoFunil = crmEstagios.filter(e => e.funil_id === funilId).sort((a, b) => a.ordem - b.ordem);
+  document.getElementById('crm-mover-estagio-select').innerHTML = estagiosDoFunil.map(e => `<option value="${e.id}">${e.nome}</option>`).join('');
+}
+
+async function crmMoverParaFunil() {
+  if (!crmCardAtualId) return;
+  const novoFunilId = parseInt(document.getElementById('crm-mover-funil-select').value);
+  const novoEstagioId = parseInt(document.getElementById('crm-mover-estagio-select').value);
+  if (!novoFunilId || !novoEstagioId) { alert('Escolha o funil e o estágio de destino.'); return; }
+  const funilAtual = crmFunis.find(f => f.id === crmFunilAtualId);
+  const funilNovo = crmFunis.find(f => f.id === novoFunilId);
+  if (!confirm(`Mover este card de "${funilAtual ? funilAtual.nome : '?'}" para "${funilNovo ? funilNovo.nome : '?'}"?`)) return;
+  await sb.from('com_cards').update({ funil_id: novoFunilId, estagio_id: novoEstagioId, updated_at: new Date().toISOString() }).eq('id', crmCardAtualId);
+  await crmLogAtividade(crmCardAtualId, 'mudanca_funil', `Movido de "${funilAtual ? funilAtual.nome : '?'}" para "${funilNovo ? funilNovo.nome : '?'}"`);
+  fecharModal('modal-card-crm');
+  await carregarCardsDoFunil();
 }
 
 async function crmCarregarAtividades(cardId) {
@@ -2061,12 +2100,17 @@ async function carregarNotificacoes() {
 
   const desde7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const { data: ativs } = await sb.from('com_card_atividades').select('*')
-    .in('tipo', ['criacao', 'mudanca_estagio']).gte('created_at', desde7d).order('created_at', { ascending: false }).limit(80);
+    .in('tipo', ['criacao', 'mudanca_estagio', 'mudanca_funil']).gte('created_at', desde7d).order('created_at', { ascending: false }).limit(80);
+  const CRM_NOTIF_TITULOS = {
+    criacao: c => `Novo card: ${c ? c.titulo : '?'}`,
+    mudanca_estagio: c => `Card mudou de estágio: ${c ? c.titulo : '?'}`,
+    mudanca_funil: c => `Card mudou de funil: ${c ? c.titulo : '?'}`,
+  };
   (ativs || []).forEach(a => {
     const card = crmCards.find(c => c.id === a.card_id);
     notifs.push({
       chave: `crm-${a.id}`, tipo: 'crm', pessoaId: card ? card.responsavel_id : null, createdAt: a.created_at,
-      titulo: a.tipo === 'criacao' ? `Novo card: ${card ? card.titulo : '?'}` : `Card mudou de estágio: ${card ? card.titulo : '?'}`,
+      titulo: CRM_NOTIF_TITULOS[a.tipo](card),
       descricao: a.descricao,
     });
   });
