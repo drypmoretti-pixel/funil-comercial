@@ -1204,8 +1204,14 @@ function renderTiles() {
   const m = metricasDoMes();
   const pctMeta = Math.max(0, Math.min(100, (m.faturamentoTotal / META_FATURAMENTO) * 100));
 
+  // "na mesa" = propostas enviadas aguardando decisão do cliente — não depende do mês selecionado,
+  // é o estado atual do pipeline, igual à seção "Negócios em andamento" mais abaixo
+  const propostasAbertas = negocios.filter(n => n.status === 'proposta');
+  const valorPropostas = propostasAbertas.reduce((s, n) => s + Number(n.valor_proposta || 0), 0);
+
   const tiles = [
     { label: 'Reuniões do mês', value: `${m.realizadas.length}/${m.agendadas.length}`, sub: 'realizadas / agendadas' },
+    { label: 'Negociações na mesa', value: propostasAbertas.length, sub: fmtBRL(valorPropostas) },
     { label: 'Vendas fechadas', value: m.vendas.length, sub: fmtBRL(m.vendaTotal) },
     { label: 'Ticket médio', value: fmtBRL(m.ticketMedio), sub: `${m.vendas.length} venda(s) no mês` },
   ];
