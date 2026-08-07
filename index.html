@@ -1622,9 +1622,20 @@ async function crmDropCard(ev, novoEstagioId) {
   if (!card || card.estagio_id === novoEstagioId) return;
   const estagioAntigo = crmEstagios.find(e => e.id === card.estagio_id);
   const estagioNovo = crmEstagios.find(e => e.id === novoEstagioId);
-  await sb.from('com_cards').update({ estagio_id: novoEstagioId, updated_at: new Date().toISOString() }).eq('id', id);
+  const patch = { estagio_id: novoEstagioId, updated_at: new Date().toISOString() };
+  crmMarcarMqlSeAplicavel(patch, card, novoEstagioId);
+  await sb.from('com_cards').update(patch).eq('id', id);
   await crmLogAtividade(id, 'mudanca_estagio', `Etapa: ${estagioAntigo ? estagioAntigo.nome : '?'} → ${estagioNovo ? estagioNovo.nome : '?'}`);
   await carregarCardsDoFunil();
+}
+
+// registra a 1ª vez que o card entrou no MQL, de forma permanente — mesmo que depois o card
+// seja movido pra outro estágio ou funil, esse marco não é apagado (o funil ideal x atual conta
+// "quantos leads chegaram a MQL no mês", não "quantos estão lá agora").
+function crmMarcarMqlSeAplicavel(patch, card, novoEstagioId) {
+  if (novoEstagioId === ESTAGIO_MQL_ID && (!card || !card.mql_em)) {
+    patch.mql_em = new Date().toISOString();
+  }
 }
 
 async function crmLogAtividade(cardId, tipo, descricao) {
@@ -1733,7 +1744,10 @@ async function crmMoverParaFunil() {
   const funilAtual = crmFunis.find(f => f.id === crmFunilAtualId);
   const funilNovo = crmFunis.find(f => f.id === novoFunilId);
   if (!confirm(`Mover este card de "${funilAtual ? funilAtual.nome : '?'}" para "${funilNovo ? funilNovo.nome : '?'}"?`)) return;
-  await sb.from('com_cards').update({ funil_id: novoFunilId, estagio_id: novoEstagioId, updated_at: new Date().toISOString() }).eq('id', crmCardAtualId);
+  const cardAtual = crmCards.find(c => c.id === crmCardAtualId);
+  const patch = { funil_id: novoFunilId, estagio_id: novoEstagioId, updated_at: new Date().toISOString() };
+  crmMarcarMqlSeAplicavel(patch, cardAtual, novoEstagioId);
+  await sb.from('com_cards').update(patch).eq('id', crmCardAtualId);
   await crmLogAtividade(crmCardAtualId, 'mudanca_funil', `Movido de "${funilAtual ? funilAtual.nome : '?'}" para "${funilNovo ? funilNovo.nome : '?'}"`);
   fecharModal('modal-card-crm');
   await carregarCardsDoFunil();
@@ -1765,6 +1779,8 @@ function crmSalvarCard(ev) {
     updated_at: new Date().toISOString(),
   };
   if (!patch.titulo) return false;
+  const cardExistente = crmCardAtualId ? crmCards.find(c => c.id === crmCardAtualId) : null;
+  crmMarcarMqlSeAplicavel(patch, cardExistente, patch.estagio_id);
   // snapshot imediato (antes de qualquer await) — evita que abrir/editar outro card
   // enquanto este salvamento ainda está em voo troque a seleção de tags no meio do caminho
   const tagsParaSalvar = [...crmTagsSelecionadasAtual];
@@ -3196,7 +3212,10 @@ function renderDicas() {
 }
 
 // ---------- FUNIL ATUAL x FUNIL IDEAL (formato de funil de verdade) ----------
-const ESTAGIO_MQL_ID = 13; // estágio "MQL" do funil "[SDR] - Lead Magnet - Linkedin" — representa leads de alto potencial
+// estágio "MQL" do funil "[SDR] - Lead Magnet - Linkedin" — usado só pra saber QUANDO um card
+// entra em MQL pela 1ª vez (grava com_cards.mql_em, ver crmMarcarMqlSeAplicavel); a contagem do
+// comparativo usa mql_em, não o estágio atual, pra não zerar quando o lead avança no funil.
+const ESTAGIO_MQL_ID = 13;
 const FUNIL_ETAPAS = [
   { chave: 'leads', nome: 'Leads', meta: 500 },
   { chave: 'mql', nome: 'Leads alto potencial (MQL)', meta: 300 },
@@ -3224,8 +3243,10 @@ async function renderFunilComparativo() {
 
   let mqlAtual = 0;
   try {
+    // conta pelo marco "mql_em" (quando o card entrou em MQL pela 1ª vez), não pelo estágio atual —
+    // assim o lead continua contando no mês mesmo depois de já ter sido movido pra frente no funil
     const { count } = await sb.from('com_cards').select('id', { count: 'exact', head: true })
-      .eq('estagio_id', ESTAGIO_MQL_ID).gte('created_at', `${mesRef}-01T00:00:00`);
+      .not('mql_em', 'is', null).gte('mql_em', `${mesRef}-01T00:00:00`);
     mqlAtual = count || 0;
   } catch (e) { /* segue com 0 se a query falhar */ }
 
