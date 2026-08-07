@@ -266,24 +266,40 @@ form.form-grid button { grid-column: 1 / -1; }
 
 .dica { display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--grid); align-items: flex-start; }
 .dica:last-child { border-bottom: none; }
-.dica .icone { font-size: 1.1rem; line-height: 1.3; }
+.dica .icone { line-height: 1.3; flex-shrink: 0; color: var(--text-secondary); display: flex; align-items: center; padding-top: 1px; }
+.dica .icone svg { display: block; }
 .dica .texto { font-size: .9rem; line-height: 1.4; }
 .dica .texto b { color: var(--text-primary); }
 
-/* ---- funil atual x funil ideal ---- */
+/* ---- funil atual x funil ideal (formato de funil de verdade) ---- */
 .funil-comparativo {
   background: var(--accent-wash); border: 1px solid var(--border); border-radius: var(--card-radius);
   padding: 18px; margin-bottom: 22px;
 }
-.funil-comp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; flex-wrap: wrap; gap: 6px; }
+.funil-comp-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.funil-comp-header svg { color: var(--accent); flex-shrink: 0; }
 .funil-comp-header h3 { margin: 0; font-size: 1.05rem; }
-.funil-comp-linhas { display: flex; flex-direction: column; gap: 16px; }
-.funil-comp-topo { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; gap: 8px; }
-.funil-comp-nome { font-weight: 600; font-size: .88rem; }
-.funil-comp-valores { font-size: .84rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.funil-comp-valores b { font-size: 1.05rem; }
-.funil-comp-trilho { height: 13px; border-radius: 7px; background: var(--grid); overflow: hidden; }
-.funil-comp-barra { height: 100%; border-radius: 7px; transition: width .3s; }
+.funil-shape-wrap { display: flex; gap: 20px; align-items: flex-start; }
+.funil-shape-col { width: 210px; flex-shrink: 0; }
+.funil-shape-seg { position: relative; height: 50px; background: var(--grid); margin-bottom: 2px; }
+.funil-shape-seg:last-child { margin-bottom: 0; }
+.funil-shape-fill { position: absolute; inset: 0; background: var(--good); }
+.funil-shape-labels { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.funil-shape-label-row { height: 50px; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid var(--grid); }
+.funil-shape-label-row:last-child { border-bottom: none; }
+.funil-shape-label-nome { font-weight: 600; font-size: .86rem; }
+.funil-shape-label-valores { font-size: .8rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; margin-top: 1px; }
+.funil-shape-label-valores b { color: var(--good); font-size: .92rem; }
+.funil-comp-faturamento { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.funil-fat-topo { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; gap: 8px; }
+.funil-fat-nome { font-weight: 600; font-size: .88rem; }
+.funil-fat-valores { font-size: .84rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funil-fat-valores b { color: var(--good); font-size: 1.05rem; }
+.funil-fat-trilho { height: 13px; border-radius: 7px; background: var(--grid); overflow: hidden; }
+.funil-fat-barra { height: 100%; border-radius: 7px; background: var(--good); transition: width .3s; }
+@media (max-width: 560px) {
+  .funil-shape-col { width: 110px; }
+}
 
 /* ---- sidebar de navegação ---- */
 .app-shell { display: flex; align-items: stretch; min-height: 100vh; }
@@ -596,10 +612,15 @@ form.form-grid button { grid-column: 1 / -1; }
       <section class="card">
         <div class="funil-comparativo">
           <div class="funil-comp-header">
-            <h3>🧭 Funil atual x funil ideal</h3>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-6 8v6l-4 2v-8z"/></svg>
+            <h3>Funil atual x funil ideal</h3>
           </div>
-          <p class="muted" style="font-size:.72rem; margin:-8px 0 14px;">Sempre referente ao mês corrente (independe do mês selecionado no topo). "Leads alto potencial" = cards na coluna MQL do funil de Lead Magnet.</p>
-          <div class="funil-comp-linhas" id="funil-comparativo-linhas"></div>
+          <p class="muted" style="font-size:.72rem; margin:2px 0 16px;">Sempre referente ao mês corrente (independe do mês selecionado no topo). "Leads alto potencial" = cards na coluna MQL do funil de Lead Magnet. A área verde mostra quanto do alvo de cada etapa já foi atingido.</p>
+          <div class="funil-shape-wrap">
+            <div class="funil-shape-col" id="funil-shape-col"></div>
+            <div class="funil-shape-labels" id="funil-shape-labels"></div>
+          </div>
+          <div class="funil-comp-faturamento" id="funil-comp-faturamento"></div>
         </div>
         <h2>Dicas do funil</h2>
         <div id="dicas"></div>
@@ -3022,6 +3043,21 @@ function renderCalendario() {
 }
 
 // ---------- DICAS (regras) ----------
+const DICA_ICONES = {
+  metaBatida: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v18"/><path d="M4 4h13l-2.5 4L17 12H4"/></svg>',
+  alvo: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>',
+  alerta: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><line x1="12" y1="9" x2="12" y2="14"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>',
+  olho: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>',
+  alertaCirculo: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16" r=".5" fill="currentColor" stroke="none"/></svg>',
+  check: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>',
+  maleta: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="2" y1="13" x2="22" y2="13"/></svg>',
+  funil: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-6 8v6l-4 2v-8z"/></svg>',
+  bussola: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6z"/></svg>',
+  tendenciaAlta: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg>',
+  tendenciaBaixa: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 7 9 13 13 9 21 18"/><polyline points="14 18 21 18 21 11"/></svg>',
+  calendarioAlerta: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="17"/><circle cx="12" cy="19" r=".4" fill="currentColor" stroke="none"/></svg>',
+};
+
 function renderDicas() {
   const dicas = [];
   const m = metricasDoMes();
@@ -3031,12 +3067,12 @@ function renderDicas() {
   if (ehMesAtual) {
     const falta = META_FATURAMENTO - m.faturamentoTotal;
     if (falta <= 0) {
-      dicas.push({ icone: '🏁', html: `Meta de ${fmtBRL(META_FATURAMENTO)} batida este mês! Faturamento atual: <b>${fmtBRL(m.faturamentoTotal)}</b>.` });
+      dicas.push({ icone: DICA_ICONES.metaBatida, html: `Meta de ${fmtBRL(META_FATURAMENTO)} batida este mês! Faturamento atual: <b>${fmtBRL(m.faturamentoTotal)}</b>.` });
     } else {
       const hoje = new Date();
       const diasNoMes = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0).getDate();
       const diasRestantes = Math.max(1, diasNoMes - hoje.getDate());
-      dicas.push({ icone: '🎯', html: `Faltam <b>${fmtBRL(falta)}</b> pra bater a meta de ${fmtBRL(META_FATURAMENTO)} este mês. Com ${diasRestantes} dia(s) restante(s), são ${fmtBRL(falta/diasRestantes)}/dia.` });
+      dicas.push({ icone: DICA_ICONES.alvo, html: `Faltam <b>${fmtBRL(falta)}</b> pra bater a meta de ${fmtBRL(META_FATURAMENTO)} este mês. Com ${diasRestantes} dia(s) restante(s), são ${fmtBRL(falta/diasRestantes)}/dia.` });
     }
   }
 
@@ -3044,9 +3080,9 @@ function renderDicas() {
   if (m.agendadas.length >= 3) {
     const pctNoShow = Math.round((m.noShow.length / m.agendadas.length) * 100);
     if (pctNoShow >= 20) {
-      dicas.push({ icone: '👻', html: `<b>${pctNoShow}%</b> das reuniões agendadas viraram no-show este mês (${m.noShow.length} de ${m.agendadas.length}). Vale mandar lembrete de confirmação um dia antes.` });
+      dicas.push({ icone: DICA_ICONES.alerta, html: `<b>${pctNoShow}%</b> das reuniões agendadas viraram no-show este mês (${m.noShow.length} de ${m.agendadas.length}). Vale mandar lembrete de confirmação um dia antes.` });
     } else if (m.noShow.length > 0) {
-      dicas.push({ icone: '🔎', html: `${m.noShow.length} no-show este mês (${pctNoShow}% dos agendados) — dentro do esperado.` });
+      dicas.push({ icone: DICA_ICONES.olho, html: `${m.noShow.length} no-show este mês (${pctNoShow}% dos agendados) — dentro do esperado.` });
     }
   }
 
@@ -3054,16 +3090,16 @@ function renderDicas() {
   if (m.agendadas.length >= 3) {
     const pct = Math.round((m.realizadas.length / m.agendadas.length) * 100);
     if (pct < 60) {
-      dicas.push({ icone: '🚦', html: `Só <b>${pct}%</b> das reuniões agendadas viraram realizadas este mês (${m.realizadas.length} de ${m.agendadas.length}). Vale reforçar confirmação de presença com a SDR.` });
+      dicas.push({ icone: DICA_ICONES.alertaCirculo, html: `Só <b>${pct}%</b> das reuniões agendadas viraram realizadas este mês (${m.realizadas.length} de ${m.agendadas.length}). Vale reforçar confirmação de presença com a SDR.` });
     } else {
-      dicas.push({ icone: '🤝', html: `<b>${pct}%</b> das reuniões agendadas foram realizadas este mês (${m.realizadas.length} de ${m.agendadas.length}) — taxa saudável.` });
+      dicas.push({ icone: DICA_ICONES.check, html: `<b>${pct}%</b> das reuniões agendadas foram realizadas este mês (${m.realizadas.length} de ${m.agendadas.length}) — taxa saudável.` });
     }
   }
 
   // 4. conversão realizada -> venda
   if (m.realizadas.length >= 3) {
     const pctFechamento = Math.round((m.vendas.length / m.realizadas.length) * 100);
-    dicas.push({ icone: '💼', html: `De cada 10 reuniões realizadas, <b>${(pctFechamento/10).toFixed(1)}</b> viram venda (${pctFechamento}% de fechamento — ${m.vendas.length} venda(s) em ${m.realizadas.length} reunião(ões)).` });
+    dicas.push({ icone: DICA_ICONES.maleta, html: `De cada 10 reuniões realizadas, <b>${(pctFechamento/10).toFixed(1)}</b> viram venda (${pctFechamento}% de fechamento — ${m.vendas.length} venda(s) em ${m.realizadas.length} reunião(ões)).` });
   }
 
   // 5. gargalo do funil
@@ -3073,13 +3109,13 @@ function renderDicas() {
   ].filter(e => e.de > 0);
   if (etapas.length) {
     const pior = etapas.map(e => ({...e, pct: e.para/e.de})).sort((a,b) => a.pct-b.pct)[0];
-    dicas.push({ icone: '🕳️', html: `O maior gargalo do funil este mês é <b>${pior.nome}</b>: só ${Math.round(pior.pct*100)}% passam dessa etapa pra próxima.` });
+    dicas.push({ icone: DICA_ICONES.funil, html: `O maior gargalo do funil este mês é <b>${pior.nome}</b>: só ${Math.round(pior.pct*100)}% passam dessa etapa pra próxima.` });
   }
 
   // 6. vendas necessárias pra bater a meta
   if (ehMesAtual && m.faturamentoTotal < META_FATURAMENTO && m.ticketMedio > 0) {
     const faltam = Math.ceil((META_FATURAMENTO - m.faturamentoTotal) / m.ticketMedio);
-    dicas.push({ icone: '🧭', html: `No ritmo atual (ticket médio de ${fmtBRL(m.ticketMedio)}), faltam ~<b>${faltam} venda(s)</b> pra bater a meta do mês.` });
+    dicas.push({ icone: DICA_ICONES.bussola, html: `No ritmo atual (ticket médio de ${fmtBRL(m.ticketMedio)}), faltam ~<b>${faltam} venda(s)</b> pra bater a meta do mês.` });
   }
 
   // 7. comparação com o mês anterior
@@ -3089,7 +3125,7 @@ function renderDicas() {
     const anterior = serieComp[idxAtual - 1];
     if (anterior.faturamento > 0) {
       const variacao = Math.round(((m.faturamentoTotal - anterior.faturamento) / anterior.faturamento) * 100);
-      const seta = variacao >= 0 ? '📈' : '📉';
+      const seta = variacao >= 0 ? DICA_ICONES.tendenciaAlta : DICA_ICONES.tendenciaBaixa;
       dicas.push({ icone: seta, html: `Faturamento ${variacao >= 0 ? 'subiu' : 'caiu'} <b>${Math.abs(variacao)}%</b> em relação ao mês anterior (${fmtBRL(anterior.faturamento)} → ${fmtBRL(m.faturamentoTotal)}).` });
     }
   }
@@ -3097,7 +3133,7 @@ function renderDicas() {
   // 8. reuniões atrasadas sem atualização de status
   const atrasadas = negocios.filter(n => n.status === 'agendada' && n.data_agendada < hojeStr());
   if (atrasadas.length) {
-    dicas.push({ icone: '🗂️', html: `Você tem <b>${atrasadas.length}</b> reunião(ões) com data já passada e ainda marcadas como "agendada" — atualize pra realizada, no-show ou remarcada.` });
+    dicas.push({ icone: DICA_ICONES.calendarioAlerta, html: `Você tem <b>${atrasadas.length}</b> reunião(ões) com data já passada e ainda marcadas como "agendada" — atualize pra realizada, no-show ou remarcada.` });
   }
 
   document.getElementById('dicas').innerHTML = dicas.length
@@ -3107,20 +3143,29 @@ function renderDicas() {
   renderFunilComparativo();
 }
 
-// ---------- FUNIL ATUAL x FUNIL IDEAL ----------
+// ---------- FUNIL ATUAL x FUNIL IDEAL (formato de funil de verdade) ----------
 const ESTAGIO_MQL_ID = 13; // estágio "MQL" do funil "[SDR] - Lead Magnet - Linkedin" — representa leads de alto potencial
-const FUNIL_IDEAL = [
-  { chave: 'leads', nome: 'Leads', icone: '🧲', meta: 500 },
-  { chave: 'mql', nome: 'Leads alto potencial (MQL)', icone: '🔥', meta: 300 },
-  { chave: 'agendadas', nome: 'Reuniões agendadas', icone: '🗓️', meta: 60 },
-  { chave: 'realizadas', nome: 'Reuniões realizadas', icone: '🤝', meta: 50 },
-  { chave: 'vendas', nome: 'Vendas', icone: '💼', meta: 10 },
-  { chave: 'faturamento', nome: 'Faturamento', icone: '💰', meta: 30000 },
+const FUNIL_ETAPAS = [
+  { chave: 'leads', nome: 'Leads', meta: 500 },
+  { chave: 'mql', nome: 'Leads alto potencial (MQL)', meta: 300 },
+  { chave: 'agendadas', nome: 'Reuniões agendadas', meta: 60 },
+  { chave: 'realizadas', nome: 'Reuniões realizadas', meta: 50 },
+  { chave: 'vendas', nome: 'Vendas', meta: 10 },
 ];
+const FUNIL_META_FATURAMENTO = 30000;
+
+function funilTrapezio(topPct, bottomPct) {
+  const tl = (50 - topPct / 2).toFixed(2), tr = (50 + topPct / 2).toFixed(2);
+  const bl = (50 - bottomPct / 2).toFixed(2), br = (50 + bottomPct / 2).toFixed(2);
+  return `polygon(${tl}% 0%, ${tr}% 0%, ${br}% 100%, ${bl}% 100%)`;
+}
+function funilEscala(v, max) { return Math.max(14, Math.sqrt(Math.max(0, v) / max) * 100); }
 
 async function renderFunilComparativo() {
-  const container = document.getElementById('funil-comparativo-linhas');
-  if (!container) return;
+  const colEl = document.getElementById('funil-shape-col');
+  const labelsEl = document.getElementById('funil-shape-labels');
+  const fatEl = document.getElementById('funil-comp-faturamento');
+  if (!colEl || !labelsEl || !fatEl) return;
   const mesRef = fmtMesRef(new Date()); // sempre o mês corrente de verdade, não o mês navegado no topo
 
   const leadsAtual = tallySubmissions.filter(s => s.data.startsWith(mesRef)).length;
@@ -3137,25 +3182,45 @@ async function renderFunilComparativo() {
   const vendasAtual = negocios.filter(n => noMes(n.data_venda, mesRef)).length;
   const faturamentoAtual = negocios.filter(n => noMes(n.data_faturamento, mesRef)).reduce((s, n) => s + Number(n.valor_faturado || 0), 0);
 
-  const valores = { leads: leadsAtual, mql: mqlAtual, agendadas: agendadasAtual, realizadas: realizadasAtual, vendas: vendasAtual, faturamento: faturamentoAtual };
+  const valores = { leads: leadsAtual, mql: mqlAtual, agendadas: agendadasAtual, realizadas: realizadasAtual, vendas: vendasAtual };
+  const idealVals = FUNIL_ETAPAS.map(e => e.meta);
+  const maxEscala = Math.max(...idealVals, ...FUNIL_ETAPAS.map(e => valores[e.chave]));
 
-  container.innerHTML = FUNIL_IDEAL.map(f => {
-    const atual = valores[f.chave];
-    const pctBarra = f.meta ? Math.min(100, Math.round((atual / f.meta) * 100)) : 0;
-    const pctReal = f.meta ? Math.round((atual / f.meta) * 100) : 0;
-    const cor = pctReal >= 100 ? 'var(--good)' : pctReal >= 60 ? 'var(--warning)' : 'var(--critical)';
-    const fmtValor = f.chave === 'faturamento' ? fmtBRL(atual) : atual;
-    const fmtMeta = f.chave === 'faturamento' ? fmtBRL(f.meta) : f.meta;
+  const larguras = FUNIL_ETAPAS.map((e, i) => {
+    const top = funilEscala(idealVals[i], maxEscala);
+    const bottom = i < FUNIL_ETAPAS.length - 1 ? funilEscala(idealVals[i + 1], maxEscala) : top * 0.6;
+    return { top, bottom };
+  });
+
+  colEl.innerHTML = FUNIL_ETAPAS.map((e, i) => {
+    const atual = valores[e.chave];
+    const pct = e.meta ? Math.min(1, atual / e.meta) : 0;
+    const { top, bottom } = larguras[i];
     return `
-      <div class="funil-comp-linha">
-        <div class="funil-comp-topo">
-          <span class="funil-comp-nome">${f.icone} ${f.nome}</span>
-          <span class="funil-comp-valores"><b style="color:${cor}">${fmtValor}</b> <span class="muted">/ ${fmtMeta}</span></span>
-        </div>
-        <div class="funil-comp-trilho"><div class="funil-comp-barra" style="width:${pctBarra}%; background:${cor}"></div></div>
+      <div class="funil-shape-seg" style="clip-path:${funilTrapezio(top, bottom)}">
+        <div class="funil-shape-fill" style="clip-path:${funilTrapezio(top * pct, bottom * pct)}"></div>
       </div>
     `;
   }).join('');
+
+  labelsEl.innerHTML = FUNIL_ETAPAS.map(e => {
+    const atual = valores[e.chave];
+    return `
+      <div class="funil-shape-label-row">
+        <div class="funil-shape-label-nome">${e.nome}</div>
+        <div class="funil-shape-label-valores"><b>${atual}</b> / ${e.meta}</div>
+      </div>
+    `;
+  }).join('');
+
+  const pctFat = Math.min(100, Math.round((faturamentoAtual / FUNIL_META_FATURAMENTO) * 100));
+  fatEl.innerHTML = `
+    <div class="funil-fat-topo">
+      <span class="funil-fat-nome">Faturamento do mês</span>
+      <span class="funil-fat-valores"><b>${fmtBRL(faturamentoAtual)}</b> <span class="muted">/ ${fmtBRL(FUNIL_META_FATURAMENTO)}</span></span>
+    </div>
+    <div class="funil-fat-trilho"><div class="funil-fat-barra" style="width:${pctFat}%"></div></div>
+  `;
 }
 
 // ---------- HISTÓRICO / GRÁFICOS ----------
