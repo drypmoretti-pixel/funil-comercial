@@ -414,70 +414,30 @@ form.form-grid button { grid-column: 1 / -1; }
 }
 .btn-secondary { background: var(--field-bg) !important; color: var(--text-primary) !important; }
 
-/* ---- Social Selling (playbook) ---- */
-.ss-hero { background: var(--accent-wash); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 18px; margin-bottom: 16px; }
-.ss-hero h2 { font-size: 1.15rem; margin-bottom: 6px; }
-.ss-hero p { margin: 0; font-size: .88rem; color: var(--text-secondary); max-width: 60ch; }
-.ss-nums { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 14px; }
-.ss-num b { display: block; font-size: 1.35rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
-.ss-num span { font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; color: var(--text-secondary); }
-.ss-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
-.ss-nav button { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary); padding: 6px 13px; border-radius: 999px; font-size: .8rem; cursor: pointer; white-space: nowrap; }
-.ss-nav button:hover { border-color: var(--accent); color: var(--accent); }
-.ss-nav button.active { background: var(--text-primary); color: #fff; border-color: var(--text-primary); }
-.ss-sec { display: none; }
-.ss-sec.active { display: block; }
-.ss-sec h3 { font-size: 1rem; margin: 22px 0 8px; }
-.ss-sec h3:first-child { margin-top: 0; }
-.ss-sec p { font-size: .9rem; line-height: 1.6; margin: 0 0 12px; max-width: 68ch; }
-.ss-sec ul, .ss-sec ol { font-size: .89rem; line-height: 1.6; padding-left: 20px; margin: 0 0 14px; max-width: 68ch; }
-.ss-sec li { margin-bottom: 5px; }
-.ss-callout { border-left: 3px solid var(--accent); background: var(--accent-wash); border-radius: 8px; padding: 12px 14px; margin: 14px 0; }
-.ss-callout p { margin: 0 0 8px; font-size: .87rem; }
-.ss-callout p:last-child { margin-bottom: 0; }
-.ss-callout .ss-tag { display: block; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 6px; }
-.ss-callout.warn { border-left-color: var(--serious); background: #fdf1ea; }
-.ss-callout.warn .ss-tag { color: var(--serious); }
-.ss-script { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; background: var(--surface-1); }
-.ss-script-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 9px 12px; background: var(--field-bg); border-bottom: 1px solid var(--border); }
-.ss-script-head .ss-t { font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
-.ss-script-head .ss-goal { font-size: .78rem; color: var(--text-secondary); flex: 1; min-width: 130px; }
-.ss-copy { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary); border-radius: 6px; padding: 4px 11px; font-size: .72rem; cursor: pointer; white-space: nowrap; font-weight: 600; }
+/* ---- Social Selling: playbook de mensagens ---- */
+.ss-doc { max-width: 620px; margin: 0 auto; padding: 6px 4px 60px; }
+.ss-doc h2 { font-size: 1.3rem; margin: 0 0 6px; }
+.ss-doc .ss-sub { color: var(--text-secondary); font-size: .9rem; line-height: 1.55; margin: 0 0 24px; }
+.ss-regras { border-left: 2px solid var(--accent); padding: 2px 0 2px 14px; margin: 0 0 8px; }
+.ss-regras p { margin: 0 0 4px; font-size: .85rem; line-height: 1.55; color: var(--text-secondary); }
+.ss-regras p b { color: var(--text-primary); }
+.ss-trilha { margin-top: 44px; padding-top: 26px; border-top: 1px solid var(--border); }
+.ss-trilha h3 { font-size: 1.08rem; margin: 0 0 4px; }
+.ss-quem { font-size: .85rem; color: var(--muted); line-height: 1.55; margin: 0 0 24px; }
+.ss-bloco { margin-bottom: 26px; }
+.ss-bloco-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 7px; }
+.ss-bloco-head .ss-t { font-size: .7rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+.ss-bloco-head .ss-quando { font-size: .76rem; color: var(--muted); flex: 1; min-width: 0; }
+.ss-copy { border: 1px solid var(--border); background: none; color: var(--muted); border-radius: 6px; padding: 3px 10px; font-size: .7rem; cursor: pointer; white-space: nowrap; }
 .ss-copy:hover { border-color: var(--accent); color: var(--accent); }
 .ss-copy.ok { background: var(--good); color: #fff; border-color: var(--good); }
-.ss-msg { padding: 14px; white-space: pre-wrap; font-size: .92rem; line-height: 1.55; }
-.ss-var { background: var(--accent-wash); color: #087a08; padding: 0 3px; border-radius: 3px; font-weight: 600; }
-.ss-why { padding: 10px 14px; border-top: 1px solid var(--grid); background: var(--field-bg); font-size: .79rem; color: var(--text-secondary); line-height: 1.5; }
-.ss-branch { border-left: 2px solid var(--grid); padding-left: 14px; margin-bottom: 14px; }
-.ss-branch .ss-q { font-weight: 700; font-size: .89rem; margin-bottom: 3px; }
-.ss-branch .ss-a { font-size: .86rem; color: var(--text-secondary); line-height: 1.55; }
-.ss-pill { display: inline-block; font-size: .63rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: 999px; vertical-align: middle; margin-left: 4px; }
-.ss-pill.go { background: var(--accent-wash); color: var(--good); }
-.ss-pill.no { background: #fdf1ea; color: var(--serious); }
-.ss-pill.wait { background: var(--field-bg); color: var(--muted); }
-.ss-cad { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-.ss-cad span { font-size: .74rem; border: 1px solid var(--border); border-radius: 6px; padding: 4px 9px; color: var(--text-secondary); white-space: nowrap; }
-.ss-cad span b { color: var(--accent); }
-.ss-roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-bottom: 16px; }
-.ss-role { border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
-.ss-role .who { font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; color: var(--accent); font-weight: 800; }
-.ss-role h4 { margin: 2px 0 0; font-size: .95rem; }
-.ss-role .qty { font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; display: block; margin: 6px 0 0; line-height: 1.1; }
-.ss-role .qty small { font-size: .7rem; font-weight: 500; color: var(--muted); }
-.ss-role p { font-size: .81rem; color: var(--text-secondary); margin: 8px 0 0; }
-.ss-table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-bottom: 14px; }
-.ss-table th { text-align: left; font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; padding: 8px; background: var(--field-bg); white-space: nowrap; }
-.ss-table td { padding: 8px; border-bottom: 1px solid var(--grid); vertical-align: top; line-height: 1.5; }
-.ss-table tr:last-child td { border-bottom: none; }
-.ss-table td.n, .ss-table th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.ss-table tr.hi td { background: var(--accent-wash); }
-.ss-rotina { list-style: none; padding: 0; margin: 0 0 14px; }
-.ss-rotina li { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--grid); font-size: .88rem; line-height: 1.5; }
-.ss-rotina li:last-child { border-bottom: none; }
-.ss-rotina .h { flex: 0 0 52px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
-@media (max-width: 640px) {
-  .ss-nav { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
-}
+.ss-msg { white-space: pre-wrap; font-size: .95rem; line-height: 1.6; padding: 15px 16px; background: var(--field-bg); border-radius: 10px; }
+.ss-var { color: var(--muted); }
+.ss-nota { font-size: .78rem; color: var(--muted); line-height: 1.5; margin: 7px 0 0; }
+.ss-resp { margin: 0; }
+.ss-resp dt { font-size: .88rem; font-weight: 700; margin: 0 0 3px; }
+.ss-resp dd { margin: 0 0 18px; font-size: .89rem; line-height: 1.6; color: var(--text-secondary); padding-left: 14px; border-left: 1px solid var(--grid); }
+.ss-resp dd:last-child { margin-bottom: 0; }
 
 </style>
 </head>
@@ -509,7 +469,7 @@ form.form-grid button { grid-column: 1 / -1; }
         <button data-tab="dicas" title="Dicas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
         <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
         <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
-        <button data-tab="social" title="Social Selling"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        <button data-tab="social" title="Playbook de Mensagens"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         <button data-tab="whatsapp" title="WhatsApp" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span id="whats-badge" style="display:none; position:absolute; top:6px; right:10px; width:8px; height:8px; border-radius:50%; background:var(--critical);"></span></button>
       </nav>
     </aside>
@@ -748,568 +708,268 @@ form.form-grid button { grid-column: 1 / -1; }
     </div>
 
     <div class="tab-panel" id="tab-social">
+      <div class="ss-doc">
 
-      <div class="ss-hero">
-        <h2>Playbook de Social Selling</h2>
-        <p>Como reativar as 5.075 conexões do LinkedIn e transformar quem baixou material de IA em reunião de venda consultiva. Todo script tem botão de copiar — edite a primeira linha antes de enviar.</p>
-        <div class="ss-nums">
-          <div class="ss-num"><b>5.075</b><span>conexões</span></div>
-          <div class="ss-num"><b>1.283</b><span>com telefone e e-mail</span></div>
-          <div class="ss-num"><b>216</b><span>decisores parados</span></div>
-          <div class="ss-num"><b>5</b><span>toques por lead</span></div>
-        </div>
-      </div>
+        <h2>Playbook de Mensagens</h2>
+        <p class="ss-sub">Social selling no LinkedIn — Igor, Bruno e SDR. Cada lead recebe até 5 toques ao longo de 15 dias.</p>
 
-      <div class="ss-nav">
-        <button class="active" onclick="ssMostrar('estrategia', this)">Estratégia</button>
-        <button onclick="ssMostrar('base', this)">A base</button>
-        <button onclick="ssMostrar('divisao', this)">Divisão do time</button>
-        <button onclick="ssMostrar('trilhaa', this)">Trilha A · Igor</button>
-        <button onclick="ssMostrar('trilhab', this)">Trilha B · Bruno</button>
-        <button onclick="ssMostrar('trilhac', this)">Trilha C · SDR</button>
-        <button onclick="ssMostrar('respondeu', this)">Respondeu</button>
-        <button onclick="ssMostrar('qualificacao', this)">Qualificação</button>
-        <button onclick="ssMostrar('objecoes', this)">Objeções</button>
-        <button onclick="ssMostrar('rotina', this)">Rotina</button>
-        <button onclick="ssMostrar('metas', this)">Metas</button>
-      </div>
-
-      <!-- ============ ESTRATÉGIA ============ -->
-      <section class="card ss-sec active" id="ss-estrategia">
-        <h3>Sua base não é sua base</h3>
-        <p>Os números reais do CRM e do Tally, lidos em 12/08/2026:</p>
-        <div class="tabela-wrap">
-          <table class="ss-table">
-            <thead><tr><th>Material que trouxe o lead</th><th class="n">Downloads</th><th>Do que fala</th></tr></thead>
-            <tbody>
-              <tr><td>Agente de Prospecção Ativa</td><td class="n">696</td><td>Automação de prospecção</td></tr>
-              <tr><td>Claude + N8N + CRM</td><td class="n">557</td><td>Automação de processo</td></tr>
-              <tr><td>Claude + ManyChat</td><td class="n">266</td><td>Automação de atendimento</td></tr>
-              <tr><td>Claude Cowork para PMEs</td><td class="n">245</td><td>Produtividade com IA</td></tr>
-              <tr><td>Kit de design com IA</td><td class="n">189</td><td>Produtividade com IA</td></tr>
-              <tr class="hi"><td>Materiais de Demanda Infinita (Framework/Guia LinkedIn)</td><td class="n">~55</td><td>A oferta que a gente vende</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p><b>Praticamente ninguém nessa base levantou a mão para "gerar reunião no LinkedIn".</b> Levantaram a mão para "quero usar IA". No CRM, só 6 cards têm a tag Demanda Infinita, contra 418 de Prospecção Ativa e 182 de Claude+N8N+CRM.</p>
-        <p>É isso que explica os 157 leads já perdidos por "sem perfil de ICP". O script não está fraco — o material prometeu uma conversa e a call entrega outra.</p>
-
-        <div class="ss-callout">
-          <span class="ss-tag">A ponte — o conceito central deste playbook</span>
-          <p>Toda abordagem precisa atravessar do assunto que ele pediu (<i>IA / automação</i>) para o assunto que a gente vende (<i>demanda previsível</i>). A ponte honesta é sempre a mesma frase, em versões diferentes:</p>
-          <p><b>"Automação resolve o que fazer com o lead. Ela não resolve o lead não existir."</b></p>
-          <p>Quem tem lead sobrando responde "aqui o problema é outro" e se autodesqualifica de graça. Quem não tem, responde a pergunta. Nos dois casos você ganha informação já no primeiro toque.</p>
+        <div class="ss-regras">
+          <p><b>Antes de mandar qualquer coisa:</b></p>
+          <p>1. Edite a primeira linha à mão. Se as 50 do dia forem idênticas, é spam.</p>
+          <p>2. Nenhum link no primeiro toque.</p>
+          <p>3. Máximo de 50 mensagens por dia por perfil, incluindo os follow-ups.</p>
+          <p>4. Quem responde sai da cadência — a conversa manda, não o calendário.</p>
         </div>
 
-        <h3>Ponte por material baixado</h3>
-        <div class="tabela-wrap">
-          <table class="ss-table">
-            <thead><tr><th>Se ele baixou…</th><th>A ponte é</th></tr></thead>
-            <tbody>
-              <tr><td>Agente de Prospecção Ativa</td><td>"O agente dispara. Quem decide <i>pra quem</i> e <i>o que falar</i> ainda é você — e é aí que a resposta morre."</td></tr>
-              <tr><td>Claude + N8N + CRM</td><td>"Você organizou o meio do funil. O topo continua dependendo de indicação?"</td></tr>
-              <tr><td>ManyChat, Secretária IA, Resgate de Leads, Proposta Automática</td><td>"Você automatizou o atendimento. Entra lead suficiente pra isso valer a pena?"</td></tr>
-              <tr><td>Claude Cowork, Design, MCP, VSCode, Skills</td><td>"Essas skills devolvem tempo. Hoje seu gargalo é tempo ou é cliente novo?"</td></tr>
-              <tr><td>Framework/Guia LinkedIn, Funil LinkedIn</td><td>Sem ponte — vá direto ao assunto. Esses ~55 são a base mais quente que existe.</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <!-- ================= TRILHA A ================= -->
+        <div class="ss-trilha">
+          <h3>Trilha A — Igor</h3>
+          <p class="ss-quem">Decisores que já baixaram algum material. Começar pelos que estão parados em "MQL Frio" no CRM.</p>
 
-        <h3>A anatomia que já converteu</h3>
-        <p>A conversa com o Fernando (Adapta) virou venda. Todos os scripts abaixo saem dela — seis movimentos, nenhum deles é pitch:</p>
-        <div class="tabela-wrap">
-          <table class="ss-table">
-            <thead><tr><th class="n">#</th><th>Movimento</th><th>O que ele faz</th></tr></thead>
-            <tbody>
-              <tr><td class="n">1</td><td>Entrega sem pedir nada</td><td>Material vai, cobrança não vem. Cria crédito.</td></tr>
-              <tr><td class="n">2</td><td>Reaquecimento curto</td><td>"E aí, tudo bem com você?" duas semanas depois, sem assunto comercial.</td></tr>
-              <tr><td class="n">3</td><td>Pergunta ancorada em observação real</td><td>"Vi que você tem produzido conteúdo… como está indo?" Só funciona se for verdade.</td></tr>
-              <tr><td class="n">4</td><td>Espelho da dor</td><td>"Os conteúdos são bons mas não tracionam. Eu passava muito por isso."</td></tr>
-              <tr><td class="n">5</td><td>Convite de baixo atrito</td><td>"Posso te dar uma clareza" — não "reunião", não "apresentação".</td></tr>
-              <tr><td class="n">6</td><td>Data proposta, não perguntada</td><td>"Quinta (02/07) às 15:00, pode ser?" E só <i>depois</i> pede e-mail e telefone.</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="ss-callout warn">
-          <span class="ss-tag">O que o time mais vai errar</span>
-          <p>O movimento 3 não escala por cópia. Ele funcionou porque era <b>verdade sobre o Fernando</b>. Cada T1 exige 20 segundos de olho no perfil da pessoa — se não houver observação real, não manda: pula o lead. Trinta mensagens específicas valem mais que cinquenta genéricas, e a diferença aparece já na primeira semana.</p>
-        </div>
-      </section>
-
-      <!-- ============ BASE ============ -->
-      <section class="card ss-sec" id="ss-base">
-        <h3>Quem está lá dentro</h3>
-        <p>Dos 5.075, o CRM tem <b>1.283 leads abertos com nome, cargo, telefone e e-mail</b> — todos os 1.283 com telefone, o que libera o WhatsApp como segundo canal. O resto (~3.800) é conexão sem ficha: entra na fila depois, triada pela headline do LinkedIn.</p>
-        <div class="tabela-wrap">
-          <table class="ss-table">
-            <thead><tr><th>Tier</th><th>Cargo declarado</th><th class="n">Leads</th><th>Como tratar</th></tr></thead>
-            <tbody>
-              <tr class="hi"><td><b>A · Decisor</b></td><td>CEO/Fundador, Diretor, Empresário</td><td class="n">373</td><td>ICP direto. Fila do Igor.</td></tr>
-              <tr><td><b>B · Influência</b></td><td>Head, Gerente</td><td class="n">201</td><td>Não assina sozinho. Abordagem de aliado interno.</td></tr>
-              <tr><td><b>C · Ambíguo</b></td><td>Analista/Consultor</td><td class="n">312</td><td>Metade é CLT júnior, metade é consultor solo — que é <i>exatamente</i> o ICP. Exige 1 pergunta de triagem.</td></tr>
-              <tr><td><b>D · Fora</b></td><td>Dev, Estagiário</td><td class="n">68</td><td>Não abordar. Deixar na nutrição de conteúdo.</td></tr>
-              <tr><td><b>E · Sem dado</b></td><td>—</td><td class="n">329</td><td>Triar pela headline antes de gastar um toque.</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="ss-callout warn">
-          <span class="ss-tag">O achado mais caro da base</span>
-          <p>A coluna <b>"MQL Frio" tem 234 cards — e 216 deles (92%) são decisores.</b> É a maior concentração de ICP de todo o CRM. Do lado dela, "Novo lead" tem 406 cards e só 14 decisores.</p>
-          <p>Alguém empurrou os melhores leads da base para a coluna com o nome mais desanimador do funil. <b>É por esses 216 que a operação começa</b> — não pelos 406 nunca tocados.</p>
-        </div>
-
-        <h3>Ordem de ataque</h3>
-        <ol>
-          <li><b>216 decisores em "MQL Frio"</b> — melhor relação esforço/retorno da base inteira.</li>
-          <li><b>57 decisores em "Mensagem enviada" + 24 em "Follow Up"</b> — já receberam algo e não voltaram; entram com quebra de padrão, não com mensagem nova.</li>
-          <li><b>~55 leads das iscas de LinkedIn/Demanda Infinita</b> — poucos, mas sem necessidade de ponte.</li>
-          <li><b>201 heads e gerentes</b> — fila do Bruno.</li>
-          <li><b>312 "Analista/Consultor"</b> — fila do Bruno, com pergunta de triagem no primeiro toque.</li>
-          <li><b>329 sem cargo + 406 "Novo lead"</b> — triagem por headline antes de entrar em qualquer fila.</li>
-        </ol>
-      </section>
-
-      <!-- ============ DIVISÃO ============ -->
-      <section class="card ss-sec" id="ss-divisao">
-        <h3>Quem faz o quê, e quanto</h3>
-        <div class="ss-roles">
-          <div class="ss-role">
-            <div class="who">Perfil do Igor</div>
-            <h4>Autoridade</h4>
-            <span class="qty">50<small> msg/dia</small></span>
-            <p>Só Tier A da base morna. O material foi dele, o rosto é dele — é o perfil com maior taxa de resposta e não pode ser gasto com lead frio.</p>
-          </div>
-          <div class="ss-role">
-            <div class="who">Perfil do Bruno · Closer</div>
-            <h4>Volume qualificado</h4>
-            <span class="qty">50<small> msg/dia</small></span>
-            <p>Tier B e C da base morna, mais o Tier A que o Igor não alcançar. Entra sempre com ponte de credibilidade pelo Igor.</p>
-          </div>
-          <div class="ss-role">
-            <div class="who">Perfil da SDR</div>
-            <h4>Base nova</h4>
-            <span class="qty">15→25<small> convites/dia</small></span>
-            <p>Prospecção fria: conexão, entrega de isca, depois cadência. Volume de convite sobe em rampa — não começa em 50.</p>
-          </div>
-        </div>
-
-        <div class="ss-callout warn">
-          <span class="ss-tag">Dois ajustes obrigatórios no plano de 150/dia</span>
-          <p><b>1. A SDR não pode mandar 50 convites por dia.</b> Perfil novo disparando 50 convites diários é o padrão clássico de restrição do LinkedIn — e a conta some junto com a operação. Rampa: 15/dia na semana 1, 20 na semana 2, 25 daí em diante. As outras ~25 abordagens dela do dia são mensagens para quem <i>já aceitou</i>.</p>
-          <p><b>2. Cinco toques por lead mudam a matemática.</b> Um lead consome ~4,5 mensagens ao longo de 15 dias. Se o Igor abrir 50 leads novos hoje, no dia 3 ele deve 50 segundos toques <i>mais</i> os 50 novos — e a fila estoura em uma semana. O teto de 50 mensagens/dia por perfil é <b>total</b>, não só de leads novos.</p>
-        </div>
-
-        <h3>Regime de cruzeiro por perfil</h3>
-        <div class="tabela-wrap">
-          <table class="ss-table">
-            <thead><tr><th>Semana</th><th class="n">Leads novos/dia</th><th class="n">Follow-ups/dia</th><th class="n">Total/dia</th></tr></thead>
-            <tbody>
-              <tr><td>Semana 1 — só T1</td><td class="n">30</td><td class="n">0–20</td><td class="n">30–50</td></tr>
-              <tr><td>Semana 2 — cadência enchendo</td><td class="n">18</td><td class="n">32</td><td class="n">50</td></tr>
-              <tr class="hi"><td>Semana 3 em diante — estável</td><td class="n">12</td><td class="n">38</td><td class="n">50</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>Em regime estável, Igor e Bruno juntos abrem <b>~24 leads novos por dia</b> (≈ 500/mês, exatamente a meta de leads do painel) e mantêm ~500 conversas vivas em cadência. A base de 1.283 é coberta em cerca de 8 semanas.</p>
-
-        <h3>Regras que protegem as contas</h3>
-        <ul>
-          <li>Máximo <b>50 mensagens/dia por perfil</b>, em 3 blocos ao longo do dia — nunca em rajada.</li>
-          <li><b>Nenhum link no primeiro toque.</b> Link em mensagem fria derruba entrega e marca a conta.</li>
-          <li>A primeira linha de toda mensagem é <b>editada à mão</b>. Se as 50 do dia forem idênticas, é spam — e a taxa de resposta prova isso em 48h.</li>
-          <li>Se a taxa de resposta de um perfil cair abaixo de <b>5% por dois dias seguidos</b>, para tudo nesse perfil e revisa o script antes de continuar.</li>
-          <li>Nada de ferramenta de automação disparando pelos perfis do Igor e do Bruno. Nesses dois, o custo de um bloqueio é maior que o ganho de velocidade.</li>
-        </ul>
-      </section>
-
-      <!-- ============ TRILHA A ============ -->
-      <section class="card ss-sec" id="ss-trilhaa">
-        <h3>Trilha A — Igor · decisores da base morna</h3>
-        <p>Público: os 373 do Tier A, começando pelos 216 em "MQL Frio". Voz: a do Igor, sem ajuste. O objetivo do toque 1 não é reunião — é resposta.</p>
-        <div class="ss-cad">
-          <span><b>D0</b> · T1 reativação</span>
-          <span><b>D+3</b> · T2 segmentação</span>
-          <span><b>D+7</b> · T3 diagnóstico</span>
-          <span><b>D+11</b> · T4 convite</span>
-          <span><b>D+15</b> · T5 porta fechada</span>
-        </div>
-
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T1 · D0</span><span class="ss-goal">Reabrir a conversa sem cobrar nada</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Fala <span class="ss-var">[Nome]</span>, bom demais?
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 1</span><span class="ss-quando">dia 0 · reabrir a conversa</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Fala <span class="ss-var">[Nome]</span>, bom demais?
 
 Vi aqui que você baixou o <span class="ss-var">[material]</span> lá atrás.
 
 Conseguiu colocar em prática ou ficou na pasta de downloads mesmo? kkk</div>
-          <div class="ss-why"><b>Por que funciona:</b> pergunta binária, fácil de responder, sem culpa. O humor derruba a defesa de "vem aí uma venda". Zero link, zero pitch.</div>
-        </div>
+            <p class="ss-nota">Pergunta fácil de responder e sem cobrança. Nada de link, nada de oferta.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T2 · D+3</span><span class="ss-goal">A ponte — de IA para demanda</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg"><span class="ss-var">[Nome]</span>, sem querer te encher —
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 2</span><span class="ss-quando">dia 3 · sem resposta</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg"><span class="ss-var">[Nome]</span>, sem querer te encher —
 
 tô mapeando quem tá tentando usar IA pra trazer cliente novo, não só pra ganhar tempo interno.
 
 Aí do seu lado hoje, o gargalo é tempo ou é demanda?</div>
-          <div class="ss-why"><b>Por que funciona:</b> é a ponte do playbook em forma de pergunta. Quem responde "demanda" acabou de se qualificar sozinho. Quem responde "tempo" sai da fila sem atrito.</div>
-        </div>
+            <p class="ss-nota">Quem responde "demanda" se qualificou sozinho. Quem responde "tempo" sai da fila sem atrito.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T3 · D+7</span><span class="ss-goal">Observação real + diagnóstico</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Passei no seu perfil hoje, <span class="ss-var">[Nome]</span>.
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 3</span><span class="ss-quando">dia 7 · só com observação real</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Passei no seu perfil hoje, <span class="ss-var">[Nome]</span>.
 
-<span class="ss-var">[observação verdadeira: postou X / parou de postar há N meses / mudou a headline / o conteúdo é bom mas não engaja]</span>
+<span class="ss-var">[o que você viu de verdade: postou X / parou de postar / mudou a headline / conteúdo bom que não engaja]</span>
 
 Como tá vindo cliente novo pra vocês hoje — indicação, tráfego ou LinkedIn?</div>
-          <div class="ss-why"><b>Por que funciona:</b> é o movimento 3 da conversa do Fernando. <b>Sem observação verdadeira, não manda esse toque</b> — pula direto para o T4.</div>
-        </div>
+            <p class="ss-nota">Se não tiver uma observação verdadeira sobre o perfil dele, pule este toque e vá para o 4.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T4 · D+11</span><span class="ss-goal">O convite que converteu</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg"><span class="ss-var">[Nome]</span>, olha —
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 4</span><span class="ss-quando">dia 11 · o convite</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg"><span class="ss-var">[Nome]</span>, olha —
 
 a maioria dos donos que eu converso tem entrega boa e autoridade real, mas depende de indicação e o conteúdo não vira reunião.
 
 Eu passava muito por isso.
 
 Se quiser, posso te dar uma clareza de como reverter isso aí. Um bate papo rápido, sem compromisso nenhum. O que acha?</div>
-          <div class="ss-why"><b>Por que funciona:</b> vende <i>clareza</i>, não reunião. E nomeia a dor canônica do ICP real — "tenho entrega e autoridade, mas dependo de indicação" — em vez de perguntar qual é a dor.</div>
-        </div>
+            <p class="ss-nota">Convida para uma clareza, não para uma reunião. Foi essa mensagem que converteu o Fernando.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T5 · D+15</span><span class="ss-goal">Encerrar — e por isso mesmo, converter</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Vou parar de te chamar aqui pra não virar chato, <span class="ss-var">[Nome]</span>.
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 5</span><span class="ss-quando">dia 15 · encerrar</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Vou parar de te chamar aqui pra não virar chato, <span class="ss-var">[Nome]</span>.
 
 Se em algum momento gerar reunião pelo LinkedIn virar prioridade aí, me chama que eu te ajudo.
 
 Fica na paz!</div>
-          <div class="ss-why"><b>Por que funciona:</b> é historicamente o toque com maior taxa de resposta da sequência. Tira a pressão e devolve o controle — muita gente responde exatamente aqui. Depois dele, o lead sai do LinkedIn e vai para nutrição.</div>
-        </div>
-      </section>
-
-      <!-- ============ TRILHA B ============ -->
-      <section class="card ss-sec" id="ss-trilhab">
-        <h3>Trilha B — Bruno · heads, consultores e o resto da base</h3>
-        <p>Público: 201 heads/gerentes, 312 "Analista/Consultor" e o Tier A que sobrar. O Bruno não tem o crédito do material — <b>ele empresta o do Igor no primeiro toque</b>. Mesma cadência de dias da Trilha A.</p>
-        <div class="ss-cad">
-          <span><b>D0</b> · T1 (dois começos)</span>
-          <span><b>D+3</b> · T2 ponte</span>
-          <span><b>D+7</b> · T3 prova</span>
-          <span><b>D+11</b> · T4 convite</span>
-          <span><b>D+15</b> · T5 porta fechada</span>
+            <p class="ss-nota">É o toque com mais resposta da sequência. Encerra de verdade — e é por isso que funciona.</p>
+          </div>
         </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T1 · D0 · Head / Gerente</span><span class="ss-goal">Ponte de credibilidade + triagem de autonomia</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Oi <span class="ss-var">[Nome]</span>, tudo certo?
+        <!-- ================= TRILHA B ================= -->
+        <div class="ss-trilha">
+          <h3>Trilha B — Bruno</h3>
+          <p class="ss-quem">Heads, gerentes e consultores da base. Como o material não foi dele, o primeiro toque empresta a credibilidade do Igor.</p>
+
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 1</span><span class="ss-quando">dia 0 · head ou gerente</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Oi <span class="ss-var">[Nome]</span>, tudo certo?
 
 Sou o Bruno, trabalho com o Igor Miguel aqui na Demanda Infinita — você baixou o <span class="ss-var">[material]</span> dele esses tempos.
 
 Tô olhando quem pegou o material e ficou sem tirar do papel.
 
 Aí na <span class="ss-var">[empresa]</span>, geração de demanda passa por você ou fica com outra área?</div>
-          <div class="ss-why"><b>Por que funciona:</b> a ponte com o Igor explica o contato, e a última pergunta descobre em um toque se essa pessoa é caminho ou beco — sem perguntar "você é o decisor?", que soa a script de vendas.</div>
-        </div>
+            <p class="ss-nota">A última pergunta descobre se essa pessoa é caminho ou beco, sem perguntar "você é o decisor?".</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T1 · D0 · Analista/Consultor</span><span class="ss-goal">Separar consultor solo de CLT júnior</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Fala <span class="ss-var">[Nome]</span>, beleza?
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 1</span><span class="ss-quando">dia 0 · analista ou consultor</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Fala <span class="ss-var">[Nome]</span>, beleza?
 
 Bruno aqui, da Demanda Infinita — você baixou o <span class="ss-var">[material]</span> do Igor.
 
 Curiosidade rápida: você atende clientes por conta própria ou trabalha dentro de uma empresa?
 
 Pergunto porque o que eu ia te mandar só serve pra um dos dois casos.</div>
-          <div class="ss-why"><b>Por que funciona:</b> uma pergunta resolve os 312 ambíguos. "Por conta própria" → é ICP, segue a cadência. "Dentro de uma empresa" → agradece, encerra, marca no CRM e nunca mais gasta toque ali.</div>
-        </div>
+            <p class="ss-nota">"Por conta própria" é ICP e segue a cadência. "Dentro de uma empresa" encerra ali.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T2 · D+3</span><span class="ss-goal">A ponte, versão Bruno</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg"><span class="ss-var">[Nome]</span>, uma coisa que a gente vê direto:
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 2</span><span class="ss-quando">dia 3 · sem resposta</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg"><span class="ss-var">[Nome]</span>, uma coisa que a gente vê direto:
 
 o pessoal automatiza o atendimento, a proposta, o CRM — e continua dependendo de indicação pra ter com quem falar.
 
 Automação resolve o que fazer com o lead. Não resolve o lead não existir.
 
 Aí hoje é qual dos dois?</div>
-          <div class="ss-why"><b>Por que funciona:</b> a ponte dita em voz alta. Direta o suficiente para o Bruno, que não tem a autoridade do Igor para fazer rodeio.</div>
-        </div>
+            <p class="ss-nota">Quase todo mundo dessa base baixou material de IA. Essa é a ponte para o assunto que a gente vende.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T3 · D+7</span><span class="ss-goal">Prova concreta, sem link</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Ó <span class="ss-var">[Nome]</span>, um caso rápido que talvez te sirva:
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 3</span><span class="ss-quando">dia 7 · prova</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Ó <span class="ss-var">[Nome]</span>, um caso rápido que talvez te sirva:
 
-<span class="ss-var">[cliente do mesmo porte/segmento]</span> chegou dependendo 100% de indicação. Em <span class="ss-var">[prazo]</span> passou a <span class="ss-var">[resultado concreto]</span> — sem gastar um real de tráfego.
+<span class="ss-var">[cliente do mesmo porte]</span> chegou dependendo 100% de indicação. Em <span class="ss-var">[prazo]</span> passou a <span class="ss-var">[resultado concreto]</span> — sem gastar um real de tráfego.
 
 Não foi ferramenta nova. Foi mudar quem ele atrai e o que ele fala.
 
 Quer que eu te conte como foi o desenho? Levo 15 minutos.</div>
-          <div class="ss-why"><b>Por que funciona:</b> o Bruno compensa a falta de autoridade própria com prova de terceiro. <b>Use um caso real e verificável</b> — se o lead pesquisar e não bater, você perde a conta e a conversa.</div>
-        </div>
+            <p class="ss-nota">Use caso real e verificável. Se o lead pesquisar e não bater, acabou a conversa.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T4 · D+11</span><span class="ss-goal">Convite direto</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg"><span class="ss-var">[Nome]</span>, deixa eu ser direto:
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 4</span><span class="ss-quando">dia 11 · o convite</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg"><span class="ss-var">[Nome]</span>, deixa eu ser direto:
 
 eu acho que dá pra você tirar reunião do LinkedIn sem tráfego pago e sem DM em massa — e em 20 minutos eu consigo te mostrar onde tá travando aí.
 
 Sem apresentação de slide, sem enrolação.
 
 <span class="ss-var">[dia da semana]</span> às <span class="ss-var">[hora]</span> funciona pra você?</div>
-          <div class="ss-why"><b>Por que funciona:</b> propõe data e hora, como no caso do Fernando. Pergunta aberta de agenda ("qual seu melhor horário?") é onde a conversa morre.</div>
-        </div>
+            <p class="ss-nota">Sempre proponha dia e hora. "Qual seu melhor horário?" é onde a conversa morre.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T5 · D+15</span><span class="ss-goal">Porta fechada</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Vou encerrar por aqui pra não ficar insistindo, <span class="ss-var">[Nome]</span>.
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 5</span><span class="ss-quando">dia 15 · encerrar</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Vou encerrar por aqui pra não ficar insistindo, <span class="ss-var">[Nome]</span>.
 
 Se mudar o momento aí e você quiser retomar, é só me chamar — fica registrado do meu lado.
 
 Sucesso!</div>
-          <div class="ss-why"><b>Por que funciona:</b> mesma mecânica do T5 do Igor. Encerra de verdade — e é justamente por isso que uma parte responde.</div>
-        </div>
-      </section>
-
-      <!-- ============ TRILHA C ============ -->
-      <section class="card ss-sec" id="ss-trilhac">
-        <h3>Trilha C — SDR · base nova, gente que não conhece a gente</h3>
-        <p>Aqui não existe crédito prévio: ninguém baixou nada, ninguém sabe quem você é. A trilha é mais longa e o objetivo do começo <b>não é reunião, é aceite de conexão e uma primeira resposta</b>.</p>
-        <p><b>Quem convidar:</b> fundador, sócio, CEO ou diretor · empresa de serviço B2B · 2 a 50 funcionários · Brasil · <b>ativo no LinkedIn nos últimos 30 dias</b>. Esse último filtro dobra a taxa de aceite e é o mais ignorado.</p>
-        <div class="ss-cad">
-          <span><b>D0</b> · convite</span>
-          <span><b>D+1 do aceite</b> · T1 boas-vindas</span>
-          <span><b>D+4</b> · T2 isca</span>
-          <span><b>D+8</b> · T3 pergunta</span>
-          <span><b>D+12</b> · T4 convite</span>
-          <span><b>D+16</b> · T5 porta fechada</span>
+            <p class="ss-nota">Mesma mecânica do toque 5 do Igor.</p>
+          </div>
         </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">Convite · D0</span><span class="ss-goal">Aceite — nota é opcional</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Oi <span class="ss-var">[Nome]</span>, acompanho o que você posta sobre <span class="ss-var">[tema]</span> e queria acompanhar de perto. Abraço!</div>
-          <div class="ss-why"><b>Por que funciona:</b> em perfis de fundador/CEO, convite <b>sem nota</b> costuma ter aceite maior — nota vira "vem venda aí". Se usar nota (máx. 200 caracteres), ela não pode ter nada comercial. Esse é o texto para quando escolher usar.</div>
-        </div>
+        <!-- ================= TRILHA C ================= -->
+        <div class="ss-trilha">
+          <h3>Trilha C — SDR</h3>
+          <p class="ss-quem">Perfis novos, que não conhecem a gente. Filtro de busca: fundador, sócio ou diretor · serviço B2B · 2 a 50 funcionários · ativo no LinkedIn nos últimos 30 dias.</p>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T1 · 1 dia após o aceite</span><span class="ss-goal">Existir sem vender</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Oi <span class="ss-var">[Nome]</span>, obrigada por aceitar!
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Convite</span><span class="ss-quando">dia 0 · nota opcional</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Oi <span class="ss-var">[Nome]</span>, acompanho o que você posta sobre <span class="ss-var">[tema]</span> e queria acompanhar de perto. Abraço!</div>
+            <p class="ss-nota">Em fundador e CEO, convite sem nota costuma ter mais aceite. Se usar nota, nada de comercial nela. Comece com 15 convites por dia e suba até 25 — 50 de cara derruba a conta.</p>
+          </div>
+
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 1</span><span class="ss-quando">1 dia depois do aceite</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Oi <span class="ss-var">[Nome]</span>, obrigada por aceitar!
 
 Vi que você <span class="ss-var">[observação real do perfil ou de um post]</span>.
 
 Trabalho com o Igor Miguel, a gente ajuda dono de empresa B2B a tirar reunião do LinkedIn sem tráfego pago.
 
 Mas hoje é só pra dizer oi mesmo. Como tá o movimento aí em <span class="ss-var">[mês]</span>?</div>
-          <div class="ss-why"><b>Por que funciona:</b> declara quem é e o que faz em uma linha — nada de esconder — e fecha com pergunta social, não comercial. Não pede nada.</div>
-        </div>
+            <p class="ss-nota">Diz quem é e o que faz em uma linha, e não pede nada.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T2 · D+4</span><span class="ss-goal">Entregar valor antes de pedir</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg"><span class="ss-var">[Nome]</span>, montei um material sobre como a gente estrutura o perfil e o conteúdo pra virar reunião — sem impulsionar nada.
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 2</span><span class="ss-quando">dia 4 · oferecer o material</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg"><span class="ss-var">[Nome]</span>, montei um material sobre como a gente estrutura o perfil e o conteúdo pra virar reunião — sem impulsionar nada.
 
 Posso te mandar aqui? Não tem pegadinha, é só o material mesmo.</div>
-          <div class="ss-why"><b>Por que funciona:</b> pede permissão antes de mandar o link. O "sim" já é micro-compromisso, e o link só entra na mensagem seguinte — protegendo a conta e a entrega.</div>
-        </div>
+            <p class="ss-nota">Pede permissão antes de mandar o link. O link só entra na mensagem seguinte.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T3 · D+8</span><span class="ss-goal">Diagnóstico</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">E aí <span class="ss-var">[Nome]</span>, deu pra dar uma olhada?
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 3</span><span class="ss-quando">dia 8 · a pergunta</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">E aí <span class="ss-var">[Nome]</span>, deu pra dar uma olhada?
 
 Uma pergunta que eu tenho feito pra todo mundo: hoje, de onde vem a maioria dos seus clientes novos — indicação, tráfego ou prospecção?</div>
-          <div class="ss-why"><b>Por que funciona:</b> a resposta "indicação" é o gatilho de qualificação da Trilha C inteira. É a dor canônica do ICP, dita pelo próprio lead.</div>
-        </div>
+            <p class="ss-nota">Resposta "indicação" é o sinal de qualificação desta trilha.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T4 · D+12</span><span class="ss-goal">Passar o bastão</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg"><span class="ss-var">[Nome]</span>, com base no que você me falou, acho que vale demais uns 20 minutos com o <span class="ss-var">[Igor / Bruno]</span>.
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 4</span><span class="ss-quando">dia 12 · passar o bastão</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg"><span class="ss-var">[Nome]</span>, com base no que você me falou, acho que vale demais uns 20 minutos com o <span class="ss-var">[Igor / Bruno]</span>.
 
 Não é apresentação comercial — é ele olhar o seu caso e te dizer o que mudaria primeiro.
 
 <span class="ss-var">[dia]</span> às <span class="ss-var">[hora]</span> fica bom?</div>
-          <div class="ss-why"><b>Por que funciona:</b> a SDR passa o bastão nomeando quem vai atender e o que vai acontecer. Previsibilidade derruba no-show.</div>
-        </div>
+            <p class="ss-nota">Diz quem vai atender e o que vai acontecer. Previsibilidade derruba no-show.</p>
+          </div>
 
-        <div class="ss-script">
-          <div class="ss-script-head"><span class="ss-t">T5 · D+16</span><span class="ss-goal">Porta fechada</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
-          <div class="ss-msg">Vou parar por aqui pra não incomodar, <span class="ss-var">[Nome]</span>.
+          <div class="ss-bloco">
+            <div class="ss-bloco-head"><span class="ss-t">Toque 5</span><span class="ss-quando">dia 16 · encerrar</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div>
+            <div class="ss-msg">Vou parar por aqui pra não incomodar, <span class="ss-var">[Nome]</span>.
 
 Deixo o material salvo aí e, se um dia gerar demanda virar prioridade, é só me chamar.
 
 Bom trabalho pra você!</div>
-          <div class="ss-why"><b>Por que funciona:</b> mesmo efeito das outras trilhas — encerramento honesto tem taxa de resposta desproporcional.</div>
+            <p class="ss-nota">Encerramento honesto tem taxa de resposta desproporcional.</p>
+          </div>
         </div>
-      </section>
 
-      <!-- ============ RESPONDEU ============ -->
-      <section class="card ss-sec" id="ss-respondeu">
-        <h3>Respondeu. E agora?</h3>
-        <p>Nenhum script pede reunião de cara. A reunião nasce da conversa, e a conversa segue sempre os mesmos quatro passos — o mesmo caminho da conversa com o Fernando.</p>
-        <ol>
-          <li><b>Descobrir</b> — uma pergunta, uma só, sobre como ele capta cliente hoje.</li>
-          <li><b>Espelhar a dor com nome</b> — "conteúdo bom que não traciona", "depende de indicação", "só fecha quem já te conhece". E o "eu passava muito por isso".</li>
-          <li><b>Convidar como clareza</b> — nunca "reunião de diagnóstico", nunca "apresentação".</li>
-          <li><b>Propor data e hora</b> — e só depois pedir e-mail e telefone, juntos, na mesma mensagem.</li>
-        </ol>
+        <!-- ================= RESPONDEU ================= -->
+        <div class="ss-trilha">
+          <h3>Quando ele responde</h3>
+          <p class="ss-quem">A partir daqui não tem script pronto — tem caminho. Descobrir, espelhar a dor, convidar como clareza, propor data. E só depois pedir e-mail e telefone.</p>
 
-        <h3>Respostas mais comuns e o que fazer</h3>
+          <dl class="ss-resp">
+            <dt>"Baixei mas nem olhei"</dt>
+            <dd>"Kkk sem problema, acontece direto. Deixa eu te perguntar uma coisa mais útil então: hoje o seu gargalo é ter tempo ou ter cliente novo entrando?"</dd>
 
-        <div class="ss-branch">
-          <div class="ss-q">"Baixei mas nem olhei" <span class="ss-pill wait">Comum</span></div>
-          <div class="ss-a">Não constranja. → <i>"Kkk sem problema, acontece direto. Deixa eu te perguntar uma coisa mais útil então: hoje o seu gargalo é ter tempo ou ter cliente novo entrando?"</i> Vai direto para a ponte.</div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Achei massa, apliquei em X" <span class="ss-pill go">Quente</span></div>
-          <div class="ss-a">Elogie específico e suba um nível. → <i>"Boa demais. E isso já virou cliente novo ou ainda é ganho interno?"</i> A pergunta separa curioso de comprador.</div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Meu gargalo é demanda mesmo" <span class="ss-pill go">MQL</span></div>
-          <div class="ss-a">Não pule para o convite ainda. Uma pergunta de contexto primeiro — <i>"E hoje o que você já tentou pra resolver isso?"</i> — e o convite vem na resposta seguinte, ancorado no que ele contou.</div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Meu problema é tempo/operação" <span class="ss-pill no">Fora de escopo</span></div>
-          <div class="ss-a">Encerre bem, sem forçar. → <i>"Entendi, aí não é minha praia mesmo. Se um dia o assunto virar cliente novo, me chama."</i> Move para "MQL Frio" no CRM e sai da cadência. Encerrar rápido é o que libera espaço para o lead certo.</div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">Curtiu / reagiu à mensagem mas não escreveu <span class="ss-pill wait">Sinal fraco</span></div>
-          <div class="ss-a">Conta como resposta parcial. Adianta o próximo toque em 2 dias e vai mais direto: <i>"Vi que você viu por aqui 😄 Te faço uma pergunta rápida?"</i></div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">Aceitou a call e sumiu antes de agendar <span class="ss-pill wait">Aconteceu com o Fernando</span></div>
-          <div class="ss-a">Não espere. No dia seguinte: <i>"[Nome], vou reservar quinta às 15h pra gente aqui, pode ser? Se não der, me fala outro dia que eu ajusto."</i> Ocupar o espaço com uma data concreta foi o que destravou a conversa do Fernando.</div>
-        </div>
-      </section>
+            <dt>"Achei massa, apliquei em X"</dt>
+            <dd>"Boa demais. E isso já virou cliente novo ou ainda é ganho interno?"</dd>
 
-      <!-- ============ QUALIFICAÇÃO ============ -->
-      <section class="card ss-sec" id="ss-qualificacao">
-        <h3>O que vira reunião e o que não vira</h3>
-        <p>Os dados dizem que ~90% da base está fora do ICP e que 157 leads já foram perdidos por isso. Sem filtro, essa operação enche a agenda do closer de conversa que não fecha — e isso é pior que agenda vazia, porque consome a hora mais cara da empresa.</p>
+            <dt>"Meu gargalo é demanda mesmo"</dt>
+            <dd>Não convide ainda. "E hoje o que você já tentou pra resolver isso?" — o convite vem na resposta seguinte, ancorado no que ele contar.</dd>
 
-        <h3>Vira reunião — 3 dos 5 critérios</h3>
-        <ul>
-          <li>É <b>dono, sócio ou diretor</b> com poder de decidir sozinho (ou head com orçamento próprio).</li>
-          <li>Vende <b>B2B consultivo</b>, ticket a partir de ~R$3.000.</li>
-          <li>Hoje capta por <b>indicação</b> e reconhece que não tem previsibilidade.</li>
-          <li>Tem <b>capacidade de atender mais cliente</b> — se estiver lotado, não tem dor.</li>
-          <li>Demonstrou <b>incômodo</b>, não só curiosidade. Frase-teste: ele reclamou de alguma coisa?</li>
-        </ul>
+            <dt>"Meu problema é tempo / operação"</dt>
+            <dd>"Entendi, aí não é minha praia mesmo. Se um dia o assunto virar cliente novo, me chama." Encerra e move para MQL Frio.</dd>
 
-        <h3>Não vira reunião — descarte na hora</h3>
-        <ul>
-          <li>Está <b>procurando vaga</b> ou pediu material para estudar carreira.</li>
-          <li>CLT sem orçamento e sem influência sobre a decisão.</li>
-          <li><b>B2C de ticket baixo</b> ou e-commerce puro.</li>
-          <li>Quer a <b>ferramenta</b>, não o resultado — "me passa a skill", "como monta esse agente?".</li>
-          <li>Agência ou freelancer que quer <b>revender</b> sem ter cliente próprio.</li>
-          <li>Diz "sem verba" antes de qualquer conversa sobre valor.</li>
-        </ul>
+            <dt>Curtiu a mensagem mas não escreveu</dt>
+            <dd>"Vi que você viu por aqui 😄 Te faço uma pergunta rápida?" — adianta o próximo toque em 2 dias.</dd>
 
-        <div class="ss-callout">
-          <span class="ss-tag">Regra de ouro do agendamento</span>
-          <p>Na dúvida entre agendar e não agendar, <b>não agende</b> — faça mais uma pergunta. Um no-show custa 30 minutos do closer e derruba a taxa que o painel mede; uma pergunta a mais custa 20 segundos.</p>
+            <dt>Topou a call e sumiu antes de marcar</dt>
+            <dd>"[Nome], vou reservar quinta às 15h pra gente aqui, pode ser? Se não der, me fala outro dia que eu ajusto."</dd>
+          </dl>
         </div>
-      </section>
 
-      <!-- ============ OBJEÇÕES ============ -->
-      <section class="card ss-sec" id="ss-objecoes">
-        <h3>As sete objeções que vão aparecer</h3>
-        <div class="ss-branch">
-          <div class="ss-q">"Quanto custa?" — ainda na DM</div>
-          <div class="ss-a">Nunca dê preço no chat, e nunca fuja da pergunta. → <i>"Depende do tamanho da operação — varia bastante. Te falo na call com número real em vez de te dar um chute agora. 20 minutos, quinta às 15h?"</i></div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Manda por aqui mesmo, não gosto de call"</div>
-          <div class="ss-a">→ <i>"Entendo. Só que se eu mandar por aqui vira material genérico, e você já tem bastante disso. Na call eu olho o seu perfil e o seu funil ao vivo. Se em 10 minutos não fizer sentido, eu mesmo encerro."</i></div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Agora não é o momento / tô sem tempo"</div>
-          <div class="ss-a">Aceite e ancore uma data. → <i>"Tranquilo. Te chamo em [mês+1]? Só me diz uma coisa pra eu não te chamar à toa: até lá, gerar reunião vai entrar na prioridade ou o foco é outro?"</i></div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Já tenho agência / social media"</div>
-          <div class="ss-a">Não ataque o fornecedor. → <i>"Ótimo, isso ajuda muito na parte de produção. A pergunta que eu faria é: quantas reuniões o conteúdo deles gerou nos últimos 90 dias? Se a resposta for 'não sei', é aí que eu entro."</i></div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Já tentei LinkedIn e não deu resultado"</div>
-          <div class="ss-a">A melhor objeção que existe — ele já investiu. → <i>"Faz total sentido. Na maioria das vezes o problema não é postar, é pra quem se posta e o que se pede depois. Me conta rapidinho o que você chegou a testar?"</i></div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Eu mesmo faço meu conteúdo"</div>
-          <div class="ss-a">→ <i>"Melhor ainda, metade do caminho já tá andando. E hoje ele gera quantas conversas por mês? Se for menos de 4 ou 5, o gargalo não é volume."</i></div>
-        </div>
-        <div class="ss-branch">
-          <div class="ss-q">"Vou olhar e te falo" — e some</div>
-          <div class="ss-a">Um follow em 3 dias, com data na mão, e depois o T5. Nunca mais de dois "e aí, conseguiu ver?" — a partir do terceiro você vira ruído e queima o perfil.</div>
-        </div>
-      </section>
+        <!-- ================= OBJEÇÕES ================= -->
+        <div class="ss-trilha">
+          <h3>Objeções</h3>
 
-      <!-- ============ ROTINA ============ -->
-      <section class="card ss-sec" id="ss-rotina">
-        <h3>O dia do time</h3>
-        <ul class="ss-rotina">
-          <li><span class="h">09:00</span><span>Abrir o CRM na fila do dia. Conferir respostas da noite antes de mandar qualquer coisa nova — <b>responder sempre vem antes de prospectar</b>.</span></li>
-          <li><span class="h">09:15</span><span>Bloco 1: ~17 mensagens. Primeiro os follow-ups vencidos, depois os leads novos.</span></li>
-          <li><span class="h">11:00</span><span>Confirmar no WhatsApp as reuniões de amanhã. Todos os 1.283 leads do CRM têm telefone — não existe no-show por esquecimento.</span></li>
-          <li><span class="h">14:00</span><span>Bloco 2: ~17 mensagens.</span></li>
-          <li><span class="h">16:30</span><span>Bloco 3: ~16 mensagens + registrar tudo no CRM.</span></li>
-          <li><span class="h">17:30</span><span>Lançar os números do dia na aba Checklist: mensagens enviadas, respostas, reuniões agendadas.</span></li>
-        </ul>
+          <dl class="ss-resp">
+            <dt>"Quanto custa?" — ainda no chat</dt>
+            <dd>"Depende do tamanho da operação, varia bastante. Te falo na call com número real em vez de te dar um chute agora. 20 minutos, quinta às 15h?"</dd>
 
-        <h3>Como registrar no CRM</h3>
-        <p>Use o funil <b>[SDR] - Lead Magnet - Linkedin</b> que já existe, sem criar estágio novo:</p>
-        <div class="tabela-wrap">
-          <table class="ss-table">
-            <thead><tr><th>Quando</th><th>Mover para</th></tr></thead>
-            <tbody>
-              <tr><td>T1 disparado</td><td>Mensagem enviada</td></tr>
-              <tr><td>Ele respondeu qualquer coisa</td><td>Contato realizado</td></tr>
-              <tr class="hi"><td>Bateu 3 dos 5 critérios de qualificação</td><td><b>MQL</b> — é o que alimenta "leads de alto potencial" na aba Dicas</td></tr>
-              <tr><td>Em cadência, sem resposta ainda</td><td>Follow Up</td></tr>
-              <tr><td>Descartado ou T5 dado sem resposta</td><td>MQL Frio</td></tr>
-              <tr><td>Reunião marcada</td><td>Card para o funil do Closer <i>+</i> lançar o negócio no Dashboard</td></tr>
-            </tbody>
-          </table>
+            <dt>"Manda por aqui mesmo, não gosto de call"</dt>
+            <dd>"Entendo. Só que se eu mandar por aqui vira material genérico, e disso você já tem bastante. Na call eu olho o seu perfil e o seu funil ao vivo. Se em 10 minutos não fizer sentido, eu mesmo encerro."</dd>
+
+            <dt>"Agora não é o momento"</dt>
+            <dd>"Tranquilo. Te chamo em [mês]? Só me diz uma coisa pra eu não te chamar à toa: até lá, gerar reunião vai entrar na prioridade ou o foco é outro?"</dd>
+
+            <dt>"Já tenho agência / social media"</dt>
+            <dd>"Ótimo, isso ajuda muito na produção. A pergunta que eu faria é: quantas reuniões o conteúdo deles gerou nos últimos 90 dias? Se a resposta for 'não sei', é aí que eu entro."</dd>
+
+            <dt>"Já tentei LinkedIn e não deu resultado"</dt>
+            <dd>"Faz total sentido. Na maioria das vezes o problema não é postar, é pra quem se posta e o que se pede depois. Me conta rapidinho o que você chegou a testar?"</dd>
+
+            <dt>"Eu mesmo faço meu conteúdo"</dt>
+            <dd>"Melhor ainda, metade do caminho já tá andando. E hoje ele gera quantas conversas por mês? Se for menos de 4 ou 5, o gargalo não é volume."</dd>
+
+            <dt>"Vou olhar e te falo" — e some</dt>
+            <dd>Um follow em 3 dias, com data na mão, e depois o toque 5. Nunca mais de dois "conseguiu ver?".</dd>
+          </dl>
         </div>
-        <p>Toda reunião agendada precisa existir nos <b>dois</b> lugares: card no CRM (pipeline visual) e negócio no Dashboard (é ele que alimenta a meta de R$30k). Só o card não conta para a meta.</p>
 
-        <div class="ss-callout warn">
-          <span class="ss-tag">Antes de mandar a primeira mensagem</span>
-          <p>Os 234 cards em "MQL Frio" e os 223 em "Mensagem enviada" <b>já receberam contato antes</b>. Abrir com "vi que você baixou o material" em quem já ouviu isso há dois meses queima o lead. Para esses, o T1 muda para reconhecimento: <i>"[Nome], eu já tinha te chamado aqui atrás e a gente não conseguiu conversar. Volto com uma pergunta só, prometo."</i></p>
-        </div>
-      </section>
-
-      <!-- ============ METAS ============ -->
-      <section class="card ss-sec" id="ss-metas">
-        <h3>O que esperar dos números</h3>
-        <p>Projeção para os dois perfis de base morna (Igor + Bruno, 100 mensagens/dia somadas). A Trilha C da SDR entra em regime só a partir da semana 3 e não está contada aqui.</p>
-        <div class="tabela-wrap">
-          <table class="ss-table">
-            <thead><tr><th>Etapa</th><th class="n">Por dia</th><th class="n">Por mês</th><th>Taxa saudável</th></tr></thead>
-            <tbody>
-              <tr><td>Mensagens enviadas</td><td class="n">100</td><td class="n">2.200</td><td>—</td></tr>
-              <tr><td>Respostas</td><td class="n">15–20</td><td class="n">330–440</td><td>15–20% · abaixo de 5% é sinal de spam</td></tr>
-              <tr><td>Conversas qualificadas</td><td class="n">5–6</td><td class="n">110–130</td><td>~30% das respostas</td></tr>
-              <tr class="hi"><td>Reuniões agendadas</td><td class="n">2–3</td><td class="n">50–65</td><td>Meta do painel: 60/mês</td></tr>
-              <tr><td>Reuniões realizadas</td><td class="n">2</td><td class="n">42–55</td><td>Show-up mínimo aceitável: 80%</td></tr>
-              <tr><td>Vendas</td><td class="n">—</td><td class="n">8–11</td><td>~20% das realizadas · meta: 10</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>O gargalo a vigiar não é o volume de mensagens — é a <b>taxa de resposta por perfil</b>. Ela cai antes de tudo o mais cair, e responde a três coisas, nessa ordem: qualidade da primeira linha, relevância do segmento e volume diário. Se cair, mexa nessa ordem também.</p>
-
-        <h3>Revisão semanal, sexta-feira</h3>
-        <ul>
-          <li>Taxa de resposta por perfil e por trilha — <i>qual script está morrendo?</i></li>
-          <li>Em qual toque (T1 a T5) as pessoas mais respondem — <i>realoque esforço para lá.</i></li>
-          <li>Reuniões agendadas × realizadas — <i>se o show-up cair de 80%, o problema é a confirmação, não o script.</i></li>
-          <li>Quantos MQL viraram reunião — <i>se for baixo, o critério de qualificação está frouxo.</i></li>
-        </ul>
-
-        <div class="ss-callout">
-          <span class="ss-tag">A primeira coisa a fazer, hoje</span>
-          <p>Antes de qualquer disparo: abra a aba CRM, escolha o funil <b>[SDR] - Lead Magnet - Linkedin</b>, vá na coluna <b>MQL Frio</b> e confira uma amostra de 10 cards. São 216 decisores parados ali. Se eles forem mesmo o que os dados dizem, essa coluna sozinha sustenta as primeiras três semanas da operação inteira.</p>
-        </div>
-      </section>
-
+      </div>
     </div>
 
     <div class="tab-panel" id="tab-whatsapp">
@@ -4023,24 +3683,11 @@ function desenharFaturamento(serie) {
 }
 
 
-// ---------- SOCIAL SELLING (playbook) ----------
-function ssMostrar(secao, btn) {
-  document.querySelectorAll('#tab-social .ss-sec').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('#tab-social .ss-nav button').forEach(b => b.classList.remove('active'));
-  var alvo = document.getElementById('ss-' + secao);
-  if (alvo) alvo.classList.add('active');
-  if (btn) btn.classList.add('active');
-  var painel = document.getElementById('tab-social');
-  if (painel && painel.scrollIntoView) painel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
+// ---------- SOCIAL SELLING (playbook de mensagens) ----------
 function ssCopiar(btn) {
-  var card = btn.closest('.ss-script');
-  var msgs = card.querySelectorAll('.ss-msg');
-  var texto = Array.prototype.map.call(msgs, function (m) {
-    var t = (typeof m.innerText === 'string' ? m.innerText : m.textContent) || '';
-    return t.trim();
-  }).join('\n\n');
+  var bloco = btn.closest('.ss-bloco');
+  var msg = bloco.querySelector('.ss-msg');
+  var texto = ((typeof msg.innerText === 'string' ? msg.innerText : msg.textContent) || '').trim();
   function feedback(ok) {
     var original = btn.dataset.label || btn.textContent;
     btn.dataset.label = original;
