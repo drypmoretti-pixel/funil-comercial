@@ -2540,6 +2540,151 @@ function extrairContato(submissao, perguntas) {
   };
 }
 
+// ---------- IMPORTAÇÃO AUTOMÁTICA: TALLY -> CRM ----------
+// O n8n manda o lead pro Pipedrive e pro Discord na hora. Este bloco é o que
+// faz o lead virar card no CRM daqui, sem depender de webhook: a cada carga da
+// aba Formulário, toda submissão nova vira card. Se o webhook cair de novo
+// (foi o que aconteceu de 07 a 16/08/2026), o CRM se recupera sozinho.
+const TALLY_CORTE = '2026-08-07T09:19:53Z';   // último lead que entrou pelo fluxo antigo
+const CRM_FUNIL_LEADS = 5;                     // [SDR] - Lead Magnet - Linkedin
+const CRM_ESTAGIO_MQL = 13, CRM_ESTAGIO_NOVO = 12;
+const CARGOS_MQL = ['ceo', 'fundador', 'diretor', 'gerente', 'head'];
+const MAX_IMPORT_POR_CARGA = 25;               // não estoura o banco numa carga só
+
+// formulário do Tally -> isca e etiqueta (mesmas ids do Pipedrive e de com_tags)
+const TALLY_ORIGEM = {
+  '1AKGB1': { isca: 'resgate-ia-imob', tag: 81 },
+  '1AvayW': { isca: 'prospeccao-ativa', tag: 87 },
+  '2EV6Mg': { isca: 'claude-cowork-design', tag: 108 },
+  '689ojo': { isca: 'claudecode', tag: 99 },
+  '7RvWRL': { isca: 'proposta-automatica-claude', tag: 86 },
+  'A76qzB': { isca: 'evento', tag: 105 },
+  'Bz5ko4': { isca: 'framework', tag: 119 },
+  'Gx0pgz': { isca: 'claude-manychat', tag: 84 },
+  'GxY2lO': { isca: 'claude-vscode', tag: 93 },
+  'GxYyeL': { isca: 'claude-trafego-pago', tag: 79 },
+  'J9xjvJ': { isca: 'exercito-skill', tag: 88 },
+  'KYG48g': { isca: 'claude-mcp', tag: 80 },
+  'ODrEvp': { isca: 'claude-cowork-sdr', tag: 118 },
+  'QKz7A8': { isca: 'claude-cowork', tag: 99 },
+  'VLazYJ': { isca: 'cerebro-conselheiro', tag: 117 },
+  'WOpEWk': { isca: 'evollure', tag: 120 },
+  'Xxvroe': { isca: 'guialinkedin', tag: 107 },
+  'aQGXBX': { isca: 'claude-n8n-crm', tag: 85 },
+  'dWvL8r': { isca: 'skill-videoaula', tag: 101 },
+  'jaG0L1': { isca: 'agente-de-vendas', tag: 78 },
+  'lb1Px5': { isca: 'secretaria', tag: 106 },
+  'obpX4b': { isca: 'ganhardinheiro', tag: 91 },
+  'pbvyeq': { isca: 'claude-gmail', tag: 100 },
+  'yPyexp': { isca: 'claude-skills', tag: 83 },
+};
+
+function extrairLead(submissao, perguntas) {
+  const valor = (pergunta) => {
+    if (!pergunta) return '';
+    const r = submissao.responses.find(r => r.questionId === pergunta.id);
+    if (!r || r.answer === null || r.answer === undefined) return '';
+    return Array.isArray(r.answer) ? r.answer.join(', ') : String(r.answer);
+  };
+  const porTipo = (tipo) => perguntas.find(p => p.type === tipo);
+  const porTitulo = (...chaves) => perguntas.find(p => {
+    const t = (p.title || '').toLowerCase();
+    return chaves.some(k => t.includes(k));
+  });
+  // as duas perguntas de múltipla escolha (canal e dor) nem sempre têm título:
+  // quando a pergunta foi montada com bloco Heading, o Tally manda title vazio
+  const mcs = perguntas.filter(p => p.type === 'MULTIPLE_CHOICE');
+  const perguntaCanal = mcs.find(p => /chega|canal/.test((p.title || '').toLowerCase()));
+  const perguntaDor = mcs.find(p => p !== perguntaCanal);
+  return {
+    nome: valor(porTipo('INPUT_TEXT')),
+    email: valor(porTipo('INPUT_EMAIL')),
+    telefone: valor(porTipo('INPUT_PHONE_NUMBER')),
+    cargo: valor(porTitulo('cargo')) || valor(porTipo('CHECKBOXES')),
+    canal: valor(perguntaCanal),
+    dor: valor(perguntaDor),
+  };
+}
+
+async function sincronizarLeadsTally(brutas) {
+  // nome/email aqui são os crus (extrairContato troca vazio por "—", que não serve pro banco)
+  const candidatas = brutas
+    .map(s => ({ ...s, nome: s.nomeReal, email: s.emailReal }))
+    .filter(s => s.submittedAt > TALLY_CORTE && s.email);
+  if (!candidatas.length) return 0;
+
+  const { data: registros, error: erroLeitura } = await sb
+    .from('com_tally_processados').select('submission_id, card_id, motivo');
+  if (erroLeitura) throw erroLeitura;
+  const jaVistas = new Map((registros || []).map(r => [r.submission_id, r]));
+
+  const pendentes = candidatas.filter(s => {
+    const r = jaVistas.get(s.submissionId);
+    if (!r) return true;
+    // tentativa anterior morreu no meio (marcou a submissão mas não criou o card)
+    return r.motivo === 'importado' && !r.card_id;
+  }).slice(0, MAX_IMPORT_POR_CARGA);
+  if (!pendentes.length) return 0;
+
+  let criados = 0;
+  for (const s of pendentes) {
+    try {
+      const origem = TALLY_ORIGEM[s.formId] || { isca: 'sem-isca', tag: null };
+
+      if (!jaVistas.has(s.submissionId)) {
+        // marca ANTES de criar o card: submission_id é chave primária, então se
+        // duas pessoas estiverem com o painel aberto só uma passa daqui
+        const { error } = await sb.from('com_tally_processados').insert({
+          submission_id: s.submissionId, form_id: s.formId, form_nome: s.formNome,
+          motivo: 'importado', submitted_at: s.submittedAt,
+        });
+        if (error) continue;   // 23505 = outra aba já pegou esta submissão
+      }
+
+      // mesma pessoa baixando outro material não vira card novo: reaproveita o dela
+      const { data: existentes } = await sb.from('com_cards')
+        .select('id').eq('funil_id', CRM_FUNIL_LEADS)
+        .ilike('pessoa_email', s.email).limit(1);
+      let cardId = existentes && existentes[0] ? existentes[0].id : null;
+
+      if (!cardId) {
+        const ehMql = CARGOS_MQL.some(c => (s.cargo || '').toLowerCase().includes(c));
+        const campos = {};
+        if (s.cargo) campos.cargo = s.cargo;
+        if (s.canal) campos.canal_aquisicao_atual = s.canal;
+        if (s.dor) campos.dor = s.dor;
+        const { data: novo, error } = await sb.from('com_cards').insert({
+          funil_id: CRM_FUNIL_LEADS,
+          estagio_id: ehMql ? CRM_ESTAGIO_MQL : CRM_ESTAGIO_NOVO,
+          titulo: s.nome || s.email,
+          pessoa_nome: s.nome || null,
+          pessoa_email: s.email,
+          pessoa_telefone: s.telefone || null,
+          observacao: `Origem: ${s.formNome} (isca: ${origem.isca})`,
+          campos_valores: campos,
+          created_at: s.submittedAt,
+          // mql_em nunca é apagado depois: é o que faz o lead continuar contando
+          // no comparativo "funil atual x ideal" mesmo depois de avançar de etapa
+          mql_em: ehMql ? s.submittedAt : null,
+        }).select('id').single();
+        if (error) throw error;
+        cardId = novo.id;
+        criados++;
+      }
+
+      if (origem.tag) {
+        await sb.from('com_card_tags').upsert(
+          { card_id: cardId, tag_id: origem.tag }, { ignoreDuplicates: true });
+      }
+      await sb.from('com_tally_processados')
+        .update({ card_id: cardId }).eq('submission_id', s.submissionId);
+    } catch (e) {
+      console.warn('não consegui importar a submissão', s.submissionId, e);
+    }
+  }
+  return criados;
+}
+
 async function carregarSubmissionsSelecionadas() {
   if (!tallySelecionados.length) {
     document.getElementById('tally-vazio').textContent = 'Marque ao menos um formulário na configuração acima.';
@@ -2570,7 +2715,10 @@ async function carregarSubmissionsSelecionadas() {
         perguntas = data.questions || perguntas;
         (data.submissions || []).forEach(s => {
           const contato = extrairContato(s, perguntas);
-          todas.push({ formId, formNome: formInfo ? formInfo.nome : formId, data: s.submittedAt.slice(0,10), nome: contato.nome, email: contato.email });
+          const lead = extrairLead(s, perguntas);
+          todas.push({ formId, formNome: formInfo ? formInfo.nome : formId, data: s.submittedAt.slice(0,10), nome: contato.nome, email: contato.email,
+            submissionId: s.id, submittedAt: s.submittedAt, telefone: lead.telefone, cargo: lead.cargo, canal: lead.canal, dor: lead.dor,
+            nomeReal: lead.nome, emailReal: lead.email });
         });
         hasMore = !!data.hasMore;
         page++;
@@ -2580,6 +2728,10 @@ async function carregarSubmissionsSelecionadas() {
     document.getElementById('tally-vazio').style.display = 'none';
     document.getElementById('tally-dashboard').style.display = 'block';
     renderFormularioDashboard();
+    // não trava a tela: o dashboard já apareceu, os cards entram logo atrás
+    sincronizarLeadsTally(todas)
+      .then(criados => { if (criados) carregarCardsDoFunil(); })
+      .catch(e => console.warn('sincronização de leads do Tally falhou:', e));
   } catch (e) {
     document.getElementById('tally-vazio').textContent = 'Erro ao buscar dados do Tally: ' + e.message;
     document.getElementById('tally-vazio').style.display = 'block';
