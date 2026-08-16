@@ -2474,7 +2474,11 @@ async function chamarEvolution(method, path, payload) {
 }
 
 let tallyFormsAll = [];
-let tallySelecionados = JSON.parse(localStorage.getItem('tally_formularios_selecionados') || '[]');
+let tallySelecionados = [];
+// Guardamos quem foi DESMARCADO, não quem foi marcado: assim formulário novo no
+// Tally já entra sozinho. Guardar a lista de marcados fazia o contrário — um
+// formulário criado depois ficava fora pra sempre, e o lead dele nunca chegava no CRM.
+let tallyExcluidos = JSON.parse(localStorage.getItem('tally_formularios_excluidos') || 'null');
 let tallySubmissions = [];
 let tallyCarregando = false;
 
@@ -2489,11 +2493,14 @@ async function carregarListaFormularios() {
     const data = await resp.json();
     tallyFormsAll = (data.items || []).map(f => ({ id: f.id, nome: f.name || '(sem nome — rascunho)', submissoes: f.numberOfSubmissions }));
     document.getElementById('tally-forms-wrap').style.display = 'block';
-    if (!tallySelecionados.length) {
-      // primeira vez nesse navegador: já mostra o dashboard com todos os formulários, sem exigir configuração manual
-      tallySelecionados = tallyFormsAll.map(f => f.id);
-      localStorage.setItem('tally_formularios_selecionados', JSON.stringify(tallySelecionados));
+    if (tallyExcluidos === null) {
+      // primeira carga com a regra nova: converte a lista antiga de marcados em
+      // lista de desmarcados, preservando o que a pessoa já tinha escolhido
+      const antiga = JSON.parse(localStorage.getItem('tally_formularios_selecionados') || '[]');
+      tallyExcluidos = antiga.length ? tallyFormsAll.filter(f => !antiga.includes(f.id)).map(f => f.id) : [];
+      localStorage.setItem('tally_formularios_excluidos', JSON.stringify(tallyExcluidos));
     }
+    tallySelecionados = tallyFormsAll.filter(f => !tallyExcluidos.includes(f.id)).map(f => f.id);
     renderListaFormularios();
     await carregarSubmissionsSelecionadas();
   } catch (e) {
@@ -2520,9 +2527,15 @@ function selecionarTodosFormularios(marcar) {
 }
 
 async function salvarSelecaoFormularios() {
-  const marcados = Array.from(document.querySelectorAll('#tally-forms-lista input[type=checkbox]:checked')).map(el => el.value);
-  tallySelecionados = marcados;
-  localStorage.setItem('tally_formularios_selecionados', JSON.stringify(tallySelecionados));
+  // só os checkboxes renderizados contam — com busca ativa, a lista mostra um
+  // subconjunto, e quem está fora do filtro tem que manter o estado que já tinha
+  const excluidos = new Set(tallyExcluidos);
+  document.querySelectorAll('#tally-forms-lista input[type=checkbox]').forEach(el => {
+    if (el.checked) excluidos.delete(el.value); else excluidos.add(el.value);
+  });
+  tallyExcluidos = [...excluidos];
+  localStorage.setItem('tally_formularios_excluidos', JSON.stringify(tallyExcluidos));
+  tallySelecionados = tallyFormsAll.filter(f => !excluidos.has(f.id)).map(f => f.id);
   await carregarSubmissionsSelecionadas();
 }
 
