@@ -1794,14 +1794,34 @@ async function carregarCRM() {
   await carregarCardsDoFunil();
 }
 
+// O PostgREST corta a resposta em 1000 linhas e não avisa nada. Com 1200+ cards no funil e 1300
+// relações card↔tag, o que ficava de fora era justamente o mais recente (a ordem física da tabela
+// é a de inserção) — por isso a tag recém-salva sumia do board e parecia que não tinha salvado.
+const LOTE_LINHAS = 1000;
+async function buscarPaginado(tabela, montarQuery) {
+  const linhas = [];
+  for (let de = 0; ; de += LOTE_LINHAS) {
+    const { data, error } = await montarQuery(sb.from(tabela)).range(de, de + LOTE_LINHAS - 1);
+    if (error || !data || !data.length) break;
+    linhas.push(...data);
+    if (data.length < LOTE_LINHAS) break;
+  }
+  return linhas;
+}
+
 async function carregarCardsDoFunil() {
   if (!crmFunilAtualId) { crmCards = []; crmCardTagsMap = {}; renderCRMBoard(); return; }
-  const { data } = await sb.from('com_cards').select('*').eq('funil_id', crmFunilAtualId).order('created_at', { ascending: false });
-  crmCards = data || [];
+  // ordem com desempate por id: sem isso a paginação pode repetir/pular card de mesmo created_at
+  crmCards = await buscarPaginado('com_cards', q => q.select('*')
+    .eq('funil_id', crmFunilAtualId)
+    .order('created_at', { ascending: false }).order('id', { ascending: false }));
   crmCardTagsMap = {};
-  if (crmCards.length) {
-    const { data: relacoes } = await sb.from('com_card_tags').select('card_id, tag_id').in('card_id', crmCards.map(c => c.id));
-    (relacoes || []).forEach(r => {
+  const ids = crmCards.map(c => c.id);
+  for (let i = 0; i < ids.length; i += 250) {   // fatia o in() pra não montar URL gigante
+    const fatia = ids.slice(i, i + 250);
+    const relacoes = await buscarPaginado('com_card_tags', q => q.select('card_id, tag_id')
+      .in('card_id', fatia).order('card_id').order('tag_id'));
+    relacoes.forEach(r => {
       (crmCardTagsMap[r.card_id] = crmCardTagsMap[r.card_id] || []).push(r.tag_id);
     });
   }
@@ -2762,10 +2782,11 @@ async function contarLeadsDoMesNoBanco(mesRef) {
 }
 
 async function sincronizarLeadsTally(brutas) {
-  const { data: registros, error: erroLeitura } = await sb
-    .from('com_tally_processados').select('submission_id, card_id, motivo');
-  if (erroLeitura) throw erroLeitura;
-  const jaVistas = new Map((registros || []).map(r => [r.submission_id, r]));
+  // paginado de propósito: essa tabela ganha uma linha por submissão e passa de 1000 em poucos
+  // meses — se viesse cortada, submissão já importada apareceria como nova e viraria card repetido
+  const registros = await buscarPaginado('com_tally_processados',
+    q => q.select('submission_id, card_id, motivo').order('submission_id'));
+  const jaVistas = new Map(registros.map(r => [r.submission_id, r]));
 
   await registrarLeadsDoMesParaContagem(brutas, jaVistas);
 
