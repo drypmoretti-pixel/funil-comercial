@@ -238,6 +238,24 @@ svg.chart { display: block; }
 }
 .tagsel-opt:hover { border-color: var(--text-primary); }
 .tagsel-opt i { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+/* ---- agendar reunião de dentro do card (liga o CRM ao funil comercial) ---- */
+.reuniao-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
+.reuniao-form > div { flex: 1; min-width: 110px; }
+.reuniao-form label { font-size: .72rem; display: block; margin-bottom: 3px; }
+.reuniao-form input, .reuniao-form select {
+  width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--field-bg); color: var(--text-primary);
+}
+.reuniao-form .btn { width: auto; flex: 0 0 auto; padding: 9px 16px; }
+.reuniao-item {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: .76rem; padding: 6px 0; border-bottom: 1px solid var(--border);
+}
+.reuniao-item:last-child { border-bottom: 0; }
+.negocio-nome .lead-link {
+  background: none; border: 0; padding: 0; margin-left: 6px; cursor: pointer;
+  font-size: .68rem; font-weight: 600; color: var(--accent); text-decoration: underline;
+}
 
 /* ---- whatsapp (chat) ---- */
 .whats-chat-shell { display: flex; height: 74vh; min-height: 420px; }
@@ -1175,6 +1193,17 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <button type="button" class="btn" style="background:var(--critical); width:auto; padding:8px 14px;" onclick="crmExcluirCard()">Excluir</button>
       </div>
     </form>
+    <div id="crm-reunioes-wrap" style="display:none; margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
+      <label style="font-weight:700; display:block; margin-bottom:6px;">Reuniões deste lead</label>
+      <div id="crm-reunioes-lista" style="margin-bottom:10px;"></div>
+      <div class="reuniao-form">
+        <div><label>Data</label><input type="date" id="crm-reuniao-data"></div>
+        <div><label>Hora</label><input type="time" id="crm-reuniao-hora"></div>
+        <div><label>SDR</label><select id="crm-reuniao-sdr"></select></div>
+        <button type="button" class="btn" onclick="crmAgendarReuniao()">Agendar reunião</button>
+      </div>
+      <p class="muted" style="font-size:.72rem; margin:8px 0 0;">Cria o negócio no funil comercial já ligado a este lead — conta na meta do mês e aparece no calendário.</p>
+    </div>
     <div id="crm-mover-funil-wrap" style="display:none; margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
       <label style="font-weight:700; display:block; margin-bottom:6px;">Mover para outro funil</label>
       <p class="muted" style="font-size:.74rem; margin:-2px 0 8px;">Tira o card daqui e joga pra outro funil, no estágio escolhido.</p>
@@ -1577,7 +1606,7 @@ function valorPrincipal(n) {
 function linhaNegocio(n) {
   return `
     <div class="negocio-row">
-      <div class="negocio-nome">${n.cliente_nome}${infoData(n)}</div>
+      <div class="negocio-nome">${n.cliente_nome}${n.card_id ? `<button class="lead-link" onclick="abrirLeadDoNegocio(${n.card_id})" title="Abrir o lead no CRM">ver lead</button>` : ''}${infoData(n)}</div>
       <div class="negocio-actions">
         <div class="negocio-valor">${valorPrincipal(n)}</div>
         ${botaoPrincipal(n)}
@@ -2029,6 +2058,7 @@ function crmAbrirNovoCard(estagioId) {
   crmTagsSelecionadasAtual = [];
   crmToggleCaixaTags(false);
   document.getElementById('crm-historico-wrap').style.display = 'none';
+  document.getElementById('crm-reunioes-wrap').style.display = 'none';
   document.getElementById('crm-mover-funil-wrap').style.display = 'none';
   document.getElementById('modal-card-crm').classList.add('open');
 }
@@ -2053,6 +2083,8 @@ function crmAbrirCard(id) {
   crmTagsSelecionadasAtual = [...(crmCardTagsMap[id] || [])];
   crmToggleCaixaTags(false);   // abre sempre guardada, sem herdar a busca do card anterior
   document.getElementById('crm-historico-wrap').style.display = 'block';
+  document.getElementById('crm-reunioes-wrap').style.display = 'block';
+  crmRenderReunioes(id);
   crmCarregarAtividades(id);
   document.getElementById('crm-mover-funil-wrap').style.display = crmFunis.length > 1 ? 'block' : 'none';
   crmPopularSelectMoverFunil();
@@ -2139,6 +2171,74 @@ function crmSalvarCard(ev) {
     await carregarCardsDoFunil();
   })();
   return false;
+}
+
+// ---------- AGENDAR REUNIÃO DE DENTRO DO CARD ----------
+// Aqui os dois sistemas que sempre viveram separados se encontram: o card do CRM (o lead, com a
+// isca de origem) e o negócio do funil comercial (que é quem conta pra meta de R$30k).
+// `com_negocios.card_id` guarda o vínculo — é o que permite responder depois "qual isca virou
+// reunião". Um lead pode ter várias reuniões (remarcou, voltou meses depois), por isso o vínculo
+// mora no negócio e não no card.
+function crmRenderReunioes(cardId) {
+  const lista = document.getElementById('crm-reunioes-lista');
+  const doLead = negocios.filter(n => n.card_id === cardId)
+    .sort((a, b) => (b.data_agendada || '').localeCompare(a.data_agendada || ''));
+  lista.innerHTML = doLead.length ? doLead.map(n => {
+    const meta = STATUS_META[n.status] || { label: n.status, chip: 'var(--chip-1)' };
+    const hora = n.hora_agendada ? ' às ' + n.hora_agendada.slice(0, 5) : '';
+    return `
+      <div class="reuniao-item">
+        <span class="pill" style="background:${meta.chip}">${meta.label}</span>
+        <span>${fmtDataCurta(n.data_agendada)}${hora}</span>
+        <button type="button" class="btn-edit" style="margin-left:auto;" title="Abrir no funil comercial"
+          onclick="fecharModal('modal-card-crm'); abrirEdicao(${n.id})">✎</button>
+      </div>`;
+  }).join('') : '<div class="empty" style="padding:4px 0;">Nenhuma reunião marcada ainda.</div>';
+
+  const sel = document.getElementById('crm-reuniao-sdr');
+  sel.innerHTML = perfis.filter(p => !/n8n/i.test(p.nome))
+    .map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+  if (currentPerfil) sel.value = currentPerfil.id;
+  document.getElementById('crm-reuniao-data').value = hojeStr();
+  document.getElementById('crm-reuniao-hora').value = '';
+}
+
+async function crmAgendarReuniao() {
+  if (!crmCardAtualId) { alert('Salve o card primeiro.'); return; }
+  const data = document.getElementById('crm-reuniao-data').value;
+  const hora = document.getElementById('crm-reuniao-hora').value;
+  const sdrId = document.getElementById('crm-reuniao-sdr').value || null;
+  if (!data || !hora) { alert('Preencha a data e a hora da reunião.'); return; }
+
+  const card = crmCards.find(c => c.id === crmCardAtualId);
+  const jaAgendada = negocios.find(n => n.card_id === crmCardAtualId && n.status === 'agendada');
+  if (jaAgendada && !confirm(`Este lead já tem reunião marcada para ${fmtDataCurta(jaAgendada.data_agendada)}. Marcar outra?`)) return;
+
+  const { error } = await sb.from('com_negocios').insert([{
+    cliente_nome: card ? card.titulo : 'Lead',
+    data_agendada: data, hora_agendada: hora, sdr_id: sdrId,
+    status: 'agendada', card_id: crmCardAtualId,
+  }]);
+  if (error) { alert('Não consegui agendar a reunião: ' + error.message); return; }
+
+  await crmLogAtividade(crmCardAtualId, 'reuniao', `Reunião agendada para ${fmtDataCurta(data)} às ${hora}`);
+  await carregarTudo();               // dashboard, funil do mês, calendário e metas de uma vez
+  crmRenderReunioes(crmCardAtualId);
+  crmCarregarAtividades(crmCardAtualId);
+  celebrar('reuniao');
+}
+
+// caminho de volta: do negócio no dashboard pro lead que o originou
+async function abrirLeadDoNegocio(cardId) {
+  const { data, error } = await sb.from('com_cards').select('funil_id').eq('id', cardId).single();
+  if (error || !data) { alert('Esse lead não está mais no CRM (o card foi excluído).'); return; }
+  document.querySelector('.sidebar nav button[data-tab="crm"]').click();
+  if (crmFunilAtualId !== data.funil_id) {
+    crmFunilAtualId = data.funil_id;
+    document.getElementById('crm-funil-select').value = data.funil_id;
+    await carregarCardsDoFunil();
+  }
+  crmAbrirCard(cardId);
 }
 
 function crmEnviarWhatsApp() {
