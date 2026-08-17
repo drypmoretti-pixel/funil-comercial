@@ -201,6 +201,8 @@ svg.chart { display: block; }
 .tag-toggle.selecionada { opacity: 1; border-color: var(--text-primary); }
 .kanban-card .tags-row { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }
 .tag-stripe { width: 18px; height: 5px; border-radius: 3px; display: inline-block; cursor: default; }
+/* no board a tag mostra o nome: tarjinha sem legenda escondia a origem do lead */
+.tag-chip { font-size: .58rem; font-weight: 700; line-height: 1.5; padding: 0 6px; border-radius: 999px; display: inline-block; letter-spacing: .01em; }
 
 /* ---- whatsapp (chat) ---- */
 .whats-chat-shell { display: flex; height: 74vh; min-height: 420px; }
@@ -1797,18 +1799,38 @@ function renderCRMBoard() {
   }).join('');
 }
 
+// texto preto ou branco conforme o brilho da cor da tag (tem tag amarela e verde-limão na base)
+function corTextoTag(hex) {
+  const h = (hex || '#888888').replace('#', '');
+  if (h.length !== 6) return '#fff';
+  const [r, g, b] = [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#141414' : '#fff';
+}
+
 function crmCartao(c) {
   const resp = perfis.find(p => p.id === c.responsavel_id);
   const pill = c.status_negocio === 'ganho' ? '<span class="pill" style="background:var(--accent-wash); color:var(--good);">ganho</span>'
     : c.status_negocio === 'perdido' ? '<span class="pill retro">perdido</span>' : '';
   const tagsDoCard = (crmCardTagsMap[c.id] || []).map(tid => crmTags.find(t => t.id === tid)).filter(Boolean);
-  const tagsHtml = tagsDoCard.length ? `<div class="tags-row">${tagsDoCard.map(t => `<span class="tag-stripe" style="background:${t.cor}" title="${t.nome}"></span>`).join('')}</div>` : '';
-  const linha2 = [c.pessoa_nome, resp && resp.nome].filter(Boolean).join(' · ');
+  // com nome, não só a tarjinha: a tag é a isca de origem do lead, é o que o SDR precisa ver
+  const tagsHtml = tagsDoCard.length
+    ? `<div class="tags-row">${tagsDoCard.map(t => `<span class="tag-chip" style="background:${t.cor}; color:${corTextoTag(t.cor)}">${t.nome}</span>`).join('')}</div>`
+    : '';
+  const cv = c.campos_valores || {};
+  const cargo = cv.cargo || cv.profissao || '';
+  // o lead do Tally chega com essas infos preenchidas; sem mostrar aqui o card parecia vazio
+  const linha2 = [cargo, c.pessoa_telefone].filter(Boolean).join(' · ');
+  const linha3 = [
+    c.pessoa_nome && c.pessoa_nome !== c.titulo ? c.pessoa_nome : null,
+    resp && resp.nome,
+    c.valor ? fmtBRL(c.valor) : null,
+  ].filter(Boolean).join(' · ');
   return `
     <div class="kanban-card" draggable="true" ondragstart="crmDragStart(event, ${c.id})" ondragend="event.target.classList.remove('arrastando')" onclick="crmAbrirCard(${c.id})">
       ${tagsHtml}
       <div class="cliente">${c.titulo} ${pill}</div>
-      <div class="info">${linha2}${c.valor ? (linha2 ? ' · ' : '') + fmtBRL(c.valor) : ''}</div>
+      ${linha2 ? `<div class="info">${linha2}</div>` : ''}
+      ${linha3 ? `<div class="info">${linha3}</div>` : ''}
     </div>
   `;
 }
@@ -2575,6 +2597,10 @@ const TALLY_ORIGEM = {
   '7RvWRL': { isca: 'proposta-automatica-claude', tag: 86 },
   'A76qzB': { isca: 'evento', tag: 105 },
   'Bz5ko4': { isca: 'framework', tag: 119 },
+  'BzVoO5': { isca: '6-skills-claude', tag: 113 },
+  'GxoJa2': { isca: 'evollure', tag: 120 },
+  'LZbPBv': { isca: 'claude-code-meta-ads', tag: 115 },
+  'LZggkO': { isca: 'claude-follow-up', tag: 114 },
   'Gx0pgz': { isca: 'claude-manychat', tag: 84 },
   'GxY2lO': { isca: 'claude-vscode', tag: 93 },
   'GxYyeL': { isca: 'claude-trafego-pago', tag: 79 },
@@ -2625,17 +2651,50 @@ function extrairLead(submissao, perguntas) {
   };
 }
 
+// O "Leads" do comparativo saía só da memória da aba Formulário, que leva ~40s pra carregar —
+// nesse meio tempo o painel mostrava 0 lead com o MQL já preenchido, o que é impossível (todo MQL
+// é lead). Agora toda submissão do mês corrente fica registrada no banco, inclusive a que não vira
+// card (anterior ao corte ou sem e-mail), então a contagem existe mesmo sem a aba ter carregado.
+async function registrarLeadsDoMesParaContagem(brutas, jaVistas) {
+  const inicioMes = `${fmtMesRef(new Date())}-01T00:00:00Z`;
+  const novas = brutas.filter(s =>
+    s.submittedAt >= inicioMes && !jaVistas.has(s.submissionId) &&
+    !(s.submittedAt > TALLY_CORTE && s.emailReal));   // essas viram card e são registradas lá
+  if (!novas.length) return;
+  const linhas = novas.map(s => ({
+    submission_id: s.submissionId, form_id: s.formId, form_nome: s.formNome,
+    motivo: 'contagem', submitted_at: s.submittedAt,
+  }));
+  for (let i = 0; i < linhas.length; i += 200) {
+    const { error } = await sb.from('com_tally_processados')
+      .upsert(linhas.slice(i, i + 200), { onConflict: 'submission_id', ignoreDuplicates: true });
+    if (error) { console.warn('não consegui registrar leads pra contagem', error); return; }
+  }
+}
+
+async function contarLeadsDoMesNoBanco(mesRef) {
+  const [ano, mes] = mesRef.split('-').map(Number);
+  const fimMes = new Date(Date.UTC(ano, mes, 1)).toISOString();   // 1º dia do mês seguinte
+  const { count } = await sb.from('com_tally_processados')
+    .select('submission_id', { count: 'exact', head: true })
+    .neq('motivo', 'ignorado-teste')
+    .gte('submitted_at', `${mesRef}-01T00:00:00Z`).lt('submitted_at', fimMes);
+  return count || 0;
+}
+
 async function sincronizarLeadsTally(brutas) {
+  const { data: registros, error: erroLeitura } = await sb
+    .from('com_tally_processados').select('submission_id, card_id, motivo');
+  if (erroLeitura) throw erroLeitura;
+  const jaVistas = new Map((registros || []).map(r => [r.submission_id, r]));
+
+  await registrarLeadsDoMesParaContagem(brutas, jaVistas);
+
   // nome/email aqui são os crus (extrairContato troca vazio por "—", que não serve pro banco)
   const candidatas = brutas
     .map(s => ({ ...s, nome: s.nomeReal, email: s.emailReal }))
     .filter(s => s.submittedAt > TALLY_CORTE && s.email);
   if (!candidatas.length) return 0;
-
-  const { data: registros, error: erroLeitura } = await sb
-    .from('com_tally_processados').select('submission_id, card_id, motivo');
-  if (erroLeitura) throw erroLeitura;
-  const jaVistas = new Map((registros || []).map(r => [r.submission_id, r]));
 
   const pendentes = candidatas.filter(s => {
     const r = jaVistas.get(s.submissionId);
@@ -3625,7 +3684,12 @@ async function renderFunilComparativo() {
   if (!colEl || !labelsEl || !fatEl) return;
   const mesRef = fmtMesRef(new Date()); // sempre o mês corrente de verdade, não o mês navegado no topo
 
-  const leadsAtual = tallySubmissions.filter(s => s.data.startsWith(mesRef)).length;
+  // com a aba Formulário carregada, a memória é a fonte mais fresca; antes disso (ou se o Tally
+  // falhar) cai pro registro no banco em vez de mentir um zero
+  let leadsAtual = tallySubmissions.filter(s => s.data.startsWith(mesRef)).length;
+  if (!leadsAtual) {
+    try { leadsAtual = await contarLeadsDoMesNoBanco(mesRef); } catch (e) { /* fica 0 */ }
+  }
 
   let mqlAtual = 0;
   try {
