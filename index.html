@@ -2821,9 +2821,22 @@ async function sincronizarLeadsTally(brutas) {
 
       // mesma pessoa baixando outro material não vira card novo: reaproveita o dela
       const { data: existentes } = await sb.from('com_cards')
-        .select('id').eq('funil_id', CRM_FUNIL_LEADS)
+        .select('id, observacao').eq('funil_id', CRM_FUNIL_LEADS)
         .ilike('pessoa_email', s.email).limit(1);
-      let cardId = existentes && existentes[0] ? existentes[0].id : null;
+      const cardExistente = existentes && existentes[0] ? existentes[0] : null;
+      let cardId = cardExistente ? cardExistente.id : null;
+
+      // voltou por outra isca: ganha a tag nova (lá embaixo) e a origem passa a listar as duas —
+      // sem isso o card ficava dizendo só de onde veio na primeira vez
+      if (cardExistente) {
+        const obs = cardExistente.observacao || '';
+        if (!obs.includes(s.formNome)) {
+          const nova = /Origem: .*? \(isca:/.test(obs)
+            ? obs.replace(/Origem: (.*?) \(isca:/, (m, lista) => `Origem: ${lista} + ${s.formNome} (isca:`)
+            : `${obs ? obs + '\n' : ''}Também veio de: ${s.formNome}`;
+          await sb.from('com_cards').update({ observacao: nova }).eq('id', cardId);
+        }
+      }
 
       if (!cardId) {
         const ehMql = CARGOS_MQL.some(c => (s.cargo || '').toLowerCase().includes(c));
