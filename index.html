@@ -238,6 +238,23 @@ svg.chart { display: block; }
 }
 .tagsel-opt:hover { border-color: var(--text-primary); }
 .tagsel-opt i { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+/* ---- busca e filtros do board ---- */
+.crm-filtros { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+.crm-filtros input, .crm-filtros select {
+  padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--field-bg); color: var(--text-primary); font-size: .8rem;
+}
+.crm-filtros input { flex: 1; min-width: 200px; }
+.crm-resultado-global {
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: var(--field-bg);
+}
+.crm-resultado-item {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%;
+  background: none; border: 0; border-bottom: 1px solid var(--border); text-align: left;
+  padding: 7px 2px; cursor: pointer; color: var(--text-primary); font-size: .78rem;
+}
+.crm-resultado-item:last-child { border-bottom: 0; }
+.crm-resultado-item:hover { color: var(--accent); }
 /* ---- agendar reunião de dentro do card (liga o CRM ao funil comercial) ---- */
 .reuniao-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
 .reuniao-form > div { flex: 1; min-width: 110px; }
@@ -624,6 +641,14 @@ form.form-grid button { grid-column: 1 / -1; }
           <select id="crm-funil-select" onchange="crmMudaFunil()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600;"></select>
           <button class="btn" style="width:auto; padding:8px 14px;" onclick="crmAbrirNovoCard(null)">+ Novo card</button>
         </div>
+        <div class="crm-filtros">
+          <input type="text" id="crm-busca" placeholder="Buscar por nome, e-mail ou telefone..." oninput="crmAplicarFiltros()" autocomplete="off">
+          <select id="crm-filtro-tag" onchange="crmAplicarFiltros()"></select>
+          <select id="crm-filtro-responsavel" onchange="crmAplicarFiltros()"></select>
+          <button type="button" class="add-toggle" id="crm-filtro-limpar" onclick="crmLimparFiltros()" style="display:none;">limpar</button>
+          <span class="muted" id="crm-filtro-contagem" style="font-size:.74rem;"></span>
+        </div>
+        <div id="crm-busca-global" style="display:none; margin-bottom:6px;"></div>
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
           <p class="muted" style="font-size:.74rem; margin:0;">Arraste pra mudar o estágio · clique pra ver detalhes.</p>
           <div class="month-nav">
@@ -1817,6 +1842,7 @@ async function carregarCRM() {
   if (!crmFunilAtualId || !crmFunis.find(f => f.id === crmFunilAtualId)) {
     crmFunilAtualId = crmFunis[0] ? crmFunis[0].id : null;
   }
+  crmPopularFiltros();
   const sel = document.getElementById('crm-funil-select');
   sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.nome}</option>`).join('')
     || '<option value="">Nenhum funil — crie um em "⚙️ Funis"</option>';
@@ -1854,7 +1880,7 @@ async function carregarCardsDoFunil() {
       (crmCardTagsMap[r.card_id] = crmCardTagsMap[r.card_id] || []).push(r.tag_id);
     });
   }
-  renderCRMBoard();
+  crmAplicarFiltros();
   renderFunilComparativo();
 }
 
@@ -1869,6 +1895,101 @@ function scrollKanban(direcao) {
   board.scrollBy({ left: direcao * 240, behavior: 'smooth' });
 }
 
+// ---------- BUSCA E FILTROS DO BOARD ----------
+// O board tem mais de mil cards; achar um lead pelo olho era impossível. Filtra em memória
+// (os cards já estão todos carregados) e, se não achar no funil aberto, oferece procurar no banco
+// inteiro — porque na maioria das vezes o lead existe, só está em outro funil.
+function crmCardsVisiveis() {
+  const busca = semAcento((document.getElementById('crm-busca') || {}).value || '');
+  const tagId = parseInt((document.getElementById('crm-filtro-tag') || {}).value) || null;
+  const resp = (document.getElementById('crm-filtro-responsavel') || {}).value || '';
+  return crmCards.filter(c => {
+    if (tagId && !(crmCardTagsMap[c.id] || []).includes(tagId)) return false;
+    if (resp && (resp === 'sem' ? c.responsavel_id : c.responsavel_id !== resp)) return false;
+    if (!busca) return true;
+    const alvo = semAcento([c.titulo, c.pessoa_nome, c.pessoa_email, c.pessoa_telefone,
+      (c.campos_valores || {}).cargo].filter(Boolean).join(' '));
+    return alvo.includes(busca);
+  });
+}
+
+function crmFiltrandoAlgo() {
+  return !!((document.getElementById('crm-busca').value || '').trim()
+    || document.getElementById('crm-filtro-tag').value
+    || document.getElementById('crm-filtro-responsavel').value);
+}
+
+function crmPopularFiltros() {
+  const selTag = document.getElementById('crm-filtro-tag');
+  const selResp = document.getElementById('crm-filtro-responsavel');
+  const tagAntes = selTag.value, respAntes = selResp.value;
+  selTag.innerHTML = '<option value="">Todas as tags</option>'
+    + crmTags.map(t => `<option value="${t.id}">${t.nome}</option>`).join('');
+  selResp.innerHTML = '<option value="">Qualquer responsável</option><option value="sem">Sem responsável</option>'
+    + perfis.filter(p => !/n8n/i.test(p.nome)).map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+  selTag.value = tagAntes; selResp.value = respAntes;
+}
+
+function crmAplicarFiltros() {
+  renderCRMBoard();
+  const filtrando = crmFiltrandoAlgo();
+  document.getElementById('crm-filtro-limpar').style.display = filtrando ? '' : 'none';
+  const visiveis = crmCardsVisiveis().length;
+  document.getElementById('crm-filtro-contagem').textContent =
+    filtrando ? `${visiveis} de ${crmCards.length} cards` : '';
+  const texto = (document.getElementById('crm-busca').value || '').trim();
+  const global = document.getElementById('crm-busca-global');
+  if (texto.length >= 3 && !visiveis) {
+    global.style.display = 'block';
+    global.innerHTML = `<div class="crm-resultado-global"><button type="button" class="add-toggle" onclick="crmBuscarEmTodosOsFunis()">Nenhum card neste funil — procurar "${texto}" em todos os funis</button></div>`;
+  } else {
+    global.style.display = 'none';
+    global.innerHTML = '';
+  }
+}
+
+function crmLimparFiltros() {
+  document.getElementById('crm-busca').value = '';
+  document.getElementById('crm-filtro-tag').value = '';
+  document.getElementById('crm-filtro-responsavel').value = '';
+  crmAplicarFiltros();
+}
+
+async function crmBuscarEmTodosOsFunis() {
+  const texto = (document.getElementById('crm-busca').value || '').trim().replace(/[,()*]/g, ' ');
+  const global = document.getElementById('crm-busca-global');
+  if (texto.length < 3) return;
+  global.innerHTML = '<div class="crm-resultado-global muted">Procurando...</div>';
+  const alvo = `%${texto}%`;
+  const { data, error } = await sb.from('com_cards').select('id, titulo, pessoa_nome, pessoa_email, funil_id')
+    .or(`titulo.ilike.${alvo},pessoa_nome.ilike.${alvo},pessoa_email.ilike.${alvo},pessoa_telefone.ilike.${alvo}`)
+    .limit(30);
+  if (error) {
+    global.innerHTML = `<div class="crm-resultado-global muted">Não consegui buscar: ${error.message}</div>`;
+    return;
+  }
+  const achados = data || [];
+  global.innerHTML = `<div class="crm-resultado-global">` + (achados.length
+    ? achados.map(c => {
+        const funil = crmFunis.find(f => f.id === c.funil_id);
+        return `<button type="button" class="crm-resultado-item" onclick="crmIrParaCard(${c.id}, ${c.funil_id})">
+          <b>${c.titulo}</b><span class="muted">${c.pessoa_email || ''}</span>
+          <span class="pill" style="margin-left:auto; background:var(--chip-1)">${funil ? funil.nome : 'funil ' + c.funil_id}</span>
+        </button>`;
+      }).join('')
+    : '<span class="muted">Nenhum card com esse texto em nenhum funil.</span>') + '</div>';
+}
+
+async function crmIrParaCard(cardId, funilId) {
+  if (crmFunilAtualId !== funilId) {
+    crmFunilAtualId = funilId;
+    document.getElementById('crm-funil-select').value = funilId;
+    crmLimparFiltros();
+    await carregarCardsDoFunil();
+  }
+  crmAbrirCard(cardId);
+}
+
 function renderCRMBoard() {
   const el = document.getElementById('crm-board');
   const estagiosDoFunil = crmEstagios.filter(e => e.funil_id === crmFunilAtualId).sort((a,b) => a.ordem - b.ordem);
@@ -1876,8 +1997,9 @@ function renderCRMBoard() {
     el.innerHTML = '<div class="empty">Esse funil ainda não tem estágios. Abra "⚙️ Funis" pra adicionar.</div>';
     return;
   }
+  const visiveis = crmCardsVisiveis();
   el.innerHTML = estagiosDoFunil.map(estagio => {
-    const itens = crmCards.filter(c => c.estagio_id === estagio.id);
+    const itens = visiveis.filter(c => c.estagio_id === estagio.id);
     const soma = itens.reduce((s,c) => s + Number(c.valor || 0), 0);
     return `
       <div class="kanban-coluna" ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="crmDropCard(event, ${estagio.id})">
@@ -2252,10 +2374,32 @@ function crmEnviarWhatsApp() {
   setTimeout(() => document.getElementById('whats-thread-texto').focus(), 100);
 }
 
+// funil dos perdidos é achado pelo nome, não por id fixo: se for renomeado/recriado o app só
+// deixa de mover o card, em vez de mandar lead pra um id que não existe mais
+function crmDestinoPerdidos() {
+  const funil = crmFunis.find(f => (f.nome || '').toLowerCase() === 'perdidos');
+  if (!funil) return null;
+  const estagio = crmEstagios.filter(e => e.funil_id === funil.id).sort((a, b) => a.ordem - b.ordem)[0];
+  return estagio ? { funilId: funil.id, estagioId: estagio.id } : null;
+}
+
 async function crmMarcarDesfecho(status) {
   if (!crmCardAtualId) { alert('Salve o card primeiro.'); return; }
-  await sb.from('com_cards').update({ status_negocio: status, data_fechamento: hojeStr() }).eq('id', crmCardAtualId);
+  const patch = { status_negocio: status, data_fechamento: hojeStr() };
+  const card = crmCards.find(c => c.id === crmCardAtualId);
+  // perdido sai do funil de trabalho e vai pro funil "Perdidos" — o board fica só com lead vivo
+  const destino = status === 'perdido' ? crmDestinoPerdidos() : null;
+  const mudaDeFunil = destino && card && card.funil_id !== destino.funilId;
+  if (mudaDeFunil) { patch.funil_id = destino.funilId; patch.estagio_id = destino.estagioId; }
+
+  await sb.from('com_cards').update(patch).eq('id', crmCardAtualId);
   await crmLogAtividade(crmCardAtualId, status, status === 'ganho' ? 'Marcado como Ganho' : 'Marcado como Perdido');
+  if (mudaDeFunil) {
+    const funilAntigo = crmFunis.find(f => f.id === card.funil_id);
+    const estagioAntigo = crmEstagios.find(e => e.id === card.estagio_id);
+    await crmLogAtividade(crmCardAtualId, 'mudanca_funil',
+      `Movido para Perdidos (era ${funilAntigo ? funilAntigo.nome : '?'} / ${estagioAntigo ? estagioAntigo.nome : '?'})`);
+  }
   fecharModal('modal-card-crm');
   await carregarCardsDoFunil();
   if (status === 'ganho') celebrar('venda');
