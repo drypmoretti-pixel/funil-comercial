@@ -5708,12 +5708,24 @@ const NOVIDADES = {
 
 let tourPasso = 0;
 let tourAberto = false;
+const TOUR_CHAVE_LOCAL = 'novidades_vistas';
+
+// Nem todo login tem linha em `com_perfis` — existem usuários no Auth que nunca foram cadastrados
+// como perfil (o próprio Igor entra por um e-mail assim). A v1 do tour saía calada nesse caso,
+// porque gateava tudo em `currentPerfil`. O tour é informativo: não pode depender de perfil.
+// Com perfil, o "já vi" vive no banco e segue a pessoa entre dispositivos; sem perfil, cai no
+// localStorage, que é pior mas é melhor que não mostrar nada.
+function tourVistasLocais() {
+  try { return JSON.parse(localStorage.getItem(TOUR_CHAVE_LOCAL) || '[]'); } catch (e) { return []; }
+}
 
 async function verificarNovidades() {
-  if (!currentPerfil) return;
-  const { data } = await sb.from('com_novidades_vistas').select('versao')
-    .eq('perfil_id', currentPerfil.id).eq('versao', NOVIDADES.versao).limit(1);
-  if (data && data.length) return;   // essa pessoa já viu esta versão
+  if (tourVistasLocais().includes(NOVIDADES.versao)) return;
+  if (currentPerfil) {
+    const { data } = await sb.from('com_novidades_vistas').select('versao')
+      .eq('perfil_id', currentPerfil.id).eq('versao', NOVIDADES.versao).limit(1);
+    if (data && data.length) return;   // essa pessoa já viu esta versão
+  }
   abrirTour();
 }
 
@@ -5768,6 +5780,13 @@ async function fecharTour() {
   document.getElementById('tour-fundo').classList.remove('aberto');
   tourAberto = false;
   tourPiscar(null);
+  try {
+    const vistas = tourVistasLocais();
+    if (!vistas.includes(NOVIDADES.versao)) {
+      vistas.push(NOVIDADES.versao);
+      localStorage.setItem(TOUR_CHAVE_LOCAL, JSON.stringify(vistas.slice(-20)));
+    }
+  } catch (e) { /* navegador sem localStorage: o banco cobre, ou ele vê de novo. Não é motivo pra quebrar. */ }
   if (!currentPerfil) return;
   await sb.from('com_novidades_vistas')
     .upsert({ perfil_id: currentPerfil.id, versao: NOVIDADES.versao }, { onConflict: 'perfil_id,versao', ignoreDuplicates: true });
