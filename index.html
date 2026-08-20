@@ -2442,6 +2442,17 @@ async function carregarDadosPlano() {
   renderPlano();
 }
 
+function diasUteisDoMes() {
+  const hoje = new Date();
+  const fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+  let dias = 0;
+  for (const d = new Date(hoje.getFullYear(), hoje.getMonth(), 1); d <= fim; d.setDate(d.getDate() + 1)) {
+    const s = d.getDay();
+    if (s !== 0 && s !== 6) dias++;
+  }
+  return Math.max(1, dias);
+}
+
 function diasUteisRestantes() {
   const hoje = new Date();
   const fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
@@ -2472,6 +2483,8 @@ function planoMetricas() {
     naMesa: negocios.filter(n => Number(n.valor_proposta) > 0 && n.status !== 'venda' && n.status !== 'perdida'),
     semProposta: negocios.filter(n => n.data_realizacao && !n.data_proposta && n.status !== 'perdida' && n.status !== 'venda'),
     atrasadas: negocios.filter(n => n.status === 'agendada' && n.data_agendada < hojeStr()),
+    // só o que ainda pode virar reunião de verdade: no-show e perdida já queimaram
+    pendentes: negocios.filter(n => (n.status === 'agendada' || n.status === 'remarcada') && n.data_agendada >= hojeStr()),
   };
 }
 
@@ -2490,7 +2503,7 @@ function planoDeAcao(papel) {
   if (papel === 'sdr') {
     const realizadasNecessarias = Math.ceil(vendasFaltando / Math.max(taxaRealVenda, 0.05));
     const agendamentosNecessarios = Math.ceil(realizadasNecessarias / Math.max(taxaAgendReal, 0.05));
-    const jaNoPipeline = Math.max(0, m.agendadas.length - m.realizadas.length);
+    const jaNoPipeline = m.pendentes.length;
     const faltaAgendar = Math.max(0, agendamentosNecessarios - jaNoPipeline);
     if (m.falta > 0 && faltaAgendar > 0) {
       acoes.push({
@@ -2534,12 +2547,20 @@ function planoDeAcao(papel) {
       });
     }
     const metaMql = (FUNIL_ETAPAS.find(e => e.chave === 'mql') || {}).meta || 0;
-    if (metaMql && planoContagens.mqlMes < metaMql) {
+    if (metaMql) {
+      const hoje = new Date();
+      const totalDiasUteis = diasUteisDoMes();
+      const corridos = Math.max(1, totalDiasUteis - m.dias + 1);
+      const porDia = planoContagens.mqlMes / corridos;
+      const projecao = Math.round(porDia * totalDiasUteis);
+      // ritmo, não cobrança: pedir "gere mais 284 MQLs em 8 dias" é um número que ninguém executa
       acoes.push({
         alta: false,
-        titulo: `Gerar ${metaMql - planoContagens.mqlMes} MQLs para chegar nos ${metaMql} do mês`,
-        detalhe: `Este mês entraram ${planoContagens.mqlMes} leads de alto potencial. O topo do funil é o que sustenta o mês seguinte, não este.`,
-        base: 'meta de MQL do comparativo funil atual x ideal',
+        titulo: `Topo do funil: ${planoContagens.mqlMes} MQLs no mês, ritmo de ${porDia.toFixed(1).replace('.', ',')} por dia útil`,
+        detalhe: projecao >= metaMql
+          ? `Nesse ritmo o mês fecha em ~${projecao}, dentro da meta de ${metaMql}. O topo está sustentando o mês que vem.`
+          : `Nesse ritmo o mês fecha em ~${projecao} contra a meta de ${metaMql} — seriam ${(metaMql / totalDiasUteis).toFixed(1).replace('.', ',')} por dia útil pra chegar lá. O que entra de MQL agora é o faturamento do mês que vem, não deste.`,
+        base: `${corridos} de ${totalDiasUteis} dias úteis corridos · meta do comparativo funil atual x ideal`,
       });
     }
   } else {
