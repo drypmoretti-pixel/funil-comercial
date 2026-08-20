@@ -207,6 +207,29 @@ svg.chart { display: block; }
   display: inline-block; letter-spacing: .01em; max-width: 100%;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+/* ---- lead score: nota 0-100 do lead (pesos em SCORE_PESOS) ---- */
+.score-chip {
+  font-size: .64rem; font-weight: 800; line-height: 1.6; padding: 0 7px; border-radius: 999px;
+  display: inline-block; letter-spacing: .02em; white-space: nowrap;
+}
+.score-chip.quente   { background: rgba(208,59,59,.14); color: var(--critical); }
+.score-chip.morno    { background: rgba(237,161,0,.18); color: #a87400; }
+.score-chip.frio     { background: var(--field-bg); color: var(--text-secondary); border: 1px solid var(--border); }
+.score-chip.sem-dado { background: transparent; color: var(--muted); border: 1px dashed var(--border); }
+.score-box { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--field-bg); margin-bottom: 12px; }
+.score-box-topo { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.score-box-nota { font-size: 1.6rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.score-linha { display: flex; justify-content: space-between; gap: 10px; font-size: .74rem; padding: 2px 0; color: var(--text-secondary); }
+.score-linha b { font-variant-numeric: tabular-nums; flex: 0 0 auto; }
+.score-linha.neg b { color: var(--critical); }
+.score-linha.zero { color: var(--muted); }
+/* ---- fila "atacar hoje" no dashboard ---- */
+.fila-item { display: flex; align-items: center; gap: 10px; padding: 8px 2px; border-bottom: 1px solid var(--grid); cursor: pointer; }
+.fila-item:last-child { border-bottom: 0; }
+.fila-item:hover { background: var(--field-bg); }
+.fila-item .fi-corpo { flex: 1; min-width: 0; }
+.fila-item .fi-nome { font-weight: 600; font-size: .86rem; }
+.fila-item .fi-sub { font-size: .72rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* ---- seletor de tags do card: as do card em cima, as disponíveis numa lista sóbria embaixo ---- */
 .tagsel-atuais-linha { display: flex; align-items: flex-start; gap: 8px; }
 .tagsel-atuais { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 26px; flex: 1; min-width: 0; }
@@ -590,6 +613,15 @@ form.form-grid button { grid-column: 1 / -1; }
 
       <section class="card">
         <div class="section-title">
+          <h2>Atacar hoje</h2>
+          <span class="muted" style="font-size:.74rem;">lead score 45+ · sem toque há 3 dias</span>
+        </div>
+        <p class="muted">Os leads com maior nota que ninguém tocou nos últimos dias. Clique pra abrir o card no CRM.</p>
+        <div id="fila-ataque" style="margin-top:6px;"><div class="empty">Carregando...</div></div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
           <h2>Negócios em andamento</h2>
           <div style="display:flex; gap:8px;">
             <button class="add-toggle" onclick="abrirModalImport()">Importar CSV em massa</button>
@@ -645,6 +677,17 @@ form.form-grid button { grid-column: 1 / -1; }
           <input type="text" id="crm-busca" placeholder="Buscar por nome, e-mail ou telefone..." oninput="crmAplicarFiltros()" autocomplete="off">
           <select id="crm-filtro-tag" onchange="crmAplicarFiltros()"></select>
           <select id="crm-filtro-responsavel" onchange="crmAplicarFiltros()"></select>
+          <select id="crm-filtro-score" onchange="crmAplicarFiltros()" title="Faixa do lead score">
+            <option value="">Qualquer score</option>
+            <option value="quente">🔥 Quente (70+)</option>
+            <option value="morno">🟡 Morno (45–69)</option>
+            <option value="frio">⚪ Frio (&lt;45)</option>
+            <option value="sem-dado">· Sem dados do formulário</option>
+          </select>
+          <select id="crm-ordem" onchange="crmAplicarFiltros()" title="Ordem dos cards dentro da coluna">
+            <option value="recentes">Mais recentes primeiro</option>
+            <option value="score">Maior score primeiro</option>
+          </select>
           <button type="button" class="add-toggle" id="crm-filtro-limpar" onclick="crmLimparFiltros()" style="display:none;">limpar</button>
           <span class="muted" id="crm-filtro-contagem" style="font-size:.74rem;"></span>
         </div>
@@ -1162,6 +1205,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </div>
     </div>
     <div id="crm-card-pill-desfecho" style="margin:4px 0 12px;"></div>
+    <div id="crm-score-box" class="score-box" style="display:none;"></div>
     <form class="form-grid" id="form-crm-card" onsubmit="return crmSalvarCard(event)">
       <div class="full">
         <label>Título</label>
@@ -1834,6 +1878,7 @@ async function carregarCRM() {
     sb.from('com_estagios').select('*').eq('ativo', true).order('ordem'),
     sb.from('com_campos_personalizados').select('*').eq('ativo', true).order('ordem'),
     sb.from('com_tags').select('*').eq('ativo', true).order('nome'),
+    carregarTelefonesQueResponderam(),
   ]);
   crmFunis = funis || [];
   crmEstagios = estagios || [];
@@ -1880,8 +1925,10 @@ async function carregarCardsDoFunil() {
       (crmCardTagsMap[r.card_id] = crmCardTagsMap[r.card_id] || []).push(r.tag_id);
     });
   }
+  crmCards.forEach(c => { c._score = scoreDoCard(c); });
   crmAplicarFiltros();
   renderFunilComparativo();
+  sincronizarScores().then(carregarFilaAtaque);   // persistir não pode segurar o desenho do board
 }
 
 function crmMudaFunil() {
@@ -1903,8 +1950,10 @@ function crmCardsVisiveis() {
   const busca = semAcento((document.getElementById('crm-busca') || {}).value || '');
   const tagId = parseInt((document.getElementById('crm-filtro-tag') || {}).value) || null;
   const resp = (document.getElementById('crm-filtro-responsavel') || {}).value || '';
+  const faixa = (document.getElementById('crm-filtro-score') || {}).value || '';
   return crmCards.filter(c => {
     if (tagId && !(crmCardTagsMap[c.id] || []).includes(tagId)) return false;
+    if (faixa && (c._score || (c._score = scoreDoCard(c))).faixa !== faixa) return false;
     if (resp && (resp === 'sem' ? c.responsavel_id : c.responsavel_id !== resp)) return false;
     if (!busca) return true;
     const alvo = semAcento([c.titulo, c.pessoa_nome, c.pessoa_email, c.pessoa_telefone,
@@ -1916,7 +1965,8 @@ function crmCardsVisiveis() {
 function crmFiltrandoAlgo() {
   return !!((document.getElementById('crm-busca').value || '').trim()
     || document.getElementById('crm-filtro-tag').value
-    || document.getElementById('crm-filtro-responsavel').value);
+    || document.getElementById('crm-filtro-responsavel').value
+    || document.getElementById('crm-filtro-score').value);
 }
 
 function crmPopularFiltros() {
@@ -1952,6 +2002,7 @@ function crmLimparFiltros() {
   document.getElementById('crm-busca').value = '';
   document.getElementById('crm-filtro-tag').value = '';
   document.getElementById('crm-filtro-responsavel').value = '';
+  document.getElementById('crm-filtro-score').value = '';
   crmAplicarFiltros();
 }
 
@@ -1998,8 +2049,13 @@ function renderCRMBoard() {
     return;
   }
   const visiveis = crmCardsVisiveis();
+  const porScore = (document.getElementById('crm-ordem') || {}).value === 'score';
   el.innerHTML = estagiosDoFunil.map(estagio => {
-    const itens = visiveis.filter(c => c.estagio_id === estagio.id);
+    let itens = visiveis.filter(c => c.estagio_id === estagio.id);
+    if (porScore) {
+      itens = itens.slice().sort((a, b) =>
+        (b._score || (b._score = scoreDoCard(b))).total - (a._score || (a._score = scoreDoCard(a))).total);
+    }
     const soma = itens.reduce((s,c) => s + Number(c.valor || 0), 0);
     return `
       <div class="kanban-coluna" ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="crmDropCard(event, ${estagio.id})">
@@ -2020,15 +2076,243 @@ function corTextoTag(hex) {
   return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#141414' : '#fff';
 }
 
+// ---------- LEAD SCORE ----------
+// Nota de 0 a 100 por lead. Os pesos não são chute: saíram de cruzar os 1.355 cards do CRM com
+// quem de fato virou reunião/negociação (chegou no funil Closer ou foi marcado ganho), medido em
+// 2026-08-19. O que a base mostrou, e que virou peso aqui:
+//   · cargo CEO/Fundador converteu 6,5% contra 1,3% de Analista/Consultor e 0% de Estagiário;
+//   · quem baixou uma 2ª isca converteu 34,8% contra 2,5% de quem baixou só uma (o sinal mais forte);
+//   · canal: indicação/boca a boca (6,3%) e tráfego pago (7,7%) na frente; prospecção ativa e
+//     conteúdo orgânico no LinkedIn não fecharam NENHUM negócio em 32 leads — quem já tem SDR
+//     compara o preço com o custo do SDR interno, e quem já posta acha que já faz o que vendemos.
+// Quando `com_score_hist` tiver massa (score de entrada x virou reunião de verdade), é aqui que
+// se recalibra: mexer nos números abaixo, não espalhar regra pelo código.
+const SCORE_PESOS = {
+  // 25 pts — é o decisor? (campo "Seu Cargo" do formulário)
+  cargo: [
+    { re: /ceo|fundador|empres[áa]ri|s[óo]ci|owner/, pts: 25, label: 'CEO / Fundador' },
+    { re: /diretor/,                                 pts: 20, label: 'Diretor' },
+    { re: /head|gerente|coordenador/,                pts: 12, label: 'Head / Gerente' },
+    { re: /analista|consultor/,                      pts: 4,  label: 'Analista / Consultor' },
+    { re: /dev|desenvolvedor|program/,               pts: 2,  label: 'Dev' },
+    { re: /estagi/,                                  pts: 0,  label: 'Estagiário' },
+  ],
+  // 25 pts — a dor dele é a que o Método resolve? O campo `dor` guarda DUAS perguntas diferentes:
+  // a dor comercial (formulários novos) e o momento com IA (4 formulários antigos). Trata as duas.
+  dor: [
+    { re: /comercial fica parado/,        pts: 25, label: 'Comercial parado esperando lead' },
+    { re: /escolhendo qual empresa/,      pts: 25, label: 'Já está escolhendo quem contratar' },
+    { re: /pago caro por lead/,           pts: 20, label: 'Paga caro por lead sem perfil' },
+    { re: /buscando contratar/,           pts: 20, label: 'Buscando contratar solução' },
+    { re: /previsibilidade/,              pts: 16, label: 'Mês bom e mês ruim, sem previsibilidade' },
+    { re: /busca de solu/,                pts: 14, label: 'Quer solução, não sabe por onde começar' },
+    { re: /depender de indica|gerar demanda/, pts: 12, label: 'Não sabe gerar demanda sozinho' },
+    { re: /apenas estudando|estudando sobre/, pts: 4, label: 'Só estudando IA' },
+  ],
+  // 20 pts — de onde vem o cliente dele hoje (o canal é o mais fraco dos três, por isso pesa menos)
+  canal: [
+    { re: /indica[çc][ãa]o|boca a boca/,       pts: 20, label: 'Vive de indicação / boca a boca' },
+    { re: /tr[áa]fego pago/,                   pts: 16, label: 'Já investe em tráfego pago' },
+    { re: /n[ãa]o tenho um canal|consistente/, pts: 12, label: 'Sem canal consistente' },
+    { re: /prospec/,                           pts: 8,  label: 'Já faz prospecção ativa' },
+    { re: /org[âa]nico/,                       pts: 6,  label: 'Já faz conteúdo no LinkedIn' },
+  ],
+};
+const SCORE_ISCA_2 = 20, SCORE_ISCA_3 = 25, SCORE_WHATS = 10;   // comportamento, teto de 30
+const SCORE_PARADO_DIAS = 21, SCORE_PARADO_SEMANA = 5, SCORE_PARADO_MAX = 20;
+const SCORE_QUENTE = 70, SCORE_MORNO = 45;
+
+// telefones que já responderam alguma mensagem — carregado junto com o CRM (16 números hoje,
+// consulta leve; não depende da aba WhatsApp ter sido aberta)
+let scoreTelefonesResponderam = new Set();
+// tags de dono ([SDR] Dry, [SDR] Bruno, [CLOSER] ...) NÃO contam como isca: elas são coladas no
+// card DEPOIS que o lead avança. Contar elas inflava o score de quem já tinha avançado — o número
+// ficava bonito e não previa nada (vazamento clássico). Reconhecidas pelo nome, não por id fixo.
+function scoreEhTagDeDono(tag) {
+  return /^\s*\[(sdr|closer)\]/i.test(tag && tag.nome || '');
+}
+
+function scoreCasar(regras, valor) {
+  const alvo = semAcento(valor || '');
+  if (!alvo || alvo === 'nao informado' || alvo === 'n/a') return null;
+  for (const r of regras) if (r.re.test(alvo)) return r;
+  return null;
+}
+
+// pura de propósito: recebe tudo que precisa por parâmetro pra dar pra testar sem banco nenhum
+function calcularLeadScore(card, tagsDoCard) {
+  const cv = (card && card.campos_valores) || {};
+  const itens = [];
+  let total = 0;
+
+  const grupos = [
+    ['Cargo',  SCORE_PESOS.cargo, cv.cargo || cv.profissao],
+    ['Dor',    SCORE_PESOS.dor,   cv.dor || cv.momento_atual],
+    ['Canal',  SCORE_PESOS.canal, cv.canal_aquisicao_atual],
+  ];
+  let respondeuFormulario = false;
+  grupos.forEach(([grupo, regras, valor]) => {
+    const achou = scoreCasar(regras, valor);
+    if (achou) {
+      respondeuFormulario = true;
+      total += achou.pts;
+      itens.push({ label: `${grupo}: ${achou.label}`, pts: achou.pts });
+    } else {
+      itens.push({ label: `${grupo}: não informado`, pts: 0 });
+    }
+  });
+
+  // comportamento (teto 30): baixar um 2º material é o sinal mais forte que a base tem
+  const iscas = (tagsDoCard || []).filter(t => !scoreEhTagDeDono(t)).length;
+  let comportamento = 0;
+  if (iscas >= 3) { comportamento += SCORE_ISCA_3; itens.push({ label: `Baixou ${iscas} materiais`, pts: SCORE_ISCA_3 }); }
+  else if (iscas === 2) { comportamento += SCORE_ISCA_2; itens.push({ label: 'Baixou 2 materiais', pts: SCORE_ISCA_2 }); }
+  const tel = normalizarTelefoneWhats(card && card.pessoa_telefone);
+  if (tel && scoreTelefonesResponderam.has(tel)) {
+    comportamento += SCORE_WHATS;
+    itens.push({ label: 'Respondeu no WhatsApp', pts: SCORE_WHATS });
+  }
+  total += Math.min(comportamento, 30);
+
+  // decaimento: sem isso um MQL de junho fica quente pra sempre e a fila do dia vira museu
+  const ref = (card && (card.updated_at || card.created_at)) || null;
+  const dias = ref ? Math.floor((Date.now() - new Date(ref).getTime()) / 86400000) : 0;
+  if (dias > SCORE_PARADO_DIAS) {
+    const desconto = Math.min(Math.ceil((dias - SCORE_PARADO_DIAS) / 7) * SCORE_PARADO_SEMANA, SCORE_PARADO_MAX);
+    total -= desconto;
+    itens.push({ label: `Parado há ${dias} dias`, pts: -desconto });
+  }
+
+  total = Math.max(0, Math.min(100, total));
+  // "sem dado" não é o mesmo que "frio": os 885 cards herdados do Pipedrive nunca passaram pelo
+  // formulário, então não temos como saber. Mostrar 0 pra eles seria mentira com cara de número.
+  const faixa = !respondeuFormulario ? 'sem-dado'
+    : total >= SCORE_QUENTE ? 'quente'
+    : total >= SCORE_MORNO ? 'morno' : 'frio';
+  return { total, faixa, itens, dias, semDado: !respondeuFormulario };
+}
+
+const SCORE_FAIXA_META = {
+  quente:    { emoji: '🔥', label: 'Quente' },
+  morno:     { emoji: '🟡', label: 'Morno' },
+  frio:      { emoji: '⚪', label: 'Frio' },
+  'sem-dado':{ emoji: '·',  label: 'Sem dados do formulário' },
+};
+
+function scoreDoCard(card) {
+  const tags = (crmCardTagsMap[card.id] || []).map(tid => crmTags.find(t => t.id === tid)).filter(Boolean);
+  return calcularLeadScore(card, tags);
+}
+
+function scoreChip(s) {
+  const meta = SCORE_FAIXA_META[s.faixa];
+  const texto = s.faixa === 'sem-dado' ? 'sem dados' : `${meta.emoji} ${s.total}`;
+  return `<span class="score-chip ${s.faixa}" title="${meta.label}">${texto}</span>`;
+}
+
+// ---------- persistência: o app calcula na hora, o banco guarda pra poder calibrar depois ----------
+// `com_cards.lead_score` fica sincronizado pra dar pra ordenar/consultar por SQL, e `com_score_hist`
+// guarda a nota da PRIMEIRA vez que o lead foi pontuado (índice único por card_id). É essa tabela
+// que daqui a uns meses responde "score de entrada previu reunião?" — sem ela, recalibrar é achismo.
+const SCORE_MAX_UPDATES = 400;   // teto por carga: o backfill já nivelou tudo, aqui só corrige drift
+async function sincronizarScores() {
+  const mudaram = [];
+  const novos = [];
+  for (const c of crmCards) {
+    const s = c._score || (c._score = scoreDoCard(c));
+    if (c.lead_score === null || c.lead_score === undefined) novos.push({ card_id: c.id, score: s.total, detalhe: s.itens });
+    if (c.lead_score !== s.total) mudaram.push({ id: c.id, total: s.total, itens: s.itens });
+  }
+  if (novos.length) {
+    // ignoreDuplicates: a primeira nota é a que vale, recarregar a página não pode reescrever
+    await sb.from('com_score_hist').upsert(novos, { onConflict: 'card_id', ignoreDuplicates: true });
+  }
+  for (const m of mudaram.slice(0, SCORE_MAX_UPDATES)) {
+    await sb.from('com_cards').update({ lead_score: m.total, score_detalhe: m.itens }).eq('id', m.id);
+    const card = crmCards.find(c => c.id === m.id);
+    if (card) { card.lead_score = m.total; card.score_detalhe = m.itens; }
+  }
+}
+
+async function carregarTelefonesQueResponderam() {
+  const linhas = await buscarPaginado('com_whatsapp_mensagens',
+    q => q.select('telefone').eq('direcao', 'recebida').order('telefone'));
+  scoreTelefonesResponderam = new Set(linhas.map(r => normalizarTelefoneWhats(r.telefone)).filter(Boolean));
+}
+
+function crmRenderScoreBox(card) {
+  const box = document.getElementById('crm-score-box');
+  const s = card._score || scoreDoCard(card);
+  const meta = SCORE_FAIXA_META[s.faixa];
+  const linhas = s.itens.map(i => {
+    const cls = i.pts < 0 ? 'neg' : i.pts === 0 ? 'zero' : '';
+    const sinal = i.pts > 0 ? '+' : '';
+    return `<div class="score-linha ${cls}"><span>${i.label}</span><b>${sinal}${i.pts}</b></div>`;
+  }).join('');
+  box.innerHTML = `
+    <div class="score-box-topo">
+      <span class="score-box-nota">${s.semDado ? '—' : s.total}</span>
+      ${scoreChip(s)}
+      <span class="muted" style="font-size:.72rem; margin-left:auto;">lead score</span>
+    </div>
+    ${linhas}
+    ${s.semDado ? '<div class="score-linha zero" style="margin-top:6px;">Esse lead não passou pelo formulário (veio da migração do Pipedrive) — sem cargo, dor e canal não dá pra pontuar.</div>' : ''}
+  `;
+  box.style.display = 'block';
+}
+
+// ---------- FILA "ATACAR HOJE" ----------
+// A pergunta que a SDR faz toda manhã: "pra quem eu ligo primeiro?". Score alto + parado há dias.
+const FILA_PARADO_DIAS = 3, FILA_TAMANHO = 10;
+let filaAtaque = [];
+async function carregarFilaAtaque() {
+  const corte = new Date(Date.now() - FILA_PARADO_DIAS * 86400000).toISOString();
+  const { data } = await sb.from('com_cards')
+    .select('id, titulo, funil_id, estagio_id, lead_score, pessoa_telefone, campos_valores, updated_at')
+    .eq('funil_id', CRM_FUNIL_LEADS)
+    .eq('status_negocio', 'aberto')
+    .not('lead_score', 'is', null)
+    .gte('lead_score', SCORE_MORNO)
+    .lt('updated_at', corte)
+    .order('lead_score', { ascending: false })
+    .limit(FILA_TAMANHO);
+  filaAtaque = data || [];
+  renderFilaAtaque();
+}
+
+function renderFilaAtaque() {
+  const el = document.getElementById('fila-ataque');
+  if (!el) return;
+  if (!filaAtaque.length) {
+    el.innerHTML = '<div class="empty">Nenhum lead morno ou quente esperando — ou todos já foram tocados nos últimos 3 dias.</div>';
+    return;
+  }
+  el.innerHTML = filaAtaque.map(c => {
+    const faixa = c.lead_score >= SCORE_QUENTE ? 'quente' : 'morno';
+    const meta = SCORE_FAIXA_META[faixa];
+    const estagio = crmEstagios.find(e => e.id === c.estagio_id);
+    const dias = Math.floor((Date.now() - new Date(c.updated_at).getTime()) / 86400000);
+    const cargo = (c.campos_valores || {}).cargo || '';
+    const sub = [estagio && estagio.nome, cargo, `parado há ${dias} dias`].filter(Boolean).join(' · ');
+    return `
+      <div class="fila-item" onclick="abrirLeadDoNegocio(${c.id})" title="Abrir o lead no CRM">
+        <span class="score-chip ${faixa}">${meta.emoji} ${c.lead_score}</span>
+        <span class="fi-corpo"><span class="fi-nome">${c.titulo}</span><br><span class="fi-sub">${sub}</span></span>
+      </div>`;
+  }).join('');
+}
+
 function crmCartao(c) {
   const resp = perfis.find(p => p.id === c.responsavel_id);
   const pill = c.status_negocio === 'ganho' ? '<span class="pill" style="background:var(--accent-wash); color:var(--good);">ganho</span>'
     : c.status_negocio === 'perdido' ? '<span class="pill retro">perdido</span>' : '';
   const tagsDoCard = (crmCardTagsMap[c.id] || []).map(tid => crmTags.find(t => t.id === tid)).filter(Boolean);
   // com nome, não só a tarjinha: a tag é a isca de origem do lead, é o que o SDR precisa ver
-  const tagsHtml = tagsDoCard.length
-    ? `<div class="tags-row">${tagsDoCard.map(t => `<span class="tag-chip" style="background:${t.cor}; color:${corTextoTag(t.cor)}">${t.nome}</span>`).join('')}</div>`
-    : '';
+  const s = c._score || (c._score = scoreDoCard(c));
+  const chips = [s.faixa === 'sem-dado' ? '' : scoreChip(s)]
+    .concat(tagsDoCard.map(t => `<span class="tag-chip" style="background:${t.cor}; color:${corTextoTag(t.cor)}">${t.nome}</span>`))
+    .filter(Boolean);
+  const tagsHtml = chips.length ? `<div class="tags-row">${chips.join('')}</div>` : '';
   const cv = c.campos_valores || {};
   const cargo = cv.cargo || cv.profissao || '';
   // o lead do Tally chega com essas infos preenchidas; sem mostrar aqui o card parecia vazio
@@ -2179,6 +2463,7 @@ function crmAbrirNovoCard(estagioId) {
   crmRenderCamposPersonalizados({});
   crmTagsSelecionadasAtual = [];
   crmToggleCaixaTags(false);
+  document.getElementById('crm-score-box').style.display = 'none';   // card novo ainda não tem o que pontuar
   document.getElementById('crm-historico-wrap').style.display = 'none';
   document.getElementById('crm-reunioes-wrap').style.display = 'none';
   document.getElementById('crm-mover-funil-wrap').style.display = 'none';
@@ -2206,6 +2491,7 @@ function crmAbrirCard(id) {
   crmToggleCaixaTags(false);   // abre sempre guardada, sem herdar a busca do card anterior
   document.getElementById('crm-historico-wrap').style.display = 'block';
   document.getElementById('crm-reunioes-wrap').style.display = 'block';
+  crmRenderScoreBox(c);
   crmRenderReunioes(id);
   crmCarregarAtividades(id);
   document.getElementById('crm-mover-funil-wrap').style.display = crmFunis.length > 1 ? 'block' : 'none';
