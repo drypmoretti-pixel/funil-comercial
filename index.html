@@ -247,6 +247,46 @@ svg.chart { display: block; }
 .score-linha.neg b { color: var(--critical); }
 .score-linha.zero, .score-linha.zero b { color: var(--muted); font-weight: 500; }
 .score-rodape { margin-top: 9px; font-size: .72rem; line-height: 1.5; color: var(--muted); }
+/* ---- atividades do lead (bolinha do Pipedrive) ---- */
+.ativ-dot {
+  display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto;
+  vertical-align: 1px; margin-right: 6px; border: 1px solid transparent;
+}
+.ativ-dot.atrasada { background: var(--critical); }
+.ativ-dot.hoje     { background: var(--good); }
+.ativ-dot.futura   { background: transparent; border-color: var(--baseline); }
+.ativ-dot.sem      { background: var(--warning); }
+.ativ-legenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: .7rem; color: var(--text-secondary); margin: 2px 0 8px; }
+.ativ-legenda span { display: inline-flex; align-items: center; gap: 0; }
+.ativ-item {
+  display: flex; align-items: flex-start; gap: 9px; padding: 8px 0; border-bottom: 1px solid var(--grid);
+}
+.ativ-item:last-child { border-bottom: 0; }
+.ativ-check {
+  flex: 0 0 auto; width: 17px; height: 17px; margin-top: 1px; border-radius: 5px; cursor: pointer;
+  border: 1.5px solid var(--border); background: var(--surface-1); display: flex; align-items: center; justify-content: center;
+  color: transparent; font-size: .7rem; font-weight: 900; line-height: 1; padding: 0;
+}
+.ativ-check:hover { border-color: var(--good); color: var(--good); }
+.ativ-item.feita .ativ-check { background: var(--good); border-color: var(--good); color: #fff; }
+.ativ-corpo { flex: 1; min-width: 0; }
+.ativ-titulo { font-size: .82rem; font-weight: 600; letter-spacing: -.005em; }
+.ativ-item.feita .ativ-titulo { text-decoration: line-through; color: var(--muted); font-weight: 500; }
+.ativ-quando { font-size: .71rem; color: var(--text-secondary); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+.ativ-quando.atrasada { color: var(--critical); font-weight: 600; }
+.ativ-quando.hoje { color: var(--good); font-weight: 600; }
+.ativ-tipo { font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ativ-lixo { flex: 0 0 auto; border: 0; background: none; color: var(--muted); cursor: pointer; font-size: .8rem; padding: 0 2px; }
+.ativ-lixo:hover { color: var(--critical); }
+.ativ-form { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
+.ativ-form-linha { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
+.ativ-form-linha > div { flex: 1; min-width: 108px; }
+.ativ-atalhos { display: flex; gap: 6px; flex-wrap: wrap; }
+.ativ-atalho {
+  font-size: .68rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; cursor: pointer;
+  border: 1px dashed var(--border); background: transparent; color: var(--text-secondary);
+}
+.ativ-atalho:hover { border-style: solid; border-color: var(--text-primary); color: var(--text-primary); }
 /* ---- ícones ---- */
 /* botão cujo conteúdo é só um ícone: centraliza e alinha o SVG com o texto ao lado */
 .ico-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
@@ -809,6 +849,13 @@ form.form-grid button { grid-column: 1 / -1; }
             <option value="frio">Frio · abaixo de 45</option>
             <option value="sem-dado">Sem dados do formulário</option>
           </select>
+          <select id="crm-filtro-atividade" onchange="crmAplicarFiltros()" title="Estado da próxima atividade">
+            <option value="">Qualquer atividade</option>
+            <option value="atrasada">Atrasada</option>
+            <option value="hoje">Para hoje</option>
+            <option value="futura">Agendada pra frente</option>
+            <option value="sem">Sem atividade</option>
+          </select>
           <select id="crm-ordem" onchange="crmAplicarFiltros()" title="Ordem dos cards dentro da coluna">
             <option value="recentes">Mais recentes primeiro</option>
             <option value="score">Maior score primeiro</option>
@@ -817,6 +864,12 @@ form.form-grid button { grid-column: 1 / -1; }
           <span class="muted" id="crm-filtro-contagem" style="font-size:.74rem;"></span>
         </div>
         <div id="crm-busca-global" style="display:none; margin-bottom:6px;"></div>
+        <div class="ativ-legenda">
+          <span><span class="ativ-dot atrasada"></span>atividade atrasada</span>
+          <span><span class="ativ-dot hoje"></span>para hoje</span>
+          <span><span class="ativ-dot futura"></span>agendada pra frente</span>
+          <span><span class="ativ-dot sem"></span>sem atividade marcada</span>
+        </div>
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
           <p class="muted" style="font-size:.74rem; margin:0;">Arraste pra mudar o estágio · clique pra ver detalhes.</p>
           <div class="month-nav">
@@ -1420,6 +1473,32 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <button type="button" class="btn" style="background:var(--critical); width:auto; padding:8px 14px;" onclick="crmExcluirCard()">Excluir</button>
       </div>
     </form>
+    <div id="crm-ativ-wrap" style="display:none; margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
+      <label style="font-weight:700; display:block; margin-bottom:2px;">Atividades</label>
+      <p class="muted" style="font-size:.72rem; margin:0 0 8px;">O próximo passo deste lead. É isso que pinta a bolinha do cartão no board.</p>
+      <div id="crm-ativ-lista"></div>
+      <div id="crm-ativ-feitas"></div>
+      <div class="ativ-form">
+        <div>
+          <label>O que precisa ser feito</label>
+          <input type="text" id="crm-ativ-titulo" placeholder="Ex.: fazer follow up da proposta" autocomplete="off"
+            onkeydown="if(event.key==='Enter'){event.preventDefault(); crmCriarAtividade();}">
+        </div>
+        <div class="ativ-atalhos">
+          <button type="button" class="ativ-atalho" onclick="crmAtivAtalhoData(0)">hoje</button>
+          <button type="button" class="ativ-atalho" onclick="crmAtivAtalhoData(1)">amanhã</button>
+          <button type="button" class="ativ-atalho" onclick="crmAtivAtalhoData(3)">em 3 dias</button>
+          <button type="button" class="ativ-atalho" onclick="crmAtivAtalhoData(7)">em 1 semana</button>
+        </div>
+        <div class="ativ-form-linha">
+          <div><label>Tipo</label><select id="crm-ativ-tipo"></select></div>
+          <div><label>Data</label><input type="date" id="crm-ativ-data"></div>
+          <div><label>Hora</label><input type="time" id="crm-ativ-hora"></div>
+          <div><label>Responsável</label><select id="crm-ativ-responsavel"></select></div>
+        </div>
+        <button type="button" class="btn" style="width:auto; padding:9px 16px; justify-self:start;" onclick="crmCriarAtividade()">Criar atividade</button>
+      </div>
+    </div>
     <div id="crm-reunioes-wrap" style="display:none; margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
       <label style="font-weight:700; display:block; margin-bottom:6px;">Reuniões deste lead</label>
       <div id="crm-reunioes-lista" style="margin-bottom:10px;"></div>
@@ -2083,6 +2162,7 @@ async function carregarCardsDoFunil() {
       (crmCardTagsMap[r.card_id] = crmCardTagsMap[r.card_id] || []).push(r.tag_id);
     });
   }
+  await carregarAtividadesDosCards(ids);
   crmCards.forEach(c => { c._score = scoreDoCard(c); });
   crmAplicarFiltros();
   renderFunilComparativo();
@@ -2109,7 +2189,9 @@ function crmCardsVisiveis() {
   const tagId = parseInt((document.getElementById('crm-filtro-tag') || {}).value) || null;
   const resp = (document.getElementById('crm-filtro-responsavel') || {}).value || '';
   const faixa = (document.getElementById('crm-filtro-score') || {}).value || '';
+  const ativ = (document.getElementById('crm-filtro-atividade') || {}).value || '';
   return crmCards.filter(c => {
+    if (ativ && estadoAtividade(c.id).estado !== ativ) return false;
     if (tagId && !(crmCardTagsMap[c.id] || []).includes(tagId)) return false;
     if (faixa && (c._score || (c._score = scoreDoCard(c))).faixa !== faixa) return false;
     if (resp && (resp === 'sem' ? c.responsavel_id : c.responsavel_id !== resp)) return false;
@@ -2124,7 +2206,8 @@ function crmFiltrandoAlgo() {
   return !!((document.getElementById('crm-busca').value || '').trim()
     || document.getElementById('crm-filtro-tag').value
     || document.getElementById('crm-filtro-responsavel').value
-    || document.getElementById('crm-filtro-score').value);
+    || document.getElementById('crm-filtro-score').value
+    || document.getElementById('crm-filtro-atividade').value);
 }
 
 function crmPopularFiltros() {
@@ -2161,6 +2244,7 @@ function crmLimparFiltros() {
   document.getElementById('crm-filtro-tag').value = '';
   document.getElementById('crm-filtro-responsavel').value = '';
   document.getElementById('crm-filtro-score').value = '';
+  document.getElementById('crm-filtro-atividade').value = '';
   crmAplicarFiltros();
 }
 
@@ -2232,6 +2316,174 @@ function corTextoTag(hex) {
   if (h.length !== 6) return '#fff';
   const [r, g, b] = [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
   return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#141414' : '#fff';
+}
+
+// ---------- ATIVIDADES DO LEAD (a bolinha do Pipedrive) ----------
+// A bolinha responde de longe "esse lead tem próximo passo marcado?", que é a pergunta que faz o
+// SDR não deixar lead morrer na coluna. Estados, na ordem em que a cor grita:
+//   vermelha  = tem atividade e ela já passou da hora
+//   verde     = tem atividade para hoje (é o que precisa sair nas próximas horas)
+//   contorno  = tem atividade, mas marcada pra frente — nada a fazer hoje
+//   amarela   = NÃO tem atividade nenhuma; é o alerta real, ninguém definiu o próximo passo
+// O contorno é um estado a mais do que o Igor pediu, e existe porque sem ele um follow-up marcado
+// pra semana que vem teria que ser pintado de verde (mentindo que é urgente) ou de amarelo
+// (mentindo que não existe). No Pipedrive esse caso também tem cor própria.
+const ATIV_TIPOS = [
+  { chave: 'follow_up', nome: 'Follow up' },
+  { chave: 'ligacao',   nome: 'Ligação' },
+  { chave: 'whatsapp',  nome: 'WhatsApp' },
+  { chave: 'email',     nome: 'E-mail' },
+  { chave: 'reuniao',   nome: 'Reunião' },
+];
+const ATIV_ESTADOS = {
+  atrasada: { rotulo: 'Atrasada' },
+  hoje:     { rotulo: 'Para hoje' },
+  futura:   { rotulo: 'Agendada' },
+  sem:      { rotulo: 'Sem atividade' },
+};
+let crmAtividadesMap = {};   // card_id -> atividades abertas, da mais próxima pra mais distante
+
+async function carregarAtividadesDosCards(ids) {
+  crmAtividadesMap = {};
+  for (let i = 0; i < ids.length; i += 250) {   // mesmo fatiamento do in() das tags: URL não pode estourar
+    const fatia = ids.slice(i, i + 250);
+    const linhas = await buscarPaginado('com_atividades', q => q.select('*')
+      .in('card_id', fatia).eq('concluida', false).order('data').order('id'));
+    linhas.forEach(a => { (crmAtividadesMap[a.card_id] = crmAtividadesMap[a.card_id] || []).push(a); });
+  }
+}
+
+// hora nula = vale o dia inteiro, então só fica atrasada quando o dia vira
+function atividadeVencida(a, agora) {
+  const hoje = hojeStr();
+  if (a.data < hoje) return true;
+  if (a.data > hoje) return false;
+  if (!a.hora) return false;
+  return a.hora.slice(0, 5) < agora.toTimeString().slice(0, 5);
+}
+
+function estadoAtividade(cardId) {
+  const abertas = (crmAtividadesMap[cardId] || []).slice()
+    .sort((x, y) => (x.data + (x.hora || '23:59')).localeCompare(y.data + (y.hora || '23:59')));
+  if (!abertas.length) return { estado: 'sem', proxima: null, titulo: 'Sem atividade marcada — defina o próximo passo' };
+  const agora = new Date();
+  const vencida = abertas.find(a => atividadeVencida(a, agora));
+  const alvo = vencida || abertas[0];
+  const estado = vencida ? 'atrasada' : alvo.data === hojeStr() ? 'hoje' : 'futura';
+  return { estado, proxima: alvo, titulo: `${ATIV_ESTADOS[estado].rotulo}: ${alvo.titulo} — ${fmtQuandoAtividade(alvo)}` };
+}
+
+function fmtQuandoAtividade(a) {
+  const hoje = hojeStr();
+  const amanha = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  const dia = a.data === hoje ? 'hoje' : a.data === amanha ? 'amanhã' : fmtDataCurta(a.data);
+  const hora = a.hora ? ` às ${a.hora.slice(0, 5)}` : '';
+  if (a.data < hoje) {
+    const dias = Math.round((new Date(hoje) - new Date(a.data)) / 86400000);
+    return `${fmtDataCurta(a.data)}${hora} · atrasada há ${dias} dia${dias > 1 ? 's' : ''}`;
+  }
+  return dia + hora;
+}
+
+function crmBolinha(cardId) {
+  const { estado, titulo } = estadoAtividade(cardId);
+  return `<span class="ativ-dot ${estado}" title="${titulo.replace(/"/g, '&quot;')}"></span>`;
+}
+
+// ---------- atividades dentro do card ----------
+function crmRenderAtividades(cardId) {
+  const lista = document.getElementById('crm-ativ-lista');
+  const abertas = (crmAtividadesMap[cardId] || []).slice()
+    .sort((x, y) => (x.data + (x.hora || '23:59')).localeCompare(y.data + (y.hora || '23:59')));
+  const agora = new Date();
+  lista.innerHTML = abertas.length ? abertas.map(a => {
+    const estado = atividadeVencida(a, agora) ? 'atrasada' : a.data === hojeStr() ? 'hoje' : '';
+    const tipo = (ATIV_TIPOS.find(t => t.chave === a.tipo) || { nome: a.tipo }).nome;
+    const resp = perfis.find(p => p.id === a.responsavel_id);
+    return `
+      <div class="ativ-item">
+        <button type="button" class="ativ-check" title="Marcar como feita" onclick="crmConcluirAtividade(${a.id})">✓</button>
+        <div class="ativ-corpo">
+          <div class="ativ-titulo">${a.titulo}</div>
+          <div class="ativ-quando ${estado}"><span class="ativ-tipo">${tipo}</span>${fmtQuandoAtividade(a)}${resp ? ' · ' + resp.nome : ''}</div>
+        </div>
+        <button type="button" class="ativ-lixo" title="Excluir atividade" onclick="crmExcluirAtividade(${a.id})">✕</button>
+      </div>`;
+  }).join('') : '<div class="empty" style="padding:4px 0;">Nenhuma atividade marcada. O lead fica com a bolinha amarela até você definir o próximo passo.</div>';
+
+  document.getElementById('crm-ativ-tipo').innerHTML = ATIV_TIPOS
+    .map(t => `<option value="${t.chave}">${t.nome}</option>`).join('');
+  const selResp = document.getElementById('crm-ativ-responsavel');
+  selResp.innerHTML = perfis.filter(p => !/n8n/i.test(p.nome))
+    .map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+  if (currentPerfil) selResp.value = currentPerfil.id;
+  document.getElementById('crm-ativ-titulo').value = '';
+  document.getElementById('crm-ativ-data').value = hojeStr();
+  document.getElementById('crm-ativ-hora').value = '';
+  crmCarregarFeitas(cardId);
+}
+
+function crmAtivAtalhoData(dias) {
+  const d = new Date();
+  d.setDate(d.getDate() + dias);
+  document.getElementById('crm-ativ-data').value = d.toISOString().slice(0, 10);
+}
+
+async function crmCriarAtividade() {
+  if (!crmCardAtualId) { alert('Salve o card primeiro.'); return; }
+  const titulo = document.getElementById('crm-ativ-titulo').value.trim();
+  const data = document.getElementById('crm-ativ-data').value;
+  if (!titulo) { alert('Escreva o que precisa ser feito.'); return; }
+  if (!data) { alert('Escolha a data da atividade.'); return; }
+  const hora = document.getElementById('crm-ativ-hora').value || null;
+  const nova = {
+    card_id: crmCardAtualId, titulo, data, hora,
+    tipo: document.getElementById('crm-ativ-tipo').value,
+    responsavel_id: document.getElementById('crm-ativ-responsavel').value || null,
+    criado_por: currentPerfil ? currentPerfil.id : null,
+  };
+  const { data: criada, error } = await sb.from('com_atividades').insert(nova).select().single();
+  if (error) { alert('Não consegui criar a atividade: ' + error.message); return; }
+  (crmAtividadesMap[crmCardAtualId] = crmAtividadesMap[crmCardAtualId] || []).push(criada);
+  await crmLogAtividade(crmCardAtualId, 'atividade', `Atividade marcada: ${titulo} (${fmtQuandoAtividade(criada)})`);
+  crmRenderAtividades(crmCardAtualId);
+  renderCRMBoard();   // a bolinha muda na hora, sem recarregar o funil inteiro
+}
+
+async function crmConcluirAtividade(id) {
+  const cardId = crmCardAtualId;
+  const a = (crmAtividadesMap[cardId] || []).find(x => x.id === id);
+  await sb.from('com_atividades').update({ concluida: true, concluida_em: new Date().toISOString() }).eq('id', id);
+  crmAtividadesMap[cardId] = (crmAtividadesMap[cardId] || []).filter(x => x.id !== id);
+  if (a) await crmLogAtividade(cardId, 'atividade', `Atividade concluída: ${a.titulo}`);
+  crmRenderAtividades(cardId);
+  renderCRMBoard();
+}
+
+async function crmExcluirAtividade(id) {
+  if (!confirm('Excluir esta atividade?')) return;
+  const cardId = crmCardAtualId;
+  await sb.from('com_atividades').delete().eq('id', id);
+  crmAtividadesMap[cardId] = (crmAtividadesMap[cardId] || []).filter(x => x.id !== id);
+  crmRenderAtividades(cardId);
+  renderCRMBoard();
+}
+
+// as concluídas só são buscadas quando o card abre — não pesam na carga do board
+async function crmCarregarFeitas(cardId) {
+  const el = document.getElementById('crm-ativ-feitas');
+  if (!el) return;
+  const { data } = await sb.from('com_atividades').select('*')
+    .eq('card_id', cardId).eq('concluida', true).order('concluida_em', { ascending: false }).limit(8);
+  const feitas = data || [];
+  el.innerHTML = feitas.length ? `
+    <div class="muted" style="font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; margin:12px 0 2px;">Já feitas</div>
+    ${feitas.map(a => `
+      <div class="ativ-item feita">
+        <span class="ativ-check">✓</span>
+        <div class="ativ-corpo"><div class="ativ-titulo">${a.titulo}</div>
+        <div class="ativ-quando">${fmtDataCurta((a.concluida_em || a.data).slice(0, 10))}</div></div>
+      </div>`).join('')}` : '';
 }
 
 // ---------- LEAD SCORE ----------
@@ -2829,7 +3081,7 @@ function crmCartao(c) {
   return `
     <div class="kanban-card" draggable="true" ondragstart="crmDragStart(event, ${c.id})" ondragend="event.target.classList.remove('arrastando')" onclick="crmAbrirCard(${c.id})">
       ${tagsHtml}
-      <div class="cliente">${c.titulo} ${pill}</div>
+      <div class="cliente">${crmBolinha(c.id)}${c.titulo} ${pill}</div>
       ${linha2 ? `<div class="info">${linha2}</div>` : ''}
       ${linha3 ? `<div class="info">${linha3}</div>` : ''}
     </div>
@@ -2968,6 +3220,7 @@ function crmAbrirNovoCard(estagioId) {
   crmTagsSelecionadasAtual = [];
   crmToggleCaixaTags(false);
   document.getElementById('crm-score-box').style.display = 'none';   // card novo ainda não tem o que pontuar
+  document.getElementById('crm-ativ-wrap').style.display = 'none';   // atividade precisa de card salvo (FK)
   document.getElementById('crm-historico-wrap').style.display = 'none';
   document.getElementById('crm-reunioes-wrap').style.display = 'none';
   document.getElementById('crm-mover-funil-wrap').style.display = 'none';
@@ -2996,6 +3249,8 @@ function crmAbrirCard(id) {
   document.getElementById('crm-historico-wrap').style.display = 'block';
   document.getElementById('crm-reunioes-wrap').style.display = 'block';
   crmRenderScoreBox(c);
+  document.getElementById('crm-ativ-wrap').style.display = 'block';
+  crmRenderAtividades(id);
   crmRenderReunioes(id);
   crmCarregarAtividades(id);
   document.getElementById('crm-mover-funil-wrap').style.display = crmFunis.length > 1 ? 'block' : 'none';
@@ -3467,8 +3722,9 @@ function importarCSV() {
 }
 
 // ---------- NOTIFICAÇÕES ----------
-const NOTIF_ROTULOS = { whatsapp: 'WhatsApp', crm: 'CRM', reuniao: 'Reuniões de hoje', checklist: 'Checklist' };
-const NOTIF_ORDEM_TIPOS = ['whatsapp', 'crm', 'reuniao', 'checklist'];
+const NOTIF_ROTULOS = { atividade: 'Atividades', whatsapp: 'WhatsApp', crm: 'CRM', reuniao: 'Reuniões de hoje', checklist: 'Checklist' };
+// atividade em primeiro: é a única que representa compromisso que a pessoa assumiu com ela mesma
+const NOTIF_ORDEM_TIPOS = ['atividade', 'whatsapp', 'crm', 'reuniao', 'checklist'];
 
 async function carregarNotificacoes() {
   const notifs = [];
@@ -3502,6 +3758,21 @@ async function carregarNotificacoes() {
   });
 
   const hoje = hojeStr();
+
+  // atividades vencidas e as de hoje. A chave embute a data, então amanhã a de hoje vira uma
+  // notificação nova sozinha — mesmo truque das reuniões, sem precisar limpar nada no banco.
+  const { data: ativsAbertas } = await sb.from('com_atividades').select('*')
+    .eq('concluida', false).lte('data', hoje).order('data').limit(60);
+  (ativsAbertas || []).forEach(a => {
+    const atrasada = a.data < hoje;
+    notifs.push({
+      chave: `atividade-${a.id}-${hoje}`, tipo: 'atividade', pessoaId: a.responsavel_id,
+      createdAt: `${a.data}T${a.hora || '08:00'}`,
+      titulo: `${atrasada ? 'Atividade atrasada' : 'Atividade para hoje'}: ${a.titulo}`,
+      descricao: fmtQuandoAtividade(a),
+    });
+  });
+
   negocios.filter(n => n.data_agendada === hoje && n.status === 'agendada').forEach(n => {
     notifs.push({
       chave: `reuniao-${n.id}-${hoje}`, tipo: 'reuniao', pessoaId: n.sdr_id, createdAt: `${hoje}T00:00:00`,
