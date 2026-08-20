@@ -247,6 +247,49 @@ svg.chart { display: block; }
 .score-linha.neg b { color: var(--critical); }
 .score-linha.zero, .score-linha.zero b { color: var(--muted); font-weight: 500; }
 .score-rodape { margin-top: 9px; font-size: .72rem; line-height: 1.5; color: var(--muted); }
+/* ---- agente de social selling ---- */
+.ss-switch { display: flex; gap: 6px; margin: 0 0 20px; }
+.ss-switch button {
+  font-size: .76rem; font-weight: 700; padding: 6px 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: transparent; color: var(--text-secondary);
+}
+.ss-switch button.ativo { background: var(--text-primary); border-color: var(--text-primary); color: #fff; }
+.ss-form { display: grid; gap: 12px; }
+.ss-form label { font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; }
+.ss-form input, .ss-form select, .ss-form textarea {
+  width: 100%; padding: 9px 11px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--field-bg); color: var(--text-primary); font-size: .84rem;
+  font-family: inherit; box-sizing: border-box;
+}
+.ss-form textarea { min-height: 62px; resize: vertical; line-height: 1.5; }
+.ss-form-linha { display: flex; gap: 10px; flex-wrap: wrap; }
+.ss-form-linha > div { flex: 1; min-width: 148px; }
+.ss-lead-box { border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; background: var(--surface-1); }
+.ss-lead-achados { margin-top: 7px; display: flex; flex-direction: column; gap: 1px; max-height: 168px; overflow-y: auto; }
+.ss-lead-achado {
+  padding: 7px 9px; border-radius: 7px; cursor: pointer; font-size: .8rem; display: flex; gap: 8px; align-items: baseline;
+}
+.ss-lead-achado:hover { background: var(--field-bg); }
+.ss-lead-achado span { color: var(--muted); font-size: .71rem; }
+.ss-lead-escolhido { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; font-size: .82rem; }
+.ss-lead-escolhido b { font-weight: 700; }
+.ss-lead-escolhido em { font-style: normal; color: var(--muted); font-size: .74rem; }
+.ss-lead-trocar { border: 0; background: none; color: var(--good); font-weight: 700; font-size: .72rem; cursor: pointer; padding: 0; }
+.ss-gerar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ss-gerar .btn { width: auto; padding: 10px 22px; }
+.ss-status { font-size: .76rem; color: var(--muted); }
+.ss-resultado { margin-top: 22px; display: grid; gap: 14px; }
+.ss-var-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; background: var(--surface-1); }
+.ss-var-topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.ss-var-abordagem { font-size: .63rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ss-var-msg {
+  white-space: pre-wrap; font-size: .88rem; line-height: 1.65; color: var(--text-primary);
+  padding: 12px 14px; background: var(--field-bg); border-radius: 9px; border-left: 2px solid var(--baseline);
+}
+.ss-var-nota { font-size: .75rem; color: var(--text-secondary); margin-top: 9px; line-height: 1.5; }
+.ss-var-nota b { font-weight: 700; color: var(--text-primary); }
+.ss-var-risco { font-size: .73rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+.ss-erro { border: 1px solid var(--critical); border-radius: 10px; padding: 11px 13px; font-size: .8rem; color: var(--critical); background: rgba(208,59,59,.05); }
 /* ---- atividades do lead (bolinha do Pipedrive) ---- */
 .ativ-dot {
   display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto;
@@ -1044,6 +1087,78 @@ form.form-grid button { grid-column: 1 / -1; }
     <div class="tab-panel" id="tab-social">
       <div class="ss-doc">
 
+        <div class="ss-switch">
+          <button type="button" id="ss-btn-agente" class="ativo" onclick="ssModo('agente')">Gerar mensagem</button>
+          <button type="button" id="ss-btn-playbook" onclick="ssModo('playbook')">O playbook</button>
+        </div>
+
+        <div id="ss-agente">
+          <h2>Gerar mensagem</h2>
+          <p class="ss-sub">Escolhe o lead, o momento e quem está falando. Sai mensagem pronta pra colar, escrita na voz do playbook — três variações, cada uma com um mecanismo de venda diferente (SPIN, NEPQ, Sandler, Chris Voss, Challenger, Josh Braun). Se preferir o texto padrão, ele continua ali no playbook.</p>
+
+          <div class="ss-form" style="margin-top:16px;">
+            <div class="ss-lead-box">
+              <label>Lead</label>
+              <div id="ss-lead-busca-wrap">
+                <input type="text" id="ss-lead-busca" placeholder="Busque pelo nome, e-mail ou telefone do lead no CRM..." autocomplete="off" oninput="ssBuscarLead()">
+                <div class="ss-lead-achados" id="ss-lead-achados"></div>
+                <p class="muted" style="font-size:.71rem; margin:7px 0 0;">Sem achar? Pode deixar em branco — a mensagem sai com colchetes pra você preencher.</p>
+              </div>
+              <div id="ss-lead-escolhido" class="ss-lead-escolhido" style="display:none;"></div>
+            </div>
+
+            <div class="ss-form-linha">
+              <div>
+                <label>Momento</label>
+                <select id="ss-momento">
+                  <option value="primeiro-contato">Primeiro contato</option>
+                  <option value="pos-conexao">Aceitou o convite no LinkedIn</option>
+                  <option value="pos-material" selected>Baixou um material nosso</option>
+                  <option value="sem-resposta">Não respondeu</option>
+                  <option value="contou-dor">Contou a dor dele</option>
+                  <option value="reativacao">Contato antigo, esfriou</option>
+                  <option value="objecao">Levantou uma objeção</option>
+                  <option value="pos-reuniao">Depois da reunião</option>
+                </select>
+              </div>
+              <div>
+                <label>Quem está falando</label>
+                <select id="ss-voz">
+                  <option value="igor">Igor</option>
+                  <option value="bruno">Bruno</option>
+                  <option value="dry">Dry</option>
+                </select>
+              </div>
+              <div>
+                <label>Objetivo</label>
+                <select id="ss-objetivo">
+                  <option value="conversa">Só fazer ele responder</option>
+                  <option value="clareza" selected>Marcar o bate papo</option>
+                  <option value="resposta-parada">Destravar conversa parada</option>
+                  <option value="confirmar">Confirmar horário / pegar contato</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label>O que ele já disse (opcional)</label>
+              <textarea id="ss-conversa" placeholder="Cole a resposta dele aqui. O agente devolve a dor com as palavras dele, que é o que tira o cheiro de vendedor."></textarea>
+            </div>
+            <div>
+              <label>O que você viu no perfil dele (opcional)</label>
+              <textarea id="ss-observacao" placeholder="Ex.: parou de postar faz 2 meses / abriu vaga de SDR semana passada / postou reclamando de lead frio. Sem isso a mensagem sai com colchete pra você preencher."></textarea>
+            </div>
+
+            <div class="ss-gerar">
+              <button type="button" class="btn" onclick="ssGerar()" id="ss-btn-gerar">Gerar mensagens</button>
+              <span class="ss-status" id="ss-status"></span>
+            </div>
+          </div>
+
+          <div class="ss-resultado" id="ss-resultado"></div>
+        </div>
+
+        <div id="ss-playbook" style="display:none;">
         <h2>Playbook de Mensagens</h2>
         <p class="ss-sub">É a conversa que o Igor teve com o Fernando (Adapta) e virou venda, do jeito que ela aconteceu. O texto é esse — o que muda de lead pra lead é a observação do perfil e a dor que ele contar.</p>
 
@@ -1224,6 +1339,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
             <dt>"Vou olhar e te falo" — e some</dt>
             <dd>Um follow em 3 dias, com data na mão. Depois disso, o encerramento. Nunca mais de dois "conseguiu ver?".</dd>
           </dl>
+        </div>
         </div>
 
       </div>
@@ -5087,6 +5203,7 @@ function renderDicas() {
     : '<div class="empty">Sem dados suficientes ainda pra gerar dicas.</div>';
 
   planoPopularPapel();
+  ssPopularVoz();
   renderPlano();
   renderFunilComparativo();
 }
@@ -5454,6 +5571,153 @@ window.addEventListener('resize', () => {
   vizRedesenhoTimer = setTimeout(() => { if (negocios.length) renderHistorico(); }, 180);
 });
 
+
+// ---------- AGENTE DE SOCIAL SELLING ----------
+// O prompt NÃO mora aqui, mora no Code node do n8n (workflow "Agente Social Selling"). Esta página
+// é estática e pública: se o navegador montasse o prompt, qualquer um que achasse a URL do webhook
+// rodaria prompt arbitrário na conta de API do Igor. Daqui sai só campo estruturado — o pior que
+// alguém faz com o endpoint é gerar mensagem de social selling.
+let ssLeadEscolhido = null;
+let ssBuscaTimer = null;
+let ssGerando = false;
+
+// a voz abre no papel de quem está logado — o SDR não devia ter que trocar isso toda vez
+function ssPopularVoz() {
+  const sel = document.getElementById('ss-voz');
+  if (!sel || sel.dataset.pronto || !currentPerfil) return;
+  sel.dataset.pronto = '1';
+  const porNome = (currentPerfil.nome || '').toLowerCase();
+  sel.value = porNome.includes('dry') ? 'dry' : porNome.includes('bruno') ? 'bruno' : 'igor';
+}
+
+function ssModo(modo) {
+  const ehAgente = modo === 'agente';
+  document.getElementById('ss-agente').style.display = ehAgente ? 'block' : 'none';
+  document.getElementById('ss-playbook').style.display = ehAgente ? 'none' : 'block';
+  document.getElementById('ss-btn-agente').classList.toggle('ativo', ehAgente);
+  document.getElementById('ss-btn-playbook').classList.toggle('ativo', !ehAgente);
+}
+
+function ssBuscarLead() {
+  clearTimeout(ssBuscaTimer);
+  ssBuscaTimer = setTimeout(ssBuscarLeadAgora, 320);   // espera parar de digitar; são 1.300 cards
+}
+
+async function ssBuscarLeadAgora() {
+  const texto = (document.getElementById('ss-lead-busca').value || '').trim().replace(/[,()*]/g, ' ');
+  const alvo = document.getElementById('ss-lead-achados');
+  if (texto.length < 3) { alvo.innerHTML = ''; return; }
+  const like = `%${texto}%`;
+  const { data } = await sb.from('com_cards')
+    .select('id, titulo, funil_id, pessoa_nome, pessoa_email, pessoa_telefone, campos_valores, observacao')
+    .or(`titulo.ilike.${like},pessoa_nome.ilike.${like},pessoa_email.ilike.${like},pessoa_telefone.ilike.${like}`)
+    .limit(8);
+  const achados = data || [];
+  alvo.innerHTML = achados.length ? achados.map(c => {
+    const cv = c.campos_valores || {};
+    const detalhe = [cv.cargo, c.pessoa_email].filter(Boolean).join(' · ');
+    return `<div class="ss-lead-achado" onclick="ssEscolherLead(${c.id})">${c.titulo}${detalhe ? `<span>${detalhe}</span>` : ''}</div>`;
+  }).join('') : '<div class="ss-lead-achado" style="cursor:default; color:var(--muted);">Nenhum lead com esse nome.</div>';
+  ssAchadosCache = achados;
+}
+let ssAchadosCache = [];
+
+function ssEscolherLead(id) {
+  const c = ssAchadosCache.find(x => x.id === id);
+  if (!c) return;
+  const cv = c.campos_valores || {};
+  // a isca vem da observação que o import do Tally escreve ("Origem: X (isca: y)")
+  const origem = (c.observacao || '').match(/Origem:\s*(.+?)\s*\(isca:/);
+  ssLeadEscolhido = {
+    nome: c.pessoa_nome || c.titulo,
+    cargo: cv.cargo || '',
+    empresa: cv.empresa || '',
+    dor: cv.dor || cv.momento_atual || '',
+    canal: cv.canal_aquisicao_atual || '',
+    isca: origem ? origem[1] : '',
+  };
+  const detalhe = [ssLeadEscolhido.cargo, ssLeadEscolhido.isca].filter(Boolean).join(' · ');
+  document.getElementById('ss-lead-busca-wrap').style.display = 'none';
+  const box = document.getElementById('ss-lead-escolhido');
+  box.style.display = 'flex';
+  box.innerHTML = `<b>${ssLeadEscolhido.nome}</b>${detalhe ? `<em>${detalhe}</em>` : ''}
+    <button type="button" class="ss-lead-trocar" onclick="ssTrocarLead()">trocar</button>`;
+}
+
+function ssTrocarLead() {
+  ssLeadEscolhido = null;
+  document.getElementById('ss-lead-busca-wrap').style.display = 'block';
+  document.getElementById('ss-lead-escolhido').style.display = 'none';
+  document.getElementById('ss-lead-busca').value = '';
+  document.getElementById('ss-lead-achados').innerHTML = '';
+}
+
+async function ssGerar() {
+  if (ssGerando) return;
+  ssGerando = true;
+  const btn = document.getElementById('ss-btn-gerar');
+  const status = document.getElementById('ss-status');
+  const alvo = document.getElementById('ss-resultado');
+  btn.disabled = true;
+  status.textContent = 'Escrevendo as três variações... leva uns 10 segundos.';
+  alvo.innerHTML = '';
+  try {
+    const resp = await fetch(`${N8N_PROXY_URL}/ss-agente`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        lead: ssLeadEscolhido || {},
+        momento: document.getElementById('ss-momento').value,
+        voz: document.getElementById('ss-voz').value,
+        objetivo: document.getElementById('ss-objetivo').value,
+        conversa: document.getElementById('ss-conversa').value,
+        observacao: document.getElementById('ss-observacao').value,
+      }),
+    });
+    const dados = await resp.json();
+    if (dados.erro || !dados.variacoes) {
+      alvo.innerHTML = `<div class="ss-erro">${dados.erro || 'O agente não respondeu. Tente de novo em alguns segundos.'}</div>`;
+    } else {
+      ssRenderVariacoes(dados.variacoes);
+    }
+  } catch (e) {
+    alvo.innerHTML = `<div class="ss-erro">Não consegui falar com o agente: ${e.message}</div>`;
+  }
+  status.textContent = '';
+  btn.disabled = false;
+  ssGerando = false;
+}
+
+function ssRenderVariacoes(variacoes) {
+  document.getElementById('ss-resultado').innerHTML = variacoes.map((v, i) => `
+    <div class="ss-var-card">
+      <div class="ss-var-topo">
+        <span class="ss-var-abordagem">${v.abordagem || 'Variação ' + (i + 1)}</span>
+        <button class="ss-copy" onclick="ssCopiarVariacao(this)">Copiar</button>
+      </div>
+      <div class="ss-var-msg">${(v.mensagem || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')}</div>
+      ${v.porque ? `<div class="ss-var-nota"><b>Por quê:</b> ${v.porque}</div>` : ''}
+      ${v.risco ? `<div class="ss-var-risco">Cuidado: ${v.risco}</div>` : ''}
+    </div>`).join('');
+}
+
+// reaproveita o mesmo fallback de clipboard do playbook (execCommand fora de contexto seguro)
+function ssCopiarVariacao(btn) {
+  const card = btn.closest('.ss-var-card');
+  const msg = card.querySelector('.ss-var-msg');
+  const texto = ((typeof msg.innerText === 'string' ? msg.innerText : msg.textContent) || '').trim();
+  function feedback(ok) {
+    const original = btn.dataset.label || btn.textContent;
+    btn.dataset.label = original;
+    btn.textContent = ok ? 'Copiado!' : 'Copie manual';
+    if (ok) btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('ok'); }, 1800);
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(texto).then(() => feedback(true)).catch(() => ssCopiaFallback(texto, feedback));
+  } else {
+    ssCopiaFallback(texto, feedback);
+  }
+}
 
 // ---------- SOCIAL SELLING (playbook de mensagens) ----------
 function ssCopiar(btn) {
