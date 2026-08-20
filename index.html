@@ -247,6 +247,65 @@ svg.chart { display: block; }
 .score-linha.neg b { color: var(--critical); }
 .score-linha.zero, .score-linha.zero b { color: var(--muted); font-weight: 500; }
 .score-rodape { margin-top: 9px; font-size: .72rem; line-height: 1.5; color: var(--muted); }
+/* ---- tour de novidades ---- */
+.tour-fundo {
+  position: fixed; inset: 0; background: rgba(11,11,11,.55); z-index: 300;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+  animation: tour-fade .25s ease;
+}
+.tour-fundo.aberto { display: flex; }
+@keyframes tour-fade { from { opacity: 0; } to { opacity: 1; } }
+.tour-card {
+  background: var(--surface-1); border-radius: 18px; width: 100%; max-width: 470px;
+  padding: 26px 26px 20px; box-shadow: 0 24px 60px rgba(0,0,0,.28); position: relative;
+  animation: tour-sobe .34s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes tour-sobe { from { opacity: 0; transform: translateY(26px) scale(.96); } to { opacity: 1; transform: none; } }
+.tour-fechar {
+  position: absolute; top: 13px; right: 14px; border: 0; background: none; cursor: pointer;
+  color: var(--muted); font-size: 1.1rem; line-height: 1; padding: 4px 6px; border-radius: 6px;
+}
+.tour-fechar:hover { color: var(--text-primary); background: var(--field-bg); }
+.tour-passo { animation: tour-troca .3s ease; }
+@keyframes tour-troca { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+.tour-selo {
+  display: inline-block; font-size: .59rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--good); background: var(--accent-wash); padding: 3px 9px; border-radius: 999px; margin-bottom: 12px;
+}
+.tour-emoji { font-size: 2rem; line-height: 1; margin-bottom: 10px; animation: tour-pop .5s .1s backwards cubic-bezier(.2,.9,.3,1.4); }
+@keyframes tour-pop { from { opacity: 0; transform: scale(.4) rotate(-12deg); } to { opacity: 1; transform: none; } }
+.tour-titulo { font-size: 1.22rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.25; }
+.tour-texto { font-size: .88rem; line-height: 1.62; color: var(--text-secondary); margin-top: 9px; }
+.tour-texto b { color: var(--text-primary); font-weight: 700; }
+.tour-onde {
+  margin-top: 13px; font-size: .74rem; color: var(--muted); display: flex; align-items: center; gap: 7px;
+  border-top: 1px solid var(--grid); padding-top: 11px;
+}
+.tour-onde b { color: var(--text-primary); font-weight: 700; }
+.tour-rodape { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 20px; }
+.tour-pontos { display: flex; gap: 6px; }
+.tour-pontos i { width: 6px; height: 6px; border-radius: 50%; background: var(--grid); transition: all .25s; }
+.tour-pontos i.ativo { background: var(--text-primary); width: 17px; border-radius: 99px; }
+.tour-botoes { display: flex; align-items: center; gap: 12px; }
+.tour-pular { border: 0; background: none; color: var(--muted); font-size: .78rem; cursor: pointer; padding: 4px; }
+.tour-pular:hover { color: var(--text-primary); text-decoration: underline; }
+.tour-card .btn { width: auto; padding: 9px 20px; }
+/* o botão da aba citada pisca enquanto o passo está na tela */
+.sidebar nav button.tour-piscando {
+  animation: tour-pisca 1.15s ease-in-out infinite;
+  box-shadow: 0 0 0 2px var(--good);
+  border-radius: 10px;
+}
+@keyframes tour-pisca { 0%, 100% { box-shadow: 0 0 0 2px var(--good); } 50% { box-shadow: 0 0 0 6px rgba(12,163,12,.16); } }
+.tour-abrir {
+  border: 1px solid var(--border); background: transparent; color: var(--text-secondary); cursor: pointer;
+  border-radius: 8px; padding: 5px 11px; font-size: .72rem; font-weight: 600; white-space: nowrap;
+}
+.tour-abrir:hover { border-color: var(--text-primary); color: var(--text-primary); }
+@media (prefers-reduced-motion: reduce) {
+  .tour-fundo, .tour-card, .tour-passo, .tour-emoji { animation: none; }
+  .sidebar nav button.tour-piscando { animation: none; }
+}
 /* ---- agente de social selling ---- */
 .ss-switch { display: flex; gap: 6px; margin: 0 0 20px; }
 .ss-switch button {
@@ -790,6 +849,7 @@ form.form-grid button { grid-column: 1 / -1; }
         <div id="mes-label"></div>
         <button onclick="mudaMes(1)">›</button>
       </div>
+      <button type="button" class="tour-abrir" onclick="abrirTour()" title="Rever as novidades do painel">novidades</button>
       <div class="notif-wrap">
         <button class="notif-bell" id="notif-bell-btn" title="Notificações" onclick="toggleNotifPanel(event)">
           <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -1522,6 +1582,20 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 </div>
 
 <!-- modal de detalhe do card do CRM -->
+<div id="tour-fundo" class="tour-fundo">
+  <div class="tour-card">
+    <button type="button" class="tour-fechar" title="Fechar (Esc)" onclick="fecharTour()">✕</button>
+    <div id="tour-corpo"></div>
+    <div class="tour-rodape">
+      <div class="tour-pontos" id="tour-pontos"></div>
+      <div class="tour-botoes">
+        <button type="button" class="tour-pular" id="tour-pular" onclick="fecharTour()">pular tutorial</button>
+        <button type="button" class="btn" id="tour-proximo" onclick="tourProximo()">Próximo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="modal-card-crm" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-card-crm')">
   <div class="modal-card" style="max-width:560px; text-align:left;">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
@@ -1846,6 +1920,7 @@ async function entrarNoApp(user) {
   initTally();
   initWhatsApp();
   carregarNotificacoes();
+  verificarNovidades();   // por último: o tour aparece com o painel já montado atrás dele
 }
 (async function initSession() {
   const { data } = await sb.auth.getSession();
@@ -5571,6 +5646,138 @@ window.addEventListener('resize', () => {
   vizRedesenhoTimer = setTimeout(() => { if (negocios.length) renderHistorico(); }, 180);
 });
 
+
+// ---------- TOUR DE NOVIDADES ----------
+// COMO SOLTAR UM TOUR NOVO: mude `NOVIDADES.versao` e reescreva `NOVIDADES.passos`. Só isso.
+// A versão é a chave em `com_novidades_vistas` — quem já viu a v1 e nunca viu a v2 recebe o tour
+// de novo automaticamente, e quem entrar depois vê a versão corrente uma vez só. Nada de limpar
+// tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
+// exemplo), não mexa no número — aí ninguém é incomodado de novo.
+const NOVIDADES = {
+  versao: '2026-08-20',
+  titulo: 'Chegou coisa nova',
+  passos: [
+    {
+      emoji: '👋',
+      titulo: 'Oi! O painel engordou ontem à noite',
+      texto: 'São <b>seis novidades</b>. Leva 40 segundos e depois eu te deixo em paz — prometo que só volto quando tiver coisa nova de verdade.',
+    },
+    {
+      emoji: '🔴',
+      titulo: 'A bolinha que cobra você',
+      texto: 'Todo lead no board agora tem uma bolinha. <b>Verde</b> é atividade pra hoje, <b>vermelha</b> é atrasada, <b>amarela</b> é o pior de todos: ninguém marcou o próximo passo. Abra o card, clique em criar atividade e escolha "amanhã" — pronto, a bolinha para de te encarar.',
+      aba: 'crm', onde: 'CRM · dentro do card do lead',
+    },
+    {
+      emoji: '🎯',
+      titulo: 'Cada lead ganhou uma nota de 0 a 100',
+      texto: 'Cargo, dor e canal do formulário, mais quantos materiais a pessoa baixou. Não é chute: os pesos saíram de cruzar os <b>1.355 leads</b> da base com quem virou reunião de verdade. Descoberta desagradável: quem baixa <b>dois</b> materiais converte 14x mais que quem baixa um.',
+      aba: 'crm', onde: 'CRM · o número ao lado do nome',
+    },
+    {
+      emoji: '☕',
+      titulo: '"Pra quem eu ligo primeiro hoje?"',
+      texto: 'Essa pergunta acabou. O Dashboard tem uma fila <b>"Atacar hoje"</b> com os leads de nota alta que ninguém tocou há mais de 3 dias, já ordenados. É só descer a lista.',
+      aba: 'dashboard', onde: 'Dashboard · logo abaixo do funil do mês',
+    },
+    {
+      emoji: '✍️',
+      titulo: 'Um agente que escreve a mensagem por você',
+      texto: 'Escolhe o lead, o momento e o objetivo. Saem <b>três mensagens prontas</b>, cada uma com uma técnica diferente (SPIN, NEPQ, Sandler, Chris Voss) e escritas na voz do playbook do Igor — não naquele português de robô. O playbook antigo continua ali no botão do lado, relaxa.',
+      aba: 'social', onde: 'Playbook de Mensagens · botão "Gerar mensagem"',
+    },
+    {
+      emoji: '📋',
+      titulo: 'O plano do mês, com a conta feita',
+      texto: 'Você escolhe se é SDR ou Closer e o painel diz <b>quantas reuniões faltam agendar e quantas por dia</b> pra bater os R$30k. A conta anda de trás pra frente, com as suas taxas reais. Não tem mais "acho que estamos bem".',
+      aba: 'dicas', onde: 'Dicas · Plano de ação do mês',
+    },
+    {
+      emoji: '🔍',
+      titulo: 'E a isca que só enche a lista',
+      texto: 'Uma tabela mostra qual material traz lead que anda no funil e qual só faz volume. Spoiler do que ela revelou: uma das iscas trouxe <b>183 leads e gerou 1 oportunidade</b>. Agora dá pra saber isso antes de gravar o próximo material.',
+      aba: 'dicas', onde: 'Dicas · Isca × o que ela gera',
+    },
+    {
+      emoji: '🚀',
+      titulo: 'É isso. Bom trabalho!',
+      texto: 'Se quiser rever essas telas depois, tem um botão <b>"novidades"</b> lá em cima, do lado do sininho. Agora vai vender.',
+    },
+  ],
+};
+
+let tourPasso = 0;
+let tourAberto = false;
+
+async function verificarNovidades() {
+  if (!currentPerfil) return;
+  const { data } = await sb.from('com_novidades_vistas').select('versao')
+    .eq('perfil_id', currentPerfil.id).eq('versao', NOVIDADES.versao).limit(1);
+  if (data && data.length) return;   // essa pessoa já viu esta versão
+  abrirTour();
+}
+
+function abrirTour() {
+  tourPasso = 0;
+  tourAberto = true;
+  document.getElementById('tour-fundo').classList.add('aberto');
+  renderTourPasso();
+}
+
+function renderTourPasso() {
+  const p = NOVIDADES.passos[tourPasso];
+  const ultimo = tourPasso === NOVIDADES.passos.length - 1;
+  document.getElementById('tour-corpo').innerHTML = `
+    <div class="tour-passo">
+      <span class="tour-selo">${NOVIDADES.titulo} · ${tourPasso + 1} de ${NOVIDADES.passos.length}</span>
+      <div class="tour-emoji">${p.emoji}</div>
+      <div class="tour-titulo">${p.titulo}</div>
+      <div class="tour-texto">${p.texto}</div>
+      ${p.onde ? `<div class="tour-onde"><b>Onde:</b> ${p.onde}
+        ${p.aba ? `<button type="button" class="tour-abrir" style="margin-left:auto;" onclick="tourIrPara('${p.aba}')">me leva lá</button>` : ''}
+      </div>` : ''}
+    </div>`;
+  document.getElementById('tour-pontos').innerHTML = NOVIDADES.passos
+    .map((_, i) => `<i class="${i === tourPasso ? 'ativo' : ''}"></i>`).join('');
+  document.getElementById('tour-proximo').textContent = ultimo ? 'Fechar' : 'Próximo';
+  document.getElementById('tour-pular').style.display = ultimo ? 'none' : '';
+  tourPiscar(p.aba);
+}
+
+// pisca o botão da aba citada: o passo fala de um lugar, então mostra o lugar
+function tourPiscar(aba) {
+  document.querySelectorAll('.sidebar nav button').forEach(b => b.classList.remove('tour-piscando'));
+  if (!aba) return;
+  const btn = document.querySelector(`.sidebar nav button[data-tab="${aba}"]`);
+  if (btn) btn.classList.add('tour-piscando');
+}
+
+function tourIrPara(aba) {
+  const btn = document.querySelector(`.sidebar nav button[data-tab="${aba}"]`);
+  if (btn) btn.click();
+}
+
+function tourProximo() {
+  if (tourPasso < NOVIDADES.passos.length - 1) { tourPasso++; renderTourPasso(); }
+  else fecharTour();
+}
+
+// Fechar em qualquer ponto marca como visto: quem pulou pediu pra não ver de novo, e insistir
+// com quem já disse não é o jeito mais rápido de virar aquele pop-up que todo mundo odeia.
+async function fecharTour() {
+  document.getElementById('tour-fundo').classList.remove('aberto');
+  tourAberto = false;
+  tourPiscar(null);
+  if (!currentPerfil) return;
+  await sb.from('com_novidades_vistas')
+    .upsert({ perfil_id: currentPerfil.id, versao: NOVIDADES.versao }, { onConflict: 'perfil_id,versao', ignoreDuplicates: true });
+}
+
+document.addEventListener('keydown', e => {
+  if (!tourAberto) return;
+  if (e.key === 'Escape') fecharTour();
+  if (e.key === 'ArrowRight' || e.key === 'Enter') tourProximo();
+});
 
 // ---------- AGENTE DE SOCIAL SELLING ----------
 // O prompt NÃO mora aqui, mora no Code node do n8n (workflow "Agente Social Selling"). Esta página
