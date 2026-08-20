@@ -247,6 +247,30 @@ svg.chart { display: block; }
 .score-linha.neg b { color: var(--critical); }
 .score-linha.zero, .score-linha.zero b { color: var(--muted); font-weight: 500; }
 .score-rodape { margin-top: 9px; font-size: .72rem; line-height: 1.5; color: var(--muted); }
+/* ---- tabela isca x resultado (aba Dicas) ---- */
+.isca-wrap { overflow-x: auto; margin-top: 4px; }
+.isca-tabela { width: 100%; border-collapse: collapse; font-size: .78rem; min-width: 520px; }
+.isca-tabela th {
+  text-align: left; font-size: .59rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted); padding: 0 12px 8px 0; border-bottom: 1px solid var(--grid); white-space: nowrap;
+}
+.isca-tabela td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+.isca-tabela tr:last-child td { border-bottom: 0; }
+.isca-tabela th.num, .isca-tabela td.num { text-align: right; font-variant-numeric: tabular-nums; padding-right: 0; }
+.isca-nome { display: flex; align-items: center; gap: 8px; font-weight: 600; letter-spacing: -.005em; }
+.isca-nome i { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+.isca-sub { font-size: .68rem; color: var(--muted); font-weight: 500; }
+.isca-taxa { display: inline-flex; align-items: center; gap: 9px; }
+.isca-barra { width: 52px; height: 4px; border-radius: 99px; background: var(--grid); overflow: hidden; flex: 0 0 auto; }
+.isca-barra > b { display: block; height: 100%; border-radius: 99px; background: var(--good); }
+.isca-taxa > span { font-weight: 700; min-width: 38px; text-align: right; }
+.isca-flag {
+  font-size: .58rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted);
+  border: 1px dashed var(--border); border-radius: 4px; padding: 1px 5px; margin-left: 7px; white-space: nowrap;
+}
+tr.isca-sem-amostra td, tr.isca-sem-amostra .isca-nome { color: var(--text-secondary); }
+tr.isca-sem-amostra .isca-barra > b { background: var(--baseline); }
+.isca-resumo { font-size: .72rem; color: var(--muted); margin: 10px 0 0; }
 /* ---- fila "atacar hoje" no dashboard ---- */
 .fila-item { display: flex; align-items: center; gap: 12px; padding: 9px 4px; border-bottom: 1px solid var(--grid); cursor: pointer; border-radius: 6px; }
 .fila-item:last-child { border-bottom: 0; }
@@ -799,6 +823,19 @@ form.form-grid button { grid-column: 1 / -1; }
           </div>
           <div class="funil-comp-faturamento" id="funil-comp-faturamento"></div>
         </div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <h2>Isca × o que ela gera</h2>
+          <span class="muted" style="font-size:.74rem;">todo o histórico</span>
+        </div>
+        <p class="muted">Qual material atrai lead que anda no funil e qual só enche a lista. <b>Oportunidade</b> = o lead chegou no funil do Closer, foi marcado como ganho, ou tem reunião ligada ao card. Volume alto com taxa baixa é isca que gasta audiência sem trazer cliente.</p>
+        <div class="isca-wrap"><table class="isca-tabela" id="isca-tabela"></table></div>
+        <p class="isca-resumo" id="isca-resumo"></p>
+      </section>
+
+      <section class="card">
         <h2>Dicas do funil</h2>
         <div id="dicas"></div>
       </section>
@@ -1955,7 +1992,7 @@ async function carregarCardsDoFunil() {
   crmCards.forEach(c => { c._score = scoreDoCard(c); });
   crmAplicarFiltros();
   renderFunilComparativo();
-  sincronizarScores().then(carregarFilaAtaque);   // persistir não pode segurar o desenho do board
+  sincronizarScores().then(() => { carregarFilaAtaque(); carregarIscas(); });   // persistir não pode segurar o desenho do board
 }
 
 function crmMudaFunil() {
@@ -2301,6 +2338,82 @@ function crmRenderScoreBox(card) {
     ${s.semDado ? '<div class="score-rodape">Este lead não passou pelo formulário — veio da migração do Pipedrive. Sem cargo, dor e canal não há o que pontuar.</div>' : ''}
   `;
   box.style.display = 'block';
+}
+
+// ---------- ISCA x RESULTADO ----------
+// A pergunta é "qual material vale continuar produzindo". A conta roda no banco (view
+// `com_isca_desempenho`, security_invoker) e não no navegador: cruzar 1.355 cards com 1.305
+// relações de tag no cliente só pra montar uma tabela seria puxar a base inteira à toa.
+// Tags de dono ([SDR]/[CLOSER]) já saem de fora na própria view — elas não são isca.
+const ISCA_MIN_AMOSTRA = 20;    // abaixo disso a taxa é ruído, não resultado
+const ISCA_DIAS_NOVA = 30;      // isca recém-lançada ainda não teve tempo de converter
+let iscasDesempenho = [];
+
+async function carregarIscas() {
+  const { data } = await sb.from('com_isca_desempenho').select('*');
+  iscasDesempenho = data || [];
+  renderIscas();
+}
+
+function iscaAvaliar(r) {
+  const leads = Number(r.leads) || 0;
+  const taxa = leads ? (Number(r.oportunidades) / leads) * 100 : 0;
+  const diasDeVida = r.primeiro_lead
+    ? Math.floor((Date.now() - new Date(r.primeiro_lead).getTime()) / 86400000) : 999;
+  return {
+    ...r, leads, taxa,
+    poucaAmostra: leads < ISCA_MIN_AMOSTRA,
+    nova: diasDeVida < ISCA_DIAS_NOVA,
+    // sem amostra o número existe mas não conclui nada — a ordenação não pode premiar
+    // uma isca de 1 lead e 1 conversão com o topo da tabela
+    confiavel: leads >= ISCA_MIN_AMOSTRA && diasDeVida >= ISCA_DIAS_NOVA,
+  };
+}
+
+function renderIscas() {
+  const tabela = document.getElementById('isca-tabela');
+  const resumo = document.getElementById('isca-resumo');
+  if (!tabela) return;
+  const linhas = iscasDesempenho.map(iscaAvaliar)
+    .sort((a, b) => (b.confiavel - a.confiavel) || (b.taxa - a.taxa) || (b.leads - a.leads));
+  if (!linhas.length) {
+    tabela.innerHTML = '';
+    resumo.textContent = 'Nenhuma isca com lead ainda.';
+    return;
+  }
+  const maiorTaxa = Math.max(...linhas.map(l => l.taxa), 1);
+  tabela.innerHTML = `
+    <thead><tr>
+      <th>Isca</th>
+      <th class="num">Leads</th>
+      <th class="num">Oportunidades</th>
+      <th class="num">Taxa</th>
+      <th class="num">Reuniões</th>
+      <th class="num">Score médio</th>
+    </tr></thead>
+    <tbody>${linhas.map(l => {
+      const flag = l.poucaAmostra ? 'amostra pequena' : l.nova ? 'isca nova' : '';
+      return `
+      <tr class="${l.confiavel ? '' : 'isca-sem-amostra'}">
+        <td>
+          <span class="isca-nome"><i style="background:${l.cor || 'var(--baseline)'}"></i>${l.isca}${flag ? `<span class="isca-flag">${flag}</span>` : ''}</span>
+          ${l.leads_mes ? `<span class="isca-sub">${l.leads_mes} neste mês</span>` : ''}
+        </td>
+        <td class="num">${l.leads}</td>
+        <td class="num">${l.oportunidades}</td>
+        <td class="num"><span class="isca-taxa"><span class="isca-barra"><b style="width:${Math.round(l.taxa / maiorTaxa * 100)}%"></b></span><span>${l.taxa.toFixed(1)}%</span></span></td>
+        <td class="num">${l.reunioes || '—'}</td>
+        <td class="num">${l.score_medio === null || l.score_medio === undefined ? '—' : Number(l.score_medio).toFixed(0)}</td>
+      </tr>`;
+    }).join('')}</tbody>`;
+
+  const comAmostra = linhas.filter(l => l.confiavel).length;
+  const totalLeads = linhas.reduce((s, l) => s + l.leads, 0);
+  const totalReunioes = linhas.reduce((s, l) => s + Number(l.reunioes || 0), 0);
+  resumo.innerHTML = `${linhas.length} iscas · ${totalLeads} leads · ${comAmostra} com amostra pra concluir algo.`
+    + (totalReunioes < 5
+      ? ' <b>A coluna Reuniões só conta o que foi agendado pelo botão dentro do card do CRM</b> — reunião criada pelo "+ Novo negócio" não sabe de qual lead veio, por isso a coluna ainda está quase vazia.'
+      : '');
 }
 
 // ---------- FILA "ATACAR HOJE" ----------
