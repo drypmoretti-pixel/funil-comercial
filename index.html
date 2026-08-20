@@ -247,6 +247,64 @@ svg.chart { display: block; }
 .score-linha.neg b { color: var(--critical); }
 .score-linha.zero, .score-linha.zero b { color: var(--muted); font-weight: 500; }
 .score-rodape { margin-top: 9px; font-size: .72rem; line-height: 1.5; color: var(--muted); }
+/* ---- gráficos do histórico ----
+   Rampa ordinal de um hue só (azul, claro→escuro) porque agendada → realizada → venda é FUNIL:
+   trocar a ordem mudaria o sentido, então a cor precisa carregar a ordem. Validada com o
+   validador do design system (monotonia de luminosidade, degraus visíveis, ponta clara >= 2:1). */
+.viz-cabecalho { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin: 2px 0 18px; }
+.viz-rotulo { font-size: .6rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.viz-hero { font-size: 2.3rem; font-weight: 800; line-height: 1.06; letter-spacing: -.03em; margin-top: 3px; }
+.viz-hero-sub { font-size: .76rem; color: var(--text-secondary); margin-top: 3px; }
+.viz-meter { flex: 1 1 240px; max-width: 340px; }
+.viz-meter-topo { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: .71rem; color: var(--muted); margin-bottom: 6px; }
+.viz-meter-topo b { color: var(--text-primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+.viz-meter-trilho { height: 8px; border-radius: 99px; background: #cde2fb; overflow: hidden; }
+.viz-meter-trilho > b { display: block; height: 100%; border-radius: 99px; background: #2a78d6; transition: width .4s ease; }
+.viz-meter-trilho.batida > b { background: var(--good); }
+.viz-etapas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: .8rem; margin-top: 4px; }
+.viz-etapa { display: inline-flex; align-items: baseline; gap: 7px; }
+.viz-etapa i { width: 9px; height: 9px; border-radius: 2px; flex: 0 0 auto; transform: translateY(0); }
+.viz-etapa b { font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.viz-etapa span { color: var(--text-secondary); }
+.viz-seta { color: var(--baseline); font-size: .9rem; }
+.viz-chart-wrap { position: relative; overflow-x: auto; }
+.viz-tip {
+  position: absolute; pointer-events: none; opacity: 0; transform: translate(-50%, -100%);
+  background: var(--text-primary); color: #fff; border-radius: 9px; padding: 9px 11px;
+  font-size: .72rem; line-height: 1.55; white-space: nowrap; z-index: 6;
+  box-shadow: 0 8px 22px rgba(0,0,0,.20); transition: opacity .12s ease;
+}
+.viz-tip .tip-mes { font-weight: 700; margin-bottom: 4px; letter-spacing: .01em; }
+.viz-tip .tip-linha { display: flex; align-items: center; gap: 8px; }
+.viz-tip .tip-linha i { width: 8px; height: 8px; border-radius: 2px; flex: 0 0 auto; }
+.viz-tip .tip-linha b { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+.viz-legenda { display: flex; gap: 18px; flex-wrap: wrap; font-size: .74rem; color: var(--text-secondary); margin-top: 12px; }
+.viz-legenda span { display: inline-flex; align-items: center; gap: 7px; }
+.viz-legenda i { width: 10px; height: 10px; border-radius: 2px; }
+/* ---- plano de ação (aba Dicas) ---- */
+.plano-resumo { display: flex; gap: 26px; flex-wrap: wrap; align-items: flex-end; padding: 6px 0 16px; border-bottom: 1px solid var(--grid); margin-bottom: 2px; }
+.plano-kpi .rot { font-size: .59rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.plano-kpi .val { font-size: 1.5rem; font-weight: 800; letter-spacing: -.025em; line-height: 1.15; margin-top: 2px; }
+.plano-kpi .val.ok { color: var(--good); }
+.plano-kpi .sub { font-size: .71rem; color: var(--muted); margin-top: 1px; }
+.plano-acao { display: flex; gap: 13px; padding: 14px 0; border-bottom: 1px solid var(--grid); }
+.plano-acao:last-child { border-bottom: 0; }
+.plano-num {
+  flex: 0 0 auto; width: 23px; height: 23px; border-radius: 7px; background: var(--field-bg);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: .68rem; font-weight: 800; color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+.plano-acao.alta .plano-num { background: var(--text-primary); border-color: var(--text-primary); color: #fff; }
+.plano-corpo { flex: 1; min-width: 0; }
+.plano-titulo { font-weight: 700; font-size: .88rem; letter-spacing: -.008em; }
+.plano-detalhe { font-size: .78rem; color: var(--text-secondary); margin-top: 3px; line-height: 1.55; }
+.plano-base { font-size: .69rem; color: var(--muted); margin-top: 6px; letter-spacing: .01em; }
+.plano-cta {
+  display: inline-block; margin-top: 7px; font-size: .7rem; font-weight: 700; color: var(--text-primary);
+  background: none; border: 0; border-bottom: 1.5px solid var(--good); padding: 0 0 1px; cursor: pointer;
+}
+.plano-cta:hover { color: var(--good); }
+.plano-vazio { padding: 22px 0; }
 /* ---- tabela isca x resultado (aba Dicas) ---- */
 .isca-wrap { overflow-x: auto; margin-top: 4px; }
 .isca-tabela { width: 100%; border-collapse: collapse; font-size: .78rem; min-width: 520px; }
@@ -827,6 +885,19 @@ form.form-grid button { grid-column: 1 / -1; }
 
       <section class="card">
         <div class="section-title">
+          <h2>Plano de ação do mês</h2>
+          <select id="plano-papel" onchange="renderPlano()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600; font-size:.8rem;">
+            <option value="sdr">Plano do SDR</option>
+            <option value="closer">Plano do Closer</option>
+          </select>
+        </div>
+        <p class="muted">O que ainda dá pra fazer para bater os R$30.000 deste mês, com os números reais do seu funil. A conta anda de trás pra frente: quanto falta → quantas vendas → quantas reuniões → quantos agendamentos.</p>
+        <div class="plano-resumo" id="plano-resumo"></div>
+        <div id="plano-acoes"></div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
           <h2>Isca × o que ela gera</h2>
           <span class="muted" style="font-size:.74rem;">todo o histórico</span>
         </div>
@@ -844,20 +915,27 @@ form.form-grid button { grid-column: 1 / -1; }
     <div class="tab-panel" id="tab-historico">
       <section class="card">
         <h2>Reuniões por mês</h2>
-        <p class="muted">Agendadas, realizadas e vendas fechadas, mês a mês. Passe o mouse na barra pra ver o número.</p>
+        <p class="muted">O funil mês a mês: agendada → realizada → venda. A cor escurece conforme a etapa avança. Passe o mouse no mês pra ver os três números.</p>
+        <div class="viz-cabecalho" id="viz-reunioes-cabecalho"></div>
         <div class="historico-bloco">
-          <div class="chart-wrap"><svg id="chart-reunioes" class="chart"></svg></div>
+          <div class="viz-chart-wrap" id="viz-reunioes-wrap" style="flex:1; min-width:280px;">
+            <svg id="chart-reunioes" class="chart"></svg>
+            <div class="viz-tip" id="tip-reunioes"></div>
+          </div>
           <div class="tabela-wrap historico-tabela"><table class="tabela-leads" id="tabela-reunioes"></table></div>
         </div>
-        <div class="legend">
-          <span><i style="background:var(--chip-1)"></i> Agendadas</span>
-          <span><i style="background:var(--chip-3)"></i> Realizadas</span>
-          <span><i style="background:var(--good)"></i> Vendas</span>
-        </div>
-        <h3 style="margin-top:24px;">Faturamento por mês</h3>
-        <p class="muted">Linha tracejada = meta de R$30.000/mês. Passe o mouse na barra pra ver o número.</p>
+        <div class="viz-legenda" id="legenda-reunioes"></div>
+      </section>
+
+      <section class="card">
+        <h2>Faturamento por mês</h2>
+        <p class="muted">Barras = faturado no mês. A linha marca a meta de R$30.000. O ✓ verde aparece no mês que passou dela.</p>
+        <div class="viz-cabecalho" id="viz-faturamento-cabecalho"></div>
         <div class="historico-bloco">
-          <div class="chart-wrap"><svg id="chart-faturamento" class="chart"></svg></div>
+          <div class="viz-chart-wrap" id="viz-faturamento-wrap" style="flex:1; min-width:280px;">
+            <svg id="chart-faturamento" class="chart"></svg>
+            <div class="viz-tip" id="tip-faturamento"></div>
+          </div>
           <div class="tabela-wrap historico-tabela"><table class="tabela-leads" id="tabela-faturamento"></table></div>
         </div>
       </section>
@@ -1992,7 +2070,7 @@ async function carregarCardsDoFunil() {
   crmCards.forEach(c => { c._score = scoreDoCard(c); });
   crmAplicarFiltros();
   renderFunilComparativo();
-  sincronizarScores().then(() => { carregarFilaAtaque(); carregarIscas(); });   // persistir não pode segurar o desenho do board
+  sincronizarScores().then(() => { carregarFilaAtaque(); carregarIscas(); carregarDadosPlano(); });   // persistir não pode segurar o desenho do board
 }
 
 function crmMudaFunil() {
@@ -2338,6 +2416,239 @@ function crmRenderScoreBox(card) {
     ${s.semDado ? '<div class="score-rodape">Este lead não passou pelo formulário — veio da migração do Pipedrive. Sem cargo, dor e canal não há o que pontuar.</div>' : ''}
   `;
   box.style.display = 'block';
+}
+
+// ---------- PLANO DE AÇÃO DO MÊS ----------
+// Não é uma lista de boas práticas: cada ação sai de um número real do funil e diz QUANTO fazer.
+// A conta caminha de trás pra frente — faltam R$X → com o ticket médio são N vendas → com a taxa
+// realizada→venda são M reuniões realizadas → com a taxa agendada→realizada são A agendamentos.
+const PLANO_TICKET_PADRAO = 5000;        // preço-base do Método quando ainda não houve venda no mês
+const PLANO_TAXA_REAL_VENDA = 0.3;       // fallback conservador quando o mês ainda não tem histórico
+const PLANO_TAXA_AGEND_REAL = 0.6;
+let planoContagens = { quentes: 0, fila: 0, mqlMes: 0 };
+
+async function carregarDadosPlano() {
+  const inicioMes = fmtMesRef(new Date()) + '-01';
+  const corteFila = new Date(Date.now() - FILA_PARADO_DIAS * 86400000).toISOString();
+  const contar = async montar => {
+    const { count } = await montar(sb.from('com_cards').select('id', { count: 'exact', head: true }));
+    return count || 0;
+  };
+  planoContagens = {
+    quentes: await contar(q => q.eq('funil_id', CRM_FUNIL_LEADS).eq('status_negocio', 'aberto').gte('lead_score', SCORE_QUENTE)),
+    fila: await contar(q => q.eq('funil_id', CRM_FUNIL_LEADS).eq('status_negocio', 'aberto').gte('lead_score', SCORE_MORNO).lt('updated_at', corteFila)),
+    mqlMes: await contar(q => q.gte('mql_em', inicioMes)),
+  };
+  renderPlano();
+}
+
+function diasUteisRestantes() {
+  const hoje = new Date();
+  const fim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+  let dias = 0;
+  for (const d = new Date(hoje); d <= fim; d.setDate(d.getDate() + 1)) {
+    const s = d.getDay();
+    if (s !== 0 && s !== 6) dias++;
+  }
+  return Math.max(1, dias);
+}
+
+// sempre o mês corrente, nunca o mês navegado no topo: plano é sobre o que ainda dá pra fazer
+function planoMetricas() {
+  const mesRef = fmtMesRef(new Date());
+  const doMes = campo => negocios.filter(n => noMes(n[campo], mesRef));
+  const agendadas = doMes('data_agendada'), realizadas = doMes('data_realizacao');
+  const propostas = doMes('data_proposta'), vendas = doMes('data_venda');
+  const faturamento = doMes('data_faturamento').reduce((s, n) => s + Number(n.valor_faturado || 0), 0);
+  const ticket = vendas.length
+    ? vendas.reduce((s, n) => s + Number(n.valor_venda || 0), 0) / vendas.length
+    : PLANO_TICKET_PADRAO;
+  return {
+    mesRef, agendadas, realizadas, propostas, vendas, faturamento, ticket,
+    falta: Math.max(0, META_FATURAMENTO - faturamento),
+    dias: diasUteisRestantes(),
+    noShow: negocios.filter(n => n.status === 'no_show' && noMes(n.data_agendada, mesRef)),
+    // pipeline aberto não depende do mês: é o que existe pra trabalhar agora
+    naMesa: negocios.filter(n => Number(n.valor_proposta) > 0 && n.status !== 'venda' && n.status !== 'perdida'),
+    semProposta: negocios.filter(n => n.data_realizacao && !n.data_proposta && n.status !== 'perdida' && n.status !== 'venda'),
+    atrasadas: negocios.filter(n => n.status === 'agendada' && n.data_agendada < hojeStr()),
+  };
+}
+
+function planoIr(aba) {
+  const btn = document.querySelector(`.sidebar nav button[data-tab="${aba}"]`);
+  if (btn) btn.click();
+}
+
+function planoDeAcao(papel) {
+  const m = planoMetricas();
+  const acoes = [];
+  const vendasFaltando = Math.ceil(m.falta / m.ticket);
+  const taxaRealVenda = m.realizadas.length ? m.vendas.length / m.realizadas.length : PLANO_TAXA_REAL_VENDA;
+  const taxaAgendReal = m.agendadas.length ? m.realizadas.length / m.agendadas.length : PLANO_TAXA_AGEND_REAL;
+
+  if (papel === 'sdr') {
+    const realizadasNecessarias = Math.ceil(vendasFaltando / Math.max(taxaRealVenda, 0.05));
+    const agendamentosNecessarios = Math.ceil(realizadasNecessarias / Math.max(taxaAgendReal, 0.05));
+    const jaNoPipeline = Math.max(0, m.agendadas.length - m.realizadas.length);
+    const faltaAgendar = Math.max(0, agendamentosNecessarios - jaNoPipeline);
+    if (m.falta > 0 && faltaAgendar > 0) {
+      acoes.push({
+        alta: true,
+        titulo: `Agendar mais ${faltaAgendar} reuniões — ${Math.ceil(faltaAgendar / m.dias)} por dia útil`,
+        detalhe: `Faltam ${fmtBRL(m.falta)} para a meta. Com ticket de ${fmtBRL(m.ticket)} são ${vendasFaltando} venda(s), que pedem ${realizadasNecessarias} reunião(ões) realizada(s) e ${agendamentosNecessarios} agendamento(s). Você já tem ${jaNoPipeline} agendada(s) esperando.`,
+        base: `taxa realizada→venda ${Math.round(taxaRealVenda * 100)}% · agendada→realizada ${Math.round(taxaAgendReal * 100)}% · ${m.dias} dias úteis restantes`,
+      });
+    } else if (m.falta > 0) {
+      acoes.push({
+        alta: true,
+        titulo: `Não falta agendar — falta fazer acontecer as ${jaNoPipeline} que já estão na agenda`,
+        detalhe: `Nas taxas atuais, ${jaNoPipeline} reuniões agendadas já cobrem os ${fmtBRL(m.falta)} que faltam. O risco do mês não é volume, é no-show e remarcação.`,
+        base: `precisa de ${agendamentosNecessarios} agendamentos no total · ${jaNoPipeline} já estão marcados`,
+      });
+    }
+    if (planoContagens.fila) {
+      acoes.push({
+        alta: planoContagens.fila >= 5,
+        titulo: `Tocar ${planoContagens.fila} leads com score 45+ que estão parados`,
+        detalhe: `São leads que já se qualificaram no formulário e ninguém encostou nos últimos ${FILA_PARADO_DIAS} dias. A fila "Atacar hoje" no Dashboard já traz eles ordenados pela nota.`,
+        base: planoContagens.quentes ? `${planoContagens.quentes} deles estão na faixa quente (70+)` : 'ordenados por lead score',
+        cta: { label: 'Abrir a fila no Dashboard', acao: "planoIr('dashboard')" },
+      });
+    }
+    if (m.atrasadas.length) {
+      acoes.push({
+        alta: false,
+        titulo: `Atualizar ${m.atrasadas.length} reunião(ões) com data já vencida`,
+        detalhe: 'Ainda estão marcadas como "agendada" com data no passado — enquanto não viram realizada, no-show ou remarcada, toda taxa do painel sai errada.',
+        base: 'as taxas do plano são calculadas em cima desses status',
+      });
+    }
+    if (m.noShow.length) {
+      const pct = Math.round((m.noShow.length / Math.max(m.agendadas.length, 1)) * 100);
+      acoes.push({
+        alta: false,
+        titulo: `Confirmar na véspera — ${m.noShow.length} no-show(s) no mês (${pct}% das agendadas)`,
+        detalhe: 'Cada no-show custa um agendamento inteiro do plano acima. Mensagem de confirmação no dia anterior é o ponto mais barato pra recuperar isso.',
+        base: `${m.noShow.length} de ${m.agendadas.length} agendadas`,
+      });
+    }
+    const metaMql = (FUNIL_ETAPAS.find(e => e.chave === 'mql') || {}).meta || 0;
+    if (metaMql && planoContagens.mqlMes < metaMql) {
+      acoes.push({
+        alta: false,
+        titulo: `Gerar ${metaMql - planoContagens.mqlMes} MQLs para chegar nos ${metaMql} do mês`,
+        detalhe: `Este mês entraram ${planoContagens.mqlMes} leads de alto potencial. O topo do funil é o que sustenta o mês seguinte, não este.`,
+        base: 'meta de MQL do comparativo funil atual x ideal',
+      });
+    }
+  } else {
+    if (m.falta > 0) {
+      acoes.push({
+        alta: true,
+        titulo: `Fechar ${vendasFaltando} venda(s) até o fim do mês`,
+        detalhe: `Faltam ${fmtBRL(m.falta)} para a meta de ${fmtBRL(META_FATURAMENTO)} e o seu ticket médio do mês é ${fmtBRL(m.ticket)}. São ${m.dias} dias úteis.`,
+        base: m.vendas.length ? `ticket médio de ${m.vendas.length} venda(s) fechada(s) no mês` : `ainda sem venda no mês — usando o preço-base de ${fmtBRL(PLANO_TICKET_PADRAO)}`,
+      });
+    } else {
+      acoes.push({
+        alta: false,
+        titulo: 'Meta do mês batida — o jogo agora é o mês que vem',
+        detalhe: `${fmtBRL(m.faturamento)} faturados contra a meta de ${fmtBRL(META_FATURAMENTO)}. Use os dias que sobraram pra empurrar proposta que cairia em ${mesTitulo(m.mesRef)}.`,
+        base: `${m.vendas.length} venda(s) no mês`,
+      });
+    }
+    if (m.naMesa.length) {
+      const valorMesa = m.naMesa.reduce((s, n) => s + Number(n.valor_proposta || 0), 0);
+      const cobre = m.falta > 0 && valorMesa >= m.falta;
+      acoes.push({
+        alta: true,
+        titulo: `Trabalhar as ${m.naMesa.length} propostas na mesa — ${fmtBRL(valorMesa)} em jogo`,
+        detalhe: cobre
+          ? `Esse valor já cobre sozinho os ${fmtBRL(m.falta)} que faltam. Não precisa de lead novo pra bater a meta: precisa de decisão nessas ${m.naMesa.length}.`
+          : `Mesmo fechando todas, ainda faltariam ${fmtBRL(Math.max(0, m.falta - valorMesa))}. Trabalhe essas e peça agendamento novo pro SDR.`,
+        base: 'negócios com valor de proposta preenchido e ainda sem desfecho',
+        cta: { label: 'Ver os negócios em andamento', acao: "planoIr('dashboard')" },
+      });
+    }
+    if (m.semProposta.length) {
+      acoes.push({
+        alta: m.semProposta.length >= 3,
+        titulo: `Enviar proposta para ${m.semProposta.length} reunião(ões) já realizada(s)`,
+        detalhe: 'Reunião feita e nenhuma proposta lançada. É o vazamento mais caro do funil, porque o custo de conseguir a reunião já foi pago.',
+        base: 'negócios com data de realização e sem data de proposta',
+      });
+    }
+    const taxaProposta = m.realizadas.length ? m.propostas.length / m.realizadas.length : 0;
+    const taxaFecho = m.propostas.length ? m.vendas.length / m.propostas.length : 0;
+    if (m.realizadas.length >= 3) {
+      const gargaloProposta = taxaProposta < taxaFecho;
+      acoes.push({
+        alta: false,
+        titulo: gargaloProposta
+          ? `O gargalo está em virar reunião em proposta (${Math.round(taxaProposta * 100)}%)`
+          : `O gargalo está em fechar a proposta (${Math.round(taxaFecho * 100)}%)`,
+        detalhe: gargaloProposta
+          ? 'Você fecha bem o que vira proposta, mas a maioria das reuniões não chega a receber uma. Saia de toda call com proposta marcada ou enviada na hora.'
+          : 'A proposta sai, mas trava na decisão. Ataque objeção de preço e prazo dentro da call, antes de enviar.',
+        base: `realizada→proposta ${Math.round(taxaProposta * 100)}% · proposta→venda ${Math.round(taxaFecho * 100)}%`,
+      });
+    }
+    if (planoContagens.quentes) {
+      acoes.push({
+        alta: false,
+        titulo: `Cobrar do SDR os ${planoContagens.quentes} leads quentes (score 70+) que estão no CRM`,
+        detalhe: 'São os leads com maior nota da base — cargo de decisor, dor certa e comportamento de quem está buscando. Não deveriam estar esperando.',
+        base: 'cards abertos no funil de leads com lead score 70 ou mais',
+        cta: { label: 'Filtrar por quente no CRM', acao: "planoIr('crm')" },
+      });
+    }
+  }
+  return { m, acoes };
+}
+
+function renderPlano() {
+  const wrap = document.getElementById('plano-acoes');
+  const resumoEl = document.getElementById('plano-resumo');
+  if (!wrap) return;
+  const papel = (document.getElementById('plano-papel') || {}).value || 'sdr';
+  const { m, acoes } = planoDeAcao(papel);
+  const pct = Math.min(100, Math.round((m.faturamento / META_FATURAMENTO) * 100));
+  resumoEl.innerHTML = `
+    <div class="plano-kpi">
+      <div class="rot">Falta para a meta</div>
+      <div class="val ${m.falta ? '' : 'ok'}">${m.falta ? fmtBRL(m.falta) : 'meta batida'}</div>
+      <div class="sub">${pct}% de ${fmtBRL(META_FATURAMENTO)}</div>
+    </div>
+    <div class="plano-kpi">
+      <div class="rot">Dias úteis restantes</div>
+      <div class="val">${m.dias}</div>
+      <div class="sub">até o fim de ${mesTitulo(m.mesRef).toLowerCase()}</div>
+    </div>
+    <div class="plano-kpi">
+      <div class="rot">Ticket médio do mês</div>
+      <div class="val">${fmtBRL(m.ticket)}</div>
+      <div class="sub">${m.vendas.length ? `${m.vendas.length} venda(s) fechada(s)` : 'sem venda ainda — preço-base'}</div>
+    </div>`;
+  wrap.innerHTML = acoes.length
+    ? acoes.map((a, i) => `
+      <div class="plano-acao ${a.alta ? 'alta' : ''}">
+        <span class="plano-num">${i + 1}</span>
+        <div class="plano-corpo">
+          <div class="plano-titulo">${a.titulo}</div>
+          <div class="plano-detalhe">${a.detalhe}</div>
+          <div class="plano-base">${a.base}</div>
+          ${a.cta ? `<button type="button" class="plano-cta" onclick="${a.cta.acao}">${a.cta.label}</button>` : ''}
+        </div>
+      </div>`).join('')
+    : '<div class="empty plano-vazio">Sem dados suficientes do mês pra montar o plano.</div>';
+}
+
+function planoPopularPapel() {
+  const sel = document.getElementById('plano-papel');
+  if (!sel || sel.dataset.pronto) return;
+  sel.dataset.pronto = '1';
+  sel.value = currentPerfil && currentPerfil.papel === 'sdr' ? 'sdr' : 'closer';
 }
 
 // ---------- ISCA x RESULTADO ----------
@@ -4452,6 +4763,8 @@ function renderDicas() {
     ? dicas.map(d => `<div class="dica"><div class="icone">${d.icone}</div><div class="texto">${d.html}</div></div>`).join('')
     : '<div class="empty">Sem dados suficientes ainda pra gerar dicas.</div>';
 
+  planoPopularPapel();
+  renderPlano();
   renderFunilComparativo();
 }
 
@@ -4567,6 +4880,65 @@ function serieMensal() {
   }));
 }
 
+// ---------- CHROME COMPARTILHADO DOS GRÁFICOS ----------
+// Rampa ordinal validada (um hue, luminosidade monotônica): agendada → realizada → venda é funil,
+// não são três categorias soltas. Verde de status ficou fora de propósito — "venda" aqui é etapa
+// do funil, e cor de status significa bom/ruim, não identidade de série.
+const VIZ_FUNIL = ['#86b6ef', '#2a78d6', '#104281'];
+const VIZ_SERIE = '#2a78d6';
+
+// topo e marcações do eixo em números redondos — o eixo carrega os valores que não foram
+// rotulados direto na barra, então precisa ser legível sozinho
+function vizEscala(maxVal, alvoDivisoes) {
+  const passos = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 25000, 50000];
+  const ideal = Math.max(maxVal, 1) / alvoDivisoes;
+  const passo = passos.find(p => p >= ideal) || passos[passos.length - 1];
+  const topo = Math.max(passo, Math.ceil(maxVal / passo) * passo);
+  const ticks = [];
+  for (let v = 0; v <= topo + 1e-9; v += passo) ticks.push(v);
+  return { topo, ticks };
+}
+
+// canto arredondado só em cima: a barra nasce colada na linha de base, não flutua
+function vizBarra(x, y, largura, altura, raio) {
+  if (altura <= 0.5) return '';
+  const r = Math.min(raio, largura / 2, altura);
+  return `M${x},${y + altura} L${x},${y + r} Q${x},${y} ${x + r},${y} L${x + largura - r},${y} Q${x + largura},${y} ${x + largura},${y + r} L${x + largura},${y + altura} Z`;
+}
+
+function vizEixoY(ticks, escalaY, largura, padEsq, formatar) {
+  const corGrid = corTema('--grid'), corMuted = corTema('--muted');
+  return ticks.map(v => {
+    const y = escalaY(v);
+    return `<line x1="${padEsq}" y1="${y}" x2="${largura}" y2="${y}" stroke="${corGrid}" stroke-width="1"/>
+      <text x="${padEsq - 8}" y="${y + 3.5}" font-size="9.5" fill="${corMuted}" text-anchor="end" style="font-variant-numeric:tabular-nums">${formatar(v)}</text>`;
+  }).join('');
+}
+
+// tooltip de verdade (não o title= do navegador, que demora 1s e some sozinho). A faixa
+// invisível pega o mês inteiro, então não precisa acertar a barra fina.
+function vizLigarTooltip(wrapId, tipId, textos) {
+  const wrap = document.getElementById(wrapId);
+  const tip = document.getElementById(tipId);
+  if (!wrap || !tip) return;
+  wrap.querySelectorAll('.viz-banda').forEach(banda => {
+    banda.addEventListener('mouseenter', () => {
+      tip.innerHTML = textos[Number(banda.dataset.i)] || '';
+      tip.style.opacity = '1';
+      const cx = Number(banda.dataset.cx);
+      tip.style.left = (cx - wrap.scrollLeft) + 'px';
+      tip.style.top = (Number(banda.dataset.topo) - 10) + 'px';
+    });
+    banda.addEventListener('mouseleave', () => { tip.style.opacity = '0'; });
+  });
+}
+
+function vizLarguraDisponivel(wrapId, minimo) {
+  const wrap = document.getElementById(wrapId);
+  const l = wrap ? wrap.clientWidth : 0;
+  return Math.max(minimo, l || 620);
+}
+
 function renderHistorico() {
   const serie = serieMensal();
   desenharReunioes(serie);
@@ -4575,28 +4947,73 @@ function renderHistorico() {
 
 function desenharReunioes(serie) {
   const svg = document.getElementById('chart-reunioes');
-  const w = Math.max(600, serie.length * 60);
-  const h = 180;
-  const maxVal = Math.max(1, ...serie.map(s => Math.max(s.agendadas, s.realizadas, s.vendas)));
-  const barW = 10, groupW = 50;
-  const scaleY = v => (h - 24) * (v / maxVal);
-  const c1 = corTema('--chip-1'), c3 = corTema('--chip-3'), cg = corTema('--good');
-  const corMuted = corTema('--muted'), corGrid = corTema('--grid');
+  const etapas = [
+    { chave: 'agendadas',  nome: 'Agendadas',  cor: VIZ_FUNIL[0] },
+    { chave: 'realizadas', nome: 'Realizadas', cor: VIZ_FUNIL[1] },
+    { chave: 'vendas',     nome: 'Vendas',     cor: VIZ_FUNIL[2] },
+  ];
+  const padEsq = 40, padDir = 12, padTopo = 22, bandaX = 26, alturaPlot = 168;
+  const h = padTopo + alturaPlot + bandaX;
+  const larguraGrupo = 86;
+  const w = Math.max(vizLarguraDisponivel('viz-reunioes-wrap', 320), serie.length * larguraGrupo + padEsq + padDir);
+  const grupo = (w - padEsq - padDir) / serie.length;
 
-  let bars = '';
+  const maxVal = Math.max(1, ...serie.flatMap(s => etapas.map(e => s[e.chave])));
+  const { topo, ticks } = vizEscala(maxVal, 4);
+  const escalaY = v => padTopo + alturaPlot - (alturaPlot * (v / topo));
+
+  const barraW = Math.min(18, (grupo - 20) / etapas.length - 2);   // 2px de respiro entre vizinhas
+  const larguraCacho = barraW * etapas.length + 2 * (etapas.length - 1);
+  const ultimo = serie.length - 1;
+  const corTexto = corTema('--text-primary'), corMuted = corTema('--muted'), corBase = corTema('--baseline');
+
+  let marcas = '', bandas = '';
+  const textos = [];
   serie.forEach((s, i) => {
-    const x0 = i * groupW + 6;
-    [['agendadas', c1, 0], ['realizadas', c3, 1], ['vendas', cg, 2]].forEach(([campo, cor, j]) => {
-      const val = s[campo];
-      const y = scaleY(val);
-      bars += `<rect x="${x0 + j*(barW+2)}" y="${h-24-y}" width="${barW}" height="${y}" rx="2" fill="${cor}">
-        <title>${mesTitulo(s.mes)} — ${campo}: ${val}</title></rect>`;
+    const centro = padEsq + grupo * i + grupo / 2;
+    const x0 = centro - larguraCacho / 2;
+    etapas.forEach((e, j) => {
+      const val = s[e.chave];
+      const y = escalaY(val);
+      const x = x0 + j * (barraW + 2);
+      marcas += `<path d="${vizBarra(x, y, barraW, padTopo + alturaPlot - y, 4)}" fill="${e.cor}"/>`;
+      // rótulo direto só no mês mais recente: número em cima de toda barra vira poluição e ninguém lê
+      if (i === ultimo && val > 0) {
+        marcas += `<text x="${x + barraW / 2}" y="${y - 6}" font-size="10" font-weight="700" fill="${corTexto}" text-anchor="middle" style="font-variant-numeric:tabular-nums">${val}</text>`;
+      }
     });
-    bars += `<text x="${x0+barW+1}" y="${h-6}" font-size="9" fill="${corMuted}" text-anchor="middle">${mesCurto(s.mes)}</text>`;
+    const ehUltimo = i === ultimo;
+    marcas += `<text x="${centro}" y="${h - 8}" font-size="10" fill="${ehUltimo ? corTexto : corMuted}" font-weight="${ehUltimo ? 700 : 500}" text-anchor="middle">${mesCurto(s.mes)}</text>`;
+    bandas += `<rect class="viz-banda" x="${padEsq + grupo * i}" y="${padTopo}" width="${grupo}" height="${alturaPlot}" fill="transparent"
+      data-i="${i}" data-cx="${centro}" data-topo="${padTopo}"/>`;
+    textos.push(`<div class="tip-mes">${mesTitulo(s.mes)}</div>`
+      + etapas.map(e => `<div class="tip-linha"><i style="background:${e.cor}"></i>${e.nome}<b>${s[e.chave]}</b></div>`).join(''));
   });
+
   svg.setAttribute('width', w);
   svg.setAttribute('height', h);
-  svg.innerHTML = `<line x1="0" y1="${h-24}" x2="${w}" y2="${h-24}" stroke="${corGrid}" stroke-width="1"/>${bars}`;
+  svg.innerHTML = vizEixoY(ticks, escalaY, w - padDir, padEsq, v => v)
+    + `<line x1="${padEsq}" y1="${padTopo + alturaPlot}" x2="${w - padDir}" y2="${padTopo + alturaPlot}" stroke="${corBase}" stroke-width="1"/>`
+    + marcas + bandas;
+  vizLigarTooltip('viz-reunioes-wrap', 'tip-reunioes', textos);
+
+  document.getElementById('legenda-reunioes').innerHTML = etapas
+    .map(e => `<span><i style="background:${e.cor}"></i>${e.nome}</span>`).join('');
+
+  // cabeçalho: o mês corrente contado etapa por etapa, com a taxa que interessa
+  const atual = serie[ultimo] || { agendadas: 0, realizadas: 0, vendas: 0, mes: fmtMesRef(new Date()) };
+  const taxa = atual.agendadas ? Math.round((atual.vendas / atual.agendadas) * 100) : 0;
+  document.getElementById('viz-reunioes-cabecalho').innerHTML = `
+    <div>
+      <div class="viz-rotulo">${mesTitulo(atual.mes)}</div>
+      <div class="viz-etapas">
+        ${etapas.map((e, j) => `${j ? '<span class="viz-seta">→</span>' : ''}<span class="viz-etapa"><i style="background:${e.cor}"></i><b>${atual[e.chave]}</b> <span>${e.nome.toLowerCase()}</span></span>`).join('')}
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div class="viz-rotulo">Agendada → venda</div>
+      <div class="viz-hero" style="font-size:1.6rem;">${taxa}%</div>
+    </div>`;
 
   const ordenada = [...serie].reverse();
   document.getElementById('tabela-reunioes').innerHTML = `
@@ -4607,30 +5024,71 @@ function desenharReunioes(serie) {
 
 function desenharFaturamento(serie) {
   const svg = document.getElementById('chart-faturamento');
-  const w = Math.max(600, serie.length * 46);
-  const h = 180;
-  const maxVal = Math.max(1, META_FATURAMENTO, ...serie.map(s => s.faturamento));
-  const barW = 20, groupW = 40;
-  const scaleY = v => (h - 24) * (v / maxVal);
-  const corGood = corTema('--good'), corMuted = corTema('--muted'), corGrid = corTema('--grid'), corCritical = corTema('--critical');
+  const padEsq = 52, padDir = 12, padTopo = 24, bandaX = 26, alturaPlot = 168;
+  const h = padTopo + alturaPlot + bandaX;
+  const w = Math.max(vizLarguraDisponivel('viz-faturamento-wrap', 320), serie.length * 76 + padEsq + padDir);
+  const grupo = (w - padEsq - padDir) / serie.length;
 
-  const yMeta = h - 24 - scaleY(META_FATURAMENTO);
-  let bars = '';
+  const { topo, ticks } = vizEscala(Math.max(META_FATURAMENTO, ...serie.map(s => s.faturamento)), 4);
+  const escalaY = v => padTopo + alturaPlot - (alturaPlot * (v / topo));
+  const barraW = Math.min(24, grupo - 26);
+  const ultimo = serie.length - 1;
+  const corTexto = corTema('--text-primary'), corMuted = corTema('--muted'), corBase = corTema('--baseline');
+  const corBoa = '#006300';   // tinta de "acima da meta" — texto, não a cor da barra
+
+  let marcas = '', bandas = '';
+  const textos = [];
   serie.forEach((s, i) => {
-    const x0 = i * groupW + 6;
-    const y = scaleY(s.faturamento);
-    const cor = s.faturamento >= META_FATURAMENTO ? corGood : corCritical;
-    bars += `<rect x="${x0}" y="${h-24-y}" width="${barW}" height="${y}" rx="3" fill="${cor}">
-      <title>${mesTitulo(s.mes)} — Faturamento: ${fmtBRL(s.faturamento)}</title></rect>`;
-    bars += `<text x="${x0+barW/2}" y="${h-6}" font-size="9" fill="${corMuted}" text-anchor="middle">${mesCurto(s.mes)}</text>`;
+    const centro = padEsq + grupo * i + grupo / 2;
+    const y = escalaY(s.faturamento);
+    const bateu = s.faturamento >= META_FATURAMENTO;
+    marcas += `<path d="${vizBarra(centro - barraW / 2, y, barraW, padTopo + alturaPlot - y, 4)}" fill="${VIZ_SERIE}"/>`;
+    if (s.faturamento > 0) {
+      // a meta é status (bateu/não bateu), então vem com sinal + palavra, nunca só cor
+      marcas += `<text x="${centro}" y="${y - 7}" font-size="10" font-weight="700" fill="${bateu ? corBoa : corTexto}" text-anchor="middle">${bateu ? '✓ ' : ''}${fmtBRLCurto(s.faturamento)}</text>`;
+    }
+    const ehUltimo = i === ultimo;
+    marcas += `<text x="${centro}" y="${h - 8}" font-size="10" fill="${ehUltimo ? corTexto : corMuted}" font-weight="${ehUltimo ? 700 : 500}" text-anchor="middle">${mesCurto(s.mes)}</text>`;
+    bandas += `<rect class="viz-banda" x="${padEsq + grupo * i}" y="${padTopo}" width="${grupo}" height="${alturaPlot}" fill="transparent"
+      data-i="${i}" data-cx="${centro}" data-topo="${padTopo}"/>`;
+    textos.push(`<div class="tip-mes">${mesTitulo(s.mes)}</div>`
+      + `<div class="tip-linha"><i style="background:${VIZ_SERIE}"></i>Faturamento<b>${fmtBRL(s.faturamento)}</b></div>`
+      + `<div class="tip-linha" style="opacity:.75;">${bateu ? 'acima' : 'abaixo'} da meta<b>${fmtBRL(META_FATURAMENTO)}</b></div>`);
   });
+
+  const yMeta = escalaY(META_FATURAMENTO);
+  const rotuloMeta = `META ${fmtBRLCurto(META_FATURAMENTO)}`;
+  const larguraChip = rotuloMeta.length * 5.7 + 12;
+  const corSuperficie = corTema('--surface-1') || '#ffffff';
   svg.setAttribute('width', w);
   svg.setAttribute('height', h);
-  svg.innerHTML = `
-    <line x1="0" y1="${h-24}" x2="${w}" y2="${h-24}" stroke="${corGrid}" stroke-width="1"/>
-    <line x1="0" y1="${yMeta}" x2="${w}" y2="${yMeta}" stroke="${corMuted}" stroke-width="1" stroke-dasharray="4,3"/>
-    ${bars}
-  `;
+  svg.innerHTML = vizEixoY(ticks, escalaY, w - padDir, padEsq, fmtBRLCurto)
+    + `<line x1="${padEsq}" y1="${padTopo + alturaPlot}" x2="${w - padDir}" y2="${padTopo + alturaPlot}" stroke="${corBase}" stroke-width="1"/>`
+    + marcas
+    // Linha da meta por cima das barras, com o rótulo numa pastilha ASSENTADA na linha (não acima
+    // dela): quando o faturamento do mês encosta na meta, o rótulo do topo da barra e o da meta
+    // caem na mesma altura — a pastilha na cor da superfície resolve a sobreposição em vez de
+    // deixar texto por cima de texto.
+    + `<line x1="${padEsq}" y1="${yMeta}" x2="${w - padDir}" y2="${yMeta}" stroke="${corTexto}" stroke-width="1"/>`
+    + `<rect x="${w - padDir - larguraChip}" y="${yMeta - 8}" width="${larguraChip}" height="16" rx="4" fill="${corSuperficie}"/>`
+    + `<text x="${w - padDir - 6}" y="${yMeta + 3.5}" font-size="9.5" font-weight="700" fill="${corTexto}" text-anchor="end">${rotuloMeta}</text>`
+    + bandas;
+  vizLigarTooltip('viz-faturamento-wrap', 'tip-faturamento', textos);
+
+  // cabeçalho: número herói do mês + medidor contra a meta (a forma certa pra "quanto do limite")
+  const atual = serie[ultimo] || { faturamento: 0, mes: fmtMesRef(new Date()) };
+  const pct = Math.min(100, Math.round((atual.faturamento / META_FATURAMENTO) * 100));
+  const falta = META_FATURAMENTO - atual.faturamento;
+  document.getElementById('viz-faturamento-cabecalho').innerHTML = `
+    <div>
+      <div class="viz-rotulo">Faturado em ${mesTitulo(atual.mes).toLowerCase()}</div>
+      <div class="viz-hero">${fmtBRL(atual.faturamento)}</div>
+      <div class="viz-hero-sub">${falta > 0 ? `faltam <b>${fmtBRL(falta)}</b> para a meta` : 'meta do mês batida'}</div>
+    </div>
+    <div class="viz-meter">
+      <div class="viz-meter-topo"><span>${pct}% da meta</span><b>${fmtBRL(META_FATURAMENTO)}</b></div>
+      <div class="viz-meter-trilho ${falta <= 0 ? 'batida' : ''}"><b style="width:${pct}%"></b></div>
+    </div>`;
 
   const ordenada = [...serie].reverse();
   document.getElementById('tabela-faturamento').innerHTML = `
@@ -4638,6 +5096,20 @@ function desenharFaturamento(serie) {
     ${ordenada.map(s => `<tr><td>${mesCurto(s.mes)}</td><td>${fmtBRL(s.faturamento)}</td></tr>`).join('')}
   `;
 }
+
+// R$ 18 mil / R$ 1,2 mi — o eixo não comporta "R$ 18.000,00" em cada marca
+function fmtBRLCurto(v) {
+  const n = Number(v) || 0;
+  if (n >= 1000000) return 'R$ ' + (n / 1000000).toFixed(n % 1000000 ? 1 : 0).replace('.', ',') + 'mi';
+  if (n >= 1000) return 'R$ ' + (n / 1000).toFixed(n % 1000 ? 1 : 0).replace('.', ',') + 'mil';
+  return 'R$ ' + n;
+}
+
+let vizRedesenhoTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(vizRedesenhoTimer);
+  vizRedesenhoTimer = setTimeout(() => { if (negocios.length) renderHistorico(); }, 180);
+});
 
 
 // ---------- SOCIAL SELLING (playbook de mensagens) ----------
