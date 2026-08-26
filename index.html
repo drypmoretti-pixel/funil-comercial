@@ -2066,7 +2066,7 @@ function metricasDoMes() {
   const faturamentoTotal = faturamentos.reduce((s,n) => s + Number(n.valor_faturado || 0), 0);
   const vendaTotal = vendas.reduce((s,n) => s + Number(n.valor_venda || 0), 0);
   const ticketMedio = vendas.length ? vendaTotal / vendas.length : 0;
-  const taxaConversaoGeral = agendadas.length ? (vendas.length / agendadas.length) * 100 : 0;
+  const taxaConversaoGeral = realizadas.length ? (vendas.length / realizadas.length) * 100 : null;
   return { mesRef, agendadas, realizadas, propostas, vendas, noShow, faturamentoTotal, vendaTotal, ticketMedio, taxaConversaoGeral };
 }
 
@@ -2131,9 +2131,9 @@ function renderFunil() {
   // insere a taxa de conversão geral entre Realizadas e Vendas — não é uma barra proporcional (é um %), então ganha destaque próprio
   linhas.splice(3, 0, `
     <div class="funil-row funil-destaque">
-      <div class="funil-nome">Tx conversão geral</div>
-      <div class="funil-destaque-valor">${m.taxaConversaoGeral.toFixed(0)}%</div>
-      <div class="funil-pct">vendas / agendadas</div>
+      <div class="funil-nome">Tx de conversão</div>
+      <div class="funil-destaque-valor">${m.taxaConversaoGeral === null ? '—' : m.taxaConversaoGeral.toFixed(0) + '%'}</div>
+      <div class="funil-pct">${m.taxaConversaoGeral === null ? 'sem reunião realizada ainda' : 'vendas / reuniões realizadas'}</div>
     </div>
   `);
   document.getElementById('funil').innerHTML = linhas.join('');
@@ -5613,7 +5613,7 @@ function desenharReunioes(serie) {
 
   // cabeçalho: o mês corrente contado etapa por etapa, com a taxa que interessa
   const atual = serie[ultimo] || { agendadas: 0, realizadas: 0, vendas: 0, mes: fmtMesRef(new Date()) };
-  const taxa = atual.agendadas ? Math.round((atual.vendas / atual.agendadas) * 100) : 0;
+  const taxa = atual.realizadas ? Math.round((atual.vendas / atual.realizadas) * 100) : null;
   document.getElementById('viz-reunioes-cabecalho').innerHTML = `
     <div>
       <div class="viz-rotulo">${mesTitulo(atual.mes)}</div>
@@ -5622,8 +5622,8 @@ function desenharReunioes(serie) {
       </div>
     </div>
     <div style="text-align:right;">
-      <div class="viz-rotulo">Agendada → venda</div>
-      <div class="viz-hero" style="font-size:1.6rem;">${taxa}%</div>
+      <div class="viz-rotulo">Realizada → venda</div>
+      <div class="viz-hero" style="font-size:1.6rem;">${taxa === null ? '—' : taxa + '%'}</div>
     </div>`;
 
   const ordenada = [...serie].reverse();
