@@ -247,6 +247,48 @@ svg.chart { display: block; }
 .score-linha.neg b { color: var(--critical); }
 .score-linha.zero, .score-linha.zero b { color: var(--muted); font-weight: 500; }
 .score-rodape { margin-top: 9px; font-size: .72rem; line-height: 1.5; color: var(--muted); }
+/* ---- motivo de perda ---- */
+.perda-motivos { display: grid; gap: 6px; margin-top: 2px; }
+.perda-opcao {
+  display: flex; align-items: flex-start; gap: 10px; padding: 9px 11px; border-radius: 9px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface-1); transition: border-color .15s, background .15s;
+}
+.perda-opcao:hover { border-color: var(--text-secondary); }
+.perda-opcao.marcada { border-color: var(--critical); background: rgba(208,59,59,.05); }
+.perda-opcao input { margin: 3px 0 0; accent-color: var(--critical); flex: 0 0 auto; }
+.perda-opcao b { font-weight: 600; font-size: .84rem; display: block; }
+.perda-opcao span { font-size: .72rem; color: var(--muted); line-height: 1.45; }
+.perda-aviso { font-size: .74rem; color: var(--critical); margin-top: 8px; display: none; }
+.perda-aviso.visivel { display: block; }
+/* selo do motivo dentro do card já perdido */
+.perda-selo {
+  display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--border); border-left: 3px solid var(--critical);
+  border-radius: 9px; padding: 10px 12px; background: var(--field-bg); margin-bottom: 12px;
+}
+.perda-selo-corpo { flex: 1; min-width: 0; }
+.perda-selo-rot { font-size: .59rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.perda-selo-motivo { font-weight: 700; font-size: .86rem; margin-top: 2px; }
+.perda-selo-obs { font-size: .76rem; color: var(--text-secondary); margin-top: 3px; line-height: 1.5; }
+.perda-selo button {
+  flex: 0 0 auto; border: 0; background: none; color: var(--good); font-weight: 700; font-size: .72rem; cursor: pointer; padding: 2px 0;
+}
+/* ---- relatório de motivos de perda ---- */
+.mp-topo { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin: 6px 0 16px; }
+.mp-hero { font-size: 2.3rem; font-weight: 800; line-height: 1.06; letter-spacing: -.03em; }
+.mp-hero-sub { font-size: .76rem; color: var(--text-secondary); margin-top: 3px; }
+.mp-lista { display: grid; gap: 3px; }
+.mp-linha { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--grid); }
+.mp-linha:last-child { border-bottom: 0; }
+.mp-nome { font-size: .84rem; font-weight: 600; display: flex; align-items: center; gap: 9px; }
+.mp-nome i { width: 9px; height: 9px; border-radius: 2px; flex: 0 0 auto; }
+.mp-numeros { display: flex; align-items: baseline; gap: 10px; font-variant-numeric: tabular-nums; }
+.mp-pct { font-weight: 800; font-size: .95rem; min-width: 48px; text-align: right; }
+.mp-qtd { font-size: .74rem; color: var(--muted); min-width: 62px; text-align: right; }
+.mp-barra { grid-column: 1 / -1; height: 4px; border-radius: 99px; background: var(--grid); overflow: hidden; margin-top: -3px; }
+.mp-barra > b { display: block; height: 100%; border-radius: 99px; }
+.mp-vazio { padding: 20px 0; }
+.mp-nota { font-size: .73rem; color: var(--muted); margin-top: 12px; line-height: 1.55; }
+.mp-nota b { color: var(--text-primary); }
 /* ---- tour de novidades ---- */
 .tour-fundo {
   position: fixed; inset: 0; background: rgba(11,11,11,.55); z-index: 300;
@@ -1079,6 +1121,22 @@ form.form-grid button { grid-column: 1 / -1; }
       </section>
 
       <section class="card">
+        <div class="section-title">
+          <h2>Por que a gente perde</h2>
+          <select id="mp-periodo" onchange="carregarMotivosPerda()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600; font-size:.8rem;">
+            <option value="mes">Este mês</option>
+            <option value="3m">Últimos 3 meses</option>
+            <option value="ano">Este ano</option>
+            <option value="tudo">Todo o histórico</option>
+          </select>
+        </div>
+        <p class="muted">A distribuição dos motivos de perda. Muito "fora do ICP" é problema de isca e de formulário; muito "achou caro" é problema de oferta; muito "sumiu" é problema de cadência.</p>
+        <div class="mp-topo" id="mp-topo"></div>
+        <div class="mp-lista" id="mp-lista"></div>
+        <p class="mp-nota" id="mp-nota"></p>
+      </section>
+
+      <section class="card">
         <h2>Dicas do funil</h2>
         <div id="dicas"></div>
       </section>
@@ -1582,6 +1640,24 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 </div>
 
 <!-- modal de detalhe do card do CRM -->
+<div id="modal-perda" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-perda')">
+  <div class="modal-card" style="max-width:470px; text-align:left;">
+    <h2 id="perda-titulo">Por que esse lead foi perdido?</h2>
+    <p class="muted" style="font-size:.78rem; margin:2px 0 14px;">Um clique agora vira o relatório do mês. Sem isso, "perdemos 55 leads" não diz o que mudar.</p>
+    <div class="perda-motivos" id="perda-opcoes"></div>
+    <div style="margin-top:12px;">
+      <label style="font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:5px;">Detalhe (opcional)</label>
+      <textarea id="perda-obs" rows="2" placeholder="O que aconteceu, nas suas palavras. Ajuda quem for reabrir esse lead daqui a uns meses."
+        style="width:100%; padding:9px 11px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-family:inherit; font-size:.84rem; box-sizing:border-box; resize:vertical;"></textarea>
+    </div>
+    <div class="perda-aviso" id="perda-aviso"></div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-perda')">Cancelar</button>
+      <button type="button" class="btn" id="perda-confirmar" style="background:var(--critical);" onclick="confirmarPerda()">Marcar como perdido</button>
+    </div>
+  </div>
+</div>
+
 <div id="tour-fundo" class="tour-fundo">
   <div class="tour-card">
     <button type="button" class="tour-fechar" title="Fechar (Esc)" onclick="fecharTour()">✕</button>
@@ -1606,6 +1682,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </div>
     </div>
     <div id="crm-card-pill-desfecho" style="margin:4px 0 12px;"></div>
+    <div id="crm-perda-selo" class="perda-selo" style="display:none;"></div>
     <div id="crm-score-box" class="score-painel" style="display:none;"></div>
     <form class="form-grid" id="form-crm-card" onsubmit="return crmSalvarCard(event)">
       <div class="full">
@@ -2283,6 +2360,13 @@ function salvarEdicao(ev) {
   if (status === 'perdida' && !patch.data_perdida) patch.data_perdida = hojeStr();
   (async () => {
     await sb.from('com_negocios').update(patch).eq('id', id);
+    const antes = negocios.find(n => n.id === id);
+    // virou perdida agora e ainda não tem motivo? pergunta antes de sair da tela
+    if (status === 'perdida' && !(antes && antes.motivo_perda)) {
+      await carregarTudo();
+      abrirModalPerda('negocio', id, null);
+      return;
+    }
     fecharModal('modal-overlay');
     await carregarTudo();
   })();
@@ -2357,7 +2441,7 @@ async function carregarCardsDoFunil() {
   crmCards.forEach(c => { c._score = scoreDoCard(c); });
   crmAplicarFiltros();
   renderFunilComparativo();
-  sincronizarScores().then(() => { carregarFilaAtaque(); carregarIscas(); carregarDadosPlano(); });   // persistir não pode segurar o desenho do board
+  sincronizarScores().then(() => { carregarFilaAtaque(); carregarIscas(); carregarDadosPlano(); carregarMotivosPerda(); });   // persistir não pode segurar o desenho do board
 }
 
 function crmMudaFunil() {
@@ -3411,6 +3495,7 @@ function crmAbrirNovoCard(estagioId) {
   crmTagsSelecionadasAtual = [];
   crmToggleCaixaTags(false);
   document.getElementById('crm-score-box').style.display = 'none';   // card novo ainda não tem o que pontuar
+  document.getElementById('crm-perda-selo').style.display = 'none';
   document.getElementById('crm-ativ-wrap').style.display = 'none';   // atividade precisa de card salvo (FK)
   document.getElementById('crm-historico-wrap').style.display = 'none';
   document.getElementById('crm-reunioes-wrap').style.display = 'none';
@@ -3440,6 +3525,7 @@ function crmAbrirCard(id) {
   document.getElementById('crm-historico-wrap').style.display = 'block';
   document.getElementById('crm-reunioes-wrap').style.display = 'block';
   crmRenderScoreBox(c);
+  crmRenderSeloPerda(c);
   document.getElementById('crm-ativ-wrap').style.display = 'block';
   crmRenderAtividades(id);
   crmRenderReunioes(id);
@@ -3621,24 +3707,13 @@ function crmDestinoPerdidos() {
 
 async function crmMarcarDesfecho(status) {
   if (!crmCardAtualId) { alert('Salve o card primeiro.'); return; }
-  const patch = { status_negocio: status, data_fechamento: hojeStr() };
-  const card = crmCards.find(c => c.id === crmCardAtualId);
-  // perdido sai do funil de trabalho e vai pro funil "Perdidos" — o board fica só com lead vivo
-  const destino = status === 'perdido' ? crmDestinoPerdidos() : null;
-  const mudaDeFunil = destino && card && card.funil_id !== destino.funilId;
-  if (mudaDeFunil) { patch.funil_id = destino.funilId; patch.estagio_id = destino.estagioId; }
-
-  await sb.from('com_cards').update(patch).eq('id', crmCardAtualId);
-  await crmLogAtividade(crmCardAtualId, status, status === 'ganho' ? 'Marcado como Ganho' : 'Marcado como Perdido');
-  if (mudaDeFunil) {
-    const funilAntigo = crmFunis.find(f => f.id === card.funil_id);
-    const estagioAntigo = crmEstagios.find(e => e.id === card.estagio_id);
-    await crmLogAtividade(crmCardAtualId, 'mudanca_funil',
-      `Movido para Perdidos (era ${funilAntigo ? funilAntigo.nome : '?'} / ${estagioAntigo ? estagioAntigo.nome : '?'})`);
-  }
+  // perder passa pela janela de motivo; o salvamento em si vive em crmAplicarPerda
+  if (status === 'perdido') { abrirModalPerda('card', crmCardAtualId, null); return; }
+  await sb.from('com_cards').update({ status_negocio: status, data_fechamento: hojeStr() }).eq('id', crmCardAtualId);
+  await crmLogAtividade(crmCardAtualId, status, 'Marcado como Ganho');
   fecharModal('modal-card-crm');
   await carregarCardsDoFunil();
-  if (status === 'ganho') celebrar('venda');
+  celebrar('venda');
 }
 
 async function crmAdicionarNota() {
@@ -5648,6 +5723,198 @@ window.addEventListener('resize', () => {
 });
 
 
+// ---------- MOTIVO DE PERDA ----------
+// "Perdido" sem motivo é um dado que não responde nada: no fim do mês você sabe que perdeu 55 e
+// não sabe o que mudar. Marcar perdido agora passa por esta janela, e o motivo vira o relatório
+// da aba Dicas. Pra somar um motivo novo, é acrescentar uma linha aqui — os valores gravados são
+// a `chave`, então motivo antigo continua contando mesmo se o rótulo mudar depois.
+const MOTIVOS_PERDA = [
+  { chave: 'fora-icp',    nome: 'Fora do ICP',            ajuda: 'Não é o perfil que a gente atende — porte, mercado ou cargo errado.', cor: 'var(--chip-2)' },
+  { chave: 'sem-budget',  nome: 'Sem verba',              ajuda: 'É o perfil certo, mas não tem caixa pro ticket agora.',              cor: 'var(--chip-4)' },
+  { chave: 'timing',      nome: 'Não é o momento',        ajuda: 'Faz sentido, mas a prioridade dele é outra neste período.',           cor: 'var(--chip-1)' },
+  { chave: 'sem-resposta',nome: 'Sumiu / não respondeu',  ajuda: 'Fechou os 5 toques da sequência e nunca voltou.',                     cor: 'var(--muted)' },
+  { chave: 'concorrente', nome: 'Foi com outro',          ajuda: 'Escolheu outro fornecedor ou consultoria.',                           cor: 'var(--chip-7)' },
+  { chave: 'preco',       nome: 'Achou caro',             ajuda: 'Era o perfil, entendeu o valor, mas travou no preço.',                cor: 'var(--chip-5)' },
+  { chave: 'faz-interno', nome: 'Vai fazer internamente', ajuda: 'Decidiu resolver com o time ou com a agência que já tem.',            cor: 'var(--chip-6)' },
+  { chave: 'sem-dor',     nome: 'Não tem a dor',          ajuda: 'Gerar demanda não é problema pra ele hoje.',                          cor: 'var(--chip-3)' },
+  { chave: 'duplicado',   nome: 'Lead duplicado',         ajuda: 'A mesma pessoa já existe em outro card.',                             cor: 'var(--baseline)' },
+  { chave: 'invalido',    nome: 'Cadastro de teste ou inválido', ajuda: 'Dado falso, teste interno, candidato a vaga.',                 cor: 'var(--baseline)' },
+  { chave: 'outro',       nome: 'Outro',                  ajuda: 'Precisa escrever o motivo abaixo.',                                   cor: 'var(--grid)' },
+];
+const MOTIVO_NAO_INFORMADO = { chave: '', nome: 'Não informado', cor: 'var(--grid)' };
+
+function motivoPerda(chave) {
+  return MOTIVOS_PERDA.find(m => m.chave === chave) || MOTIVO_NAO_INFORMADO;
+}
+
+// quem abriu a janela: 'card' (CRM) ou 'negocio' (funil comercial). O destino do salvamento muda,
+// a janela é a mesma.
+let perdaContexto = null;
+
+function abrirModalPerda(origem, id, atual) {
+  perdaContexto = { origem, id };
+  const escolhido = (atual && atual.motivo_perda) || '';
+  document.getElementById('perda-opcoes').innerHTML = MOTIVOS_PERDA.map(m => `
+    <label class="perda-opcao ${m.chave === escolhido ? 'marcada' : ''}">
+      <input type="radio" name="motivo-perda" value="${m.chave}" ${m.chave === escolhido ? 'checked' : ''} onchange="perdaMarcar(this)">
+      <span><b>${m.nome}</b><span>${m.ajuda}</span></span>
+    </label>`).join('');
+  document.getElementById('perda-obs').value = (atual && atual.perda_obs) || '';
+  document.getElementById('perda-aviso').classList.remove('visivel');
+  document.getElementById('perda-titulo').textContent = escolhido ? 'Editar o motivo da perda' : 'Por que esse lead foi perdido?';
+  document.getElementById('perda-confirmar').textContent = escolhido ? 'Salvar motivo' : 'Marcar como perdido';
+  document.getElementById('modal-perda').classList.add('open');
+}
+
+function perdaMarcar(input) {
+  document.querySelectorAll('.perda-opcao').forEach(el => el.classList.remove('marcada'));
+  input.closest('.perda-opcao').classList.add('marcada');
+  document.getElementById('perda-aviso').classList.remove('visivel');
+}
+
+function perdaEscolhido() {
+  const el = document.querySelector('input[name="motivo-perda"]:checked');
+  return el ? el.value : '';
+}
+
+async function confirmarPerda() {
+  const motivo = perdaEscolhido();
+  const obs = document.getElementById('perda-obs').value.trim();
+  const aviso = document.getElementById('perda-aviso');
+  if (!motivo) { aviso.textContent = 'Escolha um motivo — é ele que vira o relatório no fim do mês.'; aviso.classList.add('visivel'); return; }
+  if (motivo === 'outro' && !obs) { aviso.textContent = 'Escrevendo "Outro", conta o que aconteceu no campo abaixo.'; aviso.classList.add('visivel'); return; }
+  const ctx = perdaContexto;
+  fecharModal('modal-perda');
+  if (!ctx) return;
+  if (ctx.origem === 'card') await crmAplicarPerda(ctx.id, motivo, obs);
+  else await negocioAplicarPerda(ctx.id, motivo, obs);
+}
+
+async function crmAplicarPerda(cardId, motivo, obs) {
+  const card = crmCards.find(c => c.id === cardId);
+  const jaEraPerdido = card && card.status_negocio === 'perdido';
+  const patch = { status_negocio: 'perdido', motivo_perda: motivo, perda_obs: obs || null };
+  if (!jaEraPerdido) patch.data_fechamento = hojeStr();
+  // perdido sai do funil de trabalho e vai pro funil "Perdidos" — o board fica só com lead vivo
+  const destino = jaEraPerdido ? null : crmDestinoPerdidos();
+  const mudaDeFunil = destino && card && card.funil_id !== destino.funilId;
+  if (mudaDeFunil) { patch.funil_id = destino.funilId; patch.estagio_id = destino.estagioId; }
+
+  await sb.from('com_cards').update(patch).eq('id', cardId);
+  const rotulo = motivoPerda(motivo).nome;
+  await crmLogAtividade(cardId, jaEraPerdido ? 'nota' : 'perdido',
+    jaEraPerdido ? `Motivo da perda corrigido para: ${rotulo}${obs ? ' — ' + obs : ''}`
+                 : `Marcado como Perdido · motivo: ${rotulo}${obs ? ' — ' + obs : ''}`);
+  if (mudaDeFunil) {
+    const funilAntigo = crmFunis.find(f => f.id === card.funil_id);
+    const estagioAntigo = crmEstagios.find(e => e.id === card.estagio_id);
+    await crmLogAtividade(cardId, 'mudanca_funil',
+      `Movido para Perdidos (era ${funilAntigo ? funilAntigo.nome : '?'} / ${estagioAntigo ? estagioAntigo.nome : '?'})`);
+  }
+  fecharModal('modal-card-crm');
+  await carregarCardsDoFunil();
+  carregarMotivosPerda();
+}
+
+async function negocioAplicarPerda(negocioId, motivo, obs) {
+  const n = negocios.find(x => x.id === negocioId) || {};
+  await sb.from('com_negocios').update({
+    status: 'perdida', motivo_perda: motivo, perda_obs: obs || null,
+    data_perdida: n.data_perdida || hojeStr(),
+  }).eq('id', negocioId);
+  fecharModal('modal-overlay');
+  await carregarTudo();
+  carregarMotivosPerda();
+}
+
+// no card já perdido, o motivo fica à vista e dá pra corrigir — é assim que os 55 perdidos
+// antigos, que não passaram por essa janela, vão ganhando motivo aos poucos
+function crmRenderSeloPerda(card) {
+  const box = document.getElementById('crm-perda-selo');
+  if (!card || card.status_negocio !== 'perdido') { box.style.display = 'none'; return; }
+  const m = motivoPerda(card.motivo_perda);
+  const semMotivo = !card.motivo_perda;
+  box.style.display = 'flex';
+  box.innerHTML = `
+    <div class="perda-selo-corpo">
+      <div class="perda-selo-rot">Motivo da perda</div>
+      <div class="perda-selo-motivo" ${semMotivo ? 'style="color:var(--muted)"' : ''}>${semMotivo ? 'Não informado' : m.nome}</div>
+      ${card.perda_obs ? `<div class="perda-selo-obs">${card.perda_obs}</div>` : ''}
+      ${semMotivo ? '<div class="perda-selo-obs">Esse card foi perdido antes da janela de motivo existir. Preencher agora faz ele entrar no relatório.</div>' : ''}
+    </div>
+    <button type="button" onclick="abrirModalPerda('card', ${card.id}, ${JSON.stringify({ motivo_perda: card.motivo_perda || '', perda_obs: card.perda_obs || '' }).replace(/"/g, '&quot;')})">${semMotivo ? 'informar' : 'trocar'}</button>`;
+}
+
+// ---------- RELATÓRIO: POR QUE A GENTE PERDE ----------
+const MP_PERIODOS = {
+  'mes': { rotulo: 'este mês', dias: null },
+  '3m': { rotulo: 'últimos 3 meses', dias: 90 },
+  'ano': { rotulo: 'este ano', dias: null },
+  'tudo': { rotulo: 'todo o histórico', dias: null },
+};
+let mpDados = [];
+
+function mpCorte(periodo) {
+  const hoje = new Date();
+  if (periodo === 'mes') return `${fmtMesRef(hoje)}-01`;
+  if (periodo === 'ano') return `${hoje.getFullYear()}-01-01`;
+  if (periodo === '3m') return new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
+  return '1900-01-01';
+}
+
+async function carregarMotivosPerda() {
+  const periodo = (document.getElementById('mp-periodo') || {}).value || 'mes';
+  const linhas = await buscarPaginado('com_cards', q => q.select('id, motivo_perda, perda_obs, data_fechamento')
+    .eq('status_negocio', 'perdido').gte('data_fechamento', mpCorte(periodo))
+    .order('data_fechamento').order('id'));
+  mpDados = linhas;
+  renderMotivosPerda();
+}
+
+function renderMotivosPerda() {
+  const el = document.getElementById('mp-lista');
+  const topo = document.getElementById('mp-topo');
+  if (!el) return;
+  const periodo = (document.getElementById('mp-periodo') || {}).value || 'mes';
+  const total = mpDados.length;
+  const contagem = {};
+  mpDados.forEach(c => { const k = c.motivo_perda || ''; contagem[k] = (contagem[k] || 0) + 1; });
+  const semMotivo = contagem[''] || 0;
+
+  topo.innerHTML = `
+    <div>
+      <div class="viz-rotulo">Leads perdidos · ${MP_PERIODOS[periodo].rotulo}</div>
+      <div class="mp-hero">${total}</div>
+      <div class="mp-hero-sub">${total ? `${total - semMotivo} com motivo registrado` : 'nenhuma perda no período'}</div>
+    </div>`;
+
+  if (!total) {
+    el.innerHTML = '<div class="empty mp-vazio">Nenhum lead perdido nesse período.</div>';
+    document.getElementById('mp-nota').innerHTML = '';
+    return;
+  }
+  // ordena pelo que mais dói; "não informado" desce sempre pro fim, não é resposta
+  const linhas = Object.entries(contagem)
+    .map(([chave, qtd]) => ({ ...motivoPerda(chave), chave, qtd, pct: (qtd / total) * 100 }))
+    .sort((a, b) => (!a.chave - !b.chave) || (b.qtd - a.qtd));
+  const maior = Math.max(...linhas.map(l => l.pct), 1);
+  el.innerHTML = linhas.map(l => `
+    <div class="mp-linha">
+      <span class="mp-nome"><i style="background:${l.cor}"></i>${l.nome}</span>
+      <span class="mp-numeros"><b class="mp-pct">${l.pct.toFixed(0)}%</b><span class="mp-qtd">${l.qtd} lead${l.qtd > 1 ? 's' : ''}</span></span>
+      <span class="mp-barra"><b style="width:${(l.pct / maior * 100).toFixed(1)}%; background:${l.cor}"></b></span>
+    </div>`).join('');
+
+  const nota = document.getElementById('mp-nota');
+  const topo1 = linhas.find(l => l.chave);
+  const partes = [];
+  if (topo1) partes.push(`O maior motivo é <b>${topo1.nome.toLowerCase()}</b>, com ${topo1.pct.toFixed(0)}% das perdas.`);
+  if (semMotivo) {
+    partes.push(`<b>${semMotivo} ${semMotivo > 1 ? 'perdas estão' : 'perda está'} sem motivo</b> — ${semMotivo === total ? 'são' : 'em geral são'} cards fechados antes desta tela existir. Abra o card perdido e clique em "informar" pra ele entrar na conta.`);
+  }
+  nota.innerHTML = partes.join(' ');
+}
+
 // ---------- TOUR DE NOVIDADES ----------
 // COMO SOLTAR UM TOUR NOVO: mude `NOVIDADES.versao` e reescreva `NOVIDADES.passos`. Só isso.
 // A versão é a chave em `com_novidades_vistas` — quem já viu a v1 e nunca viu a v2 recebe o tour
@@ -5655,54 +5922,26 @@ window.addEventListener('resize', () => {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-08-20',
+  versao: '2026-08-26',
   titulo: 'Chegou coisa nova',
   passos: [
     {
-      emoji: '👋',
-      titulo: 'Oi! O painel engordou ontem à noite',
-      texto: 'São <b>seis novidades</b>. Leva 40 segundos e depois eu te deixo em paz — prometo que só volto quando tiver coisa nova de verdade.',
+      emoji: '🕵️',
+      titulo: 'Agora "perdido" tem que dizer por quê',
+      texto: 'Quando você clicar em <b>Perdido</b> num lead, abre uma janela pedindo o motivo. Onze opções, um clique, e um campo de detalhe se você quiser contar a história. Sem escolher motivo não dá pra fechar — foi de propósito, desculpa.',
+      aba: 'crm', onde: 'CRM · botão Perdido dentro do card',
     },
     {
-      emoji: '🔴',
-      titulo: 'A bolinha que cobra você',
-      texto: 'Todo lead no board agora tem uma bolinha. <b>Verde</b> é atividade pra hoje, <b>vermelha</b> é atrasada, <b>amarela</b> é o pior de todos: ninguém marcou o próximo passo. Abra o card, clique em criar atividade e escolha "amanhã" — pronto, a bolinha para de te encarar.',
-      aba: 'crm', onde: 'CRM · dentro do card do lead',
+      emoji: '📉',
+      titulo: 'E aí a conta fecha no fim do mês',
+      texto: 'Na aba Dicas tem <b>"Por que a gente perde"</b>: quantos leads foram perdidos no período e a fatia de cada motivo. Muito "fora do ICP" é problema de isca. Muito "achou caro" é problema de oferta. Muito "sumiu" é problema de cadência. São três remédios diferentes — antes disso, era tudo só "perdemos".',
+      aba: 'dicas', onde: 'Dicas · Por que a gente perde',
     },
     {
-      emoji: '🎯',
-      titulo: 'Cada lead ganhou uma nota de 0 a 100',
-      texto: 'Cargo, dor e canal do formulário, mais quantos materiais a pessoa baixou. Não é chute: os pesos saíram de cruzar os <b>1.355 leads</b> da base com quem virou reunião de verdade. Descoberta desagradável: quem baixa <b>dois</b> materiais converte 14x mais que quem baixa um.',
-      aba: 'crm', onde: 'CRM · o número ao lado do nome',
-    },
-    {
-      emoji: '☕',
-      titulo: '"Pra quem eu ligo primeiro hoje?"',
-      texto: 'Essa pergunta acabou. O Dashboard tem uma fila <b>"Atacar hoje"</b> com os leads de nota alta que ninguém tocou há mais de 3 dias, já ordenados. É só descer a lista.',
-      aba: 'dashboard', onde: 'Dashboard · logo abaixo do funil do mês',
-    },
-    {
-      emoji: '✍️',
-      titulo: 'Um agente que escreve a mensagem por você',
-      texto: 'Escolhe o lead, o momento e o objetivo. Saem <b>três mensagens prontas</b>, cada uma com uma técnica diferente (SPIN, NEPQ, Sandler, Chris Voss) e escritas na voz do playbook do Igor — não naquele português de robô. O playbook antigo continua ali no botão do lado, relaxa.',
-      aba: 'social', onde: 'Playbook de Mensagens · botão "Gerar mensagem"',
-    },
-    {
-      emoji: '📋',
-      titulo: 'O plano do mês, com a conta feita',
-      texto: 'Você escolhe se é SDR ou Closer e o painel diz <b>quantas reuniões faltam agendar e quantas por dia</b> pra bater os R$30k. A conta anda de trás pra frente, com as suas taxas reais. Não tem mais "acho que estamos bem".',
-      aba: 'dicas', onde: 'Dicas · Plano de ação do mês',
-    },
-    {
-      emoji: '🔍',
-      titulo: 'E a isca que só enche a lista',
-      texto: 'Uma tabela mostra qual material traz lead que anda no funil e qual só faz volume. Spoiler do que ela revelou: uma das iscas trouxe <b>183 leads e gerou 1 oportunidade</b>. Agora dá pra saber isso antes de gravar o próximo material.',
-      aba: 'dicas', onde: 'Dicas · Isca × o que ela gera',
-    },
-    {
-      emoji: '🚀',
-      titulo: 'É isso. Bom trabalho!',
-      texto: 'Se quiser rever essas telas depois, tem um botão <b>"novidades"</b> lá em cima, do lado do sininho. Agora vai vender.',
+      emoji: '🧹',
+      titulo: 'Os perdidos antigos ficaram sem motivo',
+      texto: 'Os leads perdidos antes de hoje aparecem como <b>"Não informado"</b> — não dava pra adivinhar. Abrindo um card perdido, o motivo fica no topo com um botão <b>informar</b>. Não precisa fazer tudo hoje: cada um que você preencher melhora o relatório.',
+      aba: 'crm', onde: 'CRM · funil Perdidos',
     },
   ],
 };
