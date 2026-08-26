@@ -2238,13 +2238,43 @@ function renderFechados() {
   }).join('');
 }
 
+// ---------- COERÊNCIA DO STATUS DA REUNIÃO ----------
+// Quando a call é boa e a proposta sai na hora, ninguém volta pra marcar "realizada" antes — pula
+// direto pro que importa. O painel contava só quem tinha `data_realizacao` preenchida, então toda
+// reunião que andou rápido sumia da conta (em 26/08/2026 eram 5 de 18, e a taxa de conversão saía
+// errada por causa disso). Agora o painel deduz: proposta ou venda pressupõem que a reunião
+// aconteceu, e a data dela é a data agendada.
+// `perdida` NÃO entra na lista de propósito: dá pra perder um lead que nunca sentou na call
+// (no-show que virou perda), e inferir reunião aí inflaria a taxa em vez de corrigi-la.
+const STATUS_POS_REUNIAO = ['proposta', 'venda'];
+
+function inferirDataRealizacao(patch, atual) {
+  const status = patch.status || (atual && atual.status);
+  if (!STATUS_POS_REUNIAO.includes(status)) return patch;
+  if (patch.data_realizacao || (atual && atual.data_realizacao)) return patch;
+  patch.data_realizacao = patch.data_agendada || (atual && atual.data_agendada) || hojeStr();
+  return patch;
+}
+
+// no-show e realizada são estados que se excluem: se a pessoa não apareceu, não houve reunião.
+// Deixar os dois preenchidos fazia um no-show contar como realizada na taxa de conversão.
+function coerirNoShow(patch) {
+  if (patch.status === 'no_show') patch.data_realizacao = null;
+  return patch;
+}
+
+function normalizarNegocio(patch, atual) {
+  return coerirNoShow(inferirDataRealizacao(patch, atual));
+}
+
 // ---------- AÇÕES RÁPIDAS ----------
 async function marcarRealizada(id) {
   await sb.from('com_negocios').update({ status: 'realizada', data_realizacao: hojeStr() }).eq('id', id);
   await carregarTudo();
 }
 async function reagendar(id) {
-  await sb.from('com_negocios').update({ status: 'agendada' }).eq('id', id);
+  // volta a ser reunião futura: se tinha data de realização de uma tentativa anterior, ela não vale mais
+  await sb.from('com_negocios').update({ status: 'agendada', data_realizacao: null }).eq('id', id);
   await carregarTudo();
 }
 async function excluirNegocio(id) {
@@ -2283,6 +2313,7 @@ function salvarEstagio(ev) {
   } else if (tipo === 'faturamento') {
     patch.valor_faturado = valor; patch.data_faturamento = data;
   }
+  normalizarNegocio(patch, n);
   (async () => {
     await sb.from('com_negocios').update(patch).eq('id', id);
     fecharModal('modal-estagio');
@@ -2358,6 +2389,7 @@ function salvarEdicao(ev) {
     observacao: document.getElementById('edit-observacao').value.trim() || null,
   };
   if (status === 'perdida' && !patch.data_perdida) patch.data_perdida = hojeStr();
+  normalizarNegocio(patch, negocios.find(n => n.id === id));
   (async () => {
     await sb.from('com_negocios').update(patch).eq('id', id);
     const antes = negocios.find(n => n.id === id);
@@ -3958,7 +3990,7 @@ function importarCSV() {
     registros.push({
       cliente_nome, data_agendada, status,
       hora_agendada: (l.hora_agendada || '').trim() || null,
-      data_realizacao: (l.data_realizacao || '').trim() || null,
+      data_realizacao: (l.data_realizacao || '').trim() || null,   // normalizado abaixo, junto com o resto
       valor_venda: parseFloat(l.valor_venda) || null,
       data_venda: (l.data_venda || '').trim() || null,
       valor_faturado: parseFloat(l.valor_faturado) || null,
@@ -3967,6 +3999,7 @@ function importarCSV() {
       vendedor_id: vend ? vend.id : null,
     });
   });
+  registros.forEach(r => normalizarNegocio(r, null));   // CSV entra pelas mesmas regras da tela
   if (!registros.length) {
     resultEl.innerHTML = 'Nenhum registro válido.' + (erros.length ? '<br>' + erros.slice(0,10).join('<br>') : '');
     return;
@@ -5922,7 +5955,7 @@ function renderMotivosPerda() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-08-26',
+  versao: '2026-08-26b',
   titulo: 'Chegou coisa nova',
   passos: [
     {
@@ -5942,6 +5975,18 @@ const NOVIDADES = {
       titulo: 'Os perdidos antigos ficaram sem motivo',
       texto: 'Os leads perdidos antes de hoje aparecem como <b>"Não informado"</b> — não dava pra adivinhar. Abrindo um card perdido, o motivo fica no topo com um botão <b>informar</b>. Não precisa fazer tudo hoje: cada um que você preencher melhora o relatório.',
       aba: 'crm', onde: 'CRM · funil Perdidos',
+    },
+    {
+      emoji: '🧮',
+      titulo: 'A taxa de conversão mudou de conta',
+      texto: 'Ela saía de <b>vendas ÷ agendadas</b>. Agora sai de <b>vendas ÷ reuniões realizadas</b>, que é o certo: reunião que virou no-show nunca teve chance de fechar, então não pode puxar a média de quem senta na call pra baixo.',
+      aba: 'dashboard', onde: 'Dashboard · Funil do mês',
+    },
+    {
+      emoji: '🪄',
+      titulo: 'E você não precisa mais marcar "realizada"',
+      texto: 'Quando a call é boa e a proposta sai na hora, ninguém volta pra marcar realizada antes — e a reunião sumia da conta. Agora, ao lançar <b>proposta</b> ou <b>venda</b>, o painel entende sozinho que a reunião aconteceu. Uma coisa a menos pra lembrar.',
+      aba: 'dashboard', onde: 'Dashboard · Negócios em andamento',
     },
   ],
 };
