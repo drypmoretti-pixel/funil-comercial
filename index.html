@@ -860,6 +860,133 @@ form.form-grid button { grid-column: 1 / -1; }
 .ss-resp dd { margin: 0 0 18px; font-size: .89rem; line-height: 1.6; color: var(--text-secondary); padding-left: 14px; border-left: 1px solid var(--grid); }
 .ss-resp dd:last-child { margin-bottom: 0; }
 
+
+/* ===== reconstrucao da aba WhatsApp (01/09/2026): estas regras sao as ultimas
+   do arquivo de proposito, para vencer as definicoes antigas de .whats-chat-shell ===== */
+/* ---------- WhatsApp: 3 colunas (conversas / thread / painel do contato) ---------- */
+.whats-chat-shell { display: grid; grid-template-columns: 300px minmax(0,1fr) 340px; gap: 12px;
+  height: calc(100vh - 190px); min-height: 560px; background: transparent; }
+.whats-chat-shell.sem-painel { grid-template-columns: 300px minmax(0,1fr); }
+.whats-conversas, .whats-thread, .wz-painel {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: var(--card-radius); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+
+.wz-col-head { display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 14px 10px; gap: 8px; }
+.wz-col-head h2 { margin: 0; font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em; }
+.wz-head-acoes { display: flex; align-items: center; gap: 4px; }
+.wz-ico-btn { background: none; border: 0; color: var(--text-secondary); cursor: pointer;
+  padding: 5px; border-radius: 7px; display: flex; align-items: center; }
+.wz-ico-btn:hover { background: var(--field-bg); color: var(--accent); }
+.wz-ico-btn.on { color: var(--accent); }
+
+.wz-busca { padding: 0 12px 8px; position: relative; }
+.wz-busca svg { position: absolute; left: 22px; top: 50%; transform: translateY(-50%);
+  color: var(--text-secondary); pointer-events: none; }
+.wz-busca input { width: 100%; padding: 9px 11px 9px 33px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); font-size: .82rem; }
+
+.wz-chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 12px 10px; }
+.wz-chip { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
+  border-radius: 999px; padding: 4px 10px; font-size: .72rem; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px; }
+.wz-chip:hover { border-color: var(--accent); color: var(--accent); }
+.wz-chip.ativo { background: var(--accent); border-color: var(--accent); color: #fff; }
+.wz-chip b { font-weight: 700; opacity: .85; font-variant-numeric: tabular-nums; }
+.wz-chip.ativo b { opacity: 1; }
+
+.whats-lista-conversas { flex: 1; overflow-y: auto; padding: 0 8px 10px; }
+.whats-conversa-item { display: flex; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer;
+  border: 1px solid transparent; }
+.whats-conversa-item:hover { background: var(--field-bg); }
+.whats-conversa-item.ativa { background: var(--accent-wash); border-color: var(--accent); }
+.whats-conversa-corpo { flex: 1; min-width: 0; }
+.wz-linha-topo { display: flex; align-items: baseline; gap: 6px; }
+.whats-conversa-nome { font-weight: 700; font-size: .84rem; flex: 1; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; }
+.whats-conversa-hora { font-size: .68rem; color: var(--text-secondary); flex-shrink: 0;
+  font-variant-numeric: tabular-nums; }
+.whats-conversa-preview { font-size: .76rem; color: var(--text-secondary); overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+.wz-ponto { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.wz-negocio-chip { display: inline-flex; align-items: center; gap: 4px; margin-top: 5px;
+  background: var(--field-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 2px 7px; font-size: .68rem; color: var(--text-secondary); max-width: 100%; }
+.wz-negocio-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wz-espera { color: var(--warning); font-weight: 700; }
+
+/* ----- coluna do meio ----- */
+.whats-thread-header { display: block; padding: 13px 16px 10px; border-bottom: 1px solid var(--border); }
+.wz-th-top { display: flex; align-items: flex-start; gap: 11px; }
+.wz-th-nome { font-size: 1.02rem; font-weight: 700; display: flex; align-items: center;
+  gap: 8px; flex-wrap: wrap; letter-spacing: -.01em; }
+.wz-canal { background: var(--accent-wash); color: var(--accent); border-radius: 999px;
+  padding: 2px 10px; font-size: .7rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+.wz-th-sub { font-size: .76rem; color: var(--text-secondary); margin-top: 2px;
+  font-variant-numeric: tabular-nums; }
+.wz-th-inst { color: var(--good); font-weight: 600; }
+.wz-dono { margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; }
+.wz-dono select { border: 1px solid var(--border); background: var(--field-bg); border-radius: 8px;
+  padding: 3px 8px; font-size: .76rem; color: var(--text-primary); font-weight: 600; }
+
+.wz-toolbar { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px;
+  border-bottom: 1px solid var(--border); align-items: center; }
+.wz-tb { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary);
+  border-radius: 9px; padding: 6px 11px; font-size: .77rem; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; }
+.wz-tb:hover { border-color: var(--accent); color: var(--accent); }
+.wz-tb:disabled { opacity: .45; cursor: not-allowed; }
+.wz-tb.forte { background: var(--accent); border-color: var(--accent); color: #fff; }
+.wz-tb.forte:hover { color: #fff; filter: brightness(1.06); }
+.wz-tb svg { flex-shrink: 0; }
+.wz-tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+
+.wz-busca-conversa { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.wz-busca-conversa input { width: 100%; padding: 8px 11px; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); font-size: .8rem; }
+.whats-thread-mensagens { flex: 1; overflow-y: auto; padding: 16px; display: flex;
+  flex-direction: column; gap: 8px; }
+.wz-marca { background: #ffe58a; color: #4a3a00; border-radius: 3px; padding: 0 1px; }
+
+.wz-anexos { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px 0; }
+.wz-anexo { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
+  border-radius: 9px; padding: 6px 11px; font-size: .76rem; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; }
+.wz-anexo:hover { border-color: var(--accent); color: var(--accent); }
+.wz-anexo.gravando { border-color: var(--critical); color: var(--critical); }
+
+/* ----- coluna da direita ----- */
+.wz-painel-tabs { display: flex; border-bottom: 1px solid var(--border); }
+.wz-painel-tab { flex: 1; background: none; border: 0; border-bottom: 2px solid transparent;
+  padding: 13px 6px; font-size: .82rem; font-weight: 700; color: var(--text-secondary);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.wz-painel-tab.ativa { color: var(--accent); border-bottom-color: var(--accent); }
+#wz-painel-corpo { flex: 1; overflow-y: auto; padding: 14px; display: flex;
+  flex-direction: column; gap: 12px; }
+.wz-bloco { border: 1px solid var(--border); border-radius: 12px; padding: 13px 14px; background: var(--surface-1); }
+.wz-bloco-tit { font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--accent); display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.wz-bloco.ia { background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 28%, transparent); }
+.wz-kv { display: flex; justify-content: space-between; gap: 10px; font-size: .8rem; padding: 4px 0; }
+.wz-kv .k { color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.wz-kv .v { font-weight: 600; text-align: right; word-break: break-word; }
+.wz-ia-texto { font-size: .82rem; line-height: 1.62; white-space: pre-wrap; }
+.wz-vazio { font-size: .8rem; color: var(--text-secondary); }
+.wz-link-bloco { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  border: 1px solid var(--border); border-radius: 9px; padding: 9px 11px; background: var(--field-bg);
+  font-size: .82rem; font-weight: 600; cursor: pointer; width: 100%; text-align: left; color: var(--text-primary); }
+.wz-link-bloco:hover { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 1180px) {
+  .whats-chat-shell, .whats-chat-shell.sem-painel { grid-template-columns: 260px minmax(0,1fr); }
+  .wz-painel { display: none; }
+}
+@media (max-width: 780px) {
+  .whats-chat-shell, .whats-chat-shell.sem-painel { grid-template-columns: 1fr; height: auto; }
+  .whats-conversas { max-height: 320px; }
+  .whats-thread { min-height: 460px; }
+}
+
 </style>
 </head>
 <body>
@@ -1493,35 +1620,48 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 
     <div class="tab-panel" id="tab-whatsapp">
       <section class="card" style="padding:0; overflow:hidden;">
-        <div class="whats-chat-shell">
+        <div class="whats-chat-shell" id="whats-shell">
+
+          <!-- ================= coluna 1: conversas ================= -->
           <div class="whats-conversas">
-            <div class="whats-conversas-header">
-              <h2 style="margin:0; font-size:1rem; display:flex; align-items:center; gap:7px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 11.9a8.6 8.6 0 0 1-12.8 7.5l-4.4 1.2 1.2-4.3A8.6 8.6 0 1 1 20.6 11.9Z"/><g transform="translate(7.1 6.8) scale(.425)" stroke-width="4.24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g></svg>WhatsApp</h2>
-              <div style="display:flex; align-items:center; gap:6px;">
-                <button class="add-toggle" style="padding:3px 8px; font-size:.7rem;" onclick="abrirGerenciarTags()">⚙️ Tags</button>
+            <div class="wz-col-head">
+              <h2>Conversas</h2>
+              <div class="wz-head-acoes">
+                <button class="wz-ico-btn" type="button" title="Nova conversa" onclick="toggleForm('whats-novo-contato-form')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-4.6A8.4 8.4 0 1 1 21 11.5Z"/><path d="M12 8v6M9 11h6"/></svg></button>
+                <button class="wz-ico-btn" type="button" title="Marcar todas como lidas" onclick="wzMarcarTodasLidas()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+                <button class="wz-ico-btn on" type="button" title="Só as que esperam resposta" onclick="wzSetFiltro('sem-resposta')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/><path d="M2 2l20 20"/></svg></button>
                 <div id="whats-status" class="pill">verificando...</div>
               </div>
             </div>
-            <div style="padding:0 10px 8px;">
-              <div style="display:flex; gap:6px;">
-                <input type="text" id="whats-nova-conversa" placeholder="Buscar contato ou telefone..."
-                  style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);"
-                  oninput="renderListaConversas()"
-                  onkeydown="if(event.key==='Enter'){event.preventDefault(); abrirNovaConversaWhats();}">
-                <button type="button" class="add-toggle" style="padding:0 10px; font-size:1rem;" title="Novo contato" onclick="toggleForm('whats-novo-contato-form')">+</button>
-              </div>
-              <form class="form-collapse" id="whats-novo-contato-form" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;" onsubmit="return criarContatoWhats(event)">
-                <input type="text" id="whats-novo-nome" placeholder="Nome do contato" required
-                  style="padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);">
-                <input type="text" id="whats-novo-telefone" placeholder="Telefone (com DDD)" required
-                  style="padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);">
-                <button class="btn" type="submit" style="padding:7px;">Iniciar conversa</button>
-              </form>
+
+            <div class="wz-busca">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></svg>
+              <input type="text" id="whats-nova-conversa" placeholder="Buscar por nome, telefone ou negócio..."
+                autocomplete="off" oninput="renderListaConversas()"
+                onkeydown="if(event.key==='Enter'){event.preventDefault(); abrirNovaConversaWhats();}">
             </div>
+
+            <div class="wz-chips" id="wz-chips"></div>
+
+            <form class="form-collapse" id="whats-novo-contato-form" style="padding:0 12px 10px; display:flex; flex-direction:column; gap:6px;" onsubmit="return criarContatoWhats(event)">
+              <input type="text" id="whats-novo-nome" placeholder="Nome do contato" required
+                style="padding:8px 10px; border-radius:9px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
+              <input type="text" id="whats-novo-telefone" placeholder="Telefone (com DDD)" required
+                style="padding:8px 10px; border-radius:9px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
+              <button class="btn" type="submit" style="padding:8px;">Iniciar conversa</button>
+            </form>
+
             <div id="whats-lista-conversas" class="whats-lista-conversas"></div>
           </div>
+
+          <!-- ================= coluna 2: a conversa ================= -->
           <div class="whats-thread">
             <div id="whats-thread-header" class="whats-thread-header"><span class="muted">Selecione uma conversa</span></div>
+            <div class="wz-toolbar" id="wz-toolbar" style="display:none;"></div>
+            <div class="wz-busca-conversa" id="wz-busca-conversa" style="display:none;">
+              <input type="text" id="wz-busca-msg" placeholder="Buscar nesta conversa..." autocomplete="off" oninput="renderThreadWhats()">
+            </div>
+
             <div id="whats-thread-tags" class="whats-thread-tags" style="display:none;">
               <div id="whats-tags-atuais" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;"></div>
               <div style="position:relative;">
@@ -1529,14 +1669,29 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
                 <div id="whats-tags-popover" class="whats-tags-popover" style="display:none;"></div>
               </div>
             </div>
+
             <div id="whats-thread-mensagens" class="whats-thread-mensagens"></div>
+
+            <div class="wz-anexos" id="wz-anexos" style="display:none;"></div>
+            <input type="file" id="wz-arquivo" style="display:none;" onchange="wzEnviarArquivo(event)">
+
             <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
               <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
-              <button type="button" id="whats-btn-audio" class="btn btn-secondary" style="width:auto; padding:9px 12px; display:flex; align-items:center;" onclick="alternarGravacaoAudio()" title="Gravar áudio"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5a2.7 2.7 0 0 0-2.7 2.7v6a2.7 2.7 0 0 0 5.4 0v-6A2.7 2.7 0 0 0 12 2.5z"/><path d="M18.5 11v.5a6.5 6.5 0 0 1-13 0V11"/><path d="M12 18v3.5"/></svg></button>
               <button class="btn" type="submit" style="width:auto; padding:9px 18px;">Enviar</button>
             </form>
-            <div id="whats-gravando-aviso" class="muted" style="display:none; padding:0 14px 8px; font-size:.78rem; color:var(--critical);"><span class="ico-rec"></span>Gravando... clique no microfone de novo pra parar e enviar.</div>
+            <div id="whats-gravando-aviso" class="muted" style="display:none; padding:0 14px 8px; font-size:.78rem; color:var(--critical);"><span class="ico-rec"></span>Gravando... clique em Áudio de novo pra parar e enviar.</div>
           </div>
+
+          <!-- ================= coluna 3: painel do contato ================= -->
+          <aside class="wz-painel" id="wz-painel">
+            <div class="wz-painel-tabs">
+              <button type="button" class="wz-painel-tab ativa" data-aba="conversa" onclick="wzSetAba('conversa')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-4.6A8.4 8.4 0 1 1 21 11.5Z"/></svg>Conversa</button>
+              <button type="button" class="wz-painel-tab" data-aba="inteligencia" onclick="wzSetAba('inteligencia')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>Inteligência</button>
+              <button type="button" class="wz-painel-tab" data-aba="config" onclick="wzSetAba('config')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>Config</button>
+            </div>
+            <div id="wz-painel-corpo"><div class="wz-vazio">Selecione uma conversa para ver a ficha do contato.</div></div>
+          </aside>
+
         </div>
       </section>
     </div>
@@ -4843,28 +4998,6 @@ function tagsDaConversaHtml(telefone, classe) {
   return `<div class="${classe}">${tags.map(t => `<span class="tag-stripe" style="background:${t.cor}" title="${t.nome}"></span>`).join('')}</div>`;
 }
 
-function renderListaConversas() {
-  const filtro = (document.getElementById('whats-nova-conversa').value || '').toLowerCase().trim();
-  const filtroDigitos = filtro.replace(/\D/g, '');
-  let conversas = conversasAgrupadasWhats();
-  if (filtro) {
-    conversas = conversas.filter(c =>
-      (c.nome || '').toLowerCase().includes(filtro) || (filtroDigitos && c.telefone.includes(filtroDigitos))
-    );
-  }
-  document.getElementById('whats-lista-conversas').innerHTML = conversas.length ? conversas.map(c => `
-    <div class="whats-conversa-item ${c.telefone === whatsConversaAtual ? 'ativa' : ''}" onclick="abrirConversaWhats('${c.telefone}')">
-      <div class="whats-avatar" data-foto-telefone="${c.telefone}" style="background-color:${corAvatar(c.telefone)}">${(c.nome || c.telefone).charAt(0).toUpperCase()}</div>
-      <div class="whats-conversa-corpo">
-        ${c.temMensagem ? `<div class="whats-conversa-hora">${fmtDataCurta(c.ultima.created_at.slice(0, 10))}</div>` : ''}
-        <div class="whats-conversa-nome">${c.nome || c.telefone}</div>
-        <div class="whats-conversa-preview">${c.temMensagem ? (c.ultima.direcao === 'enviada' ? 'Você: ' : '') + previaMensagemWhats(c.ultima) : '<span class="muted">Sem mensagens ainda</span>'}</div>
-        ${tagsDaConversaHtml(c.telefone, 'tags-row')}
-      </div>
-    </div>
-  `).join('') : '<div class="empty" style="padding:14px;">Nenhum contato encontrado.</div>';
-  aplicarFotosNaTela(conversas.slice(0, 60).map(c => c.telefone));
-}
 
 const WHATS_PREVIA_MIDIA = {
   image: { ico: 'imagem', rotulo: 'Imagem' },
@@ -4881,13 +5014,6 @@ function previaMensagemWhats(m) {
   return `<span class="whats-preview-midia">${ico(midia.ico, 13)}${rotulo.slice(0, 34)}</span>`;
 }
 
-function abrirConversaWhats(telefone) {
-  whatsConversaAtual = telefone;
-  document.getElementById('whats-badge').style.display = 'none';
-  renderListaConversas();
-  renderThreadWhats();
-  renderThreadTagsWhats();
-}
 
 function abrirNovaConversaWhats() {
   const input = document.getElementById('whats-nova-conversa');
@@ -4913,25 +5039,6 @@ function criarContatoWhats(ev) {
   return false;
 }
 
-function renderThreadWhats() {
-  const c = conversasAgrupadasWhats().find(x => x.telefone === whatsConversaAtual);
-  const nome = (c && c.nome) || whatsConversaAtual;
-  document.getElementById('whats-thread-header').innerHTML = `
-    <div class="whats-avatar grande" data-foto-telefone="${whatsConversaAtual}" style="background-color:${corAvatar(whatsConversaAtual)}">${nome.charAt(0).toUpperCase()}</div>
-    <div class="whats-thread-header-nome">${nome}</div>
-  `;
-  aplicarFotosNaTela([whatsConversaAtual]);
-  const msgs = c ? c.mensagens : [];
-  const el = document.getElementById('whats-thread-mensagens');
-  el.innerHTML = msgs.length ? msgs.map(m => `
-    <div class="whats-bolha ${m.direcao}">
-      ${corpoBolhaWhats(m)}
-      <div class="whats-bolha-hora">${new Date(m.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
-    </div>
-  `).join('') : '<div class="empty">Nenhuma mensagem ainda — manda a primeira!</div>';
-  el.scrollTop = el.scrollHeight;
-  msgs.filter(m => m.midia_tipo === 'audio').forEach(m => carregarMidiaBolhaWhats(m.id, 'audio'));
-}
 
 function corpoBolhaWhats(m) {
   if (m.midia_tipo === 'audio') {
@@ -5145,6 +5252,7 @@ async function carregarContatosWhats() {
 }
 
 async function initWhatsApp() {
+  await Promise.all([wzCarregarMeta(), wzCarregarRespostas()]);
   await verificarStatusWhats();
   await carregarNomesManualWhats();
   await carregarContatosWhats();
@@ -6463,6 +6571,650 @@ function ssCopiaFallback(texto, feedback) {
   } catch (e) {
     feedback(false);
   }
+}
+
+
+// ================= WhatsApp: lista, filtros, painel do contato e ações =================
+// A view com_whatsapp_lista faz o trabalho pesado (última mensagem, não lida, tempo de espera,
+// card/negócio vinculado por telefone). O app só lê — cruzar 825 mensagens com 1.441 cards no
+// navegador a cada render seria desperdício.
+let wzMeta = {};                 // telefone -> linha da view
+let wzFiltro = 'todas';
+let wzAba = 'conversa';
+let wzPainelAberto = true;
+let wzIaCache = {};              // telefone -> { resumo, triagem, sugestoes }
+let wzOcupado = {};              // trava de clique duplo por ação
+
+const WZ_FILTROS = [
+  { id: 'todas',        rot: 'Todas' },
+  { id: 'minhas',       rot: 'Minhas' },
+  { id: 'alta',         rot: 'Alta' },
+  { id: 'nao-lidas',    rot: 'Não lidas' },
+  { id: 'sem-dono',     rot: 'Sem dono' },
+  { id: 'sem-resposta', rot: '≥24h sem resposta' },
+];
+
+function wzEsc(t) {
+  return String(t == null ? '' : t)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+async function wzCarregarMeta() {
+  try {
+    const { data } = await sb.from('com_whatsapp_lista').select('*');
+    wzMeta = {};
+    (data || []).forEach(r => { wzMeta[r.telefone] = r; });
+  } catch (e) { wzMeta = {}; }
+}
+
+function wzM(tel) { return wzMeta[tel] || {}; }
+
+function wzPassaFiltro(tel) {
+  const m = wzM(tel);
+  switch (wzFiltro) {
+    case 'minhas':       return !!(currentPerfil && m.responsavel_id === currentPerfil.id);
+    case 'alta':         return m.prioridade === 'alta' || Number(m.lead_score) >= 70;
+    case 'nao-lidas':    return !!m.nao_lida;
+    case 'sem-dono':     return !m.responsavel_id;
+    case 'sem-resposta': return !!m.aguardando && Number(m.horas_esperando) >= 24;
+    default:             return true;
+  }
+}
+
+function wzRenderChips() {
+  const el = document.getElementById('wz-chips');
+  if (!el) return;
+  const tels = Object.keys(wzMeta);
+  const conta = (f) => { const g = wzFiltro; wzFiltro = f; const n = tels.filter(wzPassaFiltro).length; wzFiltro = g; return n; };
+  el.innerHTML = WZ_FILTROS.map(f => {
+    const n = conta(f.id);
+    return `<button type="button" class="wz-chip ${wzFiltro === f.id ? 'ativo' : ''}" onclick="wzSetFiltro('${f.id}')">${f.rot}${n ? ` <b>${n}</b>` : ''}</button>`;
+  }).join('');
+}
+
+function wzSetFiltro(f) {
+  wzFiltro = (wzFiltro === f && f !== 'todas') ? 'todas' : f;
+  wzRenderChips();
+  renderListaConversas();
+}
+
+function wzHoraCurta(iso) {
+  if (!iso) return '';
+  const d = new Date(iso), agora = new Date();
+  const mesmoDia = d.toDateString() === agora.toDateString();
+  if (mesmoDia) return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const ontem = new Date(agora.getTime() - 86400000);
+  if (d.toDateString() === ontem.toDateString()) return 'ontem';
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+}
+
+// ---------------------------------------------------------------- lista
+function renderListaConversas() {
+  const campo = document.getElementById('whats-nova-conversa');
+  const filtro = ((campo && campo.value) || '').toLowerCase().trim();
+  const digitos = filtro.replace(/\D/g, '');
+  let conversas = conversasAgrupadasWhats();
+
+  conversas = conversas.filter(c => wzPassaFiltro(c.telefone));
+  if (filtro) {
+    conversas = conversas.filter(c => {
+      const m = wzM(c.telefone);
+      return (c.nome || '').toLowerCase().includes(filtro)
+          || (m.card_titulo || '').toLowerCase().includes(filtro)
+          || (digitos && c.telefone.includes(digitos));
+    });
+  }
+
+  const el = document.getElementById('whats-lista-conversas');
+  if (!el) return;
+  el.innerHTML = conversas.length ? conversas.map(c => {
+    const m = wzM(c.telefone);
+    const nome = c.nome || m.nome || c.telefone;
+    const espera = m.aguardando && Number(m.horas_esperando) >= 24
+      ? `<span class="wz-espera">${Math.floor(Number(m.horas_esperando) / 24)}d sem resposta</span> · ` : '';
+    return `
+    <div class="whats-conversa-item ${c.telefone === whatsConversaAtual ? 'ativa' : ''}" onclick="abrirConversaWhats('${c.telefone}')">
+      <div class="whats-avatar" data-foto-telefone="${c.telefone}" style="background-color:${corAvatar(c.telefone)}">${wzEsc(nome).charAt(0).toUpperCase()}</div>
+      <div class="whats-conversa-corpo">
+        <div class="wz-linha-topo">
+          <span class="whats-conversa-nome">${wzEsc(nome)}</span>
+          <span class="whats-conversa-hora">${c.ultima ? wzHoraCurta(c.ultima.created_at) : ''}</span>
+          ${m.nao_lida ? '<span class="wz-ponto" title="não lida"></span>' : ''}
+        </div>
+        <div class="whats-conversa-preview">${espera}${c.temMensagem ? (c.ultima.direcao === 'enviada' ? '↩ ' : '') + wzEsc(previaMensagemWhats(c.ultima)).slice(0, 90) : '<span class="muted">Sem mensagens ainda</span>'}</div>
+        ${m.card_titulo ? `<div class="wz-negocio-chip"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><span>${wzEsc(m.card_titulo)}</span></div>` : ''}
+        ${tagsDaConversaHtml(c.telefone, 'tags-row')}
+      </div>
+    </div>`;
+  }).join('') : '<div class="empty" style="padding:16px;">Nenhuma conversa neste filtro.</div>';
+
+  aplicarFotosNaTela(conversas.map(c => c.telefone));
+  wzRenderChips();
+}
+
+// ------------------------------------------------------------- abrir conversa
+async function abrirConversaWhats(telefone) {
+  whatsConversaAtual = telefone;
+  const badge = document.getElementById('whats-badge');
+  if (badge) badge.style.display = 'none';
+  renderListaConversas();
+  renderThreadWhats();
+  renderThreadTagsWhats();
+  wzRenderPainel();
+  wzMarcarLida(telefone);
+}
+
+async function wzMarcarLida(telefone) {
+  const m = wzM(telefone);
+  if (!m.nao_lida) return;
+  try {
+    await sb.from('com_whatsapp_conversas')
+      .upsert({ telefone, lida_ate: new Date().toISOString(), atualizado_em: new Date().toISOString() },
+              { onConflict: 'telefone' });
+    if (wzMeta[telefone]) wzMeta[telefone].nao_lida = false;
+    wzRenderChips(); renderListaConversas();
+  } catch (e) { /* marcar como lida não pode quebrar a abertura da conversa */ }
+}
+
+async function wzMarcarTodasLidas() {
+  const agora = new Date().toISOString();
+  const linhas = Object.keys(wzMeta).filter(t => wzMeta[t].nao_lida)
+    .map(telefone => ({ telefone, lida_ate: agora, atualizado_em: agora }));
+  if (!linhas.length) return;
+  await sb.from('com_whatsapp_conversas').upsert(linhas, { onConflict: 'telefone' });
+  linhas.forEach(l => { if (wzMeta[l.telefone]) wzMeta[l.telefone].nao_lida = false; });
+  wzRenderChips(); renderListaConversas();
+}
+
+// ------------------------------------------------------------------ thread
+function renderThreadWhats() {
+  const tel = whatsConversaAtual;
+  const head = document.getElementById('whats-thread-header');
+  const barra = document.getElementById('wz-toolbar');
+  const buscaBox = document.getElementById('wz-busca-conversa');
+  const anexos = document.getElementById('wz-anexos');
+  if (!head) return;
+
+  if (!tel) {
+    head.innerHTML = '<span class="muted">Selecione uma conversa</span>';
+    if (barra) barra.style.display = 'none';
+    if (buscaBox) buscaBox.style.display = 'none';
+    if (anexos) anexos.style.display = 'none';
+    return;
+  }
+
+  const c = conversasAgrupadasWhats().find(x => x.telefone === tel);
+  const m = wzM(tel);
+  const nome = (c && c.nome) || m.nome || tel;
+
+  head.innerHTML = `
+    <div class="wz-th-top">
+      <div class="whats-avatar grande" data-foto-telefone="${tel}" style="background-color:${corAvatar(tel)}">${wzEsc(nome).charAt(0).toUpperCase()}</div>
+      <div style="min-width:0; flex:1;">
+        <div class="wz-th-nome">${wzEsc(nome)}
+          <span class="wz-canal"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-4.6A8.4 8.4 0 1 1 21 11.5Z"/></svg>Atendimento WhatsApp</span>
+        </div>
+        <div class="wz-th-sub">${wzEsc(tel)}</div>
+        <div class="wz-th-sub wz-th-inst">Instância ${wzEsc(EVOLUTION_INSTANCE)}${m.total_msgs ? ` · ${m.total_msgs} mensagens` : ''}</div>
+        <div class="wz-dono">
+          <span class="muted">Responsável</span>
+          <select onchange="wzAtribuir('${tel}', this.value)">
+            <option value="">— sem dono —</option>
+            ${perfis.filter(p => !String(p.nome).toLowerCase().includes('n8n'))
+              .map(p => `<option value="${p.id}" ${m.responsavel_id === p.id ? 'selected' : ''}>${wzEsc(p.nome)}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+    </div>`;
+  aplicarFotosNaTela([tel]);
+
+  if (barra) { barra.style.display = 'flex'; barra.innerHTML = wzToolbarHtml(tel, m); }
+  if (buscaBox) buscaBox.style.display = 'block';
+  if (anexos) { anexos.style.display = 'flex'; anexos.innerHTML = wzAnexosHtml(); }
+
+  // mensagens, com destaque do termo buscado
+  const campoBusca = document.getElementById('wz-busca-msg');
+  const termo = ((campoBusca && campoBusca.value) || '').trim().toLowerCase();
+  let msgs = c ? c.mensagens : [];
+  if (termo) msgs = msgs.filter(x => String(x.mensagem || '').toLowerCase().includes(termo));
+
+  const el = document.getElementById('whats-thread-mensagens');
+  el.innerHTML = msgs.length ? msgs.map(x => {
+    let corpo = corpoBolhaWhats(x);
+    if (termo && x.mensagem) {
+      const re = new RegExp('(' + termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+      corpo = corpo.replace(/>([^<]+)</g, (t, txt) => '>' + txt.replace(re, '<mark class="wz-marca">$1</mark>') + '<');
+    }
+    return `<div class="whats-bolha ${x.direcao}">${corpo}
+      <div class="whats-bolha-hora">${new Date(x.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+    </div>`;
+  }).join('') : `<div class="empty">${termo ? 'Nenhuma mensagem com esse termo.' : 'Nenhuma mensagem ainda — manda a primeira!'}</div>`;
+  if (!termo) el.scrollTop = el.scrollHeight;
+  msgs.filter(x => x.midia_tipo === 'audio').forEach(x => carregarMidiaBolhaWhats(x.id, 'audio'));
+}
+
+function wzToolbarHtml(tel, m) {
+  const ico = (d) => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  const estrela = ico('<path d="M12 3l1.9 4.7L19 9.2l-3.7 3.3.9 5-4.2-2.5L7.8 17.5l.9-5L5 9.2l5.1-1.5z"/>');
+  return `
+    <button type="button" class="wz-tb ${m.piloto ? 'forte' : ''}" onclick="wzTogglePiloto('${tel}')" title="Quando ligado, a IA prepara a resposta sozinha a cada mensagem que chega">
+      ${ico('<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4M9 14h.01M15 14h.01"/>')} Piloto ${m.piloto ? 'ON' : 'OFF'}
+    </button>
+    <button type="button" class="wz-tb" onclick="wzIA('${tel}','triagem')">${estrela} Triagem</button>
+    <button type="button" class="wz-tb" onclick="wzIA('${tel}','resumir')">${estrela} Resumir (IA)</button>
+    <div class="wz-tb-sep"></div>
+    ${m.card_id
+      ? `<button type="button" class="wz-tb" onclick="wzAbrirCard(${m.card_id})">${ico('<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>')} ${wzEsc(m.card_titulo || 'Ver negócio')}</button>`
+      : `<button type="button" class="wz-tb" onclick="wzCriarNegocio('${tel}')">${ico('<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 11v6M9 14h6"/>')} Criar negócio</button>`}
+    <button type="button" class="wz-tb" onclick="wzAbrirContato('${tel}')">${ico('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>')} Abrir contato</button>
+    <div class="wz-tb-sep"></div>
+    <button type="button" class="wz-tb" onclick="wzNota('${tel}')">${ico('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>')} Nota</button>
+    <button type="button" class="wz-tb" onclick="toggleTagsPopoverWhats(event)">${ico('<path d="M20.6 13.4 12 22l-9-9V3h10z"/><circle cx="7.5" cy="7.5" r="1.2"/>')} Tags</button>
+    <button type="button" class="wz-tb ${wzPainelAberto ? 'forte' : ''}" onclick="wzTogglePainel()" title="Mostrar/esconder a ficha do contato">
+      ${ico('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>')}
+    </button>`;
+}
+
+function wzAnexosHtml() {
+  const ico = (d) => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  const gravando = !!(typeof whatsMediaRecorder !== 'undefined' && whatsMediaRecorder && whatsMediaRecorder.state === 'recording');
+  return `
+    <button type="button" class="wz-anexo" onclick="document.getElementById('wz-arquivo').click()">${ico('<path d="M21.4 11.05 12.25 20.2a5 5 0 0 1-7.07-7.07l9.19-9.19a3.33 3.33 0 0 1 4.71 4.71l-9.2 9.19a1.67 1.67 0 0 1-2.35-2.36l8.49-8.48"/>')} Anexar</button>
+    <button type="button" class="wz-anexo ${gravando ? 'gravando' : ''}" onclick="alternarGravacaoAudio()">${ico('<path d="M12 2.5a2.7 2.7 0 0 0-2.7 2.7v6a2.7 2.7 0 0 0 5.4 0v-6A2.7 2.7 0 0 0 12 2.5z"/><path d="M18.5 11v.5a6.5 6.5 0 0 1-13 0V11"/><path d="M12 18v3.5"/>')} ${gravando ? 'Parar e enviar' : 'Áudio'}</button>
+    <button type="button" class="wz-anexo" onclick="wzEnviarLocalizacao()">${ico('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>')} Localização</button>
+    <button type="button" class="wz-anexo" onclick="wzEnviarContato()">${ico('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2.4"/><path d="M5.5 17a3.8 3.8 0 0 1 7 0M15 9h4M15 13h4"/>')} Contato</button>
+    <button type="button" class="wz-anexo" onclick="wzAgendar()">${ico('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/>')} Agendar</button>
+    <button type="button" class="wz-anexo" onclick="wzIA(whatsConversaAtual,'sugerir')">${ico('<path d="M12 3l1.9 4.7L19 9.2l-3.7 3.3.9 5-4.2-2.5L7.8 17.5l.9-5L5 9.2l5.1-1.5z"/>')} Sugerir (IA)</button>
+    <button type="button" class="wz-anexo" onclick="wzRespostasRapidas()">${ico('<path d="M4 5h16M4 10h16M4 15h10"/>')} Respostas Rápidas</button>`;
+}
+
+// ------------------------------------------------------- painel da direita
+function wzTogglePainel() {
+  wzPainelAberto = !wzPainelAberto;
+  const shell = document.getElementById('whats-shell');
+  if (shell) shell.classList.toggle('sem-painel', !wzPainelAberto);
+  const p = document.getElementById('wz-painel');
+  if (p) p.style.display = wzPainelAberto ? 'flex' : 'none';
+  renderThreadWhats();
+}
+
+function wzSetAba(aba) {
+  wzAba = aba;
+  document.querySelectorAll('.wz-painel-tab').forEach(b =>
+    b.classList.toggle('ativa', b.dataset.aba === aba));
+  wzRenderPainel();
+}
+
+function wzRenderPainel() {
+  const el = document.getElementById('wz-painel-corpo');
+  if (!el) return;
+  const tel = whatsConversaAtual;
+  if (!tel) { el.innerHTML = '<div class="wz-vazio">Selecione uma conversa para ver a ficha do contato.</div>'; return; }
+  const m = wzM(tel);
+  const card = m.card_id ? (crmCards || []).find(c => c.id === m.card_id) : null;
+  const ia = wzIaCache[tel] || {};
+
+  if (wzAba === 'config') { el.innerHTML = wzPainelConfig(tel, m); return; }
+  if (wzAba === 'inteligencia') { el.innerHTML = wzPainelInteligencia(tel, m, card, ia); return; }
+
+  const nome = m.nome || tel;
+  const neg = (negocios || []).find(n => n.id === m.negocio_id);
+  el.innerHTML = `
+    <div class="wz-bloco">
+      <div class="wz-bloco-tit"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Contato</div>
+      <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+        <div class="whats-avatar" data-foto-telefone="${tel}" style="background-color:${corAvatar(tel)}">${wzEsc(nome).charAt(0).toUpperCase()}</div>
+        <div style="min-width:0;">
+          <div style="font-weight:700; font-size:.9rem;">${wzEsc(nome)}</div>
+          <div class="muted" style="font-size:.74rem;">Atendimento WhatsApp</div>
+        </div>
+      </div>
+      <div class="wz-kv"><span class="k">Telefone</span><span class="v">${wzEsc(tel)}</span></div>
+      ${m.pessoa_email ? `<div class="wz-kv"><span class="k">E-mail</span><span class="v">${wzEsc(m.pessoa_email)}</span></div>` : ''}
+      ${card && card.campos_valores && card.campos_valores.cargo ? `<div class="wz-kv"><span class="k">Cargo</span><span class="v">${wzEsc(card.campos_valores.cargo)}</span></div>` : ''}
+      ${m.lead_score != null ? `<div class="wz-kv"><span class="k">Lead score</span><span class="v">${m.lead_score}/100</span></div>` : ''}
+      <div class="wz-kv"><span class="k">Responsável</span><span class="v">${wzEsc(m.responsavel_nome || '— sem dono —')}</span></div>
+      ${m.aguardando ? `<div class="wz-kv"><span class="k">Esperando resposta</span><span class="v wz-espera">${m.horas_esperando}h</span></div>` : ''}
+    </div>
+
+    <div class="wz-bloco">
+      <div class="wz-bloco-tit"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Negócio</div>
+      ${m.card_id
+        ? `<button type="button" class="wz-link-bloco" onclick="wzAbrirCard(${m.card_id})">
+             <span>${wzEsc(m.card_titulo || 'Abrir card')}</span>
+             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg>
+           </button>
+           ${neg ? `<div class="wz-kv" style="margin-top:8px;"><span class="k">Reunião</span><span class="v">${wzEsc(neg.status)} · ${wzEsc(neg.data_agendada || '')}</span></div>` : ''}`
+        : `<div class="wz-vazio" style="margin-bottom:9px;">Esse telefone ainda não está ligado a nenhum lead do CRM.</div>
+           <button type="button" class="wz-link-bloco" onclick="wzCriarNegocio('${tel}')"><span>Criar negócio a partir desta conversa</span>
+             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>`}
+    </div>
+
+    <div class="wz-bloco ia">
+      <div class="wz-bloco-tit"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.7L19 9.2l-3.7 3.3.9 5-4.2-2.5L7.8 17.5l.9-5L5 9.2l5.1-1.5z"/></svg>Leitura da IA</div>
+      ${ia.resumo
+        ? `<div class="wz-ia-texto">${wzEsc(ia.resumo)}</div>
+           <div class="muted" style="font-size:.7rem; margin-top:9px;">Gerado agora nesta sessão</div>`
+        : m.resumo_ia
+          ? `<div class="wz-ia-texto">${wzEsc(m.resumo_ia)}</div>
+             <div class="muted" style="font-size:.7rem; margin-top:9px;">Gerado em ${new Date(m.resumo_em).toLocaleString('pt-BR')}</div>`
+          : `<div class="wz-vazio">Ainda não resumi essa conversa.</div>
+             <button type="button" class="wz-link-bloco" style="margin-top:9px;" onclick="wzIA('${tel}','resumir')"><span>Resumir a conversa</span>
+               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`}
+    </div>`;
+  aplicarFotosNaTela([tel]);
+}
+
+function wzPainelInteligencia(tel, m, card, ia) {
+  const t = ia.triagem;
+  const sug = ia.sugestoes || [];
+  return `
+    <div class="wz-bloco">
+      <div class="wz-bloco-tit">Triagem</div>
+      ${t ? `
+        <div class="wz-kv"><span class="k">Estágio</span><span class="v">${wzEsc(t.estagio)}</span></div>
+        <div class="wz-kv"><span class="k">Temperatura</span><span class="v">${wzEsc(t.temperatura)}</span></div>
+        <div class="wz-kv"><span class="k">Pronto p/ reunião</span><span class="v">${t.pronto_para_reuniao ? 'sim' : 'ainda não'}</span></div>
+        <div style="margin-top:9px; font-size:.82rem;"><b>Próximo passo:</b> ${wzEsc(t.proximo_passo || '')}</div>
+        <div style="margin-top:6px; font-size:.82rem; color:var(--text-secondary);"><b>Risco:</b> ${wzEsc(t.risco || '')}</div>`
+        : `<div class="wz-vazio">Rode a triagem pra IA classificar em que pé está essa conversa.</div>
+           <button type="button" class="wz-link-bloco" style="margin-top:9px;" onclick="wzIA('${tel}','triagem')"><span>Rodar triagem</span>
+             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`}
+    </div>
+    <div class="wz-bloco">
+      <div class="wz-bloco-tit">Sugestões de resposta</div>
+      ${sug.length ? sug.map(s => `
+        <div style="border:1px solid var(--border); border-radius:9px; padding:10px; margin-bottom:8px; font-size:.82rem; line-height:1.5;">
+          ${wzEsc(s)}
+          <button type="button" class="wz-tb" style="margin-top:8px;" onclick="wzUsarSugestao(${JSON.stringify(s).replace(/"/g, '&quot;')})">Usar esta</button>
+        </div>`).join('')
+        : `<div class="wz-vazio">Peça uma sugestão em "Sugerir (IA)" abaixo da conversa.</div>`}
+    </div>
+    <div class="wz-bloco">
+      <div class="wz-bloco-tit">Ficha do lead</div>
+      ${card && card.campos_valores && Object.keys(card.campos_valores).length
+        ? Object.entries(card.campos_valores).map(([k, v]) =>
+            `<div class="wz-kv"><span class="k">${wzEsc(k.replace(/_/g, ' '))}</span><span class="v">${wzEsc(v)}</span></div>`).join('')
+        : '<div class="wz-vazio">Sem ficha — esse contato não veio de formulário.</div>'}
+    </div>`;
+}
+
+function wzPainelConfig(tel, m) {
+  return `
+    <div class="wz-bloco">
+      <div class="wz-bloco-tit">Esta conversa</div>
+      <div class="wz-kv"><span class="k">Prioridade alta</span>
+        <span class="v"><input type="checkbox" ${m.prioridade === 'alta' ? 'checked' : ''} onchange="wzPrioridade('${tel}', this.checked)"></span></div>
+      <div class="wz-kv"><span class="k">Piloto da IA</span>
+        <span class="v"><input type="checkbox" ${m.piloto ? 'checked' : ''} onchange="wzTogglePiloto('${tel}')"></span></div>
+      <div class="wz-kv"><span class="k">Arquivar</span>
+        <span class="v"><button type="button" class="wz-tb" onclick="wzArquivar('${tel}')">Arquivar conversa</button></span></div>
+    </div>
+    <div class="wz-bloco">
+      <div class="wz-bloco-tit">Canal</div>
+      <div class="wz-kv"><span class="k">Instância</span><span class="v">${wzEsc(EVOLUTION_INSTANCE)}</span></div>
+      <div class="wz-kv"><span class="k">Mensagens</span><span class="v">${m.total_msgs || 0}</span></div>
+      <div class="wz-kv"><span class="k">Última recebida</span><span class="v">${m.ultima_recebida ? new Date(m.ultima_recebida).toLocaleString('pt-BR') : '—'}</span></div>
+      <div class="wz-kv"><span class="k">Última enviada</span><span class="v">${m.ultima_enviada ? new Date(m.ultima_enviada).toLocaleString('pt-BR') : '—'}</span></div>
+    </div>
+    <div class="wz-bloco">
+      <div class="wz-bloco-tit">Respostas rápidas</div>
+      <div class="wz-vazio">Edite os textos prontos usados no botão "Respostas Rápidas".</div>
+      <button type="button" class="wz-link-bloco" style="margin-top:9px;" onclick="wzEditarRespostas()"><span>Gerenciar respostas</span>
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>`;
+}
+
+// ------------------------------------------------------------------ ações
+function wzIrParaAba(nome) {
+  const btn = document.querySelector(`.sidebar nav button[data-tab="${nome}"]`);
+  if (btn) btn.click();
+}
+
+async function wzAbrirCard(cardId) {
+  const card = (crmCards || []).find(c => c.id === cardId);
+  wzIrParaAba('crm');
+  if (card) await crmIrParaCard(cardId, card.funil_id);
+  else {
+    const { data } = await sb.from('com_cards').select('id, funil_id').eq('id', cardId).limit(1);
+    if (data && data[0]) await crmIrParaCard(data[0].id, data[0].funil_id);
+  }
+}
+
+async function wzAtribuir(telefone, perfilId) {
+  await sb.from('com_whatsapp_conversas').upsert(
+    { telefone, responsavel_id: perfilId || null, atualizado_em: new Date().toISOString() },
+    { onConflict: 'telefone' });
+  const p = (perfis || []).find(x => x.id === perfilId);
+  wzMeta[telefone] = Object.assign({}, wzM(telefone),
+    { responsavel_id: perfilId || null, responsavel_nome: p ? p.nome : null });
+  renderListaConversas(); wzRenderPainel();
+}
+
+async function wzPrioridade(telefone, alta) {
+  await sb.from('com_whatsapp_conversas').upsert(
+    { telefone, prioridade: alta ? 'alta' : 'normal', atualizado_em: new Date().toISOString() },
+    { onConflict: 'telefone' });
+  wzMeta[telefone] = Object.assign({}, wzM(telefone), { prioridade: alta ? 'alta' : 'normal' });
+  renderListaConversas();
+}
+
+async function wzTogglePiloto(telefone) {
+  const m = wzM(telefone);
+  const novo = !m.piloto;
+  // Piloto NÃO envia sozinho: ele deixa a sugestão pronta pra pessoa revisar antes de mandar.
+  // Enviar sem revisão pra cliente real é decisão do Igor, não minha.
+  if (novo && !confirm('Ligar o Piloto?\n\nA cada mensagem que chegar, a IA já deixa uma sugestão de resposta pronta no painel Inteligência.\n\nEla NÃO envia nada sozinha — você revisa e manda.')) return;
+  await sb.from('com_whatsapp_conversas').upsert(
+    { telefone, piloto: novo, atualizado_em: new Date().toISOString() }, { onConflict: 'telefone' });
+  wzMeta[telefone] = Object.assign({}, wzM(telefone), { piloto: novo });
+  renderThreadWhats(); wzRenderPainel();
+  if (novo) wzIA(telefone, 'sugerir');
+}
+
+async function wzArquivar(telefone) {
+  if (!confirm('Arquivar esta conversa? Ela some da lista, mas o histórico fica guardado.')) return;
+  await sb.from('com_whatsapp_conversas').upsert(
+    { telefone, arquivada: true, atualizado_em: new Date().toISOString() }, { onConflict: 'telefone' });
+  delete wzMeta[telefone];
+  whatsConversaAtual = null;
+  renderListaConversas(); renderThreadWhats(); wzRenderPainel();
+}
+
+// ---- IA (o proxy no n8n esconde a chave da OpenAI; o HTML nunca vê a chave)
+async function wzIA(telefone, tarefa) {
+  if (!telefone) return;
+  if (wzOcupado[telefone + tarefa]) return;
+  wzOcupado[telefone + tarefa] = true;
+  const alvo = document.getElementById('wz-painel-corpo');
+  const rotulo = { resumir: 'Resumindo a conversa', triagem: 'Fazendo a triagem', sugerir: 'Escrevendo sugestões' }[tarefa];
+  if (alvo) alvo.innerHTML = `<div class="wz-vazio">${rotulo}...</div>`;
+  try {
+    const c = conversasAgrupadasWhats().find(x => x.telefone === telefone);
+    const m = wzM(telefone);
+    const card = m.card_id ? (crmCards || []).find(x => x.id === m.card_id) : null;
+    const cv = (card && card.campos_valores) || {};
+    const resp = await fetch(`${N8N_PROXY_URL}/ia-conversa`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tarefa,
+        contato: { nome: m.nome, telefone, cargo: cv.cargo, dor: cv.dor, lead_score: m.lead_score },
+        historico: (c ? c.mensagens : []).map(x => ({ direcao: x.direcao, mensagem: x.mensagem, midia_tipo: x.midia_tipo })),
+      }),
+    });
+    const r = await resp.json();
+    if (r.erro) { alert('A IA não respondeu: ' + r.erro); }
+    else {
+      wzIaCache[telefone] = Object.assign({}, wzIaCache[telefone] || {}, r);
+      if (r.resumo) {
+        await sb.from('com_whatsapp_conversas').upsert(
+          { telefone, resumo_ia: r.resumo, resumo_em: new Date().toISOString(), atualizado_em: new Date().toISOString() },
+          { onConflict: 'telefone' });
+        wzMeta[telefone] = Object.assign({}, wzM(telefone), { resumo_ia: r.resumo, resumo_em: new Date().toISOString() });
+      }
+      if (r.triagem || r.sugestoes) wzAba = 'inteligencia';
+      wzSetAba(wzAba);
+    }
+  } catch (e) {
+    alert('Não consegui falar com a IA agora: ' + e.message);
+  } finally {
+    wzOcupado[telefone + tarefa] = false;
+    wzRenderPainel();
+  }
+}
+
+function wzUsarSugestao(texto) {
+  const campo = document.getElementById('whats-thread-texto');
+  if (!campo) return;
+  campo.value = texto;
+  campo.focus();
+}
+
+// ---- CRM
+async function wzCriarNegocio(telefone) {
+  const m = wzM(telefone);
+  const nome = prompt('Nome do lead para o novo card no CRM:', m.nome || telefone);
+  if (!nome) return;
+  const { data, error } = await sb.from('com_cards').insert({
+    funil_id: CRM_FUNIL_LEADS, estagio_id: CRM_ESTAGIO_NOVO,
+    titulo: nome, pessoa_nome: nome, pessoa_telefone: telefone,
+    responsavel_id: (currentPerfil && currentPerfil.id) || null,
+    observacao: 'Criado a partir da conversa de WhatsApp.',
+  }).select('id').single();
+  if (error) { alert('Não consegui criar o card: ' + error.message); return; }
+  await sb.from('com_card_atividades').insert({
+    card_id: data.id, tipo: 'criacao', descricao: 'Card criado a partir da conversa de WhatsApp' });
+  await wzCarregarMeta();
+  renderListaConversas(); renderThreadWhats(); wzRenderPainel();
+  alert('Card criado no CRM.');
+}
+
+function wzAbrirContato(telefone) {
+  const m = wzM(telefone);
+  if (m.card_id) return wzAbrirCard(m.card_id);
+  alert('Esse telefone ainda não tem card no CRM. Use "Criar negócio" para abrir um.');
+}
+
+async function wzNota(telefone) {
+  const m = wzM(telefone);
+  if (!m.card_id) { alert('Para gravar uma nota é preciso ter um card no CRM. Use "Criar negócio" primeiro.'); return; }
+  const texto = prompt('Nota sobre este atendimento:');
+  if (!texto) return;
+  await sb.from('com_card_atividades').insert({
+    card_id: m.card_id, tipo: 'nota', descricao: texto,
+    autor_id: (currentPerfil && currentPerfil.id) || null });
+  alert('Nota gravada no histórico do lead.');
+}
+
+async function wzAgendar() {
+  const tel = whatsConversaAtual;
+  const m = wzM(tel);
+  if (!m.card_id) { alert('Para agendar é preciso ter um card no CRM. Use "Criar negócio" primeiro.'); return; }
+  const data = prompt('Data da reunião (AAAA-MM-DD):', hojeStr());
+  if (!data) return;
+  const hora = prompt('Horário (HH:MM):', '10:00') || null;
+  const { error } = await sb.from('com_negocios').insert({
+    cliente_nome: m.nome || m.card_titulo || tel,
+    data_agendada: data, hora_agendada: hora, status: 'agendada', card_id: m.card_id,
+    sdr_id: (currentPerfil && currentPerfil.id) || null,
+    observacao: 'Agendada a partir da conversa de WhatsApp.',
+  });
+  if (error) { alert('Não consegui agendar: ' + error.message); return; }
+  await sb.from('com_card_atividades').insert({
+    card_id: m.card_id, tipo: 'reuniao', descricao: `Reunião agendada pelo WhatsApp para ${data} ${hora || ''}` });
+  await wzCarregarMeta(); wzRenderPainel();
+  alert('Reunião agendada e ligada ao lead.');
+}
+
+// ---- anexos (Evolution aceita base64 em sendMedia)
+async function wzEnviarArquivo(ev) {
+  const arq = ev.target.files && ev.target.files[0];
+  ev.target.value = '';
+  if (!arq || !whatsConversaAtual) return;
+  if (arq.size > 12 * 1024 * 1024) { alert('Arquivo muito grande (máx. 12 MB).'); return; }
+  const tipo = arq.type.startsWith('image/') ? 'image'
+             : arq.type.startsWith('video/') ? 'video'
+             : arq.type.startsWith('audio/') ? 'audio' : 'document';
+  const base64 = await new Promise((ok, err) => {
+    const fr = new FileReader();
+    fr.onload = () => ok(String(fr.result).split(',')[1]);
+    fr.onerror = err; fr.readAsDataURL(arq);
+  });
+  try {
+    const r = await chamarEvolution('POST', `/message/sendMedia/${EVOLUTION_INSTANCE}`, {
+      number: whatsConversaAtual, mediatype: tipo, mimetype: arq.type,
+      media: base64, fileName: arq.name, caption: '' });
+    if (r && r.error) throw new Error(r.error.message || 'erro na Evolution');
+    await sb.from('com_whatsapp_mensagens').insert({
+      telefone: whatsConversaAtual, direcao: 'enviada', mensagem: '',
+      midia_tipo: tipo, midia_nome: arq.name, midia_mimetype: arq.type,
+      enviado_por: (currentPerfil && currentPerfil.id) || null, origem: 'painel' });
+    await carregarMensagensWhats(); renderThreadWhats();
+  } catch (e) { alert('Não consegui enviar o arquivo: ' + e.message); }
+}
+
+async function wzEnviarLocalizacao() {
+  if (!whatsConversaAtual) return;
+  const nome = prompt('Nome do local:', 'Nosso escritório');
+  if (!nome) return;
+  const lat = prompt('Latitude:'); if (!lat) return;
+  const lng = prompt('Longitude:'); if (!lng) return;
+  try {
+    const r = await chamarEvolution('POST', `/message/sendLocation/${EVOLUTION_INSTANCE}`, {
+      number: whatsConversaAtual, name: nome, address: nome,
+      latitude: Number(lat), longitude: Number(lng) });
+    if (r && r.error) throw new Error(r.error.message || 'erro na Evolution');
+    await sb.from('com_whatsapp_mensagens').insert({
+      telefone: whatsConversaAtual, direcao: 'enviada', mensagem: `📍 ${nome}`,
+      enviado_por: (currentPerfil && currentPerfil.id) || null, origem: 'painel' });
+    await carregarMensagensWhats(); renderThreadWhats();
+  } catch (e) { alert('Não consegui enviar a localização: ' + e.message); }
+}
+
+async function wzEnviarContato() {
+  if (!whatsConversaAtual) return;
+  const nome = prompt('Nome do contato a compartilhar:'); if (!nome) return;
+  const fone = prompt('Telefone (só números, com DDI):'); if (!fone) return;
+  try {
+    const r = await chamarEvolution('POST', `/message/sendContact/${EVOLUTION_INSTANCE}`, {
+      number: whatsConversaAtual,
+      contact: [{ fullName: nome, wuid: fone.replace(/\D/g, ''), phoneNumber: fone }] });
+    if (r && r.error) throw new Error(r.error.message || 'erro na Evolution');
+    await sb.from('com_whatsapp_mensagens').insert({
+      telefone: whatsConversaAtual, direcao: 'enviada', mensagem: `👤 Contato: ${nome} — ${fone}`,
+      enviado_por: (currentPerfil && currentPerfil.id) || null, origem: 'painel' });
+    await carregarMensagensWhats(); renderThreadWhats();
+  } catch (e) { alert('Não consegui enviar o contato: ' + e.message); }
+}
+
+// ---- respostas rápidas
+let wzRespostas = [];
+async function wzCarregarRespostas() {
+  try {
+    const { data } = await sb.from('com_whatsapp_respostas').select('*').eq('ativo', true).order('ordem');
+    wzRespostas = data || [];
+  } catch (e) { wzRespostas = []; }
+}
+
+function wzRespostasRapidas() {
+  if (!wzRespostas.length) { alert('Nenhuma resposta rápida cadastrada ainda. Cadastre em Config → Gerenciar respostas.'); return; }
+  const lista = wzRespostas.map((r, i) => `${i + 1}. ${r.titulo}`).join('\n');
+  const escolha = prompt(`Qual resposta usar?\n\n${lista}\n\nDigite o número:`);
+  const idx = parseInt(escolha, 10) - 1;
+  if (isNaN(idx) || !wzRespostas[idx]) return;
+  const m = wzM(whatsConversaAtual);
+  const primeiro = String(m.nome || '').trim().split(' ')[0] || '';
+  wzUsarSugestao(String(wzRespostas[idx].texto).replace(/\{nome\}/g, primeiro));
+}
+
+async function wzEditarRespostas() {
+  const titulo = prompt('Título da nova resposta rápida (ex: "Follow-up 48h"):');
+  if (!titulo) return;
+  const texto = prompt('Texto da mensagem (use {nome} para o primeiro nome do contato):');
+  if (!texto) return;
+  await sb.from('com_whatsapp_respostas').insert({ titulo, texto, ordem: wzRespostas.length + 1 });
+  await wzCarregarRespostas();
+  alert('Resposta rápida cadastrada.');
 }
 
 // ---------- TABS ----------
