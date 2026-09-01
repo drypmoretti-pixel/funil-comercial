@@ -4977,9 +4977,18 @@ function aplicarFotosNaTela(telefones) {
   });
 }
 
+// Quantas mensagens a carga inicial traz. O PostgREST deste projeto corta em 1000 linhas por
+// resposta (db-max-rows), então não adianta pedir mais que isso numa tacada.
+const WHATS_CARGA_INICIAL = 1000;
+
 async function carregarMensagensWhats() {
-  const { data } = await sb.from('com_whatsapp_mensagens').select('*').order('created_at', { ascending: true }).limit(500);
-  whatsMensagens = data || [];
+  // 🐛 Era `.order('created_at', {ascending:true}).limit(500)`: com 825 mensagens na base, isso
+  // trazia as 500 MAIS ANTIGAS e jogava fora as 325 mais recentes. O painel mostrava conversa
+  // velha e parecia que o tempo real tinha parado. Ordenar DESC e inverter faz o corte cair no
+  // fim antigo, que é o certo — o topo da lista é sempre a mensagem mais nova.
+  const { data } = await sb.from('com_whatsapp_mensagens').select('*')
+    .order('created_at', { ascending: false }).limit(WHATS_CARGA_INICIAL);
+  whatsMensagens = (data || []).slice().reverse();
   const { data: tags } = await sb.from('com_whatsapp_conversa_tags').select('*');
   whatsConversaTagsMap = {};
   (tags || []).forEach(r => { (whatsConversaTagsMap[r.telefone] = whatsConversaTagsMap[r.telefone] || []).push(r.tag_id); });
@@ -4987,12 +4996,55 @@ async function carregarMensagensWhats() {
   if (whatsConversaAtual) { renderThreadWhats(); renderThreadTagsWhats(); }
 }
 
+// O websocket do Realtime cai sem avisar (aba dormindo, wi-fi trocando, proxy fechando conexão
+// ociosa) e o painel ficava mudo até alguém recarregar. Esta rede busca o que entrou depois da
+// última mensagem conhecida — barata, porque filtra por created_at e quase sempre volta vazia.
+let whatsPollTimer = null;
+const WHATS_POLL_MS = 25000;
+
+async function buscarMensagensNovasWhats() {
+  if (document.hidden) return;
+  const ultima = whatsMensagens.length
+    ? whatsMensagens[whatsMensagens.length - 1].created_at
+    : new Date(Date.now() - 86400000).toISOString();
+  try {
+    const { data } = await sb.from('com_whatsapp_mensagens').select('*')
+      .gt('created_at', ultima).order('created_at').limit(200);
+    if (!data || !data.length) return;
+    const vistos = new Set(whatsMensagens.map(m => m.id));
+    const novas = data.filter(m => !vistos.has(m.id));
+    if (!novas.length) return;
+    novas.forEach(m => whatsMensagens.push(m));
+    await wzCarregarMeta();
+    renderListaConversas();
+    if (novas.some(m => m.telefone === whatsConversaAtual)) renderThreadWhats();
+    const recebidas = novas.filter(m => m.direcao === 'recebida');
+    if (recebidas.length) {
+      tocarSino();
+      const painelAtivo = document.getElementById('tab-whatsapp').classList.contains('active');
+      if (!painelAtivo) document.getElementById('whats-badge').style.display = 'block';
+    }
+  } catch (e) { /* se falhar, tenta de novo no próximo ciclo */ }
+}
+
+function ligarPollWhats() {
+  if (whatsPollTimer) return;
+  whatsPollTimer = setInterval(buscarMensagensNovasWhats, WHATS_POLL_MS);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) buscarMensagensNovasWhats();   // voltou pra aba: busca na hora
+  });
+}
+
 function assinarRealtimeWhats() {
+  ligarPollWhats();
   if (whatsCanalRealtime) return;
   try {
     whatsCanalRealtime = sb.channel('whatsapp-realtime')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'com_whatsapp_mensagens' }, (payload) => {
+        if (whatsMensagens.some(m => m.id === payload.new.id)) return;   // o poll pode ter pego antes
         whatsMensagens.push(payload.new);
+        // sem recarregar a meta, os contadores dos filtros e o "não lida" ficavam congelados
+        wzCarregarMeta().then(() => { renderListaConversas(); wzRenderPainel(); });
         renderListaConversas();
         if (payload.new.telefone === whatsConversaAtual) renderThreadWhats();
         if (payload.new.direcao === 'recebida') {
@@ -6845,6 +6897,22 @@ function renderListaConversas() {
 }
 
 // ------------------------------------------------------------- abrir conversa
+// A carga inicial é um teto global; uma conversa antiga e longa pode ter mensagem fora dela.
+// Ao abrir, busca o histórico completo daquele telefone e funde no que já está em memória.
+async function carregarHistoricoDaConversa(telefone) {
+  try {
+    const linhas = await buscarPaginado('com_whatsapp_mensagens',
+      q => q.select('*').eq('telefone', telefone).order('created_at'));
+    if (!linhas || !linhas.length) return;
+    const vistos = new Set(whatsMensagens.map(m => m.id));
+    const novas = linhas.filter(m => !vistos.has(m.id));
+    if (novas.length) {
+      whatsMensagens = whatsMensagens.concat(novas)
+        .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
+  } catch (e) { /* sem histórico extra o chat ainda funciona com o que já está carregado */ }
+}
+
 async function abrirConversaWhats(telefone) {
   whatsConversaAtual = telefone;
   const badge = document.getElementById('whats-badge');
@@ -6854,6 +6922,8 @@ async function abrirConversaWhats(telefone) {
   renderThreadTagsWhats();
   wzRenderPainel();
   wzMarcarLida(telefone);
+  await carregarHistoricoDaConversa(telefone);
+  if (whatsConversaAtual === telefone) renderThreadWhats();
 }
 
 async function wzMarcarLida(telefone) {
