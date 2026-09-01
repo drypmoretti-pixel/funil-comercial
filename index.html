@@ -2451,6 +2451,7 @@ async function carregarCRM() {
     sb.from('com_campos_personalizados').select('*').eq('ativo', true).order('ordem'),
     sb.from('com_tags').select('*').eq('ativo', true).order('nome'),
     carregarTelefonesQueResponderam(),
+    carregarIscasPorPessoa(),
   ]);
   crmFunis = funis || [];
   crmEstagios = estagios || [];
@@ -2864,8 +2865,31 @@ const SCORE_PESOS = {
   ],
 };
 const SCORE_ISCA_2 = 20, SCORE_ISCA_3 = 25, SCORE_WHATS = 10;   // comportamento, teto de 30
+// Os 3 grupos do formulário somam 70 pontos. Mas o formulário mudou ao longo do tempo: em
+// 01/09/2026, dos 1.242 leads abertos, 1.136 tinham cargo, só 196 tinham dor e só 105 tinham canal.
+// Descontar 45 pontos de perguntas que NUNCA foram feitas empurrava a base inteira pra "frio" —
+// eram 0 leads quentes e 12 mornos, com a fila "Atacar hoje" (10 vagas) disputando 12 candidatos.
+// Agora a nota é normalizada pelo que dava pra saber daquele lead. Ver SCORE_COBERTURA_QUENTE.
+const SCORE_FORM_TOTAL = 70;
+// ...mas nota alta sabendo UMA coisa só não é certeza: com menos de 2 respostas a faixa trava em
+// morno. O número continua alto (a fila ordena por ele), o rótulo é que não promete o que não sabe.
+const SCORE_COBERTURA_QUENTE = 2;
 const SCORE_PARADO_DIAS = 21, SCORE_PARADO_SEMANA = 5, SCORE_PARADO_MAX = 20;
 const SCORE_QUENTE = 70, SCORE_MORNO = 45;
+
+// Iscas contadas POR PESSOA, não por card. São 109 pessoas com card duplicado no board (o Igor
+// decidiu manter: pra ele o duplicado é sinal de que a pessoa baixou 4 materiais). Só que contando
+// por card, 2 cards com 1 tag cada davam ZERO de bônus nos dois — o sinal mais forte da base
+// (baixar a 2ª isca converte 34,8% contra 2,5%) se anulava justamente em quem mais demonstrou
+// interesse. A view com_iscas_por_pessoa agrega por e-mail: 74 pessoas com 2+ iscas, contra 16
+// cards. Assim o score enxerga a pessoa sem precisar fundir os cards.
+let scoreIscasPessoa = new Map();
+async function carregarIscasPorPessoa() {
+  try {
+    const linhas = await buscarPaginado('com_iscas_por_pessoa', q => q.select('email, iscas').order('email'));
+    scoreIscasPessoa = new Map((linhas || []).map(r => [r.email, r.iscas]));
+  } catch (e) { scoreIscasPessoa = new Map(); }   // view ausente não pode derrubar o CRM
+}
 
 // telefones que já responderam alguma mensagem — carregado junto com o CRM (16 números hoje,
 // consulta leve; não depende da aba WhatsApp ter sido aberta)
@@ -2891,27 +2915,33 @@ function calcularLeadScore(card, tagsDoCard) {
   let total = 0;
 
   const grupos = [
-    ['Cargo',  SCORE_PESOS.cargo, cv.cargo || cv.profissao],
-    ['Dor',    SCORE_PESOS.dor,   cv.dor || cv.momento_atual],
-    ['Canal',  SCORE_PESOS.canal, cv.canal_aquisicao_atual],
+    ['Cargo',  SCORE_PESOS.cargo, cv.cargo || cv.profissao,        25],
+    ['Dor',    SCORE_PESOS.dor,   cv.dor || cv.momento_atual,      25],
+    ['Canal',  SCORE_PESOS.canal, cv.canal_aquisicao_atual,        20],
   ];
-  let respondeuFormulario = false;
-  grupos.forEach(([grupo, regras, valor]) => {
+  let ganhos = 0, possiveis = 0, cobertura = 0;
+  grupos.forEach(([grupo, regras, valor, teto]) => {
     const achou = scoreCasar(regras, valor);
     if (achou) {
-      respondeuFormulario = true;
-      total += achou.pts;
+      cobertura++; possiveis += teto; ganhos += achou.pts;
       itens.push({ label: `${grupo}: ${achou.label}`, pts: achou.pts });
     } else {
-      itens.push({ label: `${grupo}: não informado`, pts: 0 });
+      itens.push({ label: `${grupo}: o formulário não perguntou`, pts: 0 });
     }
   });
+  const respondeuFormulario = cobertura > 0;
+  // regra de ouro: só divide pelo que foi perguntado
+  total = possiveis ? Math.round(SCORE_FORM_TOTAL * ganhos / possiveis) : 0;
 
   // comportamento (teto 30): baixar um 2º material é o sinal mais forte que a base tem
-  const iscas = (tagsDoCard || []).filter(t => !scoreEhTagDeDono(t)).length;
+  const iscasCard = (tagsDoCard || []).filter(t => !scoreEhTagDeDono(t)).length;
+  const email = String((card && card.pessoa_email) || '').trim().toLowerCase();
+  const iscasPessoa = email ? (scoreIscasPessoa.get(email) || 0) : 0;
+  const iscas = Math.max(iscasCard, iscasPessoa);
+  const somouCards = iscas > iscasCard;   // veio de outro card da mesma pessoa
   let comportamento = 0;
-  if (iscas >= 3) { comportamento += SCORE_ISCA_3; itens.push({ label: `Baixou ${iscas} materiais`, pts: SCORE_ISCA_3 }); }
-  else if (iscas === 2) { comportamento += SCORE_ISCA_2; itens.push({ label: 'Baixou 2 materiais', pts: SCORE_ISCA_2 }); }
+  if (iscas >= 3) { comportamento += SCORE_ISCA_3; itens.push({ label: `Baixou ${iscas} materiais${somouCards ? ' (somando os cards desta pessoa)' : ''}`, pts: SCORE_ISCA_3 }); }
+  else if (iscas === 2) { comportamento += SCORE_ISCA_2; itens.push({ label: `Baixou 2 materiais${somouCards ? ' (somando os cards desta pessoa)' : ''}`, pts: SCORE_ISCA_2 }); }
   const tel = normalizarTelefoneWhats(card && card.pessoa_telefone);
   if (tel && scoreTelefonesResponderam.has(tel)) {
     comportamento += SCORE_WHATS;
@@ -2931,10 +2961,15 @@ function calcularLeadScore(card, tagsDoCard) {
   total = Math.max(0, Math.min(100, total));
   // "sem dado" não é o mesmo que "frio": os 885 cards herdados do Pipedrive nunca passaram pelo
   // formulário, então não temos como saber. Mostrar 0 pra eles seria mentira com cara de número.
-  const faixa = !respondeuFormulario ? 'sem-dado'
+  let faixa = !respondeuFormulario ? 'sem-dado'
     : total >= SCORE_QUENTE ? 'quente'
     : total >= SCORE_MORNO ? 'morno' : 'frio';
-  return { total, faixa, itens, dias, semDado: !respondeuFormulario };
+  let travado = false;
+  if (faixa === 'quente' && cobertura < SCORE_COBERTURA_QUENTE) {
+    faixa = 'morno'; travado = true;
+    itens.push({ label: `Nota alta, mas só sabemos ${cobertura} de 3 respostas — trava em morno`, pts: 0 });
+  }
+  return { total, faixa, itens, dias, cobertura, travado, semDado: !respondeuFormulario };
 }
 
 // `nivel` = quantos traços do medidor acendem. Sem emoji: a nota é dado, não humor.
