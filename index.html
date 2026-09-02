@@ -1178,6 +1178,8 @@ th { letter-spacing: .06em; }
   .whats-conversa-item:hover, .sidebar nav button:hover { transform: none; }
 }
 
+
+.score-linha .score-info { font-weight: 600; color: var(--muted); font-size: .74rem; }
 </style>
 </head>
 <body>
@@ -3238,9 +3240,12 @@ const SCORE_ISCA_2 = 20, SCORE_ISCA_3 = 25, SCORE_WHATS = 10;   // comportamento
 // eram 0 leads quentes e 12 mornos, com a fila "Atacar hoje" (10 vagas) disputando 12 candidatos.
 // Agora a nota é normalizada pelo que dava pra saber daquele lead. Ver SCORE_COBERTURA_QUENTE.
 const SCORE_FORM_TOTAL = 70;
-// ...mas nota alta sabendo UMA coisa só não é certeza: com menos de 2 respostas a faixa trava em
-// morno. O número continua alto (a fila ordena por ele), o rótulo é que não promete o que não sabe.
-const SCORE_COBERTURA_QUENTE = 2;
+// ...mas nota alta sabendo UMA coisa só não é certeza. Em vez de travar o rótulo (o que fazia a
+// nota dizer 74 e o selo dizer "morno", confuso), a própria nota encolhe conforme a incerteza:
+// o teto do bloco de perfil vale menos quando menos perguntas foram respondidas. Assim quem
+// respondeu as três SEMPRE pode passar de quem respondeu uma, que era o furo da 1ª versão —
+// um CEO que só informou o cargo tirava a mesma base de um CEO com dor e canal perfeitos.
+const SCORE_CONFIANCA = { 0: 0, 1: 0.72, 2: 0.88, 3: 1 };
 const SCORE_PARADO_DIAS = 21, SCORE_PARADO_SEMANA = 5, SCORE_PARADO_MAX = 20;
 const SCORE_QUENTE = 70, SCORE_MORNO = 45;
 
@@ -3291,14 +3296,24 @@ function calcularLeadScore(card, tagsDoCard) {
     const achou = scoreCasar(regras, valor);
     if (achou) {
       cobertura++; possiveis += teto; ganhos += achou.pts;
-      itens.push({ label: `${grupo}: ${achou.label}`, pts: achou.pts });
+      // pts null = linha informativa: não entra na soma, senão o painel mostraria "+25" e um
+      // total de 90 sem explicar a diferença — foi exatamente o que confundiu o Igor.
+      itens.push({ label: `${grupo}: ${achou.label}`, pts: null, detalhe: `${achou.pts} de ${teto}` });
     } else {
-      itens.push({ label: `${grupo}: o formulário não perguntou`, pts: 0 });
+      itens.push({ label: `${grupo}: o formulário não perguntou`, pts: null, detalhe: 'não conta' });
     }
   });
   const respondeuFormulario = cobertura > 0;
-  // regra de ouro: só divide pelo que foi perguntado
-  total = possiveis ? Math.round(SCORE_FORM_TOTAL * ganhos / possiveis) : 0;
+  // só divide pelo que foi perguntado, e desconta a incerteza de saber pouco
+  const confianca = SCORE_CONFIANCA[cobertura] || 0;
+  total = possiveis ? Math.round(SCORE_FORM_TOTAL * (ganhos / possiveis) * confianca) : 0;
+  if (respondeuFormulario) {
+    itens.push({
+      label: `Perfil: ${ganhos} de ${possiveis} pontos possíveis` +
+             (cobertura < 3 ? ` · ${cobertura} de 3 perguntas respondidas (vale ${Math.round(confianca * 100)}%)` : ' · as 3 perguntas respondidas'),
+      pts: total,
+    });
+  }
 
   // comportamento (teto 30): baixar um 2º material é o sinal mais forte que a base tem
   const iscasCard = (tagsDoCard || []).filter(t => !scoreEhTagDeDono(t)).length;
@@ -3328,15 +3343,12 @@ function calcularLeadScore(card, tagsDoCard) {
   total = Math.max(0, Math.min(100, total));
   // "sem dado" não é o mesmo que "frio": os 885 cards herdados do Pipedrive nunca passaram pelo
   // formulário, então não temos como saber. Mostrar 0 pra eles seria mentira com cara de número.
-  let faixa = !respondeuFormulario ? 'sem-dado'
+  // sem trava de faixa: a incerteza já foi descontada da própria nota acima, e travar por cima
+  // disso punia duas vezes o mesmo lead — além de fazer o selo contradizer o número.
+  const faixa = !respondeuFormulario ? 'sem-dado'
     : total >= SCORE_QUENTE ? 'quente'
     : total >= SCORE_MORNO ? 'morno' : 'frio';
-  let travado = false;
-  if (faixa === 'quente' && cobertura < SCORE_COBERTURA_QUENTE) {
-    faixa = 'morno'; travado = true;
-    itens.push({ label: `Nota alta, mas só sabemos ${cobertura} de 3 respostas — trava em morno`, pts: 0 });
-  }
-  return { total, faixa, itens, dias, cobertura, travado, semDado: !respondeuFormulario };
+  return { total, faixa, itens, dias, cobertura, semDado: !respondeuFormulario };
 }
 
 // `nivel` = quantos traços do medidor acendem. Sem emoji: a nota é dado, não humor.
@@ -3396,6 +3408,11 @@ function crmRenderScoreBox(card) {
   const box = document.getElementById('crm-score-box');
   const s = card._score || scoreDoCard(card);
   const linhas = s.itens.map(i => {
+    if (i.pts === null || i.pts === undefined) {
+      const partes0 = i.label.split(/:\s(.+)/);
+      const texto0 = partes0.length > 1 ? `<em>${partes0[0]}</em>${partes0[1]}` : i.label;
+      return `<div class="score-linha zero"><span>${texto0}</span><b class="score-info">${i.detalhe || ''}</b></div>`;
+    }
     const cls = i.pts < 0 ? 'neg' : i.pts === 0 ? 'zero' : '';
     const sinal = i.pts > 0 ? '+' : '−';
     // "Cargo: CEO / Fundador" vira rótulo cinza + valor escuro; o resto ("Baixou 2 materiais") vai inteiro
