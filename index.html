@@ -5212,20 +5212,39 @@ async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) 
   let ok = true, erro = null, mensagemId = null;
   try {
     const resp = await chamarEvolution('POST', `/message/sendText/${EVOLUTION_INSTANCE}`, { number: numero, text: mensagem });
-    if (!resp.ok) { ok = false; erro = `erro ${resp.status}`; }
+    // ⚠️ resp.ok é o HTTP do PROXY, não da Evolution: o webhook do n8n devolve 200 mesmo quando a
+    // Evolution recusa. Checar só isso gravava "enviado" em mensagem que nunca saiu. A prova real
+    // é a Evolution devolver a chave da mensagem.
+    if (!resp.ok) { ok = false; erro = `proxy respondeu ${resp.status}`; }
     else {
       const data = await resp.json().catch(() => null);
       const item = Array.isArray(data) ? data[0] : data;
       mensagemId = (item && item.key && item.key.id) || null;
+      const falhou = item && (item.error || item.exception ||
+        (typeof item.status === 'number' && item.status >= 400) ||
+        (item.response && item.response.message));
+      if (falhou) {
+        ok = false;
+        erro = String(item.message || item.error ||
+          (item.response && JSON.stringify(item.response.message)) || 'a Evolution recusou o envio').slice(0, 300);
+      }
+      // sem chave e sem erro explícito: não dá pra afirmar que saiu, mas também não dá pra
+      // afirmar que falhou — fica gravado como enviado, com a ressalva no campo erro
+      else if (!mensagemId) erro = 'enviado sem confirmação da Evolution (sem id de mensagem)';
     }
   } catch (e) {
     ok = false; erro = e.message;
   }
-  await sb.from('com_whatsapp_mensagens').insert([{
+  // .select() devolve a linha gravada: é ela que vai direto pra tela, sem esperar o realtime
+  // nem a varredura de 25s. Sem isso a mensagem enviada só aparecia segundos depois e dava a
+  // impressão de que o envio não tinha funcionado.
+  const { data: gravada } = await sb.from('com_whatsapp_mensagens').insert([{
     telefone: numero, mensagem, direcao: 'enviada', origem: origem || 'manual', origem_id: origemId || null, origem_nome: origemNome || null,
     enviado_por: currentPerfil ? currentPerfil.id : null, status: ok ? 'enviado' : 'erro', erro, mensagem_id: mensagemId,
-  }]);
-  return { ok, erro };
+  }]).select();
+  const linha = gravada && gravada[0];
+  if (linha && !whatsMensagens.some(m => m.id === linha.id)) whatsMensagens.push(linha);
+  return { ok, erro, linha };
 }
 
 // ---------- CHAT ----------
@@ -5547,8 +5566,17 @@ function enviarMensagemThread(ev) {
   if (!texto || !whatsConversaAtual) return false;
   input.value = '';
   (async () => {
-    const c = conversasAgrupadasWhats().find(x => x.telefone === whatsConversaAtual);
-    await enviarWhatsApp(whatsConversaAtual, texto, 'chat', null, c && c.nome);
+    const alvo = whatsConversaAtual;
+    const c = conversasAgrupadasWhats().find(x => x.telefone === alvo);
+    const r = await enviarWhatsApp(alvo, texto, 'chat', null, c && c.nome);
+    if (whatsConversaAtual === alvo) renderThreadWhats();
+    renderListaConversas();
+    wzCarregarMeta().then(renderListaConversas);
+    if (!r.ok) {
+      input.value = texto;   // devolve o texto pra pessoa não perder o que escreveu
+      alert('A mensagem NÃO saiu: ' + (r.erro || 'motivo desconhecido') +
+            '\n\nO texto voltou pra caixa. Confira a conexão da instância no topo da lista.');
+    }
   })();
   return false;
 }
@@ -5561,8 +5589,14 @@ const ICONE_STOP = '<svg viewBox="0 0 24 24" width="18" height="18" fill="curren
 const midiaCache = {}; // mensagem_id -> data URI ou object URL, cache de sessão
 
 async function alternarGravacaoAudio() {
-  const btn = document.getElementById('whats-btn-audio');
+  // O botão de áudio virou um item da linha de anexos na reconstrução de 01/09 e perdeu o id
+  // `whats-btn-audio`. `btn.innerHTML` num elemento nulo estourava e a gravação nem começava.
+  // Agora quem mostra o estado é a própria linha de anexos, que já sabe se está gravando.
   const aviso = document.getElementById('whats-gravando-aviso');
+  const pintarAnexos = () => {
+    const el = document.getElementById('wz-anexos');
+    if (el && typeof wzAnexosHtml === 'function') el.innerHTML = wzAnexosHtml();
+  };
   if (whatsMediaRecorder && whatsMediaRecorder.state === 'recording') {
     whatsMediaRecorder.stop();
     return;
@@ -5581,8 +5615,8 @@ async function alternarGravacaoAudio() {
     whatsMediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) whatsAudioChunks.push(e.data); };
     whatsMediaRecorder.onstop = async () => {
       stream.getTracks().forEach(t => t.stop());
-      aviso.style.display = 'none';
-      btn.innerHTML = ICONE_MIC;
+      if (aviso) aviso.style.display = 'none';
+      pintarAnexos();
       const blob = new Blob(whatsAudioChunks, { type: whatsMediaRecorder.mimeType || 'audio/webm' });
       const base64 = await new Promise((resolve) => {
         const reader = new FileReader();
@@ -5592,8 +5626,8 @@ async function alternarGravacaoAudio() {
       await enviarAudioWhatsApp(whatsConversaAtual, base64, blob);
     };
     whatsMediaRecorder.start();
-    aviso.style.display = 'block';
-    btn.innerHTML = ICONE_STOP;
+    if (aviso) aviso.style.display = 'block';
+    pintarAnexos();
   } catch (e) {
     alert('Não consegui acessar o microfone: ' + e.message);
   }
