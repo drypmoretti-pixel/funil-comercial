@@ -5691,26 +5691,63 @@ async function alternarGravacaoAudio() {
   }
 }
 
+// Áudios de 02/09 saíram como "enviado" sem NUNCA terem chegado: esta função só olhava
+// `resp.ok` (o HTTP do proxy, que é 200 quase sempre), igual o envio de texto fazia antes.
+// Agora ela usa a MESMA leitura de resposta do texto, carimba a instância e desenha a bolha
+// na hora — os três defeitos que o texto já tinha corrigido e este caminho não.
+const WHATS_AUDIO_MAX_BASE64 = 6 * 1024 * 1024;   // ~4,5 MB de áudio; acima disso o envio costuma falhar
+
 async function enviarAudioWhatsApp(telefone, base64Audio, blobLocal) {
   let ok = true, erro = null, mensagemId = null;
+
+  if (base64Audio && base64Audio.length > WHATS_AUDIO_MAX_BASE64) {
+    alert('Áudio muito longo pra enviar de uma vez. Grave um mais curto (até uns 3 minutos).');
+    return { ok: false, erro: 'áudio grande demais' };
+  }
+
   try {
     const resp = await chamarEvolution('POST', `/message/sendWhatsAppAudio/${EVOLUTION_INSTANCE}`, { number: telefone, audio: base64Audio });
-    if (!resp.ok) { ok = false; erro = `erro ${resp.status}`; }
+    if (!resp.ok) { ok = false; erro = `proxy respondeu ${resp.status}`; }
     else {
       const data = await resp.json().catch(() => null);
       const item = Array.isArray(data) ? data[0] : data;
       mensagemId = (item && item.key && item.key.id) || null;
+      const falhou = item && (item.error || item.exception ||
+        (typeof item.status === 'number' && item.status >= 400) ||
+        (item.response && item.response.message) ||
+        (!item.key && item.message));
+      if (falhou) {
+        ok = false;
+        erro = String(item.message || item.error ||
+          (item.response && JSON.stringify(item.response.message)) || 'a Evolution recusou o áudio').slice(0, 300);
+      } else if (!mensagemId) {
+        ok = false;
+        erro = 'a Evolution não devolveu id da mensagem — o áudio provavelmente não saiu';
+      }
     }
   } catch (e) {
     ok = false; erro = e.message;
   }
-  if (ok && mensagemId && blobLocal) midiaCache[mensagemId] = URL.createObjectURL(blobLocal);
-  await sb.from('com_whatsapp_mensagens').insert([{
+
+  // guardado: se createObjectURL falhar, o áudio JÁ foi enviado — deixar estourar aqui
+  // abortaria antes do insert e a mensagem sumiria do histórico.
+  if (ok && mensagemId && blobLocal) {
+    try { midiaCache[mensagemId] = URL.createObjectURL(blobLocal); } catch (e) { /* sem prévia local */ }
+  }
+
+  const { data: gravada } = await sb.from('com_whatsapp_mensagens').insert([{
+    instancia: EVOLUTION_INSTANCE,
     telefone, mensagem: 'Mensagem de voz', direcao: 'enviada', origem: 'chat', mensagem_id: mensagemId,
     midia_tipo: 'audio', midia_mimetype: blobLocal ? blobLocal.type : 'audio/webm',
     enviado_por: currentPerfil ? currentPerfil.id : null, status: ok ? 'enviado' : 'erro', erro,
-  }]);
-  if (!ok) alert('Erro ao enviar áudio: ' + erro);
+  }]).select();
+  const linha = gravada && gravada[0];
+  if (linha && !whatsMensagens.some(m => m.id === linha.id)) whatsMensagens.push(linha);
+  if (telefone === whatsConversaAtual) renderThreadWhats();
+  renderListaConversas();
+
+  if (!ok) alert('O ÁUDIO NÃO SAIU: ' + erro + '\n\nEle fica marcado como erro na conversa. Tente de novo ou mande por texto.');
+  return { ok, erro };
 }
 
 let whatsContatos = [];
