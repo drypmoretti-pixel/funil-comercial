@@ -5262,6 +5262,29 @@ async function verificarStatusWhats() {
   }
 }
 
+
+// A Evolution devolve o motivo ANINHADO: {status:400, error:"Bad Request", response:{message:[...]}}.
+// Ler `error` antes de `response.message` entrega só "Bad Request", que não diz nada — foi o que
+// travou o diagnóstico do áudio em 02/09. Aqui a ordem é do mais específico pro mais genérico.
+function erroDaEvolution(item) {
+  if (!item) return null;
+  const r = item.response;
+  const detalhe = r && (Array.isArray(r.message) ? r.message.join(' · ') : r.message);
+  if (detalhe) return String(detalhe).slice(0, 300);
+  if (typeof item.message === 'string' && item.message) return item.message.slice(0, 300);
+  if (item.error) return String(item.error).slice(0, 300);
+  if (item.exception) return String(item.exception).slice(0, 300);
+  return null;
+}
+
+function respostaFalhou(item) {
+  if (!item) return false;
+  return !!(item.error || item.exception ||
+    (typeof item.status === 'number' && item.status >= 400) ||
+    (item.response && item.response.message) ||
+    (!item.key && item.message));
+}
+
 async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) {
   const numero = normalizarTelefoneWhats(telefone);
   if (!numero) return { ok: false, erro: 'telefone inválido' };
@@ -5276,13 +5299,9 @@ async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) 
       const data = await resp.json().catch(() => null);
       const item = Array.isArray(data) ? data[0] : data;
       mensagemId = (item && item.key && item.key.id) || null;
-      const falhou = item && (item.error || item.exception ||
-        (typeof item.status === 'number' && item.status >= 400) ||
-        (item.response && item.response.message));
-      if (falhou) {
+      if (respostaFalhou(item)) {
         ok = false;
-        erro = String(item.message || item.error ||
-          (item.response && JSON.stringify(item.response.message)) || 'a Evolution recusou o envio').slice(0, 300);
+        erro = erroDaEvolution(item) || 'a Evolution recusou o envio';
       }
       // sem chave e sem erro explícito: não dá pra afirmar que saiu, mas também não dá pra
       // afirmar que falhou — fica gravado como enviado, com a ressalva no campo erro
@@ -5726,14 +5745,10 @@ async function enviarAudioWhatsApp(telefone, base64Audio, blobLocal) {
       const data = await resp.json().catch(() => null);
       const item = Array.isArray(data) ? data[0] : data;
       mensagemId = (item && item.key && item.key.id) || null;
-      const falhou = item && (item.error || item.exception ||
-        (typeof item.status === 'number' && item.status >= 400) ||
-        (item.response && item.response.message) ||
-        (!item.key && item.message));
-      if (falhou) {
+      if (respostaFalhou(item)) {
         ok = false;
-        erro = String(item.message || item.error ||
-          (item.response && JSON.stringify(item.response.message)) || 'a Evolution recusou o áudio').slice(0, 300);
+        // sem motivo reconhecido, guarda a resposta crua: é isso que permite diagnosticar depois
+        erro = erroDaEvolution(item) || ('resposta da Evolution: ' + JSON.stringify(item).slice(0, 260));
       } else if (!mensagemId) {
         ok = false;
         erro = 'a Evolution não devolveu id da mensagem — o áudio provavelmente não saiu';
