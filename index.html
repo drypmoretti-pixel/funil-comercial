@@ -1281,6 +1281,15 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
 .tema-chave button:hover { color: var(--text-primary); }
 .tema-chave button.ativo { background: var(--surface-1); color: var(--accent); box-shadow: var(--sombra-1); }
 
+
+.wz-inst-seletor { display: flex; gap: 5px; padding: 0 12px 9px; flex-wrap: wrap; }
+.wz-inst { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
+  border-radius: 10px; padding: 7px 10px; font-size: .78rem; font-weight: 700; cursor: pointer;
+  transition: border-color 160ms, color 160ms, background 160ms; }
+.wz-inst:hover { border-color: var(--accent); color: var(--accent); }
+.wz-inst.ativo { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+.wz-inst-bolha { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -1933,6 +1942,8 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
                 <div id="whats-status" class="pill">verificando...</div>
               </div>
             </div>
+
+            <div class="wz-inst-seletor" id="whats-inst-seletor" style="display:none;"></div>
 
             <div class="wz-busca">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></svg>
@@ -5176,7 +5187,49 @@ function desenharLeadsPorDia(leadsMes, mesRef) {
 }
 
 // ---------- WHATSAPP (Evolution API, via proxy — token não fica no código público) ----------
-const EVOLUTION_INSTANCE = 'SDR';
+// Deixou de ser constante: o painel atende mais de um número de WhatsApp. Continua com o mesmo
+// nome pra não precisar reescrever os ~8 pontos que montam path da Evolution com ela.
+let EVOLUTION_INSTANCE = 'SDR';
+let whatsInstancias = [{ instancia: 'SDR', rotulo: 'SDR', ordem: 1 }];
+const WHATS_INST_CHAVE = 'whats_instancia';
+
+async function carregarInstanciasWhats() {
+  try {
+    const { data } = await sb.from('com_whatsapp_instancias').select('*').eq('ativo', true).order('ordem');
+    if (data && data.length) whatsInstancias = data;
+  } catch (e) { /* fica com o padrão */ }
+  let salva = null;
+  try { salva = localStorage.getItem(WHATS_INST_CHAVE); } catch (e) { /* sem storage */ }
+  const existe = whatsInstancias.find(i => i.instancia === salva);
+  EVOLUTION_INSTANCE = existe ? existe.instancia : whatsInstancias[0].instancia;
+  renderSeletorInstancia();
+}
+
+function renderSeletorInstancia() {
+  const el = document.getElementById('whats-inst-seletor');
+  if (!el) return;
+  // com um número só, o seletor não aparece — não faz sentido escolher entre uma coisa
+  if (whatsInstancias.length < 2) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  el.innerHTML = whatsInstancias.map(i => `
+    <button type="button" class="wz-inst ${i.instancia === EVOLUTION_INSTANCE ? 'ativo' : ''}"
+            onclick="trocarInstanciaWhats('${i.instancia}')" title="${wzEsc(i.numero || i.instancia)}">
+      <span class="wz-inst-bolha" style="background:${i.cor || 'var(--chip-1)'}"></span>${wzEsc(i.rotulo || i.instancia)}
+    </button>`).join('');
+}
+
+async function trocarInstanciaWhats(nome) {
+  if (nome === EVOLUTION_INSTANCE) return;
+  EVOLUTION_INSTANCE = nome;
+  try { localStorage.setItem(WHATS_INST_CHAVE, nome); } catch (e) { /* segue sem lembrar */ }
+  whatsConversaAtual = null;          // a conversa aberta é de outro número
+  whatsMensagens = [];
+  renderSeletorInstancia();
+  renderThreadWhats(); wzRenderPainel();
+  await Promise.all([carregarMensagensWhats(), wzCarregarMeta()]);
+  renderListaConversas();
+  verificarStatusWhats();
+}
 
 function normalizarTelefoneWhats(tel) {
   let digitos = (tel || '').replace(/\D/g, '');
@@ -5239,6 +5292,7 @@ async function enviarWhatsApp(telefone, mensagem, origem, origemId, origemNome) 
   // nem a varredura de 25s. Sem isso a mensagem enviada só aparecia segundos depois e dava a
   // impressão de que o envio não tinha funcionado.
   const { data: gravada } = await sb.from('com_whatsapp_mensagens').insert([{
+    instancia: EVOLUTION_INSTANCE,
     telefone: numero, mensagem, direcao: 'enviada', origem: origem || 'manual', origem_id: origemId || null, origem_nome: origemNome || null,
     enviado_por: currentPerfil ? currentPerfil.id : null, status: ok ? 'enviado' : 'erro', erro, mensagem_id: mensagemId,
   }]).select();
@@ -5294,6 +5348,7 @@ async function carregarMensagensWhats() {
   // velha e parecia que o tempo real tinha parado. Ordenar DESC e inverter faz o corte cair no
   // fim antigo, que é o certo — o topo da lista é sempre a mensagem mais nova.
   const { data } = await sb.from('com_whatsapp_mensagens').select('*')
+    .eq('instancia', EVOLUTION_INSTANCE)
     .order('created_at', { ascending: false }).limit(WHATS_CARGA_INICIAL);
   whatsMensagens = (data || []).slice().reverse();
   const { data: tags } = await sb.from('com_whatsapp_conversa_tags').select('*');
@@ -5316,6 +5371,7 @@ async function buscarMensagensNovasWhats() {
     : new Date(Date.now() - 86400000).toISOString();
   try {
     const { data } = await sb.from('com_whatsapp_mensagens').select('*')
+      .eq('instancia', EVOLUTION_INSTANCE)
       .gt('created_at', ultima).order('created_at').limit(200);
     if (!data || !data.length) return;
     const vistos = new Set(whatsMensagens.map(m => m.id));
@@ -5348,6 +5404,8 @@ function assinarRealtimeWhats() {
   try {
     whatsCanalRealtime = sb.channel('whatsapp-realtime')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'com_whatsapp_mensagens' }, (payload) => {
+        // mensagem de outro número não entra nesta caixa
+        if (payload.new.instancia && payload.new.instancia !== EVOLUTION_INSTANCE) return;
         if (whatsMensagens.some(m => m.id === payload.new.id)) return;   // o poll pode ter pego antes
         whatsMensagens.push(payload.new);
         // sem recarregar a meta, os contadores dos filtros e o "não lida" ficavam congelados
@@ -5383,7 +5441,7 @@ function conversasAgrupadasWhats() {
     const comNome = [...ordenadas].reverse().find(m => m.nome_contato && m.direcao === 'recebida');
     const contato = whatsContatos.find(c => c.telefone === telefone);
     const nome = whatsNomesManual[telefone] || (contato && contato.nome) || (comNome && comNome.nome_contato) || null;
-    return { telefone, nome, ultima, mensagens: ordenadas, temMensagem: true };
+    return { telefone, instancia: EVOLUTION_INSTANCE, nome, ultima, mensagens: ordenadas, temMensagem: true };
   }).sort((a, b) => new Date(b.ultima.created_at) - new Date(a.ultima.created_at));
 
   const telefonesComMsg = new Set(comMensagens.map(c => c.telefone));
@@ -5675,6 +5733,7 @@ async function carregarContatosWhats() {
 }
 
 async function initWhatsApp() {
+  await carregarInstanciasWhats();   // antes de tudo: define de qual número estamos falando
   await Promise.all([wzCarregarMeta(), wzCarregarRespostas()]);
   await verificarStatusWhats();
   await carregarNomesManualWhats();
@@ -7227,7 +7286,7 @@ function renderListaConversas() {
 async function carregarHistoricoDaConversa(telefone) {
   try {
     const linhas = await buscarPaginado('com_whatsapp_mensagens',
-      q => q.select('*').eq('telefone', telefone).order('created_at'));
+      q => q.select('*').eq('instancia', EVOLUTION_INSTANCE).eq('telefone', telefone).order('created_at'));
     if (!linhas || !linhas.length) return;
     const vistos = new Set(whatsMensagens.map(m => m.id));
     const novas = linhas.filter(m => !vistos.has(m.id));
@@ -7256,8 +7315,8 @@ async function wzMarcarLida(telefone) {
   if (!m.nao_lida) return;
   try {
     await sb.from('com_whatsapp_conversas')
-      .upsert({ telefone, lida_ate: new Date().toISOString(), atualizado_em: new Date().toISOString() },
-              { onConflict: 'telefone' });
+      .upsert({ telefone, instancia: EVOLUTION_INSTANCE, lida_ate: new Date().toISOString(), atualizado_em: new Date().toISOString() },
+              { onConflict: 'instancia,telefone' });
     if (wzMeta[telefone]) wzMeta[telefone].nao_lida = false;
     wzRenderChips(); renderListaConversas();
   } catch (e) { /* marcar como lida não pode quebrar a abertura da conversa */ }
@@ -7266,9 +7325,9 @@ async function wzMarcarLida(telefone) {
 async function wzMarcarTodasLidas() {
   const agora = new Date().toISOString();
   const linhas = Object.keys(wzMeta).filter(t => wzMeta[t].nao_lida)
-    .map(telefone => ({ telefone, lida_ate: agora, atualizado_em: agora }));
+    .map(telefone => ({ telefone, instancia: EVOLUTION_INSTANCE, lida_ate: agora, atualizado_em: agora }));
   if (!linhas.length) return;
-  await sb.from('com_whatsapp_conversas').upsert(linhas, { onConflict: 'telefone' });
+  await sb.from('com_whatsapp_conversas').upsert(linhas, { onConflict: 'instancia,telefone' });
   linhas.forEach(l => { if (wzMeta[l.telefone]) wzMeta[l.telefone].nao_lida = false; });
   wzRenderChips(); renderListaConversas();
 }
@@ -7530,8 +7589,8 @@ async function wzAbrirCard(cardId) {
 
 async function wzAtribuir(telefone, perfilId) {
   await sb.from('com_whatsapp_conversas').upsert(
-    { telefone, responsavel_id: perfilId || null, atualizado_em: new Date().toISOString() },
-    { onConflict: 'telefone' });
+    { telefone, instancia: EVOLUTION_INSTANCE, responsavel_id: perfilId || null, atualizado_em: new Date().toISOString() },
+    { onConflict: 'instancia,telefone' });
   const p = (perfis || []).find(x => x.id === perfilId);
   wzMeta[telefone] = Object.assign({}, wzM(telefone),
     { responsavel_id: perfilId || null, responsavel_nome: p ? p.nome : null });
@@ -7540,8 +7599,8 @@ async function wzAtribuir(telefone, perfilId) {
 
 async function wzPrioridade(telefone, alta) {
   await sb.from('com_whatsapp_conversas').upsert(
-    { telefone, prioridade: alta ? 'alta' : 'normal', atualizado_em: new Date().toISOString() },
-    { onConflict: 'telefone' });
+    { telefone, instancia: EVOLUTION_INSTANCE, prioridade: alta ? 'alta' : 'normal', atualizado_em: new Date().toISOString() },
+    { onConflict: 'instancia,telefone' });
   wzMeta[telefone] = Object.assign({}, wzM(telefone), { prioridade: alta ? 'alta' : 'normal' });
   renderListaConversas();
 }
@@ -7553,7 +7612,7 @@ async function wzTogglePiloto(telefone) {
   // Enviar sem revisão pra cliente real é decisão do Igor, não minha.
   if (novo && !confirm('Ligar o Piloto?\n\nA cada mensagem que chegar, a IA já deixa uma sugestão de resposta pronta no painel Inteligência.\n\nEla NÃO envia nada sozinha — você revisa e manda.')) return;
   await sb.from('com_whatsapp_conversas').upsert(
-    { telefone, piloto: novo, atualizado_em: new Date().toISOString() }, { onConflict: 'telefone' });
+    { telefone, instancia: EVOLUTION_INSTANCE, piloto: novo, atualizado_em: new Date().toISOString() }, { onConflict: 'instancia,telefone' });
   wzMeta[telefone] = Object.assign({}, wzM(telefone), { piloto: novo });
   renderThreadWhats(); wzRenderPainel();
   if (novo) wzIA(telefone, 'sugerir');
@@ -7562,7 +7621,7 @@ async function wzTogglePiloto(telefone) {
 async function wzArquivar(telefone) {
   if (!confirm('Arquivar esta conversa? Ela some da lista, mas o histórico fica guardado.')) return;
   await sb.from('com_whatsapp_conversas').upsert(
-    { telefone, arquivada: true, atualizado_em: new Date().toISOString() }, { onConflict: 'telefone' });
+    { telefone, instancia: EVOLUTION_INSTANCE, arquivada: true, atualizado_em: new Date().toISOString() }, { onConflict: 'instancia,telefone' });
   delete wzMeta[telefone];
   whatsConversaAtual = null;
   renderListaConversas(); renderThreadWhats(); wzRenderPainel();
@@ -7595,8 +7654,8 @@ async function wzIA(telefone, tarefa) {
       wzIaCache[telefone] = Object.assign({}, wzIaCache[telefone] || {}, r);
       if (r.resumo) {
         await sb.from('com_whatsapp_conversas').upsert(
-          { telefone, resumo_ia: r.resumo, resumo_em: new Date().toISOString(), atualizado_em: new Date().toISOString() },
-          { onConflict: 'telefone' });
+          { telefone, instancia: EVOLUTION_INSTANCE, resumo_ia: r.resumo, resumo_em: new Date().toISOString(), atualizado_em: new Date().toISOString() },
+          { onConflict: 'instancia,telefone' });
         wzMeta[telefone] = Object.assign({}, wzM(telefone), { resumo_ia: r.resumo, resumo_em: new Date().toISOString() });
       }
       if (r.triagem || r.sugestoes) wzAba = 'inteligencia';
