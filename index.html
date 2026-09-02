@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <script>
+    // Aplica o tema ANTES da folha de estilo pintar. Sem isso a página nasce clara e pisca
+    // pro escuro depois que o script do fim do body roda. Duplicar essas 4 linhas aqui é
+    // proposital — é o único jeito de não ter flash.
+    (function () {
+      try {
+        var t = localStorage.getItem('painel_tema');
+        if (!t) t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-tema', t);
+      } catch (e) { document.documentElement.setAttribute('data-tema', 'light'); }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
@@ -1061,7 +1073,7 @@ h2 { font-weight: 700; }
 /* ---------- cabeçalho: gruda no topo com vidro ---------- */
 .topbar {
   position: sticky; top: 0; z-index: 40;
-  background: rgba(255,255,255,.82);
+  background: var(--topbar-bg);
   backdrop-filter: saturate(1.6) blur(14px);
   -webkit-backdrop-filter: saturate(1.6) blur(14px);
   border-bottom: 1px solid rgba(var(--ink-shadow), .07);
@@ -1081,7 +1093,7 @@ h2 { font-weight: 700; }
 .card:hover { box-shadow: var(--sombra-2); }
 .tile {
   position: relative; overflow: hidden;
-  background: linear-gradient(180deg, #fff 0%, var(--surface-2) 100%);
+  background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
 }
 .tile::before {
   content: ""; position: absolute; inset: 0 0 auto 0; height: 2px;
@@ -1157,7 +1169,7 @@ input:focus, select:focus, textarea:focus {
 .modal-overlay.open .modal-card { animation: modal-entra 200ms cubic-bezier(.22,.61,.36,1); }
 @keyframes modal-entra { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
 .modal-card, .notif-panel { box-shadow: var(--sombra-3); }
-.notif-badge { box-shadow: 0 0 0 2px #fff; }
+.notif-badge { box-shadow: 0 0 0 2px var(--plane); }
 
 /* ---------- barra de rolagem ---------- */
 * { scrollbar-width: thin; scrollbar-color: rgba(var(--ink-shadow), .2) transparent; }
@@ -1180,6 +1192,95 @@ th { letter-spacing: .06em; }
 
 
 .score-linha .score-info { font-weight: 600; color: var(--muted); font-size: .74rem; }
+
+/* =========================================================================
+   Tema claro/escuro. Os tokens abaixo são os ÚNICOS lugares com cor de tema —
+   o resto do app já usava var(--...) (530 usos contra 44 literais), por isso
+   o modo escuro coube numa camada só. Regra: nunca escrever cor crua daqui
+   pra frente; se faltar um token, criar um.
+   ========================================================================= */
+:root {
+  --topbar-bg: rgba(246,248,246,.86);
+  --tint-1: rgba(12,163,12,.055);
+  --tint-2: rgba(42,120,214,.038);
+  --sombra-cor: 28, 34, 28;
+}
+
+html[data-tema="dark"] {
+  color-scheme: dark;
+  --plane:        #0f1311;
+  --surface-1:    #171d19;
+  --surface-2:    #1c231e;
+  --topbar-bg:    rgba(15,19,17,.88);
+  --field-bg:     #1f2723;
+  --text-primary: #e9efea;
+  --text-secondary: #a7b3ab;
+  --muted:        #7e8b83;
+  --border:       rgba(233,239,234,0.14);
+  --grid:         #2a332d;
+  --baseline:     #3b453f;
+
+  --accent:       #3fcb4a;
+  --accent-deep:  #2fae3a;
+  --accent-wash:  #14301a;
+  --accent-glow:  rgba(63,203,74,.22);
+  --good:         #3fcb4a;
+  --warning:      #efb63f;
+  --serious:      #ef9a72;
+  --critical:     #f0655f;
+
+  --chip-1: #5b9ded; --chip-2: #f28a56; --chip-3: #3fc79a; --chip-4: #f0bb3c;
+  --chip-5: #ef9cbd; --chip-6: #8878e0; --chip-7: #ef6f6e;
+
+  --sombra-cor: 0, 0, 0;
+  --tint-1: rgba(63,203,74,.07);
+  --tint-2: rgba(91,157,237,.05);
+}
+
+/* as sombras da camada de acabamento passam a seguir o tema */
+:root, html[data-tema="dark"] {
+  --sombra-1: 0 1px 2px rgba(var(--sombra-cor), .06), 0 1px 3px rgba(var(--sombra-cor), .05);
+  --sombra-2: 0 2px 4px rgba(var(--sombra-cor), .07), 0 6px 16px -6px rgba(var(--sombra-cor), .16);
+  --sombra-3: 0 4px 8px rgba(var(--sombra-cor), .09), 0 14px 34px -10px rgba(var(--sombra-cor), .26);
+}
+
+body {
+  background:
+    radial-gradient(1100px 520px at 78% -12%, var(--tint-1), transparent 62%),
+    radial-gradient(760px 420px at 4% 4%, var(--tint-2), transparent 60%),
+    var(--plane);
+}
+
+/* a borda do topo também segue o tema (a cor vinha fixa da camada de acabamento) */
+.topbar { border-bottom: 1px solid var(--border); }
+
+/* no escuro o cartão precisa de contorno, porque sombra some em fundo escuro */
+html[data-tema="dark"] .card,
+html[data-tema="dark"] .tile,
+html[data-tema="dark"] .modal-card,
+html[data-tema="dark"] .notif-panel,
+html[data-tema="dark"] .whats-conversas,
+html[data-tema="dark"] .whats-thread,
+html[data-tema="dark"] .wz-painel { border-color: rgba(233,239,234,0.11); }
+html[data-tema="dark"] .modal-overlay { background: rgba(0,0,0,.62); }
+html[data-tema="dark"] img:not([src*=".svg"]) { filter: brightness(.92); }
+html[data-tema="dark"] .marca > div > div { opacity: .85; }
+
+/* ---- a chave ---- */
+.tema-chave {
+  display: inline-flex; align-items: center; gap: 2px;
+  background: var(--field-bg); border: 1px solid var(--border);
+  border-radius: 999px; padding: 3px; cursor: pointer;
+}
+.tema-chave button {
+  border: 0; background: none; color: var(--muted); cursor: pointer;
+  width: 28px; height: 24px; border-radius: 999px; display: flex;
+  align-items: center; justify-content: center; padding: 0;
+  transition: background 160ms cubic-bezier(.22,.61,.36,1), color 160ms cubic-bezier(.22,.61,.36,1);
+}
+.tema-chave button:hover { color: var(--text-primary); }
+.tema-chave button.ativo { background: var(--surface-1); color: var(--accent); box-shadow: var(--sombra-1); }
+
 </style>
 </head>
 <body>
@@ -1244,6 +1345,10 @@ th { letter-spacing: .06em; }
           </div>
           <div class="notif-lista" id="notif-lista"></div>
         </div>
+      </div>
+      <div class="tema-chave" role="group" aria-label="Tema do painel">
+        <button type="button" data-tema="light" title="Tema claro" aria-label="Tema claro" onclick="definirTema('light')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M4.2 12H2M22 12h-2.2M5.6 5.6 4.1 4.1M19.9 19.9l-1.5-1.5M18.4 5.6l1.5-1.5M4.1 19.9l1.5-1.5"/></svg></button>
+        <button type="button" data-tema="dark" title="Tema escuro" aria-label="Tema escuro" onclick="definirTema('dark')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8z"/></svg></button>
       </div>
       <button id="logout-btn" onclick="logout()">Sair</button>
     </header>
@@ -7624,6 +7729,60 @@ async function wzEditarRespostas() {
   await wzCarregarRespostas();
   alert('Resposta rápida cadastrada.');
 }
+
+
+// ---------- TEMA CLARO / ESCURO ----------
+// A escolha vale por navegador (localStorage). Sem escolha, segue o sistema operacional e
+// continua seguindo se a pessoa mudar lá — por isso o listener no matchMedia só age quando
+// não existe preferência salva.
+const TEMA_CHAVE = 'painel_tema';
+
+function temaSalvo() {
+  try { return localStorage.getItem(TEMA_CHAVE); } catch (e) { return null; }
+}
+
+function temaDoSistema() {
+  try {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  } catch (e) { return 'light'; }
+}
+
+function aplicarTema(tema) {
+  const t = tema === 'dark' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-tema', t);
+  document.querySelectorAll('.tema-chave button').forEach(b =>
+    b.classList.toggle('ativo', b.dataset.tema === t));
+  // a barra do navegador no celular acompanha
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); }
+  meta.content = t === 'dark' ? '#0f1311' : '#f6f8f6';
+}
+
+function definirTema(tema) {
+  try { localStorage.setItem(TEMA_CHAVE, tema); } catch (e) { /* sem storage, vale só nesta sessão */ }
+  aplicarTema(tema);
+  redesenharComTema();
+}
+
+// Os gráficos leem as cores com corTema() no momento em que desenham, então trocar o tema
+// não muda o que já está na tela — só o próximo desenho. Por isso os redesenhamos aqui.
+function redesenharComTema() {
+  [
+    () => typeof renderHistorico === 'function' && renderHistorico(),
+    () => typeof renderFunilComparativo === 'function' && renderFunilComparativo(),
+    () => typeof renderTiles === 'function' && renderTiles(),
+    () => typeof renderFunil === 'function' && renderFunil(),
+    () => typeof renderChecklist === 'function' && checklistMetricas.length && renderChecklist(),
+  ].forEach(fn => { try { fn(); } catch (e) { /* um gráfico que falhe não impede os outros */ } });
+}
+
+// roda antes de tudo pra não piscar branco antes de virar escuro
+aplicarTema(temaSalvo() || temaDoSistema());
+try {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (ev) => {
+    if (!temaSalvo()) aplicarTema(ev.matches ? 'dark' : 'light');
+  });
+} catch (e) { /* navegador antigo: fica no tema inicial */ }
 
 // ---------- TABS ----------
 // A faixa de indicadores mora FORA dos painéis (logo abaixo do cabeçalho), então aparecia em
