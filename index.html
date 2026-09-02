@@ -4890,7 +4890,6 @@ const TALLY_ORIGEM = {
   '5BPp2N': { isca: 'claude-word', tag: 126 },
   'yP5dog': { isca: 'claude-preparo-reuniao', tag: 127 },
   '2E6xKL': { isca: 'claude-asaas', tag: 128 },
-  'RG92WK': { isca: 'claude-pipedrive', tag: 129 },
   'Gx0pgz': { isca: 'claude-manychat', tag: 84 },
   'GxY2lO': { isca: 'claude-vscode', tag: 93 },
   'GxYyeL': { isca: 'claude-trafego-pago', tag: 79 },
@@ -6839,53 +6838,54 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-01',
+  versao: '2026-09-02',
   titulo: 'Chegou coisa nova',
   passos: [
     {
-      emoji: '💬',
-      titulo: 'O WhatsApp virou uma central de atendimento',
-      texto: 'A aba foi refeita em <b>três colunas</b>. À esquerda, filtros que respondem a pergunta certa: <b>Não lidas</b>, <b>Sem dono</b>, <b>≥24h sem resposta</b> e <b>Minhas</b> — cada um com o número do lado. Cada conversa mostra há quantos dias o lead está esperando e a qual negócio ele pertence.',
-      aba: 'whatsapp', onde: 'WhatsApp · coluna da esquerda',
+      emoji: '🌗',
+      titulo: 'Agora dá pra escolher claro ou escuro',
+      texto: 'No canto de cima à direita tem uma chavinha com sol e lua. A escolha fica salva no seu navegador — cada pessoa do time usa do jeito que preferir. Se você <b>não</b> escolher nada, o painel segue o tema do seu computador e continua acompanhando se você mudar lá.',
+      aba: 'dashboard', onde: 'Topo da página, ao lado do Sair',
     },
     {
-      emoji: '🧰',
-      titulo: 'A conversa agora tem barra de ações',
-      texto: 'Dentro da conversa dá pra <b>definir o responsável</b>, criar ou abrir o negócio no CRM, gravar uma nota, marcar tags e <b>buscar dentro da própria conversa</b>. Embaixo entraram anexo, localização, contato, agendamento e respostas rápidas — oito textos prontos que já trocam o {nome} pelo primeiro nome de quem está do outro lado.',
-      aba: 'whatsapp', onde: 'WhatsApp · barra acima da conversa',
-    },
-    {
-      emoji: '🪟',
-      titulo: 'E uma ficha do contato do lado direito',
-      texto: 'Abas <b>Conversa</b>, <b>Inteligência</b> e <b>Config</b>. A primeira traz telefone, cargo, lead score, dono e o negócio ligado. A segunda traz a leitura da IA: em que pé está a conversa, qual o próximo passo e sugestões de resposta prontas pra usar num clique.',
-      aba: 'whatsapp', onde: 'WhatsApp · coluna da direita',
-    },
-    {
-      emoji: '📅',
-      titulo: 'Reunião que passou agora cobra desfecho',
-      texto: 'Se a data da reunião passou e ninguém disse o que aconteceu, ela aparece no <b>topo do Dashboard</b> e numa janela ao entrar, com três botões: <b>Aconteceu</b>, <b>Não apareceu</b>, <b>Remarcou</b>. Motivo: o status de no-show existe desde sempre e nunca foi usado uma vez — em agosto, 19 das 20 reuniões constavam como realizadas, o que não acontece na vida real. Reunião em aberto conta como agendada e deixa a taxa de comparecimento melhor do que ela é.',
-      aba: 'dashboard', onde: 'Dashboard · topo da página',
-    },
-    {
-      emoji: '🌡️',
-      titulo: 'O lead score parou de punir quem não foi perguntado',
-      texto: 'A nota repartia 70 pontos entre cargo, dor e canal — mas a maioria dos formulários nunca perguntou dor e canal. Resultado: <b>zero leads quentes</b> em 1.242, e a fila "Atacar hoje" disputando 12 candidatos pra 10 vagas. Agora a nota é calculada <b>só sobre o que foi perguntado</b>, e materiais baixados contam <b>por pessoa</b>, não por card. A fila passou a ter 344 candidatos.',
-      aba: 'dashboard', onde: 'Dashboard · Atacar hoje',
+      emoji: '📱',
+      titulo: 'Dois números de WhatsApp na mesma tela',
+      texto: 'O número do <b>Bruno</b> entrou. No topo da lista de conversas aparecem dois botões: <b>SDR</b> e <b>Bruno</b>. Trocar fecha a conversa aberta e carrega a caixa do outro número — de propósito, senão você veria mensagem de uma dentro da outra. O painel lembra qual você usou por último, então cada um abre já no seu.',
+      aba: 'whatsapp', onde: 'WhatsApp · topo da lista de conversas',
     },
     {
       emoji: '⚡',
-      titulo: 'O lead do formulário cai no CRM na hora',
-      texto: 'Antes o lead só virava card quando alguém abria o painel — o atraso <b>médio era de 21 horas</b>, e teve caso de 9 dias. Agora ele entra no instante em que o formulário é enviado, já com etiqueta, MQL classificado e nota calculada.',
-      aba: 'crm', onde: 'CRM · funil de leads',
+      titulo: 'A mensagem enviada aparece na hora',
+      texto: 'Antes ela era enviada de verdade, mas só surgia na tela alguns segundos depois — o que dava toda a impressão de não ter funcionado. Agora a bolha aparece no instante do envio.',
+      aba: 'whatsapp', onde: 'WhatsApp · dentro da conversa',
     },
     {
-      emoji: '📊',
-      titulo: 'E todo dia 01 o mês fecha sozinho',
-      texto: 'Na aba <b>Dicas</b>, no topo, tem o <b>fechamento do mês</b>: funil completo com meta e comparação com o mês anterior, desempenho de cada pessoa, iscas que mais trouxeram lead e motivos de perda. Gerado automaticamente às 7h do dia 01.',
-      aba: 'dicas', onde: 'Dicas · Fechamento do mês',
+      emoji: '🚨',
+      titulo: 'E se ela NÃO sair, você fica sabendo',
+      texto: 'Esse é o mais importante: o painel gravava "enviado" sempre, mesmo quando o WhatsApp recusava a mensagem. Dava pra achar que falou com um lead que nunca recebeu nada. Agora, quando não sai, aparece um aviso com o motivo e <b>o texto volta pra caixa</b> pra você não perder o que escreveu. O botão de áudio, que tinha quebrado na reforma da aba, voltou a funcionar.',
+      aba: 'whatsapp', onde: 'WhatsApp · caixa de mensagem',
+    },
+    {
+      emoji: '🌡️',
+      titulo: 'O lead score mudou de conta (de novo) — e agora fecha',
+      texto: 'Ontem a nota parou de punir quem não foi perguntado. Só que sobrou um furo: um CEO que respondeu <b>só o cargo</b> tirava a mesma nota de um CEO que respondeu <b>as três perguntas</b>. Agora quanto menos a gente sabe do lead, menos a nota vale — 1 resposta vale 72%, 2 valem 88%, 3 valem 100%. E abrindo o card, <b>o detalhamento soma exatamente o total</b>, que antes não batia e parecia erro. A fila "Atacar hoje" ficou com 273 leads.',
+      aba: 'crm', onde: 'CRM · abra um card e veja o Lead score',
+    },
+    {
+      emoji: '🙋',
+      titulo: 'As conversas voltaram a ter o nome do lead',
+      texto: 'Todo contato do WhatsApp aparecia como <b>Igor Miguel</b>, com o nome real do lead num quadradinho embaixo. Motivo: em mensagem enviada, o WhatsApp grava o nome de quem enviou — o do Igor. Agora o nome sai só de mensagem recebida.',
+      aba: 'whatsapp', onde: 'WhatsApp · lista de conversas',
+    },
+    {
+      emoji: '🧹',
+      titulo: 'A faixa de números só onde ela diz algo',
+      texto: 'Os indicadores do mês apareciam em todas as abas, inclusive no WhatsApp e no Checklist, onde não significam nada. Agora ficam só aqui no <b>Dashboard</b> e no <b>CRM</b> — e a conversa do WhatsApp ganhou a altura que sobrou.',
+      aba: 'dashboard', onde: 'Dashboard · a faixa de números no topo',
     },
   ],
 };
+
 
 
 let tourPasso = 0;
