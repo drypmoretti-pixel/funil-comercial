@@ -4890,7 +4890,6 @@ const TALLY_ORIGEM = {
   '5BPp2N': { isca: 'claude-word', tag: 126 },
   'yP5dog': { isca: 'claude-preparo-reuniao', tag: 127 },
   '2E6xKL': { isca: 'claude-asaas', tag: 128 },
-  'RG92WK': { isca: 'claude-pipedrive', tag: 129 },
   'Gx0pgz': { isca: 'claude-manychat', tag: 84 },
   'GxY2lO': { isca: 'claude-vscode', tag: 93 },
   'GxYyeL': { isca: 'claude-trafego-pago', tag: 79 },
@@ -7190,7 +7189,11 @@ function wzEsc(t) {
 
 async function wzCarregarMeta() {
   try {
-    const { data } = await sb.from('com_whatsapp_lista').select('*');
+    // filtra pelo número em uso: a view atende as duas caixas, e como o mapa é indexado só
+    // por telefone, sem isso a ficha de um número sobrescreveria a do outro quando a mesma
+    // pessoa falasse com os dois.
+    const { data } = await sb.from('com_whatsapp_lista').select('*')
+      .eq('instancia', EVOLUTION_INSTANCE);
     wzMeta = {};
     (data || []).forEach(r => { wzMeta[r.telefone] = r; });
   } catch (e) { wzMeta = {}; }
