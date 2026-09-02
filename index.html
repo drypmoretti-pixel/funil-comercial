@@ -4296,6 +4296,15 @@ function crmEnviarWhatsApp() {
 
 // funil dos perdidos é achado pelo nome, não por id fixo: se for renomeado/recriado o app só
 // deixa de mover o card, em vez de mandar lead pra um id que não existe mais
+// Espelha crmDestinoPerdidos. O funil é achado pelo NOME de propósito: se ele for renomeado ou
+// apagado, o app apenas deixa de mover, em vez de mandar o card pra um id inexistente.
+function crmDestinoGanhos() {
+  const funil = crmFunis.find(f => (f.nome || '').toLowerCase() === 'ganhos');
+  if (!funil) return null;
+  const estagio = crmEstagios.filter(e => e.funil_id === funil.id).sort((a, b) => a.ordem - b.ordem)[0];
+  return estagio ? { funilId: funil.id, estagioId: estagio.id } : null;
+}
+
 function crmDestinoPerdidos() {
   const funil = crmFunis.find(f => (f.nome || '').toLowerCase() === 'perdidos');
   if (!funil) return null;
@@ -4307,8 +4316,21 @@ async function crmMarcarDesfecho(status) {
   if (!crmCardAtualId) { alert('Salve o card primeiro.'); return; }
   // perder passa pela janela de motivo; o salvamento em si vive em crmAplicarPerda
   if (status === 'perdido') { abrirModalPerda('card', crmCardAtualId, null); return; }
-  await sb.from('com_cards').update({ status_negocio: status, data_fechamento: hojeStr() }).eq('id', crmCardAtualId);
+  const card = crmCards.find(c => c.id === crmCardAtualId);
+  const destino = crmDestinoGanhos();
+  const jaEstava = destino && card && card.funil_id === destino.funilId;
+  const patch = { status_negocio: status, data_fechamento: hojeStr() };
+  if (destino && !jaEstava) { patch.funil_id = destino.funilId; patch.estagio_id = destino.estagioId; }
+
+  await sb.from('com_cards').update(patch).eq('id', crmCardAtualId);
   await crmLogAtividade(crmCardAtualId, status, 'Marcado como Ganho');
+  // o registro de onde saiu vem depois do "Marcado como Ganho", pra leitura ficar na ordem certa
+  if (destino && !jaEstava && card) {
+    const fAnt = crmFunis.find(f => f.id === card.funil_id);
+    const eAnt = crmEstagios.find(e => e.id === card.estagio_id);
+    await crmLogAtividade(crmCardAtualId, 'mudanca_funil',
+      `Movido para Ganhos / Ganho (era ${fAnt ? fAnt.nome : '?'} / ${eAnt ? eAnt.nome : '?'})`);
+  }
   fecharModal('modal-card-crm');
   await carregarCardsDoFunil();
   celebrar('venda');
