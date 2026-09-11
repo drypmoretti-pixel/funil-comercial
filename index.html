@@ -2810,6 +2810,21 @@ function infoData(n) {
   return partes.join('');
 }
 
+function nomePerfil(id) {
+  const p = perfis.find(x => x.id === id);
+  return p ? p.nome : null;
+}
+
+// Pill sutil com quem agendou (SDR) e quem fechou/vai fechar (vendedor) — pro time bater o olho
+// no card e já saber de quem é aquele negócio, sem precisar abrir editar.
+function infoPessoas(n) {
+  const sdr = nomePerfil(n.sdr_id);
+  const vendedor = nomePerfil(n.vendedor_id);
+  if (!sdr && !vendedor) return '';
+  const texto = sdr && vendedor ? `${sdr} → ${vendedor}` : (sdr || `→ ${vendedor}`);
+  return `<span class="pill pill-pessoas">${texto}</span>`;
+}
+
 function botaoPrincipal(n) {
   switch (n.status) {
     case 'agendada':
@@ -2841,7 +2856,7 @@ function valorPrincipal(n) {
 function linhaNegocio(n) {
   return `
     <div class="negocio-row">
-      <div class="negocio-nome">${n.cliente_nome}${n.card_id ? `<button class="lead-link" onclick="abrirLeadDoNegocio(${n.card_id})" title="Abrir o lead no CRM">ver lead</button>` : ''}${infoData(n)}</div>
+      <div class="negocio-nome">${n.cliente_nome}${n.card_id ? `<button class="lead-link" onclick="abrirLeadDoNegocio(${n.card_id})" title="Abrir o lead no CRM">ver lead</button>` : ''}${infoData(n)}${infoPessoas(n)}</div>
       <div class="negocio-actions">
         <div class="negocio-valor">${valorPrincipal(n)}</div>
         ${botaoPrincipal(n)}
