@@ -2063,6 +2063,10 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
             <label>Cargo do responsável</label>
             <input type="text" id="ctr-cargo" value="Sócio(a)" required>
           </div>
+          <div class="full">
+            <label>E-mail do cliente (recebe o convite de assinatura na Autentique)</label>
+            <input type="email" id="ctr-email-assinatura" placeholder="e-mail de quem vai assinar, se for diferente do e-mail da empresa acima">
+          </div>
           <div>
             <label>RG do contratante</label>
             <input type="text" id="ctr-rg" required>
@@ -8314,6 +8318,7 @@ function lerDadosContrato() {
     razao_social: document.getElementById('ctr-razao').value.trim(),
     cnpj: document.getElementById('ctr-cnpj').value.trim(),
     email: document.getElementById('ctr-email').value.trim(),
+    email_assinatura: document.getElementById('ctr-email-assinatura').value.trim(),
     telefone: document.getElementById('ctr-telefone').value.trim(),
     endereco: document.getElementById('ctr-endereco').value.trim(),
     bairro: document.getElementById('ctr-bairro').value.trim(),
@@ -8352,6 +8357,12 @@ async function enviarAutentique() {
   const form = document.getElementById('form-contrato');
   if (!form.reportValidity()) return;
   const d = lerDadosContrato();
+  const emailSignatario = d.email_assinatura || d.email;
+  if (!emailSignatario) {
+    document.getElementById('ctr-email-assinatura').focus();
+    alert('Preenche o e-mail do cliente (o de quem vai assinar) antes de enviar.');
+    return;
+  }
 
   const btn = document.getElementById('ctr-btn-autentique');
   const textoOriginal = btn.textContent;
@@ -8374,7 +8385,7 @@ async function enviarAutentique() {
       body: JSON.stringify({
         razao_social: d.razao_social,
         nome_responsavel: d.nome_responsavel,
-        email: d.email,
+        email: emailSignatario,
         pdf_base64: pdfBase64,
         nome_documento: 'Contrato - ' + d.razao_social,
       }),
@@ -8383,7 +8394,7 @@ async function enviarAutentique() {
     if (!resultado.ok) { alert('Não consegui enviar pra Autentique: ' + (resultado.erro || 'erro desconhecido')); return; }
 
     await salvarHistoricoContrato(d);
-    alert('Contrato enviado! ' + d.nome_responsavel + ' vai receber um e-mail da Autentique em ' + d.email + ' pra assinar.');
+    alert('Contrato enviado! ' + d.nome_responsavel + ' vai receber um e-mail da Autentique em ' + emailSignatario + ' pra assinar (o Igor entra em cópia).');
   } catch (e) {
     alert('Não consegui enviar pra Autentique: ' + e.message);
   } finally {
