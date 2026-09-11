@@ -7020,9 +7020,15 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-02',
+  versao: '2026-09-11',
   titulo: 'Chegou coisa nova',
   passos: [
+    {
+      emoji: '📄',
+      titulo: 'Contrato pronto em 1 clique',
+      texto: 'Fechou o negócio? Vai na aba <b>Contrato</b>, preenche os dados do cliente e a forma de pagamento combinada, e o contrato já sai prontinho — abre pra impressão e é só salvar como PDF e mandar pro cliente na hora, sem esperar o Igor. Fica um histórico dos últimos contratos gerados, com botão de reimprimir se precisar reemitir.',
+      aba: 'contrato', onde: 'Aba Contrato',
+    },
     {
       emoji: '🌗',
       titulo: 'Agora dá pra escolher claro ou escuro',
