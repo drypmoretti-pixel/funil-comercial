@@ -7091,9 +7091,15 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-11c',
+  versao: '2026-09-11d',
   titulo: 'Chegou coisa nova',
   passos: [
+    {
+      emoji: '🏷️',
+      titulo: 'Cards de negócio agora mostram quem é o dono',
+      texto: 'Cada card em "Negócios em andamento" e "Fechados no mês" ganhou uma tarjinha sutil com o nome da SDR e do vendedor (ex: "Dry → Bruno"), do lado da data — sem precisar abrir o card pra saber de quem é aquele negócio.',
+      aba: 'dashboard', onde: 'Dashboard · Negócios em andamento',
+    },
     {
       emoji: '🏅',
       titulo: 'Desempenho individual — cada um vê o seu número',
