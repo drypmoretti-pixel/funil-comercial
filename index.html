@@ -1380,6 +1380,12 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
       </section>
 
       <section class="card">
+        <h2>Desempenho individual</h2>
+        <p class="muted">Quanto cada SDR agendou e cada vendedor fechou no mês — visível pra todo mundo.</p>
+        <div class="tiles" id="desempenho-individual" style="margin-top:14px;"></div>
+      </section>
+
+      <section class="card">
         <div class="section-title">
           <h2>Atacar hoje</h2>
           <span class="muted" style="font-size:.74rem;">lead score 45+ · sem toque há 3 dias</span>
@@ -2648,6 +2654,7 @@ async function carregarTudo() {
 
 function renderTudo() {
   renderTiles();
+  renderDesempenhoIndividual();
   renderFunil();
   renderAndamento();
   renderFechados();
@@ -2716,6 +2723,47 @@ function renderTiles() {
     </div>
   `;
   document.getElementById('tiles').innerHTML = tilesHtml + faturamentoHtml;
+}
+
+// ---------- DESEMPENHO INDIVIDUAL ----------
+// Um tile por SDR (agendadas/realizadas do mês) e por vendedor (vendas/valor do mês), lendo
+// sdr_id/vendedor_id de com_negocios — mesmo dado que já alimenta o funil geral, só agrupado por
+// pessoa. Visível pra todo mundo que loga no painel (decisão do Igor em 2026-09-11).
+function renderDesempenhoIndividual() {
+  const wrap = document.getElementById('desempenho-individual');
+  if (!wrap) return;
+  const mesRef = fmtMesRef(mesAtual);
+  const sdrs = perfis.filter(p => p.papel === 'sdr');
+  const vendedores = perfis.filter(p => p.papel === 'vendedor');
+
+  const tilesSdr = sdrs.map(p => {
+    const agendadas = negocios.filter(n => n.sdr_id === p.id && noMes(n.data_agendada, mesRef));
+    const realizadas = negocios.filter(n => n.sdr_id === p.id && noMes(n.data_realizacao, mesRef));
+    const taxa = agendadas.length ? Math.round((realizadas.length / agendadas.length) * 100) : null;
+    return `
+      <div class="tile">
+        <div class="label">${p.nome} · SDR</div>
+        <div class="value">${agendadas.length}</div>
+        <div class="sub">agendadas · ${realizadas.length} realizadas${taxa === null ? '' : ' · ' + taxa + '% compareceu'}</div>
+      </div>
+    `;
+  });
+
+  const tilesVendedor = vendedores.map(p => {
+    const vendas = negocios.filter(n => n.vendedor_id === p.id && noMes(n.data_venda, mesRef));
+    const total = vendas.reduce((s, n) => s + Number(n.valor_venda || 0), 0);
+    const ticket = vendas.length ? total / vendas.length : 0;
+    return `
+      <div class="tile">
+        <div class="label">${p.nome} · Vendedor</div>
+        <div class="value">${vendas.length}</div>
+        <div class="sub">venda(s) · ${fmtBRL(total)}${vendas.length ? ' · ticket ' + fmtBRL(ticket) : ''}</div>
+      </div>
+    `;
+  });
+
+  wrap.innerHTML = tilesSdr.join('') + tilesVendedor.join('') ||
+    '<div class="empty">Ainda não tem SDR nem vendedor cadastrado.</div>';
 }
 
 // ---------- FUNIL VISUAL ----------
@@ -7026,9 +7074,15 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-11b',
+  versao: '2026-09-11c',
   titulo: 'Chegou coisa nova',
   passos: [
+    {
+      emoji: '🏅',
+      titulo: 'Desempenho individual — cada um vê o seu número',
+      texto: 'Novo card no Dashboard, logo abaixo do Funil do mês: um tile por SDR (reuniões agendadas, realizadas e % de comparecimento) e um por vendedor (vendas fechadas, valor total e ticket médio) — tudo no mês selecionado no topo. É visível pra todo mundo que loga no painel.',
+      aba: 'dashboard', onde: 'Dashboard · card "Desempenho individual"',
+    },
     {
       emoji: '📄',
       titulo: 'Contrato pronto em 1 clique — e já sai pra assinar',
