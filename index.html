@@ -2729,12 +2729,15 @@ function renderTiles() {
 // Um tile por SDR (agendadas/realizadas do mês) e por vendedor (vendas/valor do mês), lendo
 // sdr_id/vendedor_id de com_negocios — mesmo dado que já alimenta o funil geral, só agrupado por
 // pessoa. Visível pra todo mundo que loga no painel (decisão do Igor em 2026-09-11).
+// Conta como "vendedor" quem tem papel='vendedor' OU papel='admin' — o Igor fecha venda logado na
+// própria conta admin (não existe um perfil 'vendedor' separado pra ele; o "Igor (n8n)" que
+// existia nunca teve nenhum negócio atrelado e foi apagado no mesmo dia).
 function renderDesempenhoIndividual() {
   const wrap = document.getElementById('desempenho-individual');
   if (!wrap) return;
   const mesRef = fmtMesRef(mesAtual);
   const sdrs = perfis.filter(p => p.papel === 'sdr');
-  const vendedores = perfis.filter(p => p.papel === 'vendedor');
+  const vendedores = perfis.filter(p => p.papel === 'vendedor' || p.papel === 'admin');
 
   const tilesSdr = sdrs.map(p => {
     const agendadas = negocios.filter(n => n.sdr_id === p.id && noMes(n.data_agendada, mesRef));
