@@ -1320,6 +1320,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         <button data-tab="crm" title="CRM"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="12" x2="21" y2="12"/></svg></button>
         <button data-tab="calendario" title="Calendário"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
         <button data-tab="formulario" title="Formulário"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></button>
+        <button data-tab="contrato" title="Contrato"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg></button>
         <button data-tab="dicas" title="Dicas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
         <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
         <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
@@ -2010,6 +2011,91 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </section>
     </div>
 
+    <div class="tab-panel" id="tab-contrato">
+      <section class="card">
+        <div class="section-title">
+          <h2>Gerar contrato</h2>
+        </div>
+        <p class="muted">Preenche os dados do cliente que fechou e a forma de pagamento combinada. Ao gerar, o contrato já abre pronto pra baixar/imprimir em PDF e mandar pro cliente na hora.</p>
+        <form class="form-grid" id="form-contrato" onsubmit="return gerarContrato(event)">
+          <div class="full">
+            <label>Razão social</label>
+            <input type="text" id="ctr-razao" required>
+          </div>
+          <div>
+            <label>CNPJ</label>
+            <input type="text" id="ctr-cnpj" required>
+          </div>
+          <div>
+            <label>E-mail</label>
+            <input type="email" id="ctr-email" required>
+          </div>
+          <div>
+            <label>Telefone</label>
+            <input type="text" id="ctr-telefone" required>
+          </div>
+          <div class="full">
+            <label>Endereço (rua, número)</label>
+            <input type="text" id="ctr-endereco" required>
+          </div>
+          <div>
+            <label>Bairro</label>
+            <input type="text" id="ctr-bairro" required>
+          </div>
+          <div>
+            <label>CEP</label>
+            <input type="text" id="ctr-cep" required>
+          </div>
+          <div>
+            <label>Cidade</label>
+            <input type="text" id="ctr-cidade" required>
+          </div>
+          <div>
+            <label>Estado (UF)</label>
+            <input type="text" id="ctr-estado" maxlength="2" style="text-transform:uppercase;" required>
+          </div>
+          <div>
+            <label>Nome do responsável (quem assina)</label>
+            <input type="text" id="ctr-responsavel" required>
+          </div>
+          <div>
+            <label>Cargo do responsável</label>
+            <input type="text" id="ctr-cargo" value="Sócio(a)" required>
+          </div>
+          <div>
+            <label>RG do contratante</label>
+            <input type="text" id="ctr-rg" required>
+          </div>
+          <div>
+            <label>CPF do contratante</label>
+            <input type="text" id="ctr-cpf" required>
+          </div>
+          <div>
+            <label>Valor do contrato (R$)</label>
+            <input type="number" step="0.01" id="ctr-valor" required>
+          </div>
+          <div>
+            <label>Forma de pagamento</label>
+            <input type="text" id="ctr-pagamento" value="à vista via Pix" required>
+          </div>
+          <div>
+            <label>Data de início</label>
+            <input type="date" id="ctr-data-inicio" required>
+          </div>
+          <div class="full" style="display:flex; gap:8px;">
+            <button class="btn" type="submit">Gerar contrato</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <h2>Últimos contratos gerados</h2>
+        </div>
+        <div id="ctr-lista"><div class="empty">Carregando...</div></div>
+      </section>
+    </div>
+
     </div>
     </div>
   </div>
@@ -2549,6 +2635,9 @@ async function carregarTudo() {
   renderTudo();
   carregarReunioesPendentes();
   if (checklistMetricas.length) renderChecklist();
+  const ctrData = document.getElementById('ctr-data-inicio');
+  if (ctrData && !ctrData.value) ctrData.value = new Date().toISOString().slice(0, 10);
+  carregarContratos();
 }
 
 function renderTudo() {
@@ -7974,6 +8063,277 @@ try {
     if (!temaSalvo()) aplicarTema(ev.matches ? 'dark' : 'light');
   });
 } catch (e) { /* navegador antigo: fica no tema inicial */ }
+
+// ---------- CONTRATO ----------
+const CONTRATADA = {
+  nome: 'UPPVIE SOLUÇÕES DIGITAIS LTDA.',
+  cnpj: '41.703.464/0001-41',
+  endereco: 'Rua Anísio Valim, nº 14, bairro Recanto do Lago, São João da Boa Vista/SP, CEP 13.874-668',
+  responsavel: 'Igor de Oliveira Miguel',
+  rg: '55.002.362-8',
+  cpf: '513.243.878-40',
+  email: 'igor.oliveiramigu@gmail.com',
+};
+let contratosCache = [];
+
+const MESES_PT = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+function dataExtenso(iso) {
+  const [y, m, dd] = iso.split('-').map(Number);
+  return dd + ' de ' + MESES_PT[m - 1] + ' de ' + y;
+}
+function mesAnoExtenso(iso) {
+  const [y, m] = iso.split('-').map(Number);
+  return MESES_PT[m - 1] + ' de ' + y;
+}
+function somarDias(iso, dias) {
+  const dt = new Date(iso + 'T12:00:00');
+  dt.setDate(dt.getDate() + dias);
+  return dt.toISOString().slice(0, 10);
+}
+function formatarMoeda(v) {
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function porExtensoReais(valor) {
+  const unidades = ['zero','um','dois','três','quatro','cinco','seis','sete','oito','nove'];
+  const dez19 = ['dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove'];
+  const dezenas = ['','','vinte','trinta','quarenta','cinquenta','sessenta','setenta','oitenta','noventa'];
+  const centenas = ['','cento','duzentos','trezentos','quatrocentos','quinhentos','seiscentos','setecentos','oitocentos','novecentos'];
+  function grupo(n) {
+    if (n === 0) return '';
+    if (n === 100) return 'cem';
+    const c = Math.floor(n / 100), r = n % 100;
+    const partes = [];
+    if (c > 0) partes.push(centenas[c]);
+    if (r > 0) {
+      if (r < 10) partes.push(unidades[r]);
+      else if (r < 20) partes.push(dez19[r - 10]);
+      else {
+        const dz = Math.floor(r / 10), u = r % 10;
+        partes.push(dezenas[dz] + (u > 0 ? ' e ' + unidades[u] : ''));
+      }
+    }
+    return partes.join(' e ');
+  }
+  function inteiroExtenso(n) {
+    if (n === 0) return 'zero';
+    const milhoes = Math.floor(n / 1000000);
+    const milhares = Math.floor((n % 1000000) / 1000);
+    const resto = n % 1000;
+    const partes = [];
+    if (milhoes > 0) partes.push(grupo(milhoes) + (milhoes === 1 ? ' milhão' : ' milhões'));
+    if (milhares > 0) partes.push(milhares === 1 ? 'mil' : grupo(milhares) + ' mil');
+    if (resto > 0) partes.push(grupo(resto));
+    if (partes.length <= 1) return partes[0] || 'zero';
+    const usaE = resto > 0 && (resto < 100 || resto % 100 === 0);
+    if (usaE) return partes.slice(0, -1).join(', ') + ' e ' + partes[partes.length - 1];
+    return partes.join(', ');
+  }
+  const inteiro = Math.floor(Number(valor));
+  const centavos = Math.round((Number(valor) - inteiro) * 100);
+  let txt = inteiroExtenso(inteiro) + (inteiro === 1 ? ' real' : ' reais');
+  if (centavos > 0) txt += ' e ' + grupo(centavos) + (centavos === 1 ? ' centavo' : ' centavos');
+  return txt;
+}
+
+function montarContratoHTML(d) {
+  const dataTermino = d.data_termino || somarDias(d.data_inicio, 90);
+  const valorFmt = formatarMoeda(d.valor);
+  const valorExtenso = porExtensoReais(d.valor);
+  const inicioExt = dataExtenso(d.data_inicio);
+  const terminoExt = dataExtenso(dataTermino);
+  const metaMesAno = mesAnoExtenso(dataTermino);
+  const assinaturaExt = dataExtenso(d.data_inicio);
+  const estado = (d.estado || '').toUpperCase();
+
+  const corpo = '' +
+    '<h1>CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE<br>CONSULTORIA</h1>' +
+    '<p class="subt">Consultoria em Geração de Leads – LinkedIn</p>' +
+
+    '<h2>I. QUALIFICAÇÃO DAS PARTES</h2>' +
+    '<p><strong>' + d.razao_social + '</strong>, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº ' + d.cnpj + ', com sede na ' + d.endereco + ', bairro ' + d.bairro + ', ' + d.cidade + '/' + estado + ', CEP ' + d.cep + ', telefone ' + d.telefone + ', e-mail ' + d.email + ', neste ato representada por seu ' + d.cargo_responsavel + ' <strong>' + d.nome_responsavel + '</strong>, brasileiro(a), empresário(a), portador(a) da Carteira de Identidade RG nº ' + d.rg + ', inscrito(a) no CPF/ME sob o nº ' + d.cpf + ', doravante denominada simplesmente "CONTRATANTE".</p>' +
+    '<p>De outro lado,</p>' +
+    '<p><strong>' + CONTRATADA.nome + '</strong>, pessoa jurídica de direito privado, inscrita no CNPJ/ME sob o nº ' + CONTRATADA.cnpj + ', com sede na ' + CONTRATADA.endereco + ', neste ato representada por seu Sócio Administrador ' + CONTRATADA.responsavel + ', brasileiro, empresário, portador da Carteira de Identidade RG nº ' + CONTRATADA.rg + ', inscrito no CPF/ME sob o nº ' + CONTRATADA.cpf + ', com endereço eletrônico ' + CONTRATADA.email + ', doravante denominada simplesmente "CONTRATADA".</p>' +
+    '<p>As partes acima qualificadas, em conjunto doravante denominadas "PARTES" e, individualmente, "PARTE", têm justo e contratado o presente Contrato de Prestação de Serviços de Consultoria, doravante simplesmente "CONTRATO", o qual se regerá pelas cláusulas e condições seguintes, nos termos dos arts. 421 e 421-A do Código Civil Brasileiro (Lei nº 10.406/2002).</p>' +
+
+    '<h2>II. CONSIDERANDOS</h2>' +
+    '<p>2. Considerando que:</p>' +
+    '<p class="al">a) a CONTRATANTE exerce atividades empresariais e tem interesse em estruturar sua presença digital, geração de leads qualificados, estratégia de conteúdo por meio do LinkedIn.</p>' +
+    '<p class="al">b) a CONTRATADA é sociedade empresária especializada em estratégia digital, marketing de conteúdo, estruturação de funis de geração de leads, automações, desenvolvimento de agentes de IA em N8N e consultoria em crescimento orgânico nas redes sociais;</p>' +
+    '<p class="al">c) a CONTRATADA possui expertise comprovada na implementação de estratégias de conteúdo para LinkedIn, estruturação de funis de lead magnet e configuração de agentes de N8N para prospecção ativa;</p>' +
+    '<p class="al">d) a CONTRATANTE tem interesse em contratar os serviços de consultoria da CONTRATADA pelo período de 90 (noventa) dias, com foco em geração de leads qualificados via funil LinkedIn -&gt; Post -&gt; Comentário -&gt; Lead -&gt; Comercial -&gt; Marcação de Reunião -&gt; Venda, além de auxílio técnico na implementação de funis de vendas.</p>' +
+
+    '<h2>III. OBJETO</h2>' +
+    '<p>3.1. Escopo Geral. O presente CONTRATO tem por objeto a prestação de serviços de consultoria estratégica pela CONTRATADA à CONTRATANTE pelo período de 90 (noventa) dias, com início em ' + inicioExt + ' e término em ' + terminoExt + '.</p>' +
+    '<p>3.2. Escopo dos Serviços. Compreendem-se no objeto as seguintes atividades:</p>' +
+    '<p class="al">a) Desenvolvimento de estratégias de posts e conteúdos para LinkedIn, com foco em engajamento, autoridade e geração de leads qualificados;</p>' +
+    '<p class="al">b) Acompanhamento semanal durante os 90 dias de vigência do contrato, por meio de reuniões remotas para revisão de resultados, ajustes de estratégia e alinhamento de próximos passos;</p>' +
+    '<p class="al">c) Estruturação do funil completo de geração de leads: LinkedIn -&gt; Post -&gt; Comentário -&gt; Lead -&gt; Comercial -&gt; Marcação de Reunião -&gt; Venda;</p>' +
+    '<p class="al">d) Orientação sobre boas práticas de abordagem e qualificação de leads no processo comercial;</p>' +
+    '<p class="al">e) Fornecimento de estrutura base de agentes de N8N voltados à estruturação do funil de vendas, bem como apoio técnico na configuração, customização e colocação em operação dos referidos agentes no ambiente da CONTRATANTE, incluindo orientação sobre fluxos de automação, integrações e troubleshooting durante a vigência do contrato;</p>' +
+    '<p class="al">f) Sugestão de uso da ferramenta Tracionei como apoio à operação de automação de comentários, resposta a DMs e envio de link dos materiais, com orientações gerais sobre possibilidades de integração à estratégia recomendada. A contratação, assinatura e utilização efetiva da ferramenta Tracionei são de responsabilidade exclusiva da CONTRATANTE, não integrando o escopo obrigatório deste CONTRATO.</p>' +
+    '<p>3.3. Natureza da Obrigação. Os serviços contratados caracterizam-se como obrigação de meio, e não de resultado, nos termos do art. 421-A do Código Civil, obrigando-se a CONTRATADA a empregar as melhores técnicas, práticas de mercado e diligência profissional compatíveis com projetos de igual natureza e complexidade.</p>' +
+    '<p>3.4. Serviços Adicionais. Qualquer atividade adicional não expressamente prevista no escopo desta Cláusula será considerada serviço adicional, devendo ser tratada mediante nova proposta comercial e aprovação expressa da CONTRATANTE.</p>' +
+    '<p><strong>3.5. Garantia de Resultado.</strong> A CONTRATADA compromete-se a auxiliar a CONTRATANTE no alcance da meta de 4 (quatro) vendas até ' + metaMesAno + '. Caso a referida meta não seja atingida dentro do prazo ora acordado, a CONTRATADA devolverá à CONTRATANTE o valor pago a título dos serviços de consultoria, condicionado ao efetivo cumprimento, pela CONTRATANTE, das obrigações que lhe cabem nos termos deste CONTRATO — notadamente as previstas na Cláusula IV —, sem as quais o resultado ora garantido não pode ser assegurado.</p>' +
+
+    '<h2>IV. OBRIGAÇÕES DA CONTRATANTE</h2>' +
+    '<p>4. Caberá à CONTRATANTE:</p>' +
+    '<p>4.1. Fornecer à CONTRATADA todas as informações, acessos, credenciais e dados necessários para a execução dos serviços, incluindo perfis nas redes sociais pertinentes, credenciais de acesso aos ambientes N8N da CONTRATANTE e, caso haja interesse na utilização, acessos à ferramenta Tracionei.</p>' +
+    '<p>4.2. Participar ativamente do processo de consultoria, incluindo:</p>' +
+    '<p class="al">a) presença nas reuniões semanais de acompanhamento;</p>' +
+    '<p class="al">b) envio de feedbacks dentro dos prazos acordados;</p>' +
+    '<p class="al">c) implementação das estratégias e recomendações fornecidas pela CONTRATADA.</p>' +
+    '<p>4.3. Manter atualizados todos os dados e informações relevantes para o bom andamento dos serviços.</p>' +
+    '<p>4.4. Efetuar os pagamentos de acordo com os prazos e condições estabelecidos na Cláusula VII.</p>' +
+    '<p>4.5. Manter sigilo absoluto sobre estratégias, metodologias, fluxos, processos e demais informações técnicas pertencentes à CONTRATADA.</p>' +
+    '<p>4.6. Designar um responsável interno para interlocução direta com a CONTRATADA, garantindo agilidade nas aprovações, respostas e alinhamentos. Para os fins deste CONTRATO, o(a) responsável designado(a) é o(a) Sr(a). ' + d.nome_responsavel + '.</p>' +
+    '<p>4.7. Comunicar previamente à CONTRATADA qualquer mudança relevante na operação que possa impactar os serviços contratados.</p>' +
+
+    '<h2>V. OBRIGAÇÕES DA CONTRATADA</h2>' +
+    '<p>5. Caberá à CONTRATADA:</p>' +
+    '<p>5.1. Prestar os serviços de consultoria descritos no Objeto deste CONTRATO com diligência, técnica e profissionalismo, dentro dos prazos acordados.</p>' +
+    '<p>5.2. Realizar reuniões semanais de acompanhamento, de forma remota, para revisão de resultados, ajustes de estratégia e orientação operacional.</p>' +
+    '<p>5.3. Fornecer orientações, recomendações e materiais de apoio pertinentes à execução das estratégias acordadas, incluindo suporte técnico nos agentes de N8N de prospecção ativa.</p>' +
+    '<p>5.4. Manter sigilo absoluto sobre informações técnicas, comerciais, operacionais e estratégicas, bem como dados sensíveis da CONTRATANTE, nos termos deste CONTRATO e da legislação aplicável.</p>' +
+    '<p>5.5. Estar disponível para comunicação durante o horário comercial para esclarecimento de dúvidas relacionadas ao escopo contratado.</p>' +
+    '<p>5.6. Informar à CONTRATANTE, com antecedência razoável, qualquer circunstância que possa impactar a entrega dos serviços ou o cronograma de acompanhamentos.</p>' +
+
+    '<h2>VI. PENALIDADES</h2>' +
+    '<p>6.1. O descumprimento de qualquer obrigação prevista neste CONTRATO sujeitará a parte infratora ao pagamento de multa não compensatória de 10% (dez por cento) sobre o valor total do contrato, sem prejuízo de perdas e danos apurados.</p>' +
+    '<p>6.2. O atraso no pagamento das parcelas previstas na Cláusula VII implicará multa de 2% (dois por cento) sobre o valor da parcela em atraso, acrescido de juros moratórios de 1% (um por cento) ao mês, pro rata die.</p>' +
+
+    '<h2>VII. PREÇO E CONDIÇÕES DE PAGAMENTO</h2>' +
+    '<p>7.1. O valor total pelos serviços de consultoria pelo período de 90 (noventa) dias é de ' + valorFmt + ' (' + valorExtenso + '), pago ' + d.forma_pagamento + '.</p>' +
+    '<p>7.2. Forma de Pagamento. O pagamento será realizado via Pix, utilizando a chave 19 99792-9873, de titularidade da CONTRATADA.</p>' +
+    '<p>Parágrafo único: Eventuais tarifas ou encargos eventualmente cobrados pela instituição financeira da CONTRATANTE na realização da transferência via Pix ficarão a cargo exclusivo da CONTRATANTE.</p>' +
+    '<p>7.3. O atraso no pagamento ou a ausência de confirmação da transferência via Pix no prazo acordado implicarão as penalidades previstas na Cláusula VI.2, sem prejuízo da suspensão imediata dos serviços até regularização.</p>' +
+
+    '<h2>VIII. VIGÊNCIA E RENOVAÇÃO</h2>' +
+    '<p>8.1. O presente CONTRATO terá vigência de 90 (noventa) dias, com início em ' + inicioExt + ' e término em ' + terminoExt + '.</p>' +
+    '<p>8.2. As PARTES poderão, de comum acordo, ajustar os prazos indicados nesta cláusula, mediante registro por escrito (e-mail ou aditivo).</p>' +
+    '<p>8.3. A renovação da vigência após o período contratado dependerá de manifestação expressa das PARTES, por meio de aditivo ou novo contrato.</p>' +
+    '<p>8.4. Não havendo manifestação dentro do prazo final da vigência, o contrato será considerado encerrado, conforme art. 473 do Código Civil.</p>' +
+
+    '<h2>IX. RESCISÃO</h2>' +
+    '<p>9.1. O contrato poderá ser rescindido por qualquer das PARTES, a qualquer tempo, mediante aviso prévio de 15 (quinze) dias, por escrito.</p>' +
+    '<p>9.2. Durante o aviso prévio, as PARTES manterão as obrigações contratuais vigentes.</p>' +
+    '<p>9.3. Constituem motivos para rescisão por justa causa e imediata, além do descumprimento das obrigações de sigilo e inadimplemento, nos termos do art. 475 do Código Civil:</p>' +
+    '<p class="al">a) descumprimento reiterado do escopo contratado;</p>' +
+    '<p class="al">b) violação de confidencialidade ou da LGPD;</p>' +
+    '<p class="al">c) paralisação injustificada dos serviços.</p>' +
+    '<p>9.4. Na hipótese de rescisão por culpa da CONTRATADA, esta deverá restituir os valores pagos proporcionalmente ao período não executado, no prazo máximo de 10 (dez) dias corridos da data da rescisão.</p>' +
+    '<p>9.5. Na hipótese de rescisão imotivada por iniciativa exclusiva da CONTRATANTE, esta não fará jus à restituição dos valores já pagos até a data da rescisão.</p>' +
+
+    '<h2>X. CONFIDENCIALIDADE E PROTEÇÃO DE DADOS</h2>' +
+    '<p>10.1. As PARTES comprometem-se a manter sigilo sobre informações técnicas, comerciais e estratégicas trocadas no âmbito deste CONTRATO.</p>' +
+    '<p>10.2. O dever de confidencialidade permanecerá por 2 (dois) anos após o término ou rescisão do presente instrumento.</p>' +
+    '<p>10.3. O tratamento de dados pessoais observará a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).</p>' +
+    '<p>10.4. Informações confidenciais incluem: dados de leads, estratégias, metodologias, fluxos N8N, relatórios e demais informações operacionais trocadas entre as PARTES.</p>' +
+    '<p>10.5. O descumprimento das obrigações de confidencialidade sujeitará a parte infratora ao pagamento de multa não compensatória equivalente a 50% (cinquenta por cento) do valor total do contrato, sem prejuízo de perdas e danos.</p>' +
+
+    '<h2>XI. PROPRIEDADE INTELECTUAL</h2>' +
+    '<p>11.1. As metodologias, frameworks, estratégias, fluxos N8N, materiais e conteúdos pré-existentes da CONTRATADA permanecerão de sua titularidade exclusiva, nos termos da Lei nº 9.610/98.</p>' +
+    '<p>11.2. Os materiais, conteúdos e estratégias desenvolvidos especificamente para a CONTRATANTE no âmbito deste contrato integrarão o patrimônio da CONTRATANTE, assegurado o direito de uso perpétuo.</p>' +
+    '<p>11.3. Os dados fornecidos pela CONTRATANTE permanecerão de sua propriedade exclusiva.</p>' +
+
+    '<h2>XII. DISPOSIÇÕES GERAIS</h2>' +
+    '<p>12.1. Comunicações serão realizadas pelos e-mails:</p>' +
+    '<p class="al">• CONTRATANTE: ' + d.email + '</p>' +
+    '<p class="al">• CONTRATADA: ' + CONTRATADA.email + '</p>' +
+    '<p>12.2. O presente contrato obriga as PARTES, seus herdeiros e sucessores.</p>' +
+    '<p>12.3. Em qualquer hipótese, a responsabilidade total da CONTRATADA ficará limitada ao valor efetivamente pago pela CONTRATANTE no período de vigência do contrato.</p>' +
+    '<p>12.4. Alterações somente terão validade mediante aditivo escrito, assinado por ambas as PARTES.</p>' +
+    '<p>12.5. A nulidade de qualquer cláusula não prejudicará as demais, que permanecerão válidas e eficazes.</p>' +
+    '<p>12.6. Fica eleito o foro da Comarca de São João da Boa Vista/SP, com renúncia a qualquer outro, para dirimir eventuais litígios oriundos do presente instrumento.</p>' +
+
+    '<h2>XIII. ASSINATURA ELETRÔNICA</h2>' +
+    '<p>13.1. As PARTES concordam em formalizar este contrato por meio eletrônico, reconhecendo sua validade com base no art. 10, §2º, da MP nº 2.200-2/2001 e na Lei nº 14.063/2020.</p>' +
+    '<p>13.2. A assinatura poderá ser realizada em plataforma eletrônica confiável, como Autentique, Clicksign ou DocuSign.</p>' +
+
+    '<p class="assin-local">São João da Boa Vista/SP, ' + assinaturaExt + '.</p>' +
+
+    '<div class="assin-bloco"><div class="linha"></div><p><strong>' + d.razao_social + '</strong><br>CNPJ: ' + d.cnpj + '<br>p/ ' + d.nome_responsavel + '<br>CONTRATANTE</p></div>' +
+    '<div class="assin-bloco"><div class="linha"></div><p><strong>' + CONTRATADA.nome + '</strong><br>CNPJ: ' + CONTRATADA.cnpj + '<br>p/ ' + CONTRATADA.responsavel + ' — CPF ' + CONTRATADA.cpf + '<br>CONTRATADA</p></div>';
+
+  return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Contrato - ' + d.razao_social + '</title>' +
+    '<style>' +
+    '@page { size: A4; margin: 2.2cm 2cm; }' +
+    'body { font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.5; color: #111; max-width: 800px; margin: 0 auto; padding: 24px; }' +
+    'h1 { text-align: center; font-size: 15pt; margin-bottom: 4px; }' +
+    '.subt { text-align: center; font-style: italic; margin-top: 0; margin-bottom: 24px; }' +
+    'h2 { font-size: 12.5pt; margin-top: 22px; margin-bottom: 8px; break-after: avoid; }' +
+    'p { text-align: justify; margin: 0 0 10px; }' +
+    'p.al { margin-left: 28px; }' +
+    '.assin-local { text-align: center; margin-top: 40px; }' +
+    '.assin-bloco { margin-top: 46px; text-align: center; }' +
+    '.assin-bloco .linha { border-top: 1px solid #111; width: 340px; margin: 0 auto 6px; }' +
+    '.assin-bloco p { text-align: center; }' +
+    '@media print { body { padding: 0; } }' +
+    '</style></head><body>' + corpo + '</body></html>';
+}
+
+function abrirEImprimir(html) {
+  const win = window.open('', '_blank');
+  if (!win) { alert('O navegador bloqueou a janela do contrato. Libere pop-ups pra esse site e tente de novo.'); return; }
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+  setTimeout(function () { win.focus(); win.print(); }, 350);
+}
+
+async function gerarContrato(event) {
+  event.preventDefault();
+  const d = {
+    razao_social: document.getElementById('ctr-razao').value.trim(),
+    cnpj: document.getElementById('ctr-cnpj').value.trim(),
+    email: document.getElementById('ctr-email').value.trim(),
+    telefone: document.getElementById('ctr-telefone').value.trim(),
+    endereco: document.getElementById('ctr-endereco').value.trim(),
+    bairro: document.getElementById('ctr-bairro').value.trim(),
+    cep: document.getElementById('ctr-cep').value.trim(),
+    cidade: document.getElementById('ctr-cidade').value.trim(),
+    estado: document.getElementById('ctr-estado').value.trim(),
+    nome_responsavel: document.getElementById('ctr-responsavel').value.trim(),
+    cargo_responsavel: document.getElementById('ctr-cargo').value.trim(),
+    rg: document.getElementById('ctr-rg').value.trim(),
+    cpf: document.getElementById('ctr-cpf').value.trim(),
+    valor: Number(document.getElementById('ctr-valor').value),
+    forma_pagamento: document.getElementById('ctr-pagamento').value.trim(),
+    data_inicio: document.getElementById('ctr-data-inicio').value,
+  };
+  d.data_termino = somarDias(d.data_inicio, 90);
+
+  abrirEImprimir(montarContratoHTML(d));
+
+  const { error } = await sb.from('com_contratos').insert([Object.assign({}, d, {
+    gerado_por: currentPerfil ? currentPerfil.id : null,
+  })]);
+  if (error) console.error('Não salvou o histórico do contrato:', error.message);
+  carregarContratos();
+  return false;
+}
+
+async function carregarContratos() {
+  const wrap = document.getElementById('ctr-lista');
+  if (!wrap) return;
+  const { data, error } = await sb.from('com_contratos').select('*').order('criado_em', { ascending: false }).limit(20);
+  if (error) { wrap.innerHTML = '<div class="empty">Não consegui carregar o histórico.</div>'; return; }
+  contratosCache = data || [];
+  if (!contratosCache.length) { wrap.innerHTML = '<div class="empty">Nenhum contrato gerado ainda.</div>'; return; }
+  wrap.innerHTML = '<table class="tabela-leads"><thead><tr><th>Cliente</th><th>Valor</th><th>Gerado em</th><th></th></tr></thead><tbody>' +
+    contratosCache.map(function (c) {
+      return '<tr><td>' + c.razao_social + '</td><td>' + formatarMoeda(c.valor) + '</td><td>' +
+        new Date(c.criado_em).toLocaleDateString('pt-BR') + '</td><td><button class="add-toggle" onclick="reimprimirContrato(\'' + c.id + '\')">reimprimir</button></td></tr>';
+    }).join('') + '</tbody></table>';
+}
+
+function reimprimirContrato(id) {
+  const c = contratosCache.find(function (x) { return x.id === id; });
+  if (!c) return;
+  abrirEImprimir(montarContratoHTML(c));
+}
+
 
 // ---------- TABS ----------
 // A faixa de indicadores mora FORA dos painéis (logo abaixo do cabeçalho), então aparecia em
