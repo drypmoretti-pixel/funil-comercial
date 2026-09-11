@@ -21,6 +21,7 @@
 <title>Funil Comercial — Demanda Infinita</title>
 <link id="favicon" rel="icon" type="image/png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.14.0/html2pdf.bundle.min.js"></script>
 <style>
 :root {
   color-scheme: light;
@@ -2083,7 +2084,8 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
             <input type="date" id="ctr-data-inicio" required>
           </div>
           <div class="full" style="display:flex; gap:8px;">
-            <button class="btn" type="submit">Gerar contrato</button>
+            <button class="btn" type="submit">Gerar contrato (baixar/imprimir)</button>
+            <button class="btn btn-secondary" type="button" id="ctr-btn-autentique" onclick="enviarAutentique()">Enviar pra assinar (Autentique)</button>
           </div>
         </form>
       </section>
@@ -7020,13 +7022,13 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-11',
+  versao: '2026-09-11b',
   titulo: 'Chegou coisa nova',
   passos: [
     {
       emoji: '📄',
-      titulo: 'Contrato pronto em 1 clique',
-      texto: 'Fechou o negócio? Vai na aba <b>Contrato</b>, preenche os dados do cliente e a forma de pagamento combinada, e o contrato já sai prontinho — abre pra impressão e é só salvar como PDF e mandar pro cliente na hora, sem esperar o Igor. Fica um histórico dos últimos contratos gerados, com botão de reimprimir se precisar reemitir.',
+      titulo: 'Contrato pronto em 1 clique — e já sai pra assinar',
+      texto: 'Fechou o negócio? Vai na aba <b>Contrato</b>, preenche os dados do cliente e a forma de pagamento combinada. O botão <b>"Gerar contrato"</b> abre pra impressão, pra salvar como PDF e mandar pro cliente na hora. O botão <b>"Enviar pra assinar (Autentique)"</b> vai além: manda o contrato direto pra Autentique, que já dispara um e-mail pro cliente assinar eletronicamente — sem esperar o Igor em nenhum dos dois casos. Fica um histórico dos últimos contratos gerados, com botão de reimprimir se precisar reemitir.',
       aba: 'contrato', onde: 'Aba Contrato',
     },
     {
@@ -8143,7 +8145,7 @@ function porExtensoReais(valor) {
   return txt;
 }
 
-function montarContratoHTML(d) {
+function montarContratoCorpo(d) {
   const dataTermino = d.data_termino || somarDias(d.data_inicio, 90);
   const valorFmt = formatarMoeda(d.valor);
   const valorExtenso = porExtensoReais(d.valor);
@@ -8153,7 +8155,7 @@ function montarContratoHTML(d) {
   const assinaturaExt = dataExtenso(d.data_inicio);
   const estado = (d.estado || '').toUpperCase();
 
-  const corpo = '' +
+  return '' +
     '<h1>CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE<br>CONSULTORIA</h1>' +
     '<p class="subt">Consultoria em Geração de Leads – LinkedIn</p>' +
 
@@ -8261,22 +8263,41 @@ function montarContratoHTML(d) {
 
     '<div class="assin-bloco"><div class="linha"></div><p><strong>' + d.razao_social + '</strong><br>CNPJ: ' + d.cnpj + '<br>p/ ' + d.nome_responsavel + '<br>CONTRATANTE</p></div>' +
     '<div class="assin-bloco"><div class="linha"></div><p><strong>' + CONTRATADA.nome + '</strong><br>CNPJ: ' + CONTRATADA.cnpj + '<br>p/ ' + CONTRATADA.responsavel + ' — CPF ' + CONTRATADA.cpf + '<br>CONTRATADA</p></div>';
+}
 
+const CONTRATO_ESTILO_CSS = '' +
+  'body,.pdf-contrato { font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.5; color: #111; }' +
+  'h1 { text-align: center; font-size: 15pt; margin-bottom: 4px; }' +
+  '.subt { text-align: center; font-style: italic; margin-top: 0; margin-bottom: 24px; }' +
+  'h2 { font-size: 12.5pt; margin-top: 22px; margin-bottom: 8px; break-after: avoid; }' +
+  'p { text-align: justify; margin: 0 0 10px; }' +
+  'p.al { margin-left: 28px; }' +
+  '.assin-local { text-align: center; margin-top: 40px; }' +
+  '.assin-bloco { margin-top: 46px; text-align: center; }' +
+  '.assin-bloco .linha { border-top: 1px solid #111; width: 340px; margin: 0 auto 6px; }' +
+  '.assin-bloco p { text-align: center; }';
+
+function montarContratoHTML(d) {
   return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Contrato - ' + d.razao_social + '</title>' +
     '<style>' +
     '@page { size: A4; margin: 2.2cm 2cm; }' +
-    'body { font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.5; color: #111; max-width: 800px; margin: 0 auto; padding: 24px; }' +
-    'h1 { text-align: center; font-size: 15pt; margin-bottom: 4px; }' +
-    '.subt { text-align: center; font-style: italic; margin-top: 0; margin-bottom: 24px; }' +
-    'h2 { font-size: 12.5pt; margin-top: 22px; margin-bottom: 8px; break-after: avoid; }' +
-    'p { text-align: justify; margin: 0 0 10px; }' +
-    'p.al { margin-left: 28px; }' +
-    '.assin-local { text-align: center; margin-top: 40px; }' +
-    '.assin-bloco { margin-top: 46px; text-align: center; }' +
-    '.assin-bloco .linha { border-top: 1px solid #111; width: 340px; margin: 0 auto 6px; }' +
-    '.assin-bloco p { text-align: center; }' +
+    'body { max-width: 800px; margin: 0 auto; padding: 24px; }' +
+    CONTRATO_ESTILO_CSS +
     '@media print { body { padding: 0; } }' +
-    '</style></head><body>' + corpo + '</body></html>';
+    '</style></head><body>' + montarContratoCorpo(d) + '</body></html>';
+}
+
+function criarElementoParaPDF(d) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:fixed; left:-99999px; top:0; width:800px; background:#fff;';
+  const estilo = document.createElement('style');
+  estilo.textContent = CONTRATO_ESTILO_CSS + '.pdf-contrato { padding: 24px; background:#fff; }';
+  const conteudo = document.createElement('div');
+  conteudo.className = 'pdf-contrato';
+  conteudo.innerHTML = montarContratoCorpo(d);
+  wrap.appendChild(estilo);
+  wrap.appendChild(conteudo);
+  return { wrap, conteudo };
 }
 
 function abrirEImprimir(html) {
@@ -8288,8 +8309,7 @@ function abrirEImprimir(html) {
   setTimeout(function () { win.focus(); win.print(); }, 350);
 }
 
-async function gerarContrato(event) {
-  event.preventDefault();
+function lerDadosContrato() {
   const d = {
     razao_social: document.getElementById('ctr-razao').value.trim(),
     cnpj: document.getElementById('ctr-cnpj').value.trim(),
@@ -8309,15 +8329,68 @@ async function gerarContrato(event) {
     data_inicio: document.getElementById('ctr-data-inicio').value,
   };
   d.data_termino = somarDias(d.data_inicio, 90);
+  return d;
+}
 
-  abrirEImprimir(montarContratoHTML(d));
-
+async function salvarHistoricoContrato(d) {
   const { error } = await sb.from('com_contratos').insert([Object.assign({}, d, {
     gerado_por: currentPerfil ? currentPerfil.id : null,
   })]);
   if (error) console.error('Não salvou o histórico do contrato:', error.message);
   carregarContratos();
+}
+
+async function gerarContrato(event) {
+  event.preventDefault();
+  const d = lerDadosContrato();
+  abrirEImprimir(montarContratoHTML(d));
+  await salvarHistoricoContrato(d);
   return false;
+}
+
+async function enviarAutentique() {
+  const form = document.getElementById('form-contrato');
+  if (!form.reportValidity()) return;
+  const d = lerDadosContrato();
+
+  const btn = document.getElementById('ctr-btn-autentique');
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Gerando PDF...';
+
+  const { wrap, conteudo } = criarElementoParaPDF(d);
+  document.body.appendChild(wrap);
+  try {
+    const pdfDataUri = await html2pdf()
+      .set({ margin: 20, jsPDF: { unit: 'pt', format: 'a4' }, html2canvas: { scale: 2 }, pagebreak: { mode: ['css', 'avoid-all'] } })
+      .from(conteudo)
+      .outputPdf('datauristring');
+    const pdfBase64 = pdfDataUri.split(',').pop();
+
+    btn.textContent = 'Enviando pra Autentique...';
+    const resp = await fetch(`${N8N_PROXY_URL}/autentique-proxy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        razao_social: d.razao_social,
+        nome_responsavel: d.nome_responsavel,
+        email: d.email,
+        pdf_base64: pdfBase64,
+        nome_documento: 'Contrato - ' + d.razao_social,
+      }),
+    });
+    const resultado = await resp.json();
+    if (!resultado.ok) { alert('Não consegui enviar pra Autentique: ' + (resultado.erro || 'erro desconhecido')); return; }
+
+    await salvarHistoricoContrato(d);
+    alert('Contrato enviado! ' + d.nome_responsavel + ' vai receber um e-mail da Autentique em ' + d.email + ' pra assinar.');
+  } catch (e) {
+    alert('Não consegui enviar pra Autentique: ' + e.message);
+  } finally {
+    wrap.remove();
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
 }
 
 async function carregarContratos() {
