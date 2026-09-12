@@ -2940,8 +2940,22 @@ function coerirNoShow(patch) {
   return patch;
 }
 
+// Descoberto em 2026-09-12: o negócio "Cesar UTB" (id 42) tinha status='venda' e valor_venda
+// preenchido, mas data_venda ficou null — entrou assim direto pelo import de CSV. Como o Dashboard,
+// "Fechados no mês" e "Desempenho individual" filtram venda pela DATA (não só pelo status), esse
+// negócio ficou invisível em todo lugar: não aparecia nem em "andamento" (status não é mais um dos
+// abertos) nem em "fechados" (sem data pra bater com o mês). Mesma lição do inferirDataRealizacao:
+// status='venda' sem data é estado inconsistente, então o painel garante a data sozinho.
+function inferirDataVenda(patch, atual) {
+  const status = patch.status || (atual && atual.status);
+  if (status !== 'venda') return patch;
+  if (patch.data_venda || (atual && atual.data_venda)) return patch;
+  patch.data_venda = hojeStr();
+  return patch;
+}
+
 function normalizarNegocio(patch, atual) {
-  return coerirNoShow(inferirDataRealizacao(patch, atual));
+  return inferirDataVenda(coerirNoShow(inferirDataRealizacao(patch, atual)), atual);
 }
 
 // ---------- AÇÕES RÁPIDAS ----------
