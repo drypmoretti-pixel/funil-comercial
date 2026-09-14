@@ -2329,7 +2329,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 </div>
 
 <!-- modal de reconexão do WhatsApp via QR code (self-service, qualquer pessoa reconecta o próprio número) -->
-<div id="modal-qr-whatsapp" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-qr-whatsapp')">
+<div id="modal-qr-whatsapp" class="modal-overlay" onclick="if(event.target.id==='modal-qr-whatsapp') fecharModalQrWhats();">
   <div class="modal-card" style="max-width:340px; text-align:center;">
     <h2>Reconectar WhatsApp</h2>
     <p class="muted" id="qr-instrucao">Abre o WhatsApp no celular do número, vai em Aparelhos conectados → Conectar um aparelho, e aponta a câmera pro QR code abaixo.</p>
@@ -5653,6 +5653,10 @@ async function buscarNovoQRWhats() {
 }
 
 function abrirReconexaoWhats() {
+  // segurança extra: se por algum caminho os intervalos da vez anterior não tiverem sido
+  // limpos, limpa antes de criar novos — senão eles se acumulam e o navegador/proxy afoga
+  if (qrWhatsInterval) { clearInterval(qrWhatsInterval); qrWhatsInterval = null; }
+  if (qrWhatsPollInterval) { clearInterval(qrWhatsPollInterval); qrWhatsPollInterval = null; }
   document.getElementById('qr-instrucao').textContent =
     `Abre o WhatsApp no celular do número "${EVOLUTION_INSTANCE}", vai em Aparelhos conectados → Conectar um aparelho, e aponta a câmera pro QR code abaixo.`;
   document.getElementById('modal-qr-whatsapp').classList.add('open');
