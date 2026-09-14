@@ -182,12 +182,18 @@ section { margin-bottom: 26px; }
 /* o brilho passa de raspão pelo funil inteiro (todas as linhas) quando ele nasce na tela — tipo o "ka-tchau" do Relâmpago McQueen */
 .funil::after {
   content: ''; position: absolute; top: 0; left: -60%; width: 25%; height: 100%;
-  /* branco puro em cima do fundo claro das outras linhas quase não aparece (baixo contraste) —
-     mix-blend-mode:overlay faz o brilho "acender" tanto no fundo claro quanto no verde saturado */
-  background: linear-gradient(115deg, transparent, rgba(255,255,255,.95), transparent);
+  /* overlay ainda saturava (ficava invisível) em cima do cinza claro da trilha vazia — que é a
+     maior parte da largura em quase toda linha, só não na Tx de conversão (100% verde). Técnica
+     de "shimmer" (sombra-luz-sombra) é visível em qualquer fundo, claro ou escuro, sem blend-mode. */
+  background: linear-gradient(115deg,
+    transparent,
+    rgba(0,0,0,.08) 40%,
+    rgba(255,255,255,.95) 50%,
+    rgba(0,0,0,.08) 60%,
+    transparent
+  );
   transform: skewX(-20deg);
   pointer-events: none;
-  mix-blend-mode: overlay;
 }
 /* só anima quando a classe é (re)aplicada via JS — senão, como #funil nunca é recriado
    (só o innerHTML de dentro muda), o brilho tocaria uma única vez na vida da página */
