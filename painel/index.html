@@ -785,6 +785,9 @@ form.form-grid button { grid-column: 1 / -1; }
 .sidebar nav button.active { background: rgba(255,255,255,0.16); color: white; border-left-color: white; }
 .main-content { flex: 1; min-width: 0; }
 .main-content .wrap { max-width: 1360px; }
+/* a aba WhatsApp aproveita mais a largura da tela — os outros conteúdos (dashboard, CRM) ficam
+   estranhos muito largos, então só ela ganha esse respiro extra */
+.main-content .wrap:has(#tab-whatsapp.active) { max-width: 1800px; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 @media (max-width: 780px) {
@@ -909,9 +912,9 @@ form.form-grid button { grid-column: 1 / -1; }
 /* ===== reconstrucao da aba WhatsApp (01/09/2026): estas regras sao as ultimas
    do arquivo de proposito, para vencer as definicoes antigas de .whats-chat-shell ===== */
 /* ---------- WhatsApp: 3 colunas (conversas / thread / painel do contato) ---------- */
-.whats-chat-shell { display: grid; grid-template-columns: 300px minmax(0,1fr) 340px; gap: 12px;
-  height: calc(100vh - 168px); min-height: 560px; background: transparent; }
-.whats-chat-shell.sem-painel { grid-template-columns: 300px minmax(0,1fr); }
+.whats-chat-shell { display: grid; grid-template-columns: 340px minmax(0,1fr) 380px; gap: 12px;
+  height: calc(100vh - 150px); min-height: 560px; background: transparent; }
+.whats-chat-shell.sem-painel { grid-template-columns: 340px minmax(0,1fr); }
 .whats-conversas, .whats-thread, .wz-painel {
   background: var(--surface-1); border: 1px solid var(--border);
   border-radius: var(--card-radius); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
@@ -5625,8 +5628,10 @@ async function verificarStatusWhats() {
       el.style.cursor = 'pointer'; el.onclick = abrirReconexaoWhats;
     }
   } catch (e) {
-    el.textContent = 'Erro ao checar status';
+    // mesmo dando erro, deixa clicável — senão a pessoa fica travada sem conseguir nem tentar de novo
+    el.textContent = 'Erro ao checar status — clique pra tentar de novo';
     el.style.background = '#fdeaea'; el.style.color = 'var(--critical)';
+    el.style.cursor = 'pointer'; el.onclick = verificarStatusWhats;
   }
 }
 
