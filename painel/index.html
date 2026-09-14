@@ -181,8 +181,12 @@ section { margin-bottom: 26px; }
 .funil { display: flex; flex-direction: column; gap: 10px; }
 .funil-row { display: flex; align-items: center; gap: 10px; }
 .funil-nome { width: 100px; flex-shrink: 0; font-size: .82rem; font-weight: 600; }
-.funil-trilho { flex: 1; min-width: 0; background: var(--grid); border-radius: 6px; height: 26px; position: relative; overflow: hidden; }
-.funil-barra { height: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+.funil-trilho { flex: 1; min-width: 0; background: var(--grid); border-radius: 0 6px 6px 0; height: 24px; position: relative; overflow: hidden; }
+.funil-barra {
+  height: 100%; border-radius: 0 6px 6px 0; display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 8px; color: white; font-size: .78rem; font-weight: 700; white-space: nowrap;
+  transition: width .7s cubic-bezier(.16,1,.3,1);
+}
 .funil-pct { width: 90px; flex-shrink: 0; font-size: .78rem; color: var(--text-secondary); text-align: right; }
 .funil-row.funil-destaque { background: var(--accent-wash); border-radius: 8px; padding: 6px 10px; margin: 0 -10px; }
 .funil-destaque-valor { flex: 1; font-size: 1.1rem; font-weight: 800; color: var(--good); }
@@ -2847,10 +2851,12 @@ function renderFunil() {
   const linhas = etapas.map(e => {
     const pctBarra = Math.max(4, (e.count / base) * 100);
     const pctTexto = base ? `${Math.round((e.count / base) * 100)}% dos agendados` : '—';
+    // gradiente sutil (base mais escura -> cor real na ponta) em vez de cor chapada — mesmo tom, só com profundidade
+    const grad = `linear-gradient(90deg, color-mix(in srgb, ${e.cor} 78%, black), ${e.cor})`;
     return `
       <div class="funil-row">
         <div class="funil-nome">${e.nome}</div>
-        <div class="funil-trilho"><div class="funil-barra" style="width:${pctBarra}%; background:${e.cor}">${e.count}</div></div>
+        <div class="funil-trilho"><div class="funil-barra" data-pct="${pctBarra}" style="width:0%; background:${grad}">${e.count}</div></div>
         <div class="funil-pct">${pctTexto}</div>
       </div>
     `;
@@ -2864,6 +2870,15 @@ function renderFunil() {
     </div>
   `);
   document.getElementById('funil').innerHTML = linhas.join('');
+  // barras nascem em 0% e crescem até o valor real — precisa de dois rAF pra garantir que o
+  // navegador pintou o estado 0% antes de trocar (senão a transição de width não dispara).
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('#funil .funil-barra[data-pct]').forEach(el => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    });
+  });
 }
 
 // ---------- LISTAS ----------
