@@ -1328,6 +1328,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
         <button data-tab="social" title="Playbook de Mensagens"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         <button data-tab="whatsapp" title="WhatsApp" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 11.9a8.6 8.6 0 0 1-12.8 7.5l-4.4 1.2 1.2-4.3A8.6 8.6 0 1 1 20.6 11.9Z"/><g transform="translate(7.1 6.8) scale(.425)" stroke-width="4.24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g></svg><span id="whats-badge" style="display:none; position:absolute; top:6px; right:10px; width:8px; height:8px; border-radius:50%; background:var(--critical);"></span></button>
+        <button data-tab="admin" title="Admin" id="nav-admin" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M18 8l1.5 1.5L22 7"/></svg></button>
       </nav>
     </aside>
     <div class="main-content">
@@ -2108,6 +2109,68 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </section>
     </div>
 
+    <div class="tab-panel" id="tab-admin">
+      <section class="card">
+        <div class="section-title">
+          <h2>Novo SDR ou vendedor</h2>
+        </div>
+        <p class="muted">Cria o login (e-mail/senha) e já cadastra a pessoa no painel — sem precisar mexer em banco de dados.</p>
+        <form class="form-grid" id="form-admin-perfil" onsubmit="return criarPerfilAdmin(event)">
+          <div>
+            <label>Nome</label>
+            <input type="text" id="adm-nome" required>
+          </div>
+          <div>
+            <label>Papel</label>
+            <select id="adm-papel" required>
+              <option value="sdr">SDR</option>
+              <option value="vendedor">Vendedor</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div>
+            <label>E-mail</label>
+            <input type="email" id="adm-email" required>
+          </div>
+          <div>
+            <label>Senha</label>
+            <input type="text" id="adm-senha" required>
+          </div>
+          <div class="full">
+            <button class="btn" type="submit" id="adm-btn-perfil">Criar login</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <h2>Novo número de WhatsApp</h2>
+        </div>
+        <p class="muted">Conecta um número já pareado na Evolution API — configura o webhook e já aparece como botão na aba WhatsApp.</p>
+        <form class="form-grid" id="form-admin-whatsapp" onsubmit="return criarWhatsappAdmin(event)">
+          <div>
+            <label>Nome da instância (Evolution)</label>
+            <input type="text" id="adm-wz-instancia" required>
+          </div>
+          <div>
+            <label>API key da instância</label>
+            <input type="text" id="adm-wz-apikey" required>
+          </div>
+          <div>
+            <label>Rótulo (aparece no botão)</label>
+            <input type="text" id="adm-wz-rotulo" required>
+          </div>
+          <div>
+            <label>Número (só pra exibir, opcional)</label>
+            <input type="text" id="adm-wz-numero" placeholder="+55 19 99999-9999">
+          </div>
+          <div class="full">
+            <button class="btn" type="submit" id="adm-btn-whatsapp">Conectar número</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
     </div>
     </div>
   </div>
@@ -2622,6 +2685,8 @@ async function carregarDadosBase(userId) {
   const { data: p } = await sb.from('com_perfis').select('*').order('nome');
   perfis = p || [];
   currentPerfil = perfis.find(x => x.id === userId) || null;
+  const navAdmin = document.getElementById('nav-admin');
+  if (navAdmin) navAdmin.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
 
   const popularSelect = (id, permitirVazio) => {
     const el = document.getElementById(id);
@@ -2954,8 +3019,18 @@ function inferirDataVenda(patch, atual) {
   return patch;
 }
 
+// Mesma lição do Cesar UTB, aplicada preventivamente: valor_faturado sem data_faturamento também
+// fica invisível nos totais do mês (2026-09-14, revisão geral pedida pelo Igor).
+function inferirDataFaturamento(patch, atual) {
+  const valor = patch.valor_faturado !== undefined ? patch.valor_faturado : (atual && atual.valor_faturado);
+  if (!(Number(valor) > 0)) return patch;
+  if (patch.data_faturamento || (atual && atual.data_faturamento)) return patch;
+  patch.data_faturamento = hojeStr();
+  return patch;
+}
+
 function normalizarNegocio(patch, atual) {
-  return inferirDataVenda(coerirNoShow(inferirDataRealizacao(patch, atual)), atual);
+  return inferirDataFaturamento(inferirDataVenda(coerirNoShow(inferirDataRealizacao(patch, atual)), atual), atual);
 }
 
 // ---------- AÇÕES RÁPIDAS ----------
@@ -4487,6 +4562,34 @@ function crmDestinoPerdidos() {
   return estagio ? { funilId: funil.id, estagioId: estagio.id } : null;
 }
 
+// Descoberto em 2026-09-14 (revisão geral): marcar "Ganho" aqui e "Fechar venda" no funil
+// comercial soltam a MESMA comemoração, mas só o funil alimentava os números de faturamento —
+// dava pra marcar Ganho achando que fechou e o negócio nunca aparecer em nenhuma métrica.
+// Se o card já tem um negócio vinculado (card_id), atualiza ele pra 'venda'. Se não tem,
+// cria um — assim "Ganho" sempre vira negócio de verdade, nunca fica só no board.
+async function sincronizarNegocioDoCard(card) {
+  if (!card) return;
+  const { data: existente } = await sb.from('com_negocios').select('*').eq('card_id', card.id).maybeSingle();
+  const valor = card.valor || (existente && existente.valor_venda) || null;
+  const vendedorId = (existente && existente.vendedor_id) || card.responsavel_id ||
+    (currentPerfil && currentPerfil.papel === 'vendedor' ? currentPerfil.id : null);
+
+  if (existente) {
+    if (existente.status === 'venda') return;   // já sincronizado, não sobrescreve o que já tá certo
+    const patch = normalizarNegocio({ status: 'venda', valor_venda: valor, vendedor_id: vendedorId }, existente);
+    await sb.from('com_negocios').update(patch).eq('id', existente.id);
+  } else {
+    const base = normalizarNegocio({ status: 'venda', valor_venda: valor }, null);
+    await sb.from('com_negocios').insert([{
+      cliente_nome: card.pessoa_nome || card.titulo || 'Sem nome',
+      data_agendada: hojeStr(),   // com_negocios.data_agendada é NOT NULL; sem reunião real vinda do CRM, usa hoje
+      card_id: card.id,
+      vendedor_id: vendedorId,
+      ...base,
+    }]);
+  }
+}
+
 async function crmMarcarDesfecho(status) {
   if (!crmCardAtualId) { alert('Salve o card primeiro.'); return; }
   // perder passa pela janela de motivo; o salvamento em si vive em crmAplicarPerda
@@ -4506,8 +4609,10 @@ async function crmMarcarDesfecho(status) {
     await crmLogAtividade(crmCardAtualId, 'mudanca_funil',
       `Movido para Ganhos / Ganho (era ${fAnt ? fAnt.nome : '?'} / ${eAnt ? eAnt.nome : '?'})`);
   }
+  await sincronizarNegocioDoCard(card);
   fecharModal('modal-card-crm');
   await carregarCardsDoFunil();
+  await carregarTudo();
   celebrar('venda');
 }
 
@@ -7106,9 +7211,21 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-11d',
+  versao: '2026-09-14',
   titulo: 'Chegou coisa nova',
   passos: [
+    {
+      emoji: '🛠️',
+      titulo: 'Aba Admin — cadastra gente e número de WhatsApp sozinho',
+      texto: 'Só pra admin. Nova aba pra criar login de SDR/vendedor (nome, e-mail, senha) e conectar número de WhatsApp novo — sem precisar pedir pra alguém mexer direto no banco de dados.',
+      aba: 'admin', onde: 'Aba Admin (visível só pra admin)',
+    },
+    {
+      emoji: '🔗',
+      titulo: '"Ganho" no CRM agora fecha a venda de verdade',
+      texto: 'Marcar um card como Ganho no CRM já atualiza (ou cria) o negócio correspondente no funil comercial como venda fechada — antes eram dois passos separados, e dava pra marcar Ganho sem isso refletir no faturamento.',
+      aba: 'crm', onde: 'CRM · marcar Ganho num card',
+    },
     {
       emoji: '🏷️',
       titulo: 'Cards de negócio agora mostram quem é o dono',
@@ -8516,6 +8633,72 @@ function reimprimirContrato(id) {
   abrirEImprimir(montarContratoHTML(c));
 }
 
+// ---------- ADMIN (criar SDR/vendedor e número de WhatsApp, via proxy no n8n) ----------
+// As chaves que essas duas ações precisam (Supabase service_role, Evolution API) nunca ficam
+// aqui no HTML público — moram só no n8n. O painel só manda o pedido e mostra o resultado.
+async function criarPerfilAdmin(event) {
+  event.preventDefault();
+  const btn = document.getElementById('adm-btn-perfil');
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Criando...';
+  try {
+    const resp = await fetch(`${N8N_PROXY_URL}/admin-proxy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        acao: 'criar_perfil',
+        nome: document.getElementById('adm-nome').value.trim(),
+        papel: document.getElementById('adm-papel').value,
+        email: document.getElementById('adm-email').value.trim(),
+        senha: document.getElementById('adm-senha').value,
+      }),
+    });
+    const resultado = await resp.json();
+    if (!resultado.ok) { alert('Não consegui criar: ' + (resultado.erro || 'erro desconhecido')); return; }
+    alert(resultado.nome + ' criado(a) como ' + resultado.papel + '. Já pode logar com ' + resultado.email + '.');
+    document.getElementById('form-admin-perfil').reset();
+    await carregarDadosBase((await sb.auth.getSession()).data.session.user.id);
+  } catch (e) {
+    alert('Não consegui criar: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+  return false;
+}
+
+async function criarWhatsappAdmin(event) {
+  event.preventDefault();
+  const btn = document.getElementById('adm-btn-whatsapp');
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Conectando...';
+  try {
+    const resp = await fetch(`${N8N_PROXY_URL}/admin-proxy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        acao: 'criar_whatsapp',
+        instancia: document.getElementById('adm-wz-instancia').value.trim(),
+        apikey_evolution: document.getElementById('adm-wz-apikey').value.trim(),
+        rotulo: document.getElementById('adm-wz-rotulo').value.trim(),
+        numero: document.getElementById('adm-wz-numero').value.trim(),
+      }),
+    });
+    const resultado = await resp.json();
+    if (!resultado.ok) { alert('Não consegui conectar: ' + (resultado.erro || 'erro desconhecido')); return; }
+    alert('Número "' + resultado.rotulo + '" conectado! Já aparece como botão na aba WhatsApp.');
+    document.getElementById('form-admin-whatsapp').reset();
+    await carregarInstanciasWhats();
+  } catch (e) {
+    alert('Não consegui conectar: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
+  return false;
+}
 
 // ---------- TABS ----------
 // A faixa de indicadores mora FORA dos painéis (logo abaixo do cabeçalho), então aparecia em
