@@ -178,7 +178,23 @@ section { margin-bottom: 26px; }
 }
 
 /* ---- funil visual ---- */
-.funil { display: flex; flex-direction: column; gap: 10px; }
+.funil { display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; }
+/* o brilho passa de raspão pelo funil inteiro (todas as linhas) quando ele nasce na tela — tipo o "ka-tchau" do Relâmpago McQueen */
+.funil::after {
+  content: ''; position: absolute; top: 0; left: -60%; width: 25%; height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+/* só anima quando a classe é (re)aplicada via JS — senão, como #funil nunca é recriado
+   (só o innerHTML de dentro muda), o brilho tocaria uma única vez na vida da página */
+.funil.funil-brilhar::after {
+  animation: funil-brilho 1.3s cubic-bezier(.4,0,.2,1) 1;
+}
+@keyframes funil-brilho {
+  0% { left: -60%; }
+  100% { left: 130%; }
+}
 .funil-row { display: flex; align-items: center; gap: 10px; }
 .funil-nome { width: 100px; flex-shrink: 0; font-size: .82rem; font-weight: 600; }
 .funil-trilho { flex: 1; min-width: 0; background: var(--grid); border-radius: 0 6px 6px 0; height: 24px; position: relative; overflow: hidden; }
@@ -191,22 +207,10 @@ section { margin-bottom: 26px; }
 .funil-row.funil-destaque {
   background: linear-gradient(90deg, color-mix(in srgb, var(--good) 82%, black), var(--good));
   border-radius: 8px; padding: 6px 10px; margin: 0 -10px;
-  position: relative; overflow: hidden;
 }
 .funil-row.funil-destaque .funil-nome { color: #fff; }
 .funil-row.funil-destaque .funil-pct { color: rgba(255,255,255,.82); }
 .funil-destaque-valor { flex: 1; font-size: 1.1rem; font-weight: 800; color: #fff; }
-/* a faixa verde ganha um brilho passando de raspão quando ela nasce na tela — tipo o "ka-tchau" do Relâmpago McQueen */
-.funil-row.funil-destaque::after {
-  content: ''; position: absolute; top: 0; left: -60%; width: 35%; height: 100%;
-  background: linear-gradient(115deg, transparent, rgba(255,255,255,.65), transparent);
-  transform: skewX(-20deg);
-  animation: funil-brilho 1.1s cubic-bezier(.4,0,.2,1) 1;
-}
-@keyframes funil-brilho {
-  0% { left: -60%; }
-  100% { left: 130%; }
-}
 
 /* ---- chart ---- */
 .chart-wrap { overflow-x: auto; }
@@ -2886,7 +2890,13 @@ function renderFunil() {
       <div class="funil-pct">${m.taxaConversaoGeral === null ? 'sem reunião realizada ainda' : 'vendas / reuniões realizadas'}</div>
     </div>
   `);
-  document.getElementById('funil').innerHTML = linhas.join('');
+  const funilEl = document.getElementById('funil');
+  funilEl.innerHTML = linhas.join('');
+  // reforça o replay do brilho (ka-tchau) toda vez que o funil é redesenhado — tirando e
+  // recolocando a classe com um reflow no meio, senão o navegador ignora a "reaplicação"
+  funilEl.classList.remove('funil-brilhar');
+  void funilEl.offsetWidth;
+  funilEl.classList.add('funil-brilhar');
   // barras nascem em 0% e crescem até o valor real — precisa de dois rAF pra garantir que o
   // navegador pintou o estado 0% antes de trocar (senão a transição de width não dispara).
   requestAnimationFrame(() => {
