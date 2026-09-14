@@ -2192,10 +2192,15 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
             <label>Número (só pra exibir, opcional)</label>
             <input type="text" id="adm-wz-numero" placeholder="+55 19 99999-9999">
           </div>
+          <div>
+            <label>Dono (quem vai poder reconectar sozinho)</label>
+            <select id="adm-wz-dono"></select>
+          </div>
           <div class="full">
             <button class="btn" type="submit" id="adm-btn-whatsapp">Conectar número</button>
           </div>
         </form>
+        <p class="muted" style="margin-top:10px;">Isso aqui só é preciso uma vez, pra número totalmente novo. Depois de cadastrado, o dono reconecta sozinho (sem precisar de instância/chave) na aba WhatsApp, em "Meu WhatsApp".</p>
       </section>
     </div>
 
@@ -2320,6 +2325,19 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <button type="submit" class="btn">Confirmar</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- modal de reconexão do WhatsApp via QR code (self-service, qualquer pessoa reconecta o próprio número) -->
+<div id="modal-qr-whatsapp" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-qr-whatsapp')">
+  <div class="modal-card" style="max-width:340px; text-align:center;">
+    <h2>Reconectar WhatsApp</h2>
+    <p class="muted" id="qr-instrucao">Abre o WhatsApp no celular do número, vai em Aparelhos conectados → Conectar um aparelho, e aponta a câmera pro QR code abaixo.</p>
+    <div id="qr-wrap" style="display:flex; align-items:center; justify-content:center; min-height:260px; margin:12px 0;">
+      <div class="empty">Gerando QR code...</div>
+    </div>
+    <p class="muted" style="font-size:.72rem;">O QR expira sozinho — atualiza automaticamente. Fecha essa janela quando conectar (a bolinha lá em cima vira verde).</p>
+    <button type="button" class="btn btn-secondary" onclick="fecharModalQrWhats()">Fechar</button>
   </div>
 </div>
 
@@ -2724,6 +2742,7 @@ async function carregarDadosBase(userId) {
   popularSelect('neg-sdr', false);
   popularSelect('edit-sdr', true);
   popularSelect('edit-vendedor', true);
+  popularSelect('adm-wz-dono', true);
 
   if (currentPerfil && currentPerfil.papel === 'sdr') {
     document.getElementById('neg-sdr').value = currentPerfil.id;
@@ -5599,14 +5618,64 @@ async function verificarStatusWhats() {
     if (estado === 'open') {
       el.textContent = '✓ Conectado';
       el.style.background = 'var(--accent-wash)'; el.style.color = 'var(--good)';
+      el.style.cursor = 'default'; el.onclick = null;
     } else {
-      el.textContent = 'Desconectado — escaneie o QR no manager da Evolution';
+      el.textContent = '⚠️ Desconectado — clique pra reconectar';
       el.style.background = '#fdeaea'; el.style.color = 'var(--critical)';
+      el.style.cursor = 'pointer'; el.onclick = abrirReconexaoWhats;
     }
   } catch (e) {
     el.textContent = 'Erro ao checar status';
     el.style.background = '#fdeaea'; el.style.color = 'var(--critical)';
   }
+}
+
+// ---------- RECONEXÃO DO WHATSAPP VIA QR (self-service — qualquer pessoa reconecta o próprio número) ----------
+// 2026-09-14: antes, quando o número caía, a mensagem mandava a pessoa pro "manager da Evolution" —
+// um lugar que só o Igor tem acesso. Agora qualquer um clica na bolinha vermelha e resolve sozinho,
+// sem nunca ver nome de instância nem chave de API (tudo isso fica escondido no proxy do n8n).
+let qrWhatsInterval = null;
+let qrWhatsPollInterval = null;
+
+async function buscarNovoQRWhats() {
+  const wrap = document.getElementById('qr-wrap');
+  try {
+    const resp = await chamarEvolution('GET', `/instance/connect/${EVOLUTION_INSTANCE}`);
+    const data = await resp.json();
+    if (data && data.base64) {
+      wrap.innerHTML = `<img src="${data.base64}" alt="QR code do WhatsApp" style="width:240px; height:240px; border-radius:8px;">`;
+    } else {
+      wrap.innerHTML = '<div class="empty">Não consegui gerar o QR agora. Tenta fechar e abrir de novo.</div>';
+    }
+  } catch (e) {
+    wrap.innerHTML = '<div class="empty">Erro ao gerar o QR: ' + e.message + '</div>';
+  }
+}
+
+function abrirReconexaoWhats() {
+  document.getElementById('qr-instrucao').textContent =
+    `Abre o WhatsApp no celular do número "${EVOLUTION_INSTANCE}", vai em Aparelhos conectados → Conectar um aparelho, e aponta a câmera pro QR code abaixo.`;
+  document.getElementById('modal-qr-whatsapp').classList.add('open');
+  buscarNovoQRWhats();
+  // o QR da Evolution expira sozinho (Baileys), então gera um novo de tempos em tempos
+  qrWhatsInterval = setInterval(buscarNovoQRWhats, 25000);
+  // enquanto o modal tá aberto, fica de olho: assim que conectar, fecha sozinho
+  qrWhatsPollInterval = setInterval(async () => {
+    try {
+      const resp = await chamarEvolution('GET', `/instance/connectionState/${EVOLUTION_INSTANCE}`);
+      const data = await resp.json();
+      if (data && data.instance && data.instance.state === 'open') {
+        fecharModalQrWhats();
+        verificarStatusWhats();
+      }
+    } catch (e) { /* tenta de novo no próximo ciclo */ }
+  }, 4000);
+}
+
+function fecharModalQrWhats() {
+  fecharModal('modal-qr-whatsapp');
+  if (qrWhatsInterval) { clearInterval(qrWhatsInterval); qrWhatsInterval = null; }
+  if (qrWhatsPollInterval) { clearInterval(qrWhatsPollInterval); qrWhatsPollInterval = null; }
 }
 
 
@@ -7256,9 +7325,15 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-14',
+  versao: '2026-09-14b',
   titulo: 'Chegou coisa nova',
   passos: [
+    {
+      emoji: '📱',
+      titulo: 'Chip caiu? Reconecta você mesmo(a)',
+      texto: 'Se o número desconectar, a bolinha vermelha no topo da aba WhatsApp agora é clicável — aparece um QR code na hora pra escanear com o celular, sem precisar chamar ninguém nem entrar em nenhum painel técnico.',
+      aba: 'whatsapp', onde: 'Aba WhatsApp · bolinha de status no topo',
+    },
     {
       emoji: '🛠️',
       titulo: 'Aba Admin — cadastra gente e número de WhatsApp sozinho',
@@ -8729,6 +8804,7 @@ async function criarWhatsappAdmin(event) {
         apikey_evolution: document.getElementById('adm-wz-apikey').value.trim(),
         rotulo: document.getElementById('adm-wz-rotulo').value.trim(),
         numero: document.getElementById('adm-wz-numero').value.trim(),
+        perfil_id: document.getElementById('adm-wz-dono').value || null,
       }),
     });
     const resultado = await resp.json();
