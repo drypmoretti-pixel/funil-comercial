@@ -188,8 +188,25 @@ section { margin-bottom: 26px; }
   transition: width .7s cubic-bezier(.16,1,.3,1);
 }
 .funil-pct { width: 90px; flex-shrink: 0; font-size: .78rem; color: var(--text-secondary); text-align: right; }
-.funil-row.funil-destaque { background: var(--accent-wash); border-radius: 8px; padding: 6px 10px; margin: 0 -10px; }
-.funil-destaque-valor { flex: 1; font-size: 1.1rem; font-weight: 800; color: var(--good); }
+.funil-row.funil-destaque {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--good) 82%, black), var(--good));
+  border-radius: 8px; padding: 6px 10px; margin: 0 -10px;
+  position: relative; overflow: hidden;
+}
+.funil-row.funil-destaque .funil-nome { color: #fff; }
+.funil-row.funil-destaque .funil-pct { color: rgba(255,255,255,.82); }
+.funil-destaque-valor { flex: 1; font-size: 1.1rem; font-weight: 800; color: #fff; }
+/* a faixa verde ganha um brilho passando de raspão quando ela nasce na tela — tipo o "ka-tchau" do Relâmpago McQueen */
+.funil-row.funil-destaque::after {
+  content: ''; position: absolute; top: 0; left: -60%; width: 35%; height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,.65), transparent);
+  transform: skewX(-20deg);
+  animation: funil-brilho 1.1s cubic-bezier(.4,0,.2,1) 1;
+}
+@keyframes funil-brilho {
+  0% { left: -60%; }
+  100% { left: 130%; }
+}
 
 /* ---- chart ---- */
 .chart-wrap { overflow-x: auto; }
