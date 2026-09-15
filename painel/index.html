@@ -2455,6 +2455,15 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <label>Observação</label>
         <textarea id="crm-observacao" rows="2"></textarea>
       </div>
+      <div class="full"><label style="font-weight:700; margin-top:4px;">Anotações da equipe</label></div>
+      <div class="full">
+        <label>Anotações SDR</label>
+        <textarea id="crm-anotacao-sdr" rows="3" placeholder="O que a SDR precisa registrar sobre esse lead..."></textarea>
+      </div>
+      <div class="full">
+        <label>Anotação Closer</label>
+        <textarea id="crm-anotacao-closer" rows="3" placeholder="O que o closer precisa registrar sobre esse lead..."></textarea>
+      </div>
       <div class="full" style="display:flex; gap:8px;">
         <button type="button" class="btn btn-secondary" onclick="fecharModal('modal-card-crm')">Cancelar</button>
         <button type="submit" class="btn">Salvar</button>
@@ -4405,6 +4414,8 @@ function crmAbrirNovoCard(estagioId) {
   document.getElementById('crm-pessoa-telefone').value = '';
   document.getElementById('crm-pessoa-email').value = '';
   document.getElementById('crm-observacao').value = '';
+  document.getElementById('crm-anotacao-sdr').value = '';
+  document.getElementById('crm-anotacao-closer').value = '';
   crmPopularSelectsBase();
   const estagiosDoFunil = crmEstagios.filter(e => e.funil_id === crmFunilAtualId).sort((a,b) => a.ordem - b.ordem);
   document.getElementById('crm-estagio').value = estagioId || (estagiosDoFunil[0] && estagiosDoFunil[0].id) || '';
@@ -4434,6 +4445,8 @@ function crmAbrirCard(id) {
   document.getElementById('crm-pessoa-telefone').value = c.pessoa_telefone || '';
   document.getElementById('crm-pessoa-email').value = c.pessoa_email || '';
   document.getElementById('crm-observacao').value = c.observacao || '';
+  document.getElementById('crm-anotacao-sdr').value = c.anotacao_sdr || '';
+  document.getElementById('crm-anotacao-closer').value = c.anotacao_closer || '';
   crmPopularSelectsBase();
   document.getElementById('crm-estagio').value = c.estagio_id;
   document.getElementById('crm-responsavel').value = c.responsavel_id || '';
@@ -4505,6 +4518,8 @@ function crmSalvarCard(ev) {
     pessoa_telefone: document.getElementById('crm-pessoa-telefone').value.trim() || null,
     pessoa_email: document.getElementById('crm-pessoa-email').value.trim() || null,
     observacao: document.getElementById('crm-observacao').value.trim() || null,
+    anotacao_sdr: document.getElementById('crm-anotacao-sdr').value.trim() || null,
+    anotacao_closer: document.getElementById('crm-anotacao-closer').value.trim() || null,
     campos_valores: crmColetarCamposPersonalizados(),
     updated_at: new Date().toISOString(),
   };
