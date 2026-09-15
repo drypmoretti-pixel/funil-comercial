@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Demanda Infinita — Aula + Claude Skill Gratuita</title>
+<meta name="description" content="Assista a aula gratuita e instale a Claude Skill que gera leads qualificados por mês no LinkedIn sem tráfego pago."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
+<style>
+  *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --green:#008E43;
+    --green-light:#12B85E;
+    --bg:#F8F7F4;
+    --card:#ECEAE5;
+    --text:#111111;
+    --gray:#6B6B6B;
+    --line:#D8D5CE;
+  }
+  body{
+    color:var(--text);
+    font-family:"Inter",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    scroll-behavior:smooth;
+    background:var(--bg);
+    min-height:100vh;
+    line-height:1.6;
+  }
+  h1,h2{font-family:"Plus Jakarta Sans",sans-serif}
+  .container{width:100%;max-width:680px;margin:0 auto;padding:0 24px}
+
+  /* TOP BAR */
+  .top-bar{text-align:center;background:var(--green);padding:10px 24px}
+  .top-bar p{letter-spacing:.08em;text-transform:uppercase;color:#fff;font-size:13px;font-weight:600;line-height:1.5}
+  .top-bar span{opacity:.85;letter-spacing:0;text-transform:none;font-weight:400}
+
+  /* HERO */
+  .hero{text-align:center;padding:56px 0 44px}
+  .hero-logo{width:56px;height:56px;margin:0 auto 24px;display:block;border-radius:50%}
+  .hero-label{color:var(--green);letter-spacing:.15em;text-transform:uppercase;margin-bottom:28px;font-size:13px;font-weight:600;font-family:"JetBrains Mono",monospace;display:inline-block}
+  .hero-headline{letter-spacing:-.02em;color:var(--text);margin-bottom:24px;font-size:clamp(36px,6vw,56px);font-weight:800;line-height:1.1}
+  .hero-sub{color:var(--gray);max-width:520px;margin:0 auto;font-size:18px;line-height:1.65}
+  .hero-divider{background:var(--green);width:60px;height:2px;margin:32px auto 0}
+
+  /* VIDEO */
+  .video-section{padding:48px 0}
+  .video-wrap{background:var(--card);border:1px solid var(--line);border-radius:12px;width:100%;max-width:640px;margin:0 auto;padding-top:56.25%;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(17,17,17,.06)}
+  .video-wrap iframe{border:0;width:100%;height:100%;display:block;position:absolute;inset:0}
+
+  /* CTA */
+  .cta-section{padding:0 0 64px}
+  .cta-row{flex-direction:row;align-items:flex-start;gap:16px;max-width:680px;margin:0 auto;display:flex}
+  .btn-wrap{flex-direction:column;flex:1;align-items:center;gap:8px;display:flex}
+  .btn{width:100%;font-family:"Inter",sans-serif;text-align:center;cursor:pointer;letter-spacing:.03em;border-radius:8px;padding:18px 16px;font-size:14px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s;display:block}
+  .btn-primary{color:#fff;background:var(--green);border:1px solid var(--green)}
+  .btn-primary:hover{background:var(--green-light);border-color:var(--green-light)}
+  .btn-secondary{color:var(--text);background:#fff;border:1px solid var(--line)}
+  .btn-secondary:hover{color:var(--green);border-color:var(--green)}
+  .btn-sublabel{color:var(--gray);text-align:center;font-size:11.5px;line-height:1.4}
+
+  /* SKILL SECTION */
+  .skill-section{padding:0 0 64px}
+  .skill-section .section-label{color:var(--green);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;font-size:13px;font-weight:600;font-family:"JetBrains Mono",monospace;display:block;text-align:center}
+  .skill-section h2{letter-spacing:-.02em;color:var(--text);margin-bottom:10px;font-size:clamp(24px,4vw,34px);font-weight:800;line-height:1.15;text-align:center}
+  .skill-section .skill-sub{color:var(--gray);font-size:15px;line-height:1.65;text-align:center;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto}
+  .skill-box{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;max-width:640px;margin:0 auto;box-shadow:0 8px 24px rgba(17,17,17,.05)}
+  .skill-header{background:var(--card);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+  .skill-header-left{display:flex;align-items:center;gap:10px}
+  .skill-dots{display:flex;gap:6px}
+  .skill-dots span{width:10px;height:10px;border-radius:50%;display:block;background:#C7C3B8}
+  .skill-filename{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--gray);font-weight:500}
+  .btn-copy{font-family:"Inter",sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:#fff;border:1px solid var(--line);color:var(--gray);padding:6px 14px;border-radius:5px;cursor:pointer;transition:all .2s}
+  .btn-copy:hover,.btn-copy.copied{background:var(--green);border-color:var(--green);color:#fff}
+  .skill-content{font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.7;color:#4A4A4A;padding:24px;max-height:380px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+  .skill-content::-webkit-scrollbar{width:3px}
+  .skill-content::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+
+  /* STEPS */
+  .steps-section{padding:0 0 64px}
+  .steps-section .section-label{color:var(--green);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;font-size:13px;font-weight:600;font-family:"JetBrains Mono",monospace;display:block;text-align:center}
+  .steps-section h2{letter-spacing:-.02em;color:var(--text);margin-bottom:32px;font-size:clamp(22px,3.5vw,30px);font-weight:800;line-height:1.15;text-align:center}
+  .steps-list{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:0}
+  .step-item{display:flex;gap:20px;padding-bottom:28px;border-left:1px solid var(--line);margin-left:16px;padding-left:24px;position:relative}
+  .step-item:last-child{border-left-color:transparent;padding-bottom:0}
+  .step-num{position:absolute;left:-16px;top:0;width:32px;height:32px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+  .step-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+  .step-desc{font-size:14px;color:var(--gray);line-height:1.6}
+  .step-desc a{color:var(--green);text-decoration:none}
+  .step-desc code{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--card);border:1px solid var(--line);padding:2px 6px;border-radius:3px;color:#4A4A4A}
+
+  /* FOOTER */
+  footer{text-align:center;border-top:1px solid var(--line);padding:32px 0 40px}
+  footer p{color:#9C9890;font-size:13px}
+  footer a{color:var(--gray);text-decoration:none}
+
+  @media(max-width:560px){
+    .hero{padding:44px 0 32px}
+    .video-section{padding:32px 0}
+    .cta-section{padding:0 0 48px}
+    .hero-sub{font-size:17px}
+    .cta-row{flex-direction:column;max-width:360px}
+    .btn{padding:18px 20px;font-size:15px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <p>Aula Gratuita · <span>Disponível agora · Assista e instale a Skill hoje</span></p>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <img src="logo-demanda-infinita.png" alt="Demanda Infinita" class="hero-logo"/>
+    <span class="hero-label">Método Demanda Infinita® — Aula Gratuita</span>
+    <h1 class="hero-headline">Como usar Claude Skills para gerar leads qualificados no LinkedIn</h1>
+    <p class="hero-sub">Sem tráfego pago, sem Sales Navigator. O passo a passo do funil que transforma post em reunião.</p>
+    <div class="hero-divider"></div>
+  </div>
+</section>
+
+<section class="video-section">
+  <div class="container">
+    <div class="video-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/dQiAdW0Dguc"
+        title="Como usar Claude Skills para gerar leads qualificados no LinkedIn"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-row">
+      <div class="btn-wrap">
+        <a href="https://cal.com/admin-grupo-nexusmind-hxbhcy/bate-papo-nexusmind" class="btn btn-primary" target="_blank" rel="noopener">AGENDAR REUNIÃO GRATUITA</a>
+        <span class="btn-sublabel">Individual · Sem compromisso · Análise do seu negócio</span>
+      </div>
+      <div class="btn-wrap">
+        <a href="#skill" class="btn btn-secondary">BAIXAR A CLAUDE SKILL GRÁTIS</a>
+        <span class="btn-sublabel">O mesmo processo usado no método Demanda Infinita</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="skill-section" id="skill">
+  <div class="container">
+    <span class="section-label">Claude Skill Gratuita</span>
+    <h2>Copie, cole no Claude e comece agora.</h2>
+    <p class="skill-sub">Você precisa do Claude Pro para salvar skills. Cole o conteúdo abaixo e peça ao Claude para salvar como skill.</p>
+    <div class="skill-box">
+      <div class="skill-header">
+        <div class="skill-header-left">
+          <div class="skill-dots"><span></span><span></span><span></span></div>
+          <span class="skill-filename">linkedin-lead-magnet / SKILL.md</span>
+        </div>
+        <button class="btn-copy" id="copyBtn" onclick="copySkill()">Copiar</button>
+      </div>
+      <div class="skill-content" id="skillContent">---
+name: linkedin-lead-magnet
+description: Cria posts de lead magnet para o LinkedIn que geram volume massivo de comentários e DMs qualificados, seguindo o protocolo pós-Authenticity Update (2026) — CTA sempre no criativo, nunca na copy. Use SEMPRE que o usuário mencionar "isca", "lead magnet", "post LinkedIn", "quero fazer um post pra captar lead", "post com CTA de comentário", "conteúdo pra DM", "post de entregável grátis", "vou distribuir no LinkedIn", ou quando pedir ajuda para criar conteúdo de topo de funil no LinkedIn.
+---
+
+# LinkedIn Lead Magnet — Método Demanda Infinita
+
+Cria posts de isca no LinkedIn que geram leads qualificados via comentário → DM, usando o algoritmo atual (pós-Authenticity Update, 360Brew) a seu favor em vez de brigar contra ele.
+
+## O que mudou no algoritmo (e por que a maioria dos posts de isca parou de funcionar)
+
+O LinkedIn trocou o ranking do feed por um sistema de IA generativa que troca "quem te segue" (Social Graph) por "o que é relevante pra esse leitor" (Interest Graph). Três consequências práticas:
+
+1. **Dwell time é o fator #1.** Não é like, é quanto tempo a pessoa fica com o post na tela. Posts densos, escaneáveis e que prendem leitura ganham distribuição — post curto que dispara "some" perde.
+2. **Engagement bait tomou penalidade pesada.** "Comenta SIM se concorda", enquete rasa e pedido de reação vazia são detectados e suprimidos pelo próprio modelo de linguagem que lê o texto do post.
+3. **Link externo no corpo do post reduz alcance.** O LinkedIn quer prender a pessoa na plataforma — link vai no primeiro comentário, não no post.
+
+Isso levou muita gente a concluir que o formato "Comenta [PALAVRA] que te mando na DM" morreu. **Não morreu — só migrou de lugar.**
+
+## A virada: copy = conteúdo, criativo = CTA
+
+O que o algoritmo penaliza não é a mecânica de captura (comentário → DM), é o **pedido de interação estar dentro do texto do post** — é ali que o modelo classifica o post como click-driven. A imagem/criativo não passa pelo mesmo filtro.
+
+Um teste A/B real, mesmo material, só mudando onde o pedido morava:
+
+| | CTA na copy | CTA no criativo |
+|---|---|---|
+| Impressões | 84 | 91.573 |
+| Curtidas | 5 | 538 |
+| Comentários | 8 | 2.753 |
+
+**A regra de ouro:** o texto nunca pede nada. Quem pede é a imagem.
+
+## Estrutura do post que converte (7 blocos)
+
+1. **Hook = artefato concreto + número.** Não promete resultado abstrato — entrega algo contável que já existe. "Transformei X em 36 Skills", "Conectei o Claude no meu CRM". Tom de relato, não de anúncio.
+2. **Linha de qualificação do ICP.** Uma frase que filtra quem deve continuar lendo, listando atividades/dores (não cargos).
+3. **Hint leve, cedo, isolado.** Uma linha, sem verbo de comando: *"Estou liberando o material completo de graça 👇"*. Vai na abertura (logo após o hook + ICP), sozinha. A seta aponta pro criativo — é a ponte entre copy e imagem. É o único lugar do texto que menciona o material.
+4. **O que o material entrega**, em bullets com verbo de ação (✅ ou →), benefício operacional — não feature solta.
+5. **Como está organizado** (partes, frentes, fluxo em setas) — é o bloco que mais segura dwell time: mostra profundidade sem obrigar a baixar nada.
+6. **Prova numérica real, sem exagero.** Número tem que ser verdadeiro — é o que carrega a credibilidade do post inteiro.
+7. **Fecho sem CTA, remoção de fricção.** "É só copiar/conectar e usar." Sem pergunta, sem pedido — o pedido já está na imagem.
+
+## O criativo (a peça que a maioria esquece de entregar)
+
+Toda entrega de post de captura tem **2 peças, não 1**: a copy e o briefing do criativo. O criativo precisa:
+- Ter a palavra-chave do CTA em destaque ("Comente [PALAVRA] e eu te mando").
+- **Não ter cara de template de isca.** Teste: você pararia pra olhar essa imagem mesmo que não existisse material nenhum atrás dela? Se a resposta é "só porque é isca", ela entrega o jogo e derruba o dwell time.
+- Preferir formato que pareça conteúdo real: print de tela genuína, comparação visual, lockup de duas marcas — não banner genérico "BAIXE AGORA".
+
+## Regras de escrita
+
+1. **Primeira linha é tudo** — precisa parar o scroll.
+2. **Frases com no máximo 12 palavras** — se ficou grande, quebra em duas.
+3. **Sem adjetivos vazios** — "incrível", "revolucionário", "poderoso" → apagar.
+4. **Números reais ou não usa.** "Dezenas de leads" não convence; "847 leads" convence.
+5. **Zero "comenta", "comente", "conecta", "curte", "compartilha" na copy** — é o erro que mais derruba alcance hoje.
+6. **Formato documento/carrossel e vídeo performam mais** que texto solto — priorizar quando o material permitir.
+7. **Link externo fora do corpo do post** (primeiro comentário, nunca no texto).
+8. **Hashtag: 1 a 3 é o ponto ótimo** — acima de 5, retorno decrescente.
+
+## Processo de criação
+
+1. Definir o artefato/entregável — precisa ser real e usável, não promessa vaga.
+2. Escolher a palavra-chave do CTA (vai só no criativo).
+3. Escrever o hook (3 variações, escolher a mais concreta/menos genérica).
+4. Escrever o corpo seguindo os 7 blocos acima.
+5. Revisar a copy: buscar literalmente "comenta/comente/conecta/curte/compartilha" e remover qualquer ocorrência.
+6. Escrever o briefing do criativo (o que a imagem precisa dizer, incluindo a palavra-chave).
+7. Publicar com o link, se houver, no primeiro comentário — nunca no corpo do post.</div>
+    </div>
+  </div>
+</section>
+
+<section class="steps-section">
+  <div class="container">
+    <span class="section-label">Como instalar</span>
+    <h2>3 passos. Menos de 5 minutos.</h2>
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Copie a Skill acima</div>
+          <div class="step-desc">Clique em "Copiar" no bloco de código. Todo o conteúdo vai para sua área de transferência.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Cole no Claude Pro e salve</div>
+          <div class="step-desc">Abra o <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> (obrigatório Claude Pro), cole o conteúdo e escreva: <code>Salve isso como uma skill</code>. O Claude salva em Habilidades automaticamente.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Personalize para o seu negócio</div>
+          <div class="step-desc">Informe ao Claude o que você faz, para quem vende e seus resultados. Quanto mais contexto, mais assertivo o conteúdo. Após cada post, envie as métricas para a Skill evoluir.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Método Demanda Infinita® · <a href="https://demandainfinita.com" target="_blank" rel="noopener">demandainfinita.com</a></p>
+  </div>
+</footer>
+
+<script>
+  function copySkill() {
+    const text = document.getElementById('skillContent').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Copiado';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copiar';
+        btn.classList.remove('copied');
+      }, 2500);
+    });
+  }
+</script>
+
+</body>
+</html>
