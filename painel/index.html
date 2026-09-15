@@ -213,13 +213,22 @@ section { margin-bottom: 26px; }
   transition: width .7s cubic-bezier(.16,1,.3,1);
 }
 .funil-pct { width: 90px; flex-shrink: 0; font-size: .78rem; color: var(--text-secondary); text-align: right; }
-.funil-row.funil-destaque {
-  background: var(--good);
-  border-radius: 8px; padding: 8px 12px; margin: 0 -10px;
+/* taxa de conversão: não é mais uma barra proporcional (é um %, unidade diferente das
+   contagens acima/abaixo) — vira um conector fino entre Realizadas e Vendas, com uma
+   pastilha pequena no lugar de ocupar a linha inteira. */
+.funil-taxa-track { flex: 1; min-width: 0; position: relative; display: flex; align-items: center; justify-content: center; }
+.funil-taxa-track::before {
+  content: ''; position: absolute; left: 50%; top: -10px; bottom: -10px; width: 0;
+  border-left: 2px dashed var(--border);
 }
-.funil-row.funil-destaque .funil-nome { color: #fff; width: auto; }
-.funil-row.funil-destaque .funil-pct { color: rgba(255,255,255,.82); width: auto; text-align: right; }
-.funil-destaque-valor { flex: 1; font-size: 1.1rem; font-weight: 800; color: #fff; text-align: center; }
+.funil-taxa-badge {
+  position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 5px;
+  background: var(--good); color: #fff; font-size: .78rem; font-weight: 800;
+  padding: 5px 12px; border-radius: 999px; white-space: nowrap;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--good) 45%, transparent);
+}
+.funil-taxa-badge svg { flex-shrink: 0; }
+.funil-taxa-badge.vazio { background: var(--grid); color: var(--text-secondary); box-shadow: none; }
 
 /* ---- chart ---- */
 .chart-wrap { overflow-x: auto; }
@@ -2913,12 +2922,22 @@ function renderFunil() {
       </div>
     `;
   });
-  // insere a taxa de conversão geral entre Realizadas e Vendas — não é uma barra proporcional (é um %), então ganha destaque próprio
+  // insere a taxa de conversão geral entre Realizadas e Vendas — não é uma barra proporcional
+  // (é um %, unidade diferente das contagens), então vira um conector fino com uma pastilha
+  // pequena, em vez de uma barra do tamanho das outras linhas.
+  const taxaNula = m.taxaConversaoGeral === null;
+  const taxaValor = taxaNula ? '—' : m.taxaConversaoGeral.toFixed(0) + '%';
+  const taxaLegenda = taxaNula ? 'sem reunião realizada ainda' : 'vendas / realizadas';
   linhas.splice(3, 0, `
-    <div class="funil-row funil-destaque">
+    <div class="funil-row funil-taxa">
       <div class="funil-nome">Tx de conversão</div>
-      <div class="funil-destaque-valor">${m.taxaConversaoGeral === null ? '—' : m.taxaConversaoGeral.toFixed(0) + '%'}</div>
-      <div class="funil-pct">${m.taxaConversaoGeral === null ? 'sem reunião realizada ainda' : 'vendas / reuniões realizadas'}</div>
+      <div class="funil-taxa-track">
+        <div class="funil-taxa-badge${taxaNula ? ' vazio' : ''}">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v14M6 13l6 6 6-6"/></svg>
+          <span>${taxaValor}</span>
+        </div>
+      </div>
+      <div class="funil-pct">${taxaLegenda}</div>
     </div>
   `);
   const funilEl = document.getElementById('funil');
