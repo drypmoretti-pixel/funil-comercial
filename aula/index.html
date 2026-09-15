@@ -46,8 +46,12 @@
 
   /* VIDEO */
   .video-section{padding:48px 0}
-  .video-wrap{background:var(--card);border:1px solid var(--line);border-radius:12px;width:100%;max-width:640px;margin:0 auto;padding-top:56.25%;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(17,17,17,.06)}
+  .video-wrap{background:var(--card);border:1px solid var(--line);border-radius:12px;width:100%;max-width:640px;margin:0 auto;padding-top:56.25%;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(17,17,17,.06);cursor:pointer}
   .video-wrap iframe{border:0;width:100%;height:100%;display:block;position:absolute;inset:0}
+  .video-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .video-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,.35);transition:background .2s,transform .2s}
+  .video-wrap:hover .video-play{background:var(--green-light);transform:translate(-50%,-50%) scale(1.06)}
+  .video-play svg{width:26px;height:26px;fill:#fff;margin-left:4px}
 
   /* CTA */
   .cta-section{padding:0 0 64px}
@@ -123,15 +127,9 @@
 
 <section class="video-section">
   <div class="container">
-    <div class="video-wrap">
-      <iframe
-        src="https://www.youtube.com/embed/dQiAdW0Dguc"
-        title="Como usar Claude Skills para gerar leads qualificados no LinkedIn"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen>
-      </iframe>
+    <div class="video-wrap" id="videoWrap" onclick="playVideo()">
+      <img class="video-thumb" src="https://img.youtube.com/vi/dQiAdW0Dguc/maxresdefault.jpg" alt="Como usar Claude Skills para gerar leads qualificados no LinkedIn"/>
+      <div class="video-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
     </div>
   </div>
 </section>
@@ -275,6 +273,13 @@ Toda entrega de post de captura tem **2 peças, não 1**: a copy e o briefing do
 </footer>
 
 <script>
+  function playVideo() {
+    const wrap = document.getElementById('videoWrap');
+    wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/dQiAdW0Dguc?autoplay=1" title="Como usar Claude Skills para gerar leads qualificados no LinkedIn" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+    wrap.style.cursor = 'default';
+    wrap.onclick = null;
+  }
+
   function copySkill() {
     const text = document.getElementById('skillContent').innerText;
     navigator.clipboard.writeText(text).then(() => {
