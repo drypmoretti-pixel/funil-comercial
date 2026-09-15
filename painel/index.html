@@ -7352,9 +7352,15 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-14b',
+  versao: '2026-09-15',
   titulo: 'Chegou coisa nova',
   passos: [
+    {
+      emoji: '📝',
+      titulo: 'Cada lead com anotação separada de SDR e closer',
+      texto: 'O card do CRM ganhou dois campos novos, logo abaixo de Observação: <b>Anotações SDR</b> e <b>Anotação Closer</b>. Cada papel registra o que precisa sobre o lead sem misturar com o campo do outro — abre o card, escreve, salva, e fica ali pra quem abrir depois. É o histórico organizado por pessoa que faltava.',
+      aba: 'crm', onde: 'CRM · abra um card, abaixo de Observação',
+    },
     {
       emoji: '📱',
       titulo: 'Chip caiu? Reconecta você mesmo(a)',
