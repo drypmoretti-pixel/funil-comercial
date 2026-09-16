@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O agente que destrava o funil parado no seu ClickUp | Método Demanda Infinita®</title>
+<meta name="description" content="Ligue o Claude no seu ClickUp em 2 minutos, cole a base do agente e descubra o que está travado. Achei um card parado há 167 dias em 'Proposta enviada'. As perguntas prontas, o sistema de alerta e as regras pra não bagunçar o board.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --green:#008E43;
+    --green-light:#12B85E;
+    --green-dark:#0B3D26;
+    --bg:#F8F7F4;
+    --card:#ECEAE5;
+    --text:#111111;
+    --gray:#6B6B6B;
+    --line:#D8D5CE;
+    --warn:#C2410C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:18px; line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0 0 12px;}
+  .wrap{max-width:820px; margin:0 auto; padding:0 20px 80px;}
+  a{color:var(--green);}
+
+  /* Capa */
+  .cover{padding:48px 20px 20px; text-align:center;}
+  .cover img.logo{width:76px; height:76px; margin-bottom:20px;}
+  .cover .kicker{font-size:14px; font-weight:700; letter-spacing:1.5px; color:var(--green); text-transform:uppercase;}
+  .cover h1{font-size:43px; font-weight:800; margin-top:10px; line-height:1.15;}
+  .cover .sub{font-size:19px; color:var(--gray); max-width:580px; margin:14px auto 0;}
+  .cover .badge{display:inline-block; margin-top:18px; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--green); background:#fff; border:1px solid var(--green); border-radius:999px; padding:6px 16px;}
+
+  .lead{font-size:18.5px; margin-top:26px;}
+  .lead strong{color:var(--green);}
+
+  h2.section-title{font-size:25px; font-weight:800; margin-top:48px; padding-bottom:10px; border-bottom:2px solid var(--green); scroll-margin-top:20px;}
+  h2.section-title .part-tag{display:block; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); margin-bottom:6px;}
+  h3.sub-title{font-size:20px; font-weight:800; margin-top:28px;}
+
+  .card{background:var(--card); border-radius:14px; padding:20px 22px; margin-bottom:16px;}
+  .divider{height:1px; background:var(--line); margin:40px 0;}
+
+  /* Fluxo de 6 passos */
+  .flow{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px;}
+  .flow .f{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 14px; position:relative;}
+  .flow .f .n{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--green);}
+  .flow .f .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17px; margin-top:4px;}
+  .flow .f .d{font-size:15px; color:var(--gray); margin-top:4px; line-height:1.45;}
+  @media (max-width:680px){ .flow{grid-template-columns:1fr;} }
+
+  /* Sumário */
+  .toc{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 22px; margin-top:26px;}
+  .toc .t{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--gray); margin-bottom:10px;}
+  .toc ol{margin:0; padding-left:0; list-style:none; counter-reset:toc;}
+  .toc li{counter-increment:toc; margin-bottom:8px; font-size:17px; display:flex; gap:10px;}
+  .toc li::before{content:counter(toc,decimal-leading-zero); font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--green); flex:0 0 auto;}
+  .toc a{text-decoration:none; color:var(--text);}
+  .toc a:hover{color:var(--green);}
+
+  /* Passos numerados */
+  .steps{margin-top:18px; display:flex; flex-direction:column; gap:14px;}
+  .steps .step{display:flex; gap:14px; align-items:flex-start;}
+  .steps .step .n{flex:0 0 28px; height:28px; border-radius:50%; background:var(--text); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;}
+  .steps .step .t{font-size:17px;}
+  .steps .step .t strong{display:block; font-size:17.5px; font-family:'Plus Jakarta Sans',sans-serif;}
+  code{font-family:'JetBrains Mono',monospace; background:var(--card); padding:1px 6px; border-radius:5px; font-size:15px;}
+
+  /* Caixa de prompt copiável */
+  .prompt-box{background:#0A0F0C; border:1px solid rgba(18,184,94,.3); border-radius:14px; padding:16px 18px 14px; margin:14px 0; position:relative;}
+  .prompt-box .pb-head{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px;}
+  .prompt-box .pb-label{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--green-light);}
+  .prompt-box pre{margin:0; white-space:pre-wrap; word-break:break-word; font-family:'JetBrains Mono',monospace; font-size:14.5px; line-height:1.6; color:#E8F3EC;}
+  .copy-btn{background:rgba(18,184,94,.15); border:1px solid rgba(18,184,94,.45); color:#9BE9BE; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:6px 14px; border-radius:8px; cursor:pointer; white-space:nowrap;}
+  .copy-btn:hover{background:rgba(18,184,94,.28);}
+  .copy-btn.done{background:var(--green); border-color:var(--green); color:#fff;}
+
+  /* Tips e alertas */
+  .tip, .alert{border-left:4px solid var(--green); background:var(--card); border-radius:8px; padding:12px 16px; margin:16px 0; font-size:16.5px;}
+  .tip strong, .alert strong{display:block; font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--green); margin-bottom:4px; font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert strong{color:var(--warn);}
+
+  /* Tabelas */
+  .table-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:12px; background:#fff;}
+  table{border-collapse:collapse; width:100%; font-size:16px; min-width:560px;}
+  th{background:var(--card); text-align:left; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.4px; padding:12px 14px; border-bottom:1px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.45;}
+  tr:last-child td{border-bottom:0;}
+  td.mono{font-family:'JetBrains Mono',monospace; font-size:14.5px; white-space:nowrap; color:var(--green);}
+
+  /* Regras */
+  .rule{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-top:14px;}
+  .rule .num{display:inline-block; font-size:12px; font-weight:800; color:#fff; background:var(--green); border-radius:999px; padding:3px 11px; margin-bottom:8px; font-family:'JetBrains Mono',monospace;}
+  .rule h3{font-size:19px; margin-bottom:6px;}
+  .rule p{margin:0; font-size:16.5px;}
+  .rule .why{margin-top:8px; font-size:15px; color:var(--gray);}
+
+  /* Comparativo ruim/bom */
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;}
+  .vs .col{border-radius:14px; padding:16px 18px; font-size:16px;}
+  .vs .bad{background:#fff; border:1px solid var(--line);}
+  .vs .good{background:#fff; border:2px solid var(--green);}
+  .vs .col .h{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.6px; margin-bottom:8px;}
+  .vs .bad .h{color:var(--warn);}
+  .vs .good .h{color:var(--green);}
+  .vs .col em{color:var(--gray); font-size:14.5px; display:block; margin-top:8px; font-style:normal;}
+  @media (max-width:680px){ .vs{grid-template-columns:1fr;} }
+
+  /* Timeline */
+  .timeline{display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-top:18px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;}
+  .timeline .seg{padding:16px 16px; border-right:1px solid var(--line);}
+  .timeline .seg:last-child{border-right:0;}
+  .timeline .seg .s{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--green);}
+  .timeline .seg .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17px; margin:4px 0;}
+  .timeline .seg .d{font-size:15px; color:var(--gray); line-height:1.45;}
+  @media (max-width:680px){ .timeline{grid-template-columns:1fr;} .timeline .seg{border-right:0; border-bottom:1px solid var(--line);} }
+
+  /* Checklist */
+  .checklist{background:#fff; border:2px solid var(--green); border-radius:16px; padding:22px 24px; margin-top:22px;}
+  .checklist h3{font-size:21px; margin-bottom:4px;}
+  .checklist .cl-sub{font-size:15.5px; color:var(--gray); margin-bottom:16px;}
+  .check-item{display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--line); cursor:pointer;}
+  .check-item:last-of-type{border-bottom:0;}
+  .check-item input{appearance:none; flex:0 0 22px; height:22px; margin:2px 0 0; border:2px solid var(--line); border-radius:6px; cursor:pointer; position:relative; background:#fff;}
+  .check-item input:checked{background:var(--green); border-color:var(--green);}
+  .check-item input:checked::after{content:"✓"; color:#fff; font-size:14px; font-weight:800; position:absolute; top:-1px; left:3px;}
+  .check-item span{font-size:16.5px; line-height:1.45;}
+  .check-item input:checked + span{color:var(--gray); text-decoration:line-through;}
+  .progress{height:8px; background:var(--card); border-radius:999px; margin-top:16px; overflow:hidden;}
+  .progress i{display:block; height:100%; width:0; background:var(--green); transition:width .25s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray); margin-top:8px; text-align:right;}
+
+  /* Fecho */
+  .closing{background:var(--card); border-radius:16px; padding:24px 26px; margin-top:30px;}
+  .closing h3{font-size:21px;}
+  .closing ol{margin:10px 0 0; padding-left:20px;}
+  .closing li{margin-bottom:8px; font-size:17px;}
+
+  /* Vídeo */
+  .video-block{margin-top:40px;}
+  .video-headline{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:26px; text-align:center; max-width:600px; margin:0 auto 20px; line-height:1.3;}
+  .video-embed{position:relative; width:100%; padding-bottom:56.25%; height:0; border-radius:16px; overflow:hidden; background:#000;}
+  .video-embed iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:0;}
+
+  /* CTA */
+  .cta-final{
+    margin-top:40px; padding:56px 32px; border-radius:24px; text-align:center;
+    background:radial-gradient(circle at 50% 0%, #163825 0%, #0A0F0C 62%);
+    border:1px solid rgba(18,184,94,.35); color:#fff;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .cta-final .avatar{width:104px; height:104px; border-radius:50%; object-fit:cover; border:3px solid var(--green-light); margin:0 auto 20px; display:block; box-shadow:0 10px 28px rgba(0,0,0,.45);}
+  .cta-final .eyebrow{font-size:14px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--green-light); margin-bottom:14px;}
+  .cta-final .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:32px; line-height:1.28; max-width:520px; margin:0 auto 12px;}
+  .cta-final .s{font-size:17px; color:#a9b3ad; margin-bottom:30px;}
+  .btn-cta{
+    display:inline-flex; align-items:center; gap:10px;
+    background:linear-gradient(135deg,#17D26E,#008E43);
+    color:#fff; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800;
+    font-size:22px; padding:20px 44px; border-radius:999px;
+    box-shadow:0 14px 34px -8px rgba(18,184,94,.55), 0 0 0 1px rgba(255,255,255,.08) inset;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-cta:hover{transform:translateY(-2px); box-shadow:0 20px 40px -8px rgba(18,184,94,.7), 0 0 0 1px rgba(255,255,255,.1) inset;}
+
+  footer{text-align:center; font-size:14px; color:var(--gray); margin-top:40px; line-height:1.6;}
+  footer .mono{font-family:'JetBrains Mono',monospace; letter-spacing:1.4px; text-transform:uppercase; color:var(--text); font-weight:600;}
+
+  /* Extras visuais do passo a passo */
+  .shot .files{background:#fff; border:1px solid #E2DFD6; border-radius:10px; overflow:hidden;}
+  .shot .file{display:flex; align-items:center; gap:10px; padding:9px 12px; border-bottom:1px solid #EFEDE6; font-size:13.5px; color:#3A3A36;}
+  .shot .file:last-child{border-bottom:0;}
+  .shot .file .ic{width:22px; height:22px; border-radius:5px; background:#E8EEF6; color:#3A6EA5; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;}
+  .shot .file.on{background:#F2FBF5;}
+  .shot .file .tagme{margin-left:auto; font-size:11px; font-weight:700; color:#0B7A3C; background:#E4F6EA; border:1px solid #BFE3CD; border-radius:999px; padding:2px 8px;}
+  .shot .chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;}
+  .shot .chip{font-size:12px; padding:5px 11px; border-radius:999px; border:1px solid #D8D5CE; background:#fff; color:#4A4A45;}
+  .shot .chip.on{background:#DA7756; border-color:#DA7756; color:#fff; font-weight:600;}
+  .shot .doc{background:#fff; border:1px solid #E2DFD6; border-radius:10px; padding:16px 18px;}
+  .shot .doc h5{font-family:'Plus Jakarta Sans',sans-serif; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#8A8578; margin:0 0 4px; font-weight:800;}
+  .shot .doc p{font-size:13.5px; margin:0 0 12px; color:#3A3A36; line-height:1.5;}
+  .shot .doc .blank{border:1.5px dashed #D8D5CE; border-radius:8px; height:34px;}
+  .shot .callout{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; color:#fff; background:#0B7A3C; border-radius:999px; padding:2px 8px; margin-left:6px; vertical-align:1px;}
+
+  /* Hero visual */
+  .hero-img{margin:26px 0 4px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:10px; box-shadow:0 26px 60px -30px rgba(0,0,0,.5);}
+  .hero-img img{display:block; width:100%; height:auto; border-radius:12px;}
+  .hero-cap{text-align:center; font-size:14.5px; color:var(--gray); margin:10px 0 0;}
+  .hero-cap b{color:var(--text); font-weight:600;}
+
+  /* Telas recriadas (mockups de UI) */
+  .shot{background:#F0EEE6; border:1px solid #D8D5CE; border-radius:14px; overflow:hidden; margin:16px 0 6px; box-shadow:0 16px 40px -22px rgba(0,0,0,.45); font-family:'Inter',sans-serif;}
+  .shot .bar{display:flex; align-items:center; gap:7px; padding:10px 14px; background:#E6E3DA; border-bottom:1px solid #D8D5CE;}
+  .shot .bar i{width:10px; height:10px; border-radius:50%; background:#C9C5B8; display:block;}
+  .shot .bar .name{margin-left:8px; font-size:12.5px; color:#6B6B6B; font-family:'JetBrains Mono',monospace;}
+  .shot .body{display:grid; grid-template-columns:190px 1fr; min-height:230px;}
+  .shot .side{background:#E9E6DD; border-right:1px solid #D8D5CE; padding:14px 10px;}
+  .shot .side .sh{font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#8A8578; padding:0 8px 8px;}
+  .shot .side .it{font-size:14px; color:#4A4A45; padding:8px 10px; border-radius:8px; margin-bottom:2px;}
+  .shot .side .it.on{background:#fff; color:#111; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .shot .main{padding:18px 20px; background:#F7F6F1;}
+  .shot .main h4{font-family:'Plus Jakarta Sans',sans-serif; font-size:17px; font-weight:800; margin:0 0 4px;}
+  .shot .main .desc{font-size:13.5px; color:#6B6B6B; margin-bottom:14px; line-height:1.45;}
+  .shot .row{display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fff; border:1px solid #E2DFD6; border-radius:10px; padding:12px 14px; margin-bottom:10px;}
+  .shot .row .l{display:flex; align-items:center; gap:11px;}
+  .shot .row .ico{width:30px; height:30px; border-radius:8px; background:#0A0F0C; color:#12B85E; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; font-family:'JetBrains Mono',monospace;}
+  .shot .row .tt{font-size:14.5px; font-weight:600;}
+  .shot .row .ss{font-size:12.5px; color:#6B6B6B;}
+  .shot .pill{font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; background:#E8F4EC; color:#0B7A3C; border:1px solid #BFE3CD; white-space:nowrap;}
+  .shot .pill.grey{background:#EFEDE6; color:#6B6B6B; border-color:#DFDCD3;}
+  .shot .btn{display:inline-flex; align-items:center; gap:7px; background:#DA7756; color:#fff; font-size:14px; font-weight:600; padding:9px 16px; border-radius:9px; border:0;}
+  .shot .btn.ghost{background:#fff; color:#3A3A36; border:1px solid #D8D5CE;}
+  .shot .btn.hl{box-shadow:0 0 0 3px rgba(218,119,86,.28);}
+  .shot .field{margin-bottom:12px;}
+  .shot .field .lb{font-size:12.5px; font-weight:600; color:#4A4A45; margin-bottom:5px;}
+  .shot .field .inp{background:#fff; border:1px solid #D8D5CE; border-radius:9px; padding:10px 12px; font-size:14px; font-family:'JetBrains Mono',monospace; color:#111; overflow-x:auto; white-space:nowrap;}
+  .shot .field .inp.focus{border-color:#DA7756; box-shadow:0 0 0 3px rgba(218,119,86,.18);}
+  .shot .modal{max-width:430px; margin:0 auto; background:#F7F6F1; border:1px solid #D8D5CE; border-radius:12px; padding:18px 18px 16px; box-shadow:0 20px 40px -18px rgba(0,0,0,.35);}
+  .shot .modal h4{margin-bottom:12px;}
+  .shot .modal .acts{display:flex; justify-content:flex-end; gap:8px; margin-top:14px;}
+  .shot .chat{padding:18px 20px; background:#F7F6F1;}
+  .shot .msg{background:#fff; border:1px solid #E2DFD6; border-radius:12px; padding:12px 14px; font-size:14.5px; line-height:1.5; margin-bottom:10px;}
+  .shot .msg.me{background:#EFEDE6; border-color:#E2DFD6;}
+  .shot .msg .who{font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#8A8578; margin-bottom:5px;}
+  .shot .tool{display:flex; align-items:center; gap:9px; background:#0A0F0C; border:1px solid rgba(18,184,94,.35); border-radius:10px; padding:10px 13px; margin-bottom:10px;}
+  .shot .tool .d{width:8px; height:8px; border-radius:50%; background:#12B85E;}
+  .shot .tool .tx{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#9BE9BE;}
+  .shot .out{display:flex; gap:12px; align-items:center;}
+  .shot .thumb{width:78px; height:78px; border-radius:10px; background:linear-gradient(150deg,#3C2A1E 0%,#8A6A4B 55%,#D9C3A5 100%); flex:0 0 auto; border:1px solid #D8D5CE;}
+  .shot-cap{font-size:14px; color:var(--gray); margin:0 0 20px; text-align:center;}
+  .shot-cap b{color:var(--text); font-weight:600;}
+  .cal{display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:#DA7756; color:#fff; font-size:12px; font-weight:800; font-family:'JetBrains Mono',monospace; margin-right:7px; vertical-align:2px;}
+  /* Extras do passo a passo visual */
+  .shot .hot{box-shadow:0 0 0 3px rgba(218,119,86,.5); border-color:#DA7756 !important;}
+  .shot .browser{display:flex; align-items:center; gap:8px; padding:9px 14px; background:#E6E3DA; border-bottom:1px solid #D8D5CE;}
+  .shot .browser .url{flex:1; background:#fff; border:1px solid #D8D5CE; border-radius:999px; padding:5px 14px; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#4A4A45; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .shot .keyline{display:flex; align-items:center; gap:10px; background:#0A0F0C; border:1px solid rgba(18,184,94,.35); border-radius:10px; padding:12px 14px; font-family:'JetBrains Mono',monospace; font-size:13px; color:#9BE9BE; overflow:hidden;}
+  .shot .keyline span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .shot .keyline .cp{margin-left:auto; background:rgba(18,184,94,.18); border:1px solid rgba(18,184,94,.45); color:#9BE9BE; border-radius:8px; padding:5px 12px; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600; white-space:nowrap;}
+  .shot .warnline{font-size:12.5px; color:#B4531F; background:#FBEDE6; border:1px solid #F0D2C2; border-radius:8px; padding:9px 12px; margin-top:10px;}
+  .shot .menu{background:#fff; border:1px solid #E2DFD6; border-radius:10px; overflow:hidden; margin-top:4px;}
+  .shot .menu .mi{padding:11px 14px; font-size:14px; color:#3A3A36; border-bottom:1px solid #EFEDE6; display:flex; align-items:center; gap:10px;}
+  .shot .menu .mi:last-child{border-bottom:0;}
+  .shot .menu .mi.on{background:#F2FBF5; font-weight:600; color:#0B7A3C;}
+  .shot .menu .mi .arrow{margin-left:auto; color:#B5B1A6;}
+  .shot .perm{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 0; border-bottom:1px solid #EFEDE6; font-size:14px;}
+  .shot .perm:last-child{border-bottom:0;}
+  .shot .perm .pn{font-weight:600;}
+  .shot .perm .pd{font-size:12.5px; color:#8A8578;}
+  .shot .seg{display:inline-flex; border:1px solid #D8D5CE; border-radius:999px; overflow:hidden; background:#fff;}
+  .shot .seg b{font-size:11.5px; font-weight:700; padding:5px 12px; color:#8A8578;}
+  .shot .seg b.on{background:#0B7A3C; color:#fff;}
+  .shot .seg b.off{background:#EFEDE6; color:#6B6B6B;}
+  .shot .field-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+
+  /* Bloco "pro seu programador" */
+  .dev{border:2px dashed var(--line); border-radius:16px; padding:22px 24px; margin-top:26px; background:#fff;}
+  .dev h3{font-size:20px; margin-bottom:4px;}
+  .dev .dev-sub{font-size:15.5px; color:var(--gray); margin-bottom:14px;}
+  .dev ul{margin:14px 0 0; padding-left:20px;}
+  .dev li{font-size:16px; margin-bottom:8px;}
+
+  @media (max-width:680px){
+    .shot .body{grid-template-columns:1fr;}
+    .shot .side{display:none;}
+  }
+
+  @media (max-width:600px){
+    body{font-size:17px;}
+    .cover h1{font-size:33px;}
+    .cta-final .t{font-size:26px;}
+    .btn-cta{font-size:18px; padding:16px 30px;}
+  }
+  @media print{ body{background:#fff;} .copy-btn{display:none;} }
+
+  /* Calculadora do tempo/dinheiro parado */
+  .calc{background:#fff; border:2px solid var(--green); border-radius:16px; padding:22px 24px; margin-top:22px;}
+  .calc h3{font-size:21px; margin-bottom:4px;}
+  .calc .calc-sub{font-size:15.5px; color:var(--gray); margin-bottom:18px;}
+  .calc .fields{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  .calc .fd label{display:block; font-size:13.5px; font-weight:600; color:var(--gray); margin-bottom:6px; line-height:1.35;}
+  .calc .fd input{width:100%; font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:600; color:var(--text); background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:11px 13px;}
+  .calc .fd input:focus{outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(0,142,67,.15);}
+  .calc .out{margin-top:20px; background:var(--card); border-radius:14px; padding:18px 20px; text-align:center;}
+  .calc .out .lb{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--gray);}
+  .calc .out .big{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:40px; color:var(--green); line-height:1.1; margin:6px 0 4px;}
+  .calc .out .nt{font-size:14.5px; color:var(--gray); line-height:1.45;}
+  .calc .conta{margin-top:14px; font-size:14.5px; color:var(--gray); border-top:1px solid var(--line); padding-top:12px;}
+  .calc .conta b{color:var(--text);}
+  @media (max-width:680px){ .calc .fields{grid-template-columns:1fr;} .calc .out .big{font-size:32px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>O agente que destrava<br>o funil parado no seu ClickUp</h1>
+    <div class="sub">Liguei o Claude no ClickUp de um cliente e não fiquei só perguntando o que estava parado — pedi pra ele resolver os trem. Achou um card parado há 167 dias em "Proposta enviada", e uma fila inteira passando de 60, 80, 90 dias. Todo mundo achando que o funil estava andando.</div>
+    <div class="badge">Material gratuito · IA + Comercial</div>
+  </div>
+
+  <p class="lead">Não é sobre consultar o funil. <strong>É sobre destravar ele</strong> — e potencializar o uso da ferramenta que você já paga. O ClickUp lançou este ano uma porta oficial pro Claude entrar, em todos os planos. É OAuth, leva minutos pra ligar. <strong>Não precisa de desenvolvedor.</strong></p>
+
+  <p class="lead">Pense num <strong>cabo entre os dois</strong>: de um lado a IA, do outro o seu board de verdade — os cards, os status, quem é dono de cada um, há quanto tempo cada um está parado ali. Você descreve o resultado que quer, e deixa ele resolver.</p>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">Claude — seu ClickUp</span></div>
+    <div class="chat">
+      <div class="msg me"><div class="who">Você</div>Identifica os cards parados há mais de 7 dias e já escreve o follow-up de cada um.</div>
+      <div class="tool"><span class="d"></span><span class="tx">consultando o ClickUp...</span></div>
+      <div class="msg"><div class="who">Claude</div>
+        Achei <b>1 card parado há 167 dias</b> em "Proposta enviada" — ninguém tocou nele desde então. E mais uma fila de outros 60, 80 e 90 dias na mesma etapa, todos com aparência de "funil andando" no board.<br><br>
+        Escrevendo o follow-up de cada um agora, com o contexto da última atividade registrada.
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><b>É literalmente isso.</b> Uma frase descrevendo o resultado, e o agente vai lá resolver. O material inteiro é sobre como chegar nessa tela — e no que pedir depois.</p>
+
+  <div class="flow">
+    <div class="f"><div class="n">PASSO 01</div><div class="t">Ligar o cabo</div><div class="d">Conectar o ClickUp dentro do Claude. Poucos minutos, sem programador.</div></div>
+    <div class="f"><div class="n">PASSO 02</div><div class="t">Colar a base</div><div class="d">Um texto colado uma vez que transforma perguntas soltas em agente.</div></div>
+    <div class="f"><div class="n">PASSO 03</div><div class="t">Achar o travado</div><div class="d">Os cards parados há mais tempo, com follow-up já escrito.</div></div>
+    <div class="f"><div class="n">PASSO 04</div><div class="t">Montar o alerta</div><div class="d">Ele mesmo te avisa toda semana quando um card emperra.</div></div>
+    <div class="f"><div class="n">PASSO 05</div><div class="t">Reorganizar a semana</div><div class="d">Prioridade em cima do que está mais perto de fechar.</div></div>
+    <div class="f"><div class="n">PASSO 06</div><div class="t">Você decide</div><div class="d">A IA escreve e organiza; quem mexe no card é você.</div></div>
+  </div>
+
+  <div class="toc">
+    <div class="t">O que tem aqui dentro</div>
+    <ol>
+      <li><a href="#parte1">Ligar o Claude no seu ClickUp (2 minutos)</a></li>
+      <li><a href="#parte2">A base do agente: o texto que você cola uma vez</a></li>
+      <li><a href="#parte3">Achar os cards travados e escrever o follow-up</a></li>
+      <li><a href="#parte4">Montar um sistema de alerta pra card preso</a></li>
+      <li><a href="#parte5">Reorganizar as prioridades da semana</a></li>
+      <li><a href="#parte6">As 5 regras pra não bagunçar o seu ClickUp</a></li>
+      <li><a href="#checklist">Checklist dos 10 minutos</a></li>
+    </ol>
+  </div>
+
+  <h2 class="section-title" id="parte1"><span class="part-tag">Parte 01</span>Ligar o Claude no seu ClickUp</h2>
+
+  <p><strong>Não tem nada pra instalar.</strong> Nenhum programa, nenhuma planilha, nenhum desenvolvedor. O ClickUp lançou uma porta oficial pro Claude entrar — ela está em todos os planos, inclusive o gratuito, e a ligação é o mesmo "entrar com a sua conta" que você faz num site qualquer.</p>
+
+  <p>Você não vai copiar senha nenhuma. Você faz login no ClickUp, ele pergunta se autoriza, você diz que sim. <strong>Nenhuma chave passa pelo chat.</strong></p>
+
+  <div class="tip">
+    <strong>O que essa porta é, em português</strong>
+    O nome técnico dela é MCP. Esqueça a sigla: é um <b>cabo padrão</b> — o mesmo tipo de encaixe que faz qualquer carregador USB-C servir em qualquer aparelho. O ClickUp fabricou a ponta dele; o Claude só encaixa.
+  </div>
+
+  <h3 class="sub-title">Tela por tela</h3>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">Claude — Configurações</span></div>
+    <div class="body">
+      <div class="side">
+        <div class="sh">Configurações</div>
+        <div class="it">Perfil</div>
+        <div class="it">Aparência</div>
+        <div class="it on">Conectores</div>
+        <div class="it">Privacidade</div>
+      </div>
+      <div class="main">
+        <h4>Conectores</h4>
+        <div class="desc">Ferramentas que o Claude pode consultar quando você pedir.</div>
+        <div class="row"><div class="l"><div class="ico" style="background:#EFEDE6;color:#3A6EA5;">31</div><div><div class="tt">Google Agenda</div><div class="ss">reuniões e compromissos</div></div></div><span class="pill">● Conectado</span></div>
+        <div class="row"><div class="l"><div class="ico" style="background:#F3ECFB;color:#7B3FE4;">+</div><div><div class="tt">Adicionar conector personalizado</div><div class="ss">cole o endereço de um servidor MCP</div></div></div><span class="btn hl">Adicionar</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">1</span>No Claude, vá em <b>Configurações → Conectores</b>, role até o fim e clique em <b>Adicionar conector personalizado</b>. O ClickUp ainda não aparece pronto na lista — por isso você entra com o nome e o endereço dele, uma vez só.</p>
+
+  <div class="shot">
+    <div class="chat">
+      <div class="modal">
+        <h4>Adicionar conector personalizado</h4>
+        <div class="field"><div class="lb">Nome</div><div class="inp focus">ClickUp</div></div>
+        <div class="field"><div class="lb">Endereço do servidor MCP</div><div class="inp">https://mcp.clickup.com/mcp</div></div>
+        <div class="acts"><span class="btn ghost">Cancelar</span><span class="btn hl">Adicionar</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">2</span>No nome, escreva <b>ClickUp</b>. No endereço, cole exatamente <code>https://mcp.clickup.com/mcp</code>. Clique em <b>Adicionar</b>.</p>
+
+  <div class="shot">
+    <div class="browser"><span class="url">clickup.com/oauth/authorize</span></div>
+    <div class="chat">
+      <div class="modal">
+        <h4>O Claude quer acessar o seu workspace ClickUp</h4>
+        <div class="perm"><div><div class="pn">Ver tasks, listas e status</div><div class="pd">tudo o que o seu usuário já enxerga hoje</div></div><span class="seg"><b class="on">Sim</b></span></div>
+        <div class="perm"><div><div class="pn">Criar e alterar tasks e comentários</div><div class="pd">só quando você pedir, e fica gravado no histórico</div></div><span class="seg"><b class="on">Sim</b></span></div>
+        <div class="acts"><span class="btn ghost">Cancelar</span><span class="btn hl">Permitir e conectar</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">3</span>O ClickUp abre pra você confirmar, com o login que você já usa lá. Leia o que ele lista e clique em <b>Permitir e conectar</b>. <b>Não tem campo de senha pra copiar em lugar nenhum.</b></p>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">Claude — Configurações</span></div>
+    <div class="body">
+      <div class="side">
+        <div class="sh">Configurações</div>
+        <div class="it">Perfil</div>
+        <div class="it">Aparência</div>
+        <div class="it on">Conectores</div>
+        <div class="it">Privacidade</div>
+      </div>
+      <div class="main">
+        <h4>Conectores</h4>
+        <div class="desc">Ferramentas que o Claude pode consultar quando você pedir.</div>
+        <div class="row"><div class="l"><div class="ico" style="background:#EFEDE6;color:#3A6EA5;">31</div><div><div class="tt">Google Agenda</div><div class="ss">reuniões e compromissos</div></div></div><span class="pill">● Conectado</span></div>
+        <div class="row"><div class="l"><div class="ico" style="background:#F3ECFB;color:#7B3FE4;">C</div><div><div class="tt">ClickUp</div><div class="ss">tasks, listas e status</div></div></div><span class="pill">● Conectado</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">4</span>Voltou pro Claude com a bolinha verde em <b>ClickUp</b>? Acabou. <b>Levou poucos minutos.</b></p>
+
+  <div class="tip">
+    <strong>Teste que não tem risco nenhum</strong>
+    Antes de perguntar qualquer coisa sobre o funil, digite: <em>"o que você consegue consultar no meu ClickUp?"</em>. Ele vai listar — tasks, listas, status, comentários, quem é dono de cada card. Se ele responder, o cabo está ligado. <b>Se ele disser que não tem nenhuma ferramenta do ClickUp</b>, abra uma conversa nova: o Claude carrega os conectores no começo do chat, não no meio.
+  </div>
+
+  <h2 class="section-title" id="parte2"><span class="part-tag">Parte 02</span>A base do agente</h2>
+
+  <p>Aqui está a diferença entre "usar IA" e "ter um agente". Sem esse texto, você faz perguntas soltas e recebe respostas soltas. Com ele, o Claude passa a saber <strong>quem ele é dentro do seu ClickUp, o que sempre trazer e o que nunca fazer</strong>.</p>
+
+  <p>É um bloco que você cola <strong>uma vez, no começo da conversa</strong>. Depois é só pedir. Se você quiser, cole também num <em>Projeto</em> do Claude — aí ele lembra disso em toda conversa nova, e você nunca mais precisa colar.</p>
+
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Cole isso uma vez · a base do agente</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Você é o meu analista de funil comercial. Você trabalha em cima do meu ClickUp, com dados reais, e o seu trabalho é achar card que está parado e ninguém está tocando.
+
+COMO VOCÊ TRABALHA
+- Por padrão você só CONSULTA. Não cria, não altera status, não move card e não apaga nada sem eu pedir com todas as letras, em uma mensagem separada.
+- Sempre que listar cards, traga: nome do card, lista/pipeline, status atual, responsável, há quantos dias está sem atividade e qual foi o último comentário ou mudança.
+- Ordene tudo pelo que está parado há mais tempo primeiro. Meu tempo é curto e eu ataco o mais crítico primeiro.
+- Sempre me diga quantos cards você encontrou no total.
+- Se um dado não existir no ClickUp (sem responsável, sem data, sem histórico), diga "não tem essa informação". Nunca estime, nunca preencha, nunca invente número.
+- Se o meu pedido for ambíguo, escolha a interpretação mais conservadora e me diga qual foi.
+
+COMO VOCÊ FALA COMIGO
+- Português do Brasil, direto, sem enrolação e sem elogio.
+- Nada de lista gigante: no máximo os 10 mais relevantes, e depois pergunte se quero ver o resto.
+- Fecha toda resposta com uma frase só: qual é a próxima ação que eu deveria tomar hoje.
+
+QUANDO VOCÊ ESCREVER MENSAGEM PRA CLIENTE
+- Escreva como eu falo: primeira pessoa, curto, sem "espero que esteja tudo bem", sem "passando para saber".
+- Use o contexto real daquele card (o que foi conversado, o que ficou pendente, o último comentário).
+- Nunca prometa desconto, prazo ou condição que não esteja escrita no card.
+- Você escreve, eu envio. Você nunca envia nada e nunca marca o card como concluído.
+
+Confirme que entendeu e me diga em uma linha quantos cards abertos eu tenho, divididos por status.</pre>
+  </div>
+
+  <div class="tip">
+    <strong>Por que essa última linha importa</strong>
+    Pedir o total de cards por status no fim é um teste de sanidade: se o número bater com o que você vê no board, o cabo está ligado no workspace certo. Se vier um número esquisito, você descobre <b>agora</b> e não depois de tomar uma decisão em cima dele.
+  </div>
+
+  <h2 class="section-title" id="parte3"><span class="part-tag">Parte 03</span>Achar os cards travados e escrever o follow-up</h2>
+
+  <p>Colou a base, é só pedir. Comece pela pergunta que rendeu o número do post — um card parado há <strong>167 dias</strong> sem ninguém encostar.</p>
+
+  <h3 class="sub-title">1. O mapa do que está travado</h3>
+  <p>A pergunta que abre a caixa-preta do funil.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pergunta</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Identifica os cards parados há mais de 7 dias e já escreve o follow-up de cada um. Quero, pra cada card: nome, status, responsável, dias parado e o que aconteceu por último. Ordena do mais parado pro menos parado.</pre>
+  </div>
+
+  <h3 class="sub-title">2. Quem já está em "Proposta enviada" e sumiu</h3>
+  <p>Esse é o subgrupo mais caro. Não é gente conhecendo você — é gente que já ouviu a proposta e ficou quieta. A conversa recomeça de um lugar muito mais perto do sim.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pergunta</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Dentro dos parados, separa só os que estão no status "Proposta enviada" (ou equivalente). Quero a lista ordenada por dias parado, com o mais antigo primeiro, e me diz quantos são no total.</pre>
+  </div>
+
+  <h3 class="sub-title">3. Qual status está engasgando o funil</h3>
+  <p>Um card parado é um problema. Um status inteiro parado é <em>o</em> problema — porque ele vai continuar segurando todo mundo que passar por ali no mês que vem.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pergunta</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Analisa o meu funil status por status: quantos cards estão em cada um e há quanto tempo em média eles estão parados ali. Me diz qual status é o meu gargalo e por que você chegou nessa conclusão.</pre>
+  </div>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">Claude — seu ClickUp</span></div>
+    <div class="chat">
+      <div class="msg me"><div class="who">Você</div>Escreve o follow-up de cada um, com o contexto do card.</div>
+      <div class="msg"><div class="who">Claude</div>
+        <b>1. Consultório Bela Vista — 167 dias parado — Proposta enviada</b><br>
+        <em>"Dr. Marcos, te mandei a proposta faz um tempo e depois disso a gente não se falou mais. Não vou ficar te cobrando resposta. Só me diz uma coisa: o projeto saiu do radar de vez ou é questão de timing? Se for timing, eu volto a te procurar e paro de te encher agora."</em><br><br>
+        <b>2. Clínica Bem Estar — 91 dias parado — Proposta enviada</b><br>
+        <em>"Ana, na nossa última conversa você ia levar a proposta pro seu sócio antes de decidir. Ele chegou a ver? Se ficou alguma dúvida que é mais fácil eu responder direto pra ele, me passa o contato que eu falo."</em>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">5</span>Repare que <b>as duas mensagens são diferentes</b> — porque os dois cards pararam em lugares diferentes. É isso que o modelo genérico nunca faz.</p>
+
+  <div class="vs">
+    <div class="col bad">
+      <div class="h">Follow-up genérico</div>
+      "Oi, tudo bem? Passando aqui pra saber se você chegou a analisar a nossa proposta. Fico à disposição!"
+      <em>Não diz nada, não lembra de nada e é fácil de ignorar sem culpa nenhuma.</em>
+    </div>
+    <div class="col good">
+      <div class="h">Follow-up com contexto</div>
+      "Ana, você ia levar a proposta pro seu sócio. Ele chegou a ver? Se ficou dúvida, eu falo direto com ele."
+      <em>Prova que você lembra da conversa e devolve uma pergunta que dá pra responder em 5 segundos.</em>
+    </div>
+  </div>
+
+  <div class="alert">
+    <strong>A regra que não se quebra</strong>
+    <b>Ele escreve, você manda.</b> Não peça pro agente enviar mensagem, comentar no card como se fosse você nem mover o status sozinho. Você lê, ajusta o que soar estranho e envia com a sua mão. Leva 30 segundos por mensagem — e evita que um erro dele vire um constrangimento seu com um cliente real.
+  </div>
+
+  <h2 class="section-title" id="parte4"><span class="part-tag">Parte 04</span>Montar um sistema de alerta pra card preso</h2>
+
+  <p>Perguntar uma vez resolve hoje. O problema volta na semana que vem, com outro card parado — e ninguém vai lembrar de perguntar de novo. É pra isso que existe a segunda parte da conversa que rendeu o post:</p>
+
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pedido</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Monta um sistema de alerta para card que fica preso numa etapa.</pre>
+  </div>
+
+  <p>Isso não é mágica: é uma <strong>tarefa recorrente</strong>, um recurso que o Claude tem chamado <em>Cowork</em> — você agenda uma vez e ela roda sozinha, sem você abrir o chat. Toda semana, no dia e horário que você escolher, ela entra no seu ClickUp, roda a mesma pergunta da Parte 03 e te entrega a lista pronta.</p>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">Claude Cowork — Nova tarefa recorrente</span></div>
+    <div class="chat">
+      <div class="modal">
+        <h4>Agendar tarefa</h4>
+        <div class="field"><div class="lb">Repetir</div><div class="inp focus">Toda semana · segunda-feira · 08:00</div></div>
+        <div class="field"><div class="lb">Conector</div><div class="inp">ClickUp</div></div>
+        <div class="field"><div class="lb">Instrução</div><div class="inp">Identifica cards parados há mais de 7 dias sem mudar de status. Me avisa aqui com a lista e o follow-up de cada um.</div></div>
+        <div class="acts"><span class="btn ghost">Cancelar</span><span class="btn hl">Agendar</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">6</span>No Claude Cowork, crie uma <b>tarefa recorrente</b> semanal, aponte pro conector do ClickUp e cole a mesma instrução da Parte 03. Ela roda sozinha — inclusive com o seu computador desligado.</p>
+
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Instrução da tarefa recorrente</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Toda segunda de manhã: identifica todos os cards que estão há mais de 7 dias sem mudar de status ou receber comentário novo. Separa por status, mostra há quantos dias cada um está parado e escreve um follow-up curto pra cada card que estiver em etapa avançada do funil (proposta enviada em diante). Feche com uma frase: qual desses eu deveria tocar primeiro essa semana.</pre>
+  </div>
+
+  <div class="tip">
+    <strong>O que muda na prática</strong>
+    Você deixa de precisar lembrar de perguntar. O card de 167 dias do post não teria chegado a 167 — a primeira segunda-feira já teria avisado com 7.
+  </div>
+
+  <h2 class="section-title" id="parte5"><span class="part-tag">Parte 05</span>Reorganizar as prioridades da semana</h2>
+
+  <p>Achar o travado e ter alerta resolve o que está parado. Falta a pergunta que organiza o que está <strong>andando</strong> — pra você atacar primeiro quem está mais perto de fechar, não quem gritou mais alto no grupo do WhatsApp.</p>
+
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pedido</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Reorganize as prioridades da semana com base no que tá mais perto de fechar.</pre>
+  </div>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">Claude — seu ClickUp</span></div>
+    <div class="chat">
+      <div class="msg me"><div class="who">Você</div>Reorganize as prioridades da semana com base no que tá mais perto de fechar.</div>
+      <div class="msg"><div class="who">Claude</div>
+        Sua semana, em ordem de prioridade:<br><br>
+        <b>1. Clínica Bem Estar</b> — status mais avançado, follow-up já enviado, aguardando retorno.<br>
+        <b>2. Consultório Bela Vista</b> — 167 dias parado, mas alto valor de fechar: vale a tentativa de reaquecer hoje.<br>
+        <b>3. Espaço Odonto Sul</b> — reunião marcada pra quinta, preparar antes.<br><br>
+        Toque a Clínica Bem Estar primeiro: é a que está a um passo do fechamento.
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">7</span>A ordem não é por data de entrada no funil, é por <b>proximidade do fechamento</b>. Isso muda toda segunda — por isso vale pedir de novo, não confiar na lista da semana passada.</p>
+
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Quando você quer virar rotina</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Monta a minha rotina de segunda-feira: os 5 cards que eu tenho que tocar essa semana, o motivo de cada um e a mensagem pronta pra cada um. Quero isso em um bloco só, que eu consiga ler em 3 minutos com o café.</pre>
+  </div>
+
+  <h2 class="section-title" id="parte6"><span class="part-tag">Parte 06</span>As 5 regras pra não bagunçar o seu ClickUp</h2>
+
+  <p>Esse conector <strong>consegue</strong> criar e alterar card, status e comentário. É útil — e é exatamente por isso que a primeira semana tem regra.</p>
+
+  <div class="rule">
+    <div class="num">REGRA 01</div>
+    <h3>A primeira semana é só de pergunta</h3>
+    <p>Nada de "move esse card pra Fechado" ou "muda o responsável" nos primeiros dias. Você está aprendendo o que ele acerta. Consultar não deixa rastro; alterar deixa.</p>
+    <div class="why">A base do agente da Parte 02 já trava isso por escrito. Cole o bloco inteiro, não só metade.</div>
+  </div>
+
+  <div class="rule">
+    <div class="num">REGRA 02</div>
+    <h3>Ele só enxerga o que o seu usuário enxerga</h3>
+    <p>A conexão herda as permissões da <b>sua</b> conta ClickUp. Se você é admin do workspace, ele vê tudo. Se quer que ele veja só o seu funil, conecte com um usuário que já tenha essa limitação de espaço.</p>
+    <div class="why">Vale pensar nisso antes de ligar num ClickUp com vários vendedores ou times dentro.</div>
+  </div>
+
+  <div class="rule">
+    <div class="num">REGRA 03</div>
+    <h3>Confira o primeiro número com o board aberto do lado</h3>
+    <p>Rode a pergunta da Parte 03, abra o filtro equivalente no ClickUp e compare o total. Se bater, você ganhou confiança pro resto. Se não bater, quase sempre é o filtro de "parado" contando coisa diferente — ajuste a pergunta, não a fé.</p>
+  </div>
+
+  <div class="rule">
+    <div class="num">REGRA 04</div>
+    <h3>Tudo o que ele mexer fica gravado</h3>
+    <p>Toda alteração feita por essa conexão entra no histórico de atividade do ClickUp, com autor e data. Isso não impede erro — mas garante que você consegue achar e desfazer.</p>
+    <div class="why">Se um dia algo aparecer estranho no board, o histórico do card é o primeiro lugar pra olhar.</div>
+  </div>
+
+  <div class="rule">
+    <div class="num">REGRA 05</div>
+    <h3>Cliente real não é ambiente de teste</h3>
+    <p>Não peça pra ele "testar" comentando no card, mudando status pra ver o que acontece ou criando task de mentira num workspace com gente de verdade. Cliente e time confiam no que está escrito ali.</p>
+    <div class="why">Quer testar escrita? Peça o texto no chat e não deixe ele registrar nada no ClickUp.</div>
+  </div>
+
+  <div class="dev">
+    <h3>Se você tem alguém técnico, entregue esta parte pra ele</h3>
+    <div class="dev-sub">O corpo do material funciona sem nada disso. Isto aqui é só pra quem cuida da sua tecnologia.</div>
+    <ul>
+      <li>Servidor MCP oficial do ClickUp: <code>https://mcp.clickup.com/mcp</code>, transporte HTTP, autenticação por <b>OAuth</b> — não há API token trafegando pelo chat.</li>
+      <li>Ainda não está no diretório de conectores prontos do Claude — a instalação hoje é sempre via <em>custom connector</em> (nome + URL), inclusive na claude.ai.</li>
+      <li>Escopo efetivo = permissões do usuário ClickUp que autorizou. Para leitura restrita, autorize com um usuário de permissão limitada em vez de admin do workspace.</li>
+      <li>Limite diário de chamadas ao MCP por plano ClickUp: Free 100/dia, Unlimited 300/dia, Business 1.000/dia, Business Plus 2.500/dia, Enterprise 5.000/dia — na prática não trava o uso descrito aqui.</li>
+      <li>Toda escrita cai no <em>activity log</em> do card, com autor e timestamp — dá pra auditar e reverter.</li>
+      <li>O Claude pode não carregar todas as ferramentas do conector no início da conversa — se faltar alguma, é caso de habilitar o conjunto completo nas configurações do conector.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title" id="calculadora"><span class="part-tag">Conta rápida</span>Quanto tempo do seu funil está parado</h2>
+
+  <p>Antes mesmo de conectar, dá pra ter uma ideia do tamanho do buraco. Preencha com o que você já sabe de cabeça:</p>
+
+  <div class="calc">
+    <h3>Estimativa do que está parado</h3>
+    <div class="calc-sub">Não é promessa de faturamento. É o tamanho da pilha que hoje ninguém está olhando.</div>
+    <div class="fields">
+      <div class="fd">
+        <label>Cards abertos parados há mais de 7 dias</label>
+        <input type="number" id="c1" value="12" min="0">
+      </div>
+      <div class="fd">
+        <label>Ticket médio (R$)</label>
+        <input type="number" id="c2" value="6000" min="0">
+      </div>
+      <div class="fd">
+        <label>Dos que voltam a conversar, quantos % você fecha</label>
+        <input type="number" id="c3" value="20" min="0" max="100">
+      </div>
+    </div>
+    <div class="out">
+      <div class="lb">Parado no funil hoje</div>
+      <div class="big" id="cTotal">R$ 72.000</div>
+      <div class="nt">Se você recuperar a conversa com todos e fechar na sua taxa normal, isso vira <b id="cRec">R$ 14.400</b>.</div>
+    </div>
+    <div class="conta">
+      <b>De onde vem a conta:</b> cards parados × ticket médio = pilha parada. Pilha × sua taxa de fechamento = o piso do que dá pra recuperar. É <b>piso</b>, não teto: não entra aqui quem você reativa e volta a comprar daqui a seis meses, nem indicação. E não entra desconto nenhum — se você precisa dar 20% pra fechar, tire 20% do resultado.
+    </div>
+  </div>
+
+  <div class="checklist" id="checklist">
+    <h3>Checklist dos 10 minutos</h3>
+    <div class="cl-sub">Marque os 7 e você tem um agente olhando o seu ClickUp hoje à tarde.</div>
+    <label class="check-item"><input type="checkbox"><span>Adicionei o conector personalizado ClickUp com o endereço https://mcp.clickup.com/mcp</span></label>
+    <label class="check-item"><input type="checkbox"><span>Perguntei "o que você consegue consultar no meu ClickUp?" e ele respondeu</span></label>
+    <label class="check-item"><input type="checkbox"><span>Colei a base do agente (Parte 02) inteira, antes de qualquer pergunta</span></label>
+    <label class="check-item"><input type="checkbox"><span>Conferi o total de cards por status com o número do board</span></label>
+    <label class="check-item"><input type="checkbox"><span>Rodei a pergunta da Parte 03 e vi a lista do que está travado, com o mais parado primeiro</span></label>
+    <label class="check-item"><input type="checkbox"><span>Criei a tarefa recorrente semanal no Claude Cowork (Parte 04)</span></label>
+    <label class="check-item"><input type="checkbox"><span>Pedi as prioridades da semana e revisei os 3 primeiros follow-ups com a minha mão</span></label>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="progress-label" id="plabel">0 de 7</div>
+  </div>
+
+  <div class="closing">
+    <h3>O que fazer com isso ainda hoje</h3>
+    <ol>
+      <li><strong>Conecte e faça uma pergunta boba.</strong> "Quantos cards abertos eu tenho?" Sem risco, poucos minutos.</li>
+      <li><strong>Cole a base do agente e rode a pergunta da Parte 03.</strong> Aqui você vê o card que dói — e é ele que faz você continuar.</li>
+      <li><strong>Peça os follow-ups e mande hoje.</strong> Não todos. Cinco. Material que vira lista de tarefa não vira reunião.</li>
+      <li><strong>Agende a tarefa recorrente.</strong> É onde o próximo 167 dias vira 7 — e ninguém precisa lembrar sozinho.</li>
+    </ol>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="video-block">
+    <h2 class="video-headline">Quer captar clientes qualificados sem investir 1 real de tráfego pago? Conheça a Demanda Infinita.</h2>
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/dQiAdW0Dguc" title="Método Demanda Infinita" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="cta-final">
+    <img class="avatar" src="igor-miguel.png" alt="Igor Miguel">
+    <div class="eyebrow">Fala direto comigo</div>
+    <div class="t">Quer saber como eu posso te ajudar a vender mais usando IA?</div>
+    <div class="s">20 minutos, sem compromisso, pra ver se faz sentido pro seu negócio.</div>
+    <a class="btn-cta" href="https://cal.com/admin-grupo-nexusmind-hxbhcy/bate-papo-nexusmind" target="_blank" rel="noopener">📅 Marcar meu bate-papo agora</a>
+  </div>
+
+  <footer>
+    <span class="mono">Método Demanda Infinita®</span><br>
+    Material gratuito — feito pra quem tem um board cheio e um mês vazio.<br>
+    Baseado na documentação oficial do ClickUp MCP, consultada em 16 de setembro de 2026. As telas são desenhos ilustrativos do caminho, não fotos do seu ambiente — a aparência muda com o tempo, o caminho não. Na dúvida, confira em developer.clickup.com.
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.closest('.prompt-box').querySelector('pre');
+      var text = pre.innerText;
+      var done = function(){
+        btn.textContent = 'Copiado!';
+        btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+      } else {
+        fallback(text, done);
+      }
+    });
+  });
+
+  function fallback(text, done){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  var boxes = document.querySelectorAll('.check-item input');
+  var bar = document.getElementById('bar');
+  var plabel = document.getElementById('plabel');
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      var n = 0;
+      boxes.forEach(function(x){ if (x.checked) n++; });
+      bar.style.width = (n / boxes.length * 100) + '%';
+      plabel.textContent = n + ' de ' + boxes.length;
+    });
+  });
+
+  var c1 = document.getElementById('c1');
+  var c2 = document.getElementById('c2');
+  var c3 = document.getElementById('c3');
+  var cTotal = document.getElementById('cTotal');
+  var cRec = document.getElementById('cRec');
+
+  function brl(v){
+    return 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+  }
+
+  function calcular(){
+    var n = parseFloat(c1.value) || 0;
+    var t = parseFloat(c2.value) || 0;
+    var p = parseFloat(c3.value) || 0;
+    if (p < 0) p = 0;
+    if (p > 100) p = 100;
+    var pilha = n * t;
+    cTotal.textContent = brl(pilha);
+    cRec.textContent = brl(pilha * p / 100);
+  }
+
+  [c1, c2, c3].forEach(function(el){
+    el.addEventListener('input', calcular);
+  });
+  calcular();
+</script>
+</body>
+</html>
