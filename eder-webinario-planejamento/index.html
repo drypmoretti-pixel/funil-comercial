@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planejamento do Webinário — Método Ampla Elite</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#1A1A1A; --bg-deep:#0A0A0A; --surface:#2A2A2A; --surface-2:#333333;
+    --fg:#FFFFFF; --fg-muted:#9CA2AF;
+    --accent:#6DF5E3; --accent-2:#21C45D; --warn:#FFB84D; --line:#3A3A3A;
+    --font-display:'Poppins',-apple-system,sans-serif;
+    --font-body:'Inter',-apple-system,sans-serif;
+    --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);}
+  body{font-family:var(--font-body);}
+  img{max-width:100%;display:block;}
+  h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;}
+  p{margin:0;}
+  .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+  .bar{height:7px;background:var(--accent);}
+  .page{max-width:800px;margin:0 auto;padding:0 24px;}
+  .section{padding:54px 0;}
+  .section + .section{border-top:1px solid var(--line);}
+
+  .cover{text-align:center;padding:64px 24px 56px;}
+  .cover img.logo{width:150px;margin:0 auto 26px;}
+  .eyebrow{font:600 0.72rem var(--font-body);letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .cover h1{font-size:clamp(2rem,5.6vw,2.9rem);font-weight:800;color:var(--fg);line-height:1.1;}
+  .cover .lede{font-size:1.05rem;line-height:1.6;color:var(--fg-muted);max-width:54ch;margin:18px auto 0;}
+  .rule{height:1px;background:var(--line);max-width:420px;margin:32px auto;}
+  .sign-card{background:var(--surface);border-left:3px solid var(--accent-2);border-radius:6px;padding:18px 22px;max-width:420px;margin:0 auto;text-align:left;}
+  .sign-card .name{font:600 1.05rem var(--font-display);color:var(--fg);}
+  .sign-card .role{font-size:0.9rem;color:var(--accent);margin-top:3px;}
+  .sign-card .sub{font-size:0.82rem;color:var(--fg-muted);margin-top:2px;}
+  .download-btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--bg-deep);font:600 0.85rem var(--font-body);text-decoration:none;padding:10px 22px;border-radius:24px;margin-top:24px;}
+
+  .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:36px;}
+  .strip-cell{background:var(--surface);padding:18px 14px;display:flex;flex-direction:column;gap:6px;}
+  .strip-label{font:600 0.64rem var(--font-body);letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-muted);}
+  .strip-value{font:600 1.2rem var(--font-mono);color:var(--fg);}
+  .strip-value small{display:block;font-size:0.6em;font-weight:500;color:var(--fg-muted);font-family:var(--font-body);margin-top:2px;}
+  @media (max-width:600px){.strip{grid-template-columns:repeat(2,1fr);}}
+
+  .section-head{margin-bottom:20px;}
+  .section-head h2{font-size:clamp(1.3rem,3vw,1.6rem);font-weight:700;color:var(--fg);}
+  .underline{width:120px;height:3px;background:var(--accent-2);border-radius:2px;margin-top:10px;}
+  .section-sub{color:var(--fg-muted);font-size:0.96rem;line-height:1.6;max-width:62ch;margin-top:14px;}
+
+  .name-options{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+  .name-opt{background:var(--surface);border-left:3px solid var(--accent-2);border-radius:0 6px 6px 0;padding:14px 18px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;}
+  .opt-num{font:700 0.78rem var(--font-mono);color:var(--accent-2);flex-shrink:0;}
+  .opt-name{font:600 0.98rem var(--font-display);color:var(--accent);}
+  .opt-why{font-size:0.85rem;color:var(--fg-muted);line-height:1.5;}
+  .decision-note{display:flex;align-items:center;gap:10px;background:var(--bg-deep);border:1px dashed var(--line);border-radius:6px;padding:12px 16px;margin-top:16px;font-size:0.85rem;color:var(--fg-muted);}
+  .decision-note b{color:var(--fg);}
+
+  .script-title{font:700 0.98rem var(--font-display);color:var(--fg);margin-top:26px;}
+  .script-title:first-of-type{margin-top:0;}
+  .prompt-box{background:var(--bg-deep);border:1px solid var(--line);border-radius:8px;margin-top:10px;overflow:hidden;}
+  .prompt-box-head{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;background:var(--surface-2);border-bottom:1px solid var(--line);}
+  .prompt-box-head .tag{font:600 0.64rem var(--font-body);letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-muted);}
+  .copy-btn{font:600 0.7rem var(--font-body);color:var(--accent);background:none;border:1px solid var(--accent);border-radius:14px;padding:4px 12px;cursor:pointer;}
+  .prompt-box pre{margin:0;padding:16px;font-family:var(--font-mono);font-size:0.82rem;line-height:1.65;color:var(--fg);white-space:pre-wrap;}
+
+  .funnel-wrap{overflow-x:auto;margin-top:16px;border:1px solid var(--line);border-radius:8px;}
+  table.funnel{width:100%;border-collapse:collapse;font-size:0.88rem;min-width:440px;}
+  table.funnel th{text-align:left;font:600 0.64rem var(--font-body);letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-muted);background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--line);}
+  table.funnel td{padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface);color:var(--fg);}
+  table.funnel td.n{font-family:var(--font-mono);color:var(--fg-muted);}
+  table.funnel tr:last-child td{border-bottom:none;font-weight:600;color:var(--accent);}
+
+  .roteiro{display:flex;flex-direction:column;gap:0;margin-top:18px;border-left:2px solid var(--line);}
+  .roteiro-item{padding:0 0 24px 22px;position:relative;}
+  .roteiro-item:last-child{padding-bottom:0;}
+  .roteiro-item::before{content:'';position:absolute;left:-6px;top:2px;width:11px;height:11px;border-radius:50%;background:var(--accent);}
+  .roteiro-time{font:600 0.7rem var(--font-mono);color:var(--accent);text-transform:uppercase;letter-spacing:0.04em;}
+  .roteiro-title{font:600 0.95rem var(--font-display);color:var(--fg);margin-top:4px;}
+  .roteiro-desc{font-size:0.87rem;color:var(--fg-muted);line-height:1.5;margin-top:4px;}
+
+  ul.check{list-style:none;margin:16px 0 0;padding:0;border-left:3px solid var(--accent-2);border-radius:0 6px 6px 0;overflow:hidden;}
+  ul.check li{background:var(--surface);color:var(--fg);font-size:0.9rem;padding:11px 16px;border-bottom:1px solid var(--bg);}
+  ul.check li:last-child{border-bottom:none;}
+  ul.check li b{color:var(--accent);}
+
+  .cta{text-align:center;padding:60px 24px;}
+  .cta .eyebrow2{font:700 1.35rem var(--font-display);color:var(--fg);}
+  .cta h2{font-size:clamp(1.4rem,4.2vw,1.9rem);font-weight:800;color:var(--accent);margin-top:6px;}
+  .cta .underline{margin:14px auto 0;}
+  .cta p.lede2{color:var(--fg-muted);font-size:0.95rem;max-width:50ch;margin:18px auto 0;line-height:1.6;}
+  footer{text-align:center;padding:24px 24px 36px;font-size:0.8rem;color:var(--fg-muted);}
+
+  @media print{
+    .download-btn,.copy-btn{display:none !important;}
+    body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .section{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar"></div>
+
+<div class="cover">
+  <img class="logo" src="logo.png" alt="Método Ampla Elite">
+  <div class="eyebrow">Planejamento · Alavanca 02 · Método Ampla Elite</div>
+  <h1>Webinário — do convite ao diagnóstico agendado</h1>
+  <p class="lede">Título, copy de captação, grupo de aquecimento, sequência de lembretes e roteiro do dia — tudo que precisa pra rodar a alavanca do mês 3.</p>
+  <a class="download-btn" href="planejamento-webinario.pdf" download>Baixar PDF</a>
+  <div class="rule"></div>
+  <div class="sign-card">
+    <div class="name">Éder Santos</div>
+    <div class="role">Ampla Marketing Para Clínicas</div>
+    <div class="sub">lpedersantos.com.br</div>
+  </div>
+  <div class="page" style="padding:0;">
+    <div class="strip">
+      <div class="strip-cell"><div class="strip-label">Inscritos (meta)</div><div class="strip-value num">200</div></div>
+      <div class="strip-cell"><div class="strip-label">Presentes</div><div class="strip-value num">80<small>40%</small></div></div>
+      <div class="strip-cell"><div class="strip-label">Diagnósticos</div><div class="strip-value num">12<small>15% dos presentes</small></div></div>
+      <div class="strip-cell"><div class="strip-label">Fechamentos</div><div class="strip-value num">4<small>+R$12.000 MRR</small></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="bar"></div>
+
+<div class="page">
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Título do evento</h2>
+      <div class="underline"></div>
+      <p class="section-sub">Tema já definido: IA + tráfego pago + marketing digital, pra donos e gestores de clínica odontológica. A promessa precisa amarrar nisso, não ficar genérica — decisão final é do Éder.</p>
+    </div>
+    <div class="name-options">
+      <div class="name-opt"><span class="opt-num">01</span><span class="opt-name">Agenda Previsível: como usar IA pra parar de depender só de indicação</span></div>
+      <div class="name-opt"><span class="opt-num">02</span><span class="opt-name">O Novo Sistema de Agendamento: IA + Tráfego Pago pra Clínicas</span></div>
+      <div class="name-opt"><span class="opt-num">03</span><span class="opt-name">IA na Recepção: como clínicas estão reativando pacientes parados na base</span></div>
+    </div>
+    <div class="decision-note"><span><b>Em aberto</b> — escolher 1 (ou testar 2 em anúncios diferentes e ver qual capta mais) antes de fechar a copy de captação.</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Oferta do webinário</h2>
+      <div class="underline"></div>
+      <p class="section-sub">O que a pessoa leva de concreto, não só "vai aprender sobre marketing":</p>
+    </div>
+    <ul class="check">
+      <li>Os <b>3 pontos que mais travam a agenda</b> de uma clínica hoje — e como identificar qual deles é o gargalo da sua.</li>
+      <li>Como uma <b>camada de IA reativa pacientes parados na base</b> sem precisar contratar mais gente pra recepção.</li>
+      <li>O que muda no funil quando posicionamento, diagnóstico e recepção treinada entram <b>antes</b> do tráfego pago.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Copy de captação</h2>
+      <div class="underline"></div>
+      <p class="section-sub">Pro anúncio/post que gera a inscrição — hook na dor real, não em tese abstrata.</p>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">Anúncio / post de captação</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Sua clínica depende de indicação pra ter agenda cheia?
+
+Toda vez que o boca a boca esfria, a agenda esfria junto — e não é falta de paciente, é falta de estrutura.
+
+Dia [DATA], às [HORA], vou mostrar os 3 pontos que mais travam a agenda de uma clínica hoje e como clínicas estão usando IA pra reativar pacientes parados na base, sem contratar mais gente.
+
+Webinário gratuito. Vagas limitadas.
+
+[BOTÃO: Quero minha vaga]</pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Grupo de aquecimento (WhatsApp)</h2>
+      <div class="underline"></div>
+      <p class="section-sub">Onde a lista de inscritos fica quente entre a inscrição e o dia do evento.</p>
+    </div>
+    <div class="script-title">Título do grupo</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">Nome do grupo</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Turma do Webinário — Agenda Previsível [DATA]</pre>
+    </div>
+    <div class="script-title">Mensagem de boas-vindas (ao entrar no grupo)</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp · grupo</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Seja bem-vindo(a)! Sua vaga pro webinário do dia [DATA] às [HORA] tá confirmada.
+
+Aqui no grupo eu aviso os lembretes e mando o link no horário — fica de olho.
+
+Só uma pergunta rápida pra eu preparar o conteúdo certo: qual é o maior gargalo da sua agenda hoje — poucos leads, leads que não fecham, ou paciente que some depois da 1ª consulta?</pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Sequência de lembretes</h2>
+      <div class="underline"></div>
+      <p class="section-sub">Curtos, sem repetir o pitch inteiro a cada envio.</p>
+    </div>
+    <div class="script-title">Confirmação (logo após a inscrição)</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp / e-mail</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Vaga confirmada! [DATA] às [HORA], webinário sobre agenda previsível + IA pra clínicas.
+
+Te aviso de novo perto da hora. Qualquer dúvida, é só responder aqui.</pre>
+    </div>
+    <div class="script-title">D-1 (véspera)</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Amanhã é o dia! [HORA], webinário sobre como reativar pacientes parados na base com IA.
+
+Separa 40 minutos — vou mostrar os 3 pontos que mais travam agenda de clínica.</pre>
+    </div>
+    <div class="script-title">No dia (1-2h antes)</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Hoje é o dia! Daqui a pouco, [HORA], a gente começa.
+
+O link entra aqui no grupo assim que abrir a sala. Te vejo lá.</pre>
+    </div>
+    <div class="script-title">Estamos ao vivo</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Já começou! Entra agora: [LINK]</pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Roteiro do dia</h2>
+      <div class="underline"></div>
+      <p class="section-sub">~40-50 minutos, conteúdo de valor real antes do pitch — não é teaser vazio.</p>
+    </div>
+    <div class="roteiro">
+      <div class="roteiro-item">
+        <div class="roteiro-time">0-5 min</div>
+        <div class="roteiro-title">Abertura</div>
+        <div class="roteiro-desc">Gancho direto na dor (agenda que esfria quando a indicação esfria) + credibilidade rápida do Éder (anos ajudando clínicas a sair da imprevisibilidade) — sem enrolar antes de entregar valor.</div>
+      </div>
+      <div class="roteiro-item">
+        <div class="roteiro-time">5-30 min</div>
+        <div class="roteiro-title">Conteúdo — os 3 pontos que travam a agenda</div>
+        <div class="roteiro-desc">Entregar de verdade: posicionamento fraco, recepção sem script, e base de pacientes parada sem reativação. Usar exemplo concreto de cada um (a "secretária que atende mal" já é uma cena forte do material original).</div>
+      </div>
+      <div class="roteiro-item">
+        <div class="roteiro-time">30-38 min</div>
+        <div class="roteiro-title">Transição pro pitch</div>
+        <div class="roteiro-desc">"Isso que eu mostrei aqui é exatamente o que a gente estrutura no Método Ampla Elite — com uma camada de IA que faz essa reativação automaticamente." Ponte natural, não freada brusca de conteúdo pra venda.</div>
+      </div>
+      <div class="roteiro-item">
+        <div class="roteiro-time">38-45 min</div>
+        <div class="roteiro-title">Oferta e CTA</div>
+        <div class="roteiro-desc">Diagnóstico gratuito — mesmo CTA usado em todo o funil do Éder, não um preço fechado ao vivo. "Quem quiser, eu vou entender a sua clínica e te mostrar exatamente onde está o gargalo, sem custo."</div>
+      </div>
+      <div class="roteiro-item">
+        <div class="roteiro-time">45-50 min</div>
+        <div class="roteiro-title">Perguntas</div>
+        <div class="roteiro-desc">Responder ao vivo, reforçando o CTA de diagnóstico ao final de cada resposta relevante.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Follow-up pós-evento</h2>
+      <div class="underline"></div>
+    </div>
+    <div class="script-title">Quem não compareceu</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Vi que você não conseguiu entrar ontem — sem problema.
+
+Separei a gravação: [LINK]. E se quiser pular direto pro diagnóstico gratuito, é só me chamar aqui.</pre>
+    </div>
+    <div class="script-title">Compareceu, não agendou diagnóstico</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Oi! Obrigado por participar ontem.
+
+Ficou alguma dúvida de como isso funcionaria na sua clínica? Posso fazer o diagnóstico gratuito pra te mostrar exatamente onde está o gargalo — vale a pena eu separar um horário essa semana?</pre>
+    </div>
+    <div class="funnel-wrap">
+      <table class="funnel">
+        <tr><th>Etapa</th><th>Volume</th><th>Taxa</th><th>Resultado</th></tr>
+        <tr><td>Inscritos</td><td class="n">200</td><td class="n">40%</td><td>80 presentes</td></tr>
+        <tr><td>Presentes → diagnóstico agendado</td><td class="n">80</td><td class="n">15%</td><td>12 diagnósticos</td></tr>
+        <tr><td>Diagnóstico → fechamento</td><td class="n">12</td><td class="n">33%</td><td>4 clientes novos</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="bar"></div>
+
+<div class="cta">
+  <div class="eyebrow2">PRONTO PRA RODAR</div>
+  <h2>O WEBINÁRIO DO MÊS 3?</h2>
+  <div class="underline" style="margin-left:auto;margin-right:auto;"></div>
+  <p class="lede2">Fechar o título, disparar a copy de captação e abrir o grupo de aquecimento — o resto do funil já está desenhado.</p>
+  <div class="rule"></div>
+  <div class="sign-card" style="margin:0 auto;">
+    <div class="name">Éder Santos</div>
+    <div class="role">Ampla Marketing Para Clínicas</div>
+    <div class="sub">lpedersantos.com.br</div>
+  </div>
+</div>
+
+<div class="bar"></div>
+
+<footer>Planejamento do Webinário — Método Ampla Elite. Datas e horários entre colchetes: preencher antes de disparar.</footer>
+
+<script>
+function copyScript(btn){
+  var box = btn.closest('.prompt-box').querySelector('pre');
+  var text = box.innerText;
+  var orig = btn.textContent;
+  function done(){
+    btn.textContent = 'Copiado!';
+    setTimeout(function(){ btn.textContent = orig; }, 1800);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, cb){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  if(cb) cb();
+}
+</script>
+
+</body>
+</html>
