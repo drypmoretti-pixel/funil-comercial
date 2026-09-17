@@ -439,37 +439,36 @@
     <div class="section-head">
       <h2>Scripts de reativação — Caixa Rápido</h2>
       <div class="underline"></div>
-      <p class="section-sub">Abordagem pra reaquecer os ~250 leads históricos, na mesma temperatura usada no funil (quente / morno / frio), mais follow-up e quebra de objeção. <b style="color:var(--fg)">Rascunho</b> — validar tom de voz com o Éder antes de carregar no CRM ou na IA de SDR; personalizar [Nome] e [Nome da clínica] em cada envio.</p>
+      <p class="section-sub">Abordagem do próprio Éder, adaptada pra cada temperatura de lead: pra quem já foi cliente, primeiro pergunta genuína sobre o momento da clínica — <b style="color:var(--fg)">nunca com o pitch dentro da mensagem</b>; pra quem nunca fechou, já entra dizendo que existe uma estrutura nova pensada pro momento dele. Nos dois casos o objetivo da mensagem é só uma coisa: puxar pra uma ligação ou reunião — o pitch acontece lá, ao vivo, nunca no texto. Personalizar [Nome] e [Nome da clínica] em cada envio.</p>
     </div>
 
-    <div class="script-title">01 · Lead quente — cliente antigo recente</div>
+    <div class="script-title">01 · Lead quente — cliente antigo (2 mensagens em sequência)</div>
     <div class="prompt-box">
-      <div class="prompt-box-head"><span class="tag">WhatsApp · abordagem inicial</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
-      <pre>Oi, [Nome]! Aqui é [Nome do atendente], da Ampla. Faz um tempo que a gente não conversa — você já foi cliente aqui e queria saber como está a agenda da clínica hoje.
-
-Separei um diagnóstico gratuito pra te mostrar onde dá pra destravar mais agendamento sem aumentar o investimento em mídia.
-
-Topa 15 minutos essa semana?</pre>
+      <div class="prompt-box-head"><span class="tag">WhatsApp · mensagem 1 — check-in, sem pitch</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Oi, [Nome]! Tudo bem? Aqui é [Nome do atendente], da Ampla. Faz um tempo que a gente não conversa — como estão as coisas na [Nome da clínica]? Como anda a agenda hoje?</pre>
     </div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp · mensagem 2 — depois que ele responder</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Que bom saber! Olha, a gente montou uma estrutura nova aqui na Ampla que acho que encaixa bem com esse momento que você me contou.
+
+Vale a pena eu te mostrar numa ligação rápida? Consigo essa semana.</pre>
+    </div>
+    <p class="script-note">A mensagem 2 só sai depois que ele responder à 1ª — casar a oferta com o que ele contou sobre o momento da clínica, não repetir o script igual pra todo mundo.</p>
 
     <div class="script-title">02 · Lead morno — proposta enviada, não fechou</div>
     <div class="prompt-box">
-      <div class="prompt-box-head"><span class="tag">WhatsApp · abordagem inicial</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
-      <pre>Oi, [Nome], tudo bem? Aqui é [Nome do atendente], da Ampla. A gente conversou faz um tempo sobre estruturar o crescimento da [Nome da clínica] e cheguei a te mandar uma proposta que não seguiu adiante.
+      <div class="prompt-box-head"><span class="tag">WhatsApp · mensagem única</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Oi, [Nome], tudo bem? Aqui é [Nome do atendente], da Ampla. A gente conversou faz um tempo sobre a [Nome da clínica] — hoje montamos uma estrutura nova que acho que encaixa bem com o momento de vocês.
 
-Muita coisa mudou desde então — hoje a gente tem uma camada de IA que reativa a base de pacientes automaticamente, além do que já estava na proposta.
-
-Faz sentido eu te mostrar rapidinho o que mudou?</pre>
+Vale a pena eu te mostrar numa ligação rápida essa semana?</pre>
     </div>
 
     <div class="script-title">03 · Lead frio — contato antigo, sem interação recente</div>
     <div class="prompt-box">
-      <div class="prompt-box-head"><span class="tag">WhatsApp · abordagem inicial</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <div class="prompt-box-head"><span class="tag">WhatsApp · mensagem única</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
       <pre>Oi, [Nome]! Aqui é [Nome do atendente], da Ampla Marketing Para Clínicas. A gente teve um contato há um tempo — não sei se você lembra.
 
-Hoje ajudamos clínicas a estruturar um crescimento previsível de agendamentos: diagnóstico, CRM e uma camada de IA que reativa pacientes parados na base.
-
-Faz sentido eu te mandar um diagnóstico gratuito da [Nome da clínica]?</pre>
+Montamos uma estrutura nova aqui que acho que encaixa bem com o momento da [Nome da clínica]. Vale a pena eu te mostrar numa ligação rápida?</pre>
     </div>
 
     <div class="script-title">04 · Follow-up sem resposta (3–5 dias depois)</div>
