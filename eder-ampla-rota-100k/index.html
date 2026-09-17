@@ -193,6 +193,26 @@
   .cta p.lede2{color:var(--fg-muted);font-size:0.96rem;max-width:52ch;margin:20px auto 0;line-height:1.6;}
 
   footer{text-align:center;padding:26px 24px 40px;font-size:0.8rem;color:var(--fg-muted);}
+
+  /* ---- download button ---- */
+  .download-btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--bg-deep);font:600 0.85rem var(--font-body);text-decoration:none;padding:10px 22px;border-radius:24px;margin-top:24px;}
+
+  /* ---- scripts (prompt box) ---- */
+  .script-title{font:700 1rem var(--font-display);color:var(--fg);margin-top:30px;}
+  .script-title:first-of-type{margin-top:0;}
+  .prompt-box{background:var(--bg-deep);border:1px solid var(--line);border-radius:8px;margin-top:12px;overflow:hidden;}
+  .prompt-box-head{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;background:var(--surface-2);border-bottom:1px solid var(--line);}
+  .prompt-box-head .tag{font:600 0.66rem var(--font-body);letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-muted);}
+  .copy-btn{font:600 0.7rem var(--font-body);color:var(--accent);background:none;border:1px solid var(--accent);border-radius:14px;padding:4px 12px;cursor:pointer;}
+  .copy-btn:hover{background:rgba(109,245,227,0.1);}
+  .prompt-box pre{margin:0;padding:16px;font-family:var(--font-mono);font-size:0.83rem;line-height:1.65;color:var(--fg);white-space:pre-wrap;}
+  .script-note{font-size:0.82rem;color:var(--fg-muted);font-style:italic;margin-top:8px;}
+
+  @media print{
+    .download-btn,.copy-btn{display:none !important;}
+    body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .section{page-break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
@@ -210,6 +230,7 @@
     <div class="role">Ampla Marketing Para Clínicas</div>
     <div class="sub">lpedersantos.com.br</div>
   </div>
+  <a class="download-btn" href="plano-ampla-rota-100k.pdf" download>Baixar PDF do plano</a>
 
   <div class="page" style="padding:0;">
     <div class="strip">
@@ -416,6 +437,67 @@
 
   <div class="section">
     <div class="section-head">
+      <h2>Scripts de reativação — Caixa Rápido</h2>
+      <div class="underline"></div>
+      <p class="section-sub">Abordagem pra reaquecer os ~250 leads históricos, na mesma temperatura usada no funil (quente / morno / frio), mais follow-up e quebra de objeção. <b style="color:var(--fg)">Rascunho</b> — validar tom de voz com o Éder antes de carregar no CRM ou na IA de SDR; personalizar [Nome] e [Nome da clínica] em cada envio.</p>
+    </div>
+
+    <div class="script-title">01 · Lead quente — cliente antigo recente</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp · abordagem inicial</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Oi, [Nome]! Aqui é [Nome do atendente], da Ampla. Faz um tempo que a gente não conversa — você já foi cliente aqui e queria saber como está a agenda da clínica hoje.
+
+Separei um diagnóstico gratuito pra te mostrar onde dá pra destravar mais agendamento sem aumentar o investimento em mídia.
+
+Topa 15 minutos essa semana?</pre>
+    </div>
+
+    <div class="script-title">02 · Lead morno — proposta enviada, não fechou</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp · abordagem inicial</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Oi, [Nome], tudo bem? Aqui é [Nome do atendente], da Ampla. A gente conversou faz um tempo sobre estruturar o crescimento da [Nome da clínica] e cheguei a te mandar uma proposta que não seguiu adiante.
+
+Muita coisa mudou desde então — hoje a gente tem uma camada de IA que reativa a base de pacientes automaticamente, além do que já estava na proposta.
+
+Faz sentido eu te mostrar rapidinho o que mudou?</pre>
+    </div>
+
+    <div class="script-title">03 · Lead frio — contato antigo, sem interação recente</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp · abordagem inicial</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Oi, [Nome]! Aqui é [Nome do atendente], da Ampla Marketing Para Clínicas. A gente teve um contato há um tempo — não sei se você lembra.
+
+Hoje ajudamos clínicas a estruturar um crescimento previsível de agendamentos: diagnóstico, CRM e uma camada de IA que reativa pacientes parados na base.
+
+Faz sentido eu te mandar um diagnóstico gratuito da [Nome da clínica]?</pre>
+    </div>
+
+    <div class="script-title">04 · Follow-up sem resposta (3–5 dias depois)</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">WhatsApp · reengajamento</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Oi, [Nome], só reforçando o contato anterior — sei que a rotina de clínica é corrida.
+
+Separei o diagnóstico gratuito pra você, sem compromisso. Prefere que eu te ligue ou seguimos por aqui mesmo?</pre>
+    </div>
+
+    <div class="script-title">05 · Quebra de objeção</div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">"Não tenho orçamento agora"</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Entendo total. O diagnóstico em si não custa nada — a ideia é justamente te mostrar, com números da sua própria clínica, onde a agenda está vazando antes de falar em investimento.
+
+Se não fizer sentido no fim, sem problema nenhum. Posso te mandar os horários disponíveis?</pre>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-head"><span class="tag">"Já tenho uma agência cuidando disso"</span><button class="copy-btn" onclick="copyScript(this)">Copiar</button></div>
+      <pre>Que bom que já tem alguém cuidando do tráfego! O que a gente faz é um pouco diferente: não é só campanha, é o sistema inteiro — diagnóstico, treinamento de quem atende o telefone e CRM pra garantir que o lead vire paciente, não só agendamento.
+
+Vale meia hora pra eu te mostrar onde isso costuma travar mesmo com agência boa rodando?</pre>
+    </div>
+    <p class="script-note">Nenhum desses scripts usa dado real de conversa de cliente — são modelos a validar. Se o Éder já tiver um script que converte melhor na prática, substituir por ele em vez de manter o rascunho.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
       <h2>Motor de conteúdo</h2>
       <div class="underline"></div>
       <p class="section-sub">Reels de atendimento nichado para clínicas odontológicas, repostados no TikTok. Não é uma quarta alavanca com funil próprio — é o que sustenta as outras três: aquece quem recebe o contato do Caixa Rápido, atrai inscrição orgânica para o webinar, e dá ao cliente algo concreto para mostrar quando indica. Estimativa conservadora de fechamento direto via inbound (DM, comentário, indicação espontânea): 3 clientes ao longo dos 6 meses.</p>
@@ -609,6 +691,35 @@
 <div class="bar"></div>
 
 <footer>Rota aos R$100k — plano comercial de 6 meses para o Método Ampla Elite (nome/mecanismo único em decisão).</footer>
+
+<script>
+function copyScript(btn){
+  var box = btn.closest('.prompt-box').querySelector('pre');
+  var text = box.innerText;
+  var orig = btn.textContent;
+  function done(){
+    btn.textContent = 'Copiado!';
+    setTimeout(function(){ btn.textContent = orig; }, 1800);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, cb){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  if(cb) cb();
+}
+</script>
 
 </body>
 </html>
