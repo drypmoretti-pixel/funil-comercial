@@ -216,7 +216,8 @@
 
   /* ---- resource hub ---- */
   .resource-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;}
-  .resource-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;text-decoration:none;display:flex;flex-direction:column;gap:8px;}
+  .resource-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;text-decoration:none;display:flex;flex-direction:column;gap:6px;}
+  .resource-skill{font:600 0.68rem var(--font-mono);color:var(--accent-2);}
   .resource-title{font:600 1rem var(--font-display);color:var(--fg);}
   .resource-desc{font-size:0.85rem;color:var(--fg-muted);line-height:1.5;}
   .resource-link{font:600 0.78rem var(--font-body);color:var(--accent);margin-top:4px;}
@@ -266,34 +267,45 @@
 
 <div class="page">
 
-  <div class="section">
+  <div class="section" id="topo">
     <div class="section-head">
       <h2>Recursos</h2>
       <div class="underline"></div>
-      <p class="section-sub">Cada material desse plano, pra abrir ou baixar em PDF direto daqui.</p>
+      <p class="section-sub">As 5 skills que mantêm o Método Ampla Elite — cada uma cuida de uma parte, com o material que ela gera pronto pra abrir ou baixar.</p>
     </div>
     <div class="resource-grid">
+      <div class="resource-card" style="cursor:default;">
+        <div class="resource-skill">eder-designer</div>
+        <div class="resource-title">Identidade visual + publicação</div>
+        <div class="resource-desc">Base compartilhada por todas as outras — cores, tipografia, blocos e o processo de gerar/publicar cada PDF.</div>
+        <div class="resource-link" style="color:var(--fg-muted);">Usada em todos os materiais abaixo</div>
+      </div>
       <a class="resource-card" href="https://demandainfinita.com/eder-proposta-comercial/" target="_blank" rel="noopener">
-        <div class="resource-title">Proposta Comercial</div>
+        <div class="resource-skill">eder-proposta-comercial</div>
+        <div class="resource-title">A proposta comercial</div>
         <div class="resource-desc">As 6 fases do método, quanto custaria montar sozinho, planos Essencial/Elite.</div>
         <div class="resource-link">Abrir · Baixar PDF →</div>
       </a>
-      <a class="resource-card" href="https://demandainfinita.com/eder-programa-indicacao/" target="_blank" rel="noopener">
-        <div class="resource-title">Programa de Indicação</div>
-        <div class="resource-desc">Como funciona, comissão de R$450 (15% do setup), regras.</div>
-        <div class="resource-link">Abrir · Baixar PDF →</div>
-      </a>
-      <a class="resource-card" href="https://demandainfinita.com/eder-webinario-planejamento/" target="_blank" rel="noopener">
-        <div class="resource-title">Planejamento do Webinário</div>
-        <div class="resource-desc">Título, copy de captação, grupo de aquecimento, lembretes, roteiro do dia.</div>
-        <div class="resource-link">Abrir · Baixar PDF →</div>
+      <a class="resource-card" href="#topo">
+        <div class="resource-skill">eder-planejamento</div>
+        <div class="resource-title">Este plano de crescimento</div>
+        <div class="resource-desc">Mantém e evolui a rota aos R$100k — SWOT, KPIs, roadmap por setor, cronograma.</div>
+        <div class="resource-link">Você está aqui ↑</div>
       </a>
       <a class="resource-card" href="#scripts-caixa-rapido">
-        <div class="resource-title">Scripts de Reativação — Caixa Rápido</div>
+        <div class="resource-skill">eder-caixa-rapido</div>
+        <div class="resource-title">Scripts de reativação</div>
         <div class="resource-desc">Abordagem pra reaquecer a base de 250 leads, por temperatura.</div>
         <div class="resource-link">Ver nesta página ↓</div>
       </a>
+      <a class="resource-card" href="https://demandainfinita.com/eder-webinario-planejamento/" target="_blank" rel="noopener">
+        <div class="resource-skill">eder-webinario</div>
+        <div class="resource-title">Planejamento completo do webinário</div>
+        <div class="resource-desc">Título, copy de captação, grupo de aquecimento, lembretes, roteiro do dia.</div>
+        <div class="resource-link">Abrir · Baixar PDF →</div>
+      </a>
     </div>
+    <p class="section-sub" style="margin-top:16px;">O Programa de Indicação (comissão de R$450) também está publicado — <a href="https://demandainfinita.com/eder-programa-indicacao/" target="_blank" rel="noopener" style="color:var(--accent);">abrir aqui</a>.</p>
   </div>
 
   <div class="section">
