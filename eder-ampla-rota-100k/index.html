@@ -213,6 +213,14 @@
     body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     .section{page-break-inside:avoid;}
   }
+
+  /* ---- resource hub ---- */
+  .resource-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;}
+  .resource-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;text-decoration:none;display:flex;flex-direction:column;gap:8px;}
+  .resource-title{font:600 1rem var(--font-display);color:var(--fg);}
+  .resource-desc{font-size:0.85rem;color:var(--fg-muted);line-height:1.5;}
+  .resource-link{font:600 0.78rem var(--font-body);color:var(--accent);margin-top:4px;}
+  @media (max-width:560px){.resource-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -257,6 +265,36 @@
 <div class="bar"></div>
 
 <div class="page">
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Recursos</h2>
+      <div class="underline"></div>
+      <p class="section-sub">Cada material desse plano, pra abrir ou baixar em PDF direto daqui.</p>
+    </div>
+    <div class="resource-grid">
+      <a class="resource-card" href="https://demandainfinita.com/eder-proposta-comercial/" target="_blank" rel="noopener">
+        <div class="resource-title">Proposta Comercial</div>
+        <div class="resource-desc">As 6 fases do método, quanto custaria montar sozinho, planos Essencial/Elite.</div>
+        <div class="resource-link">Abrir · Baixar PDF →</div>
+      </a>
+      <a class="resource-card" href="https://demandainfinita.com/eder-programa-indicacao/" target="_blank" rel="noopener">
+        <div class="resource-title">Programa de Indicação</div>
+        <div class="resource-desc">Como funciona, comissão de R$450 (15% do setup), regras.</div>
+        <div class="resource-link">Abrir · Baixar PDF →</div>
+      </a>
+      <a class="resource-card" href="https://demandainfinita.com/eder-webinario-planejamento/" target="_blank" rel="noopener">
+        <div class="resource-title">Planejamento do Webinário</div>
+        <div class="resource-desc">Título, copy de captação, grupo de aquecimento, lembretes, roteiro do dia.</div>
+        <div class="resource-link">Abrir · Baixar PDF →</div>
+      </a>
+      <a class="resource-card" href="#scripts-caixa-rapido">
+        <div class="resource-title">Scripts de Reativação — Caixa Rápido</div>
+        <div class="resource-desc">Abordagem pra reaquecer a base de 250 leads, por temperatura.</div>
+        <div class="resource-link">Ver nesta página ↓</div>
+      </a>
+    </div>
+  </div>
 
   <div class="section">
     <div class="section-head">
@@ -435,7 +473,7 @@
     </div>
   </div>
 
-  <div class="section">
+  <div class="section" id="scripts-caixa-rapido">
     <div class="section-head">
       <h2>Scripts de reativação — Caixa Rápido</h2>
       <div class="underline"></div>
