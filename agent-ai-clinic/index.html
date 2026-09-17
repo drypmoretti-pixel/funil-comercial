@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dr. Weidson Lira — WhatsApp AI Agent: Technical Guide</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.55;
+    font-size: 10.5pt;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 22pt; margin-bottom: 4px; color: #0f172a; }
+  .subtitle { color: #64748b; font-size: 12pt; margin-top: 0; margin-bottom: 6px; }
+  .meta { color: #64748b; font-size: 9.5pt; margin-bottom: 28px; }
+  h2 {
+    font-size: 15pt; margin-top: 36px; margin-bottom: 10px;
+    color: #0f172a; border-bottom: 2px solid #C9DCE8; padding-bottom: 4px;
+    page-break-after: avoid;
+  }
+  h3 { font-size: 12pt; margin-top: 22px; margin-bottom: 8px; color: #1e3a5f; page-break-after: avoid; }
+  h4 { font-size: 10.5pt; margin-top: 16px; margin-bottom: 6px; color: #334155; page-break-after: avoid; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9pt; background: #f1f5f9; padding: 1px 5px; border-radius: 3px;
+    color: #0f172a;
+  }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radius: 6px;
+    font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 8.3pt; line-height: 1.5;
+    overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+    page-break-inside: avoid;
+  }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 9.3pt;
+    page-break-inside: avoid;
+  }
+  th, td { border: 1px solid #d6dee6; padding: 5px 9px; text-align: left; }
+  th { background: #eef3f8; font-weight: 600; }
+  .box {
+    background: #f8fafc; border: 1px solid #dde5ec; border-left: 4px solid #4a7ba6;
+    padding: 10px 14px; border-radius: 4px; margin: 12px 0; page-break-inside: avoid;
+  }
+  .warn {
+    background: #fdf6ec; border-left: 4px solid #c98a2b;
+    padding: 10px 14px; border-radius: 4px; margin: 12px 0; page-break-inside: avoid;
+  }
+  .fixed {
+    background: #f0f7f0; border-left: 4px solid #4a8a5c;
+    padding: 10px 14px; border-radius: 4px; margin: 12px 0; page-break-inside: avoid;
+  }
+  .badge {
+    display: inline-block; font-size: 8pt; font-weight: 600; padding: 1px 8px;
+    border-radius: 10px; margin-left: 6px; vertical-align: middle;
+  }
+  .badge.ok { background: #dcf0e2; color: #1e6b3a; }
+  .badge.pending { background: #fbe8d3; color: #9a5b12; }
+  .toc { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px 22px; margin: 20px 0; }
+  .toc ol { margin: 0; }
+  .toc a { color: #1e3a5f; text-decoration: none; }
+  .section-break { page-break-before: always; }
+  .flow-step {
+    display: block; margin: 6px 0 6px 0; padding: 6px 10px;
+    background: #fbfcfe; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 9.5pt;
+  }
+  .arrow { color: #94a3b8; margin: 0 4px; }
+  footer-note { display:block; font-size: 8pt; color: #94a3b8; margin-top: 40px; }
+  figure { margin: 14px 0 18px 0; page-break-inside: avoid; }
+  figure img {
+    width: 100%; border: 1px solid #d6dee6; border-radius: 6px; display: block;
+  }
+  figcaption {
+    font-size: 8.7pt; color: #64748b; margin-top: 6px; text-align: left; line-height: 1.4;
+  }
+  figcaption strong { color: #334155; }
+</style>
+</head>
+<body>
+
+<h1>Dr. Weidson Lira — WhatsApp AI Agent</h1>
+<p class="subtitle">Technical Guide: Architecture, Workflows, Decisions and Known Issues</p>
+<p class="meta">Prepared for Igor Miguel · Built 2026-09-16/17 · n8n instance: cheatingclownfish-n8n.cloudfy.live</p>
+
+<div class="box">
+<strong>What this document covers.</strong> A ground-up rebuild of the clinic's WhatsApp AI agent, replacing a
+115-node single workflow that mixed a conversational agent, a hidden pre-agent router, an objection-handling
+sub-agent, and a fragile booking/payment pipeline. The new system is five small, single-purpose n8n workflows
+that call each other explicitly. This document explains what each one does, why it's shaped the way it is, every
+bug found and fixed while building and testing it, and what is intentionally not finished yet.
+</div>
+
+<div class="toc">
+<strong>Contents</strong>
+<ol>
+<li><a>System Overview &amp; Architecture</a></li>
+<li><a>Workflow 1 — Conversational Agent ("Cláudia")</a></li>
+<li><a>Workflow 2 — Payment (Asaas)</a></li>
+<li><a>Workflow 3 — Scheduling (Cal.com)</a></li>
+<li><a>Workflow 4 — Payment Confirmation Webhook</a></li>
+<li><a>Workflow 5 — Follow-up (Cron)</a></li>
+<li><a>Database Schema</a></li>
+<li><a>Credentials Reference</a></li>
+<li><a>Why the Old System Was Rebuilt, Not Patched</a></li>
+<li><a>Bugs Found and Fixed During This Build</a></li>
+<li><a>What Was Tested Today</a></li>
+<li><a>Known Limitations &amp; Next Steps</a></li>
+</ol>
+</div>
+
+<h2 id="s1">1. System Overview &amp; Architecture</h2>
+
+<p>The agent is split into five n8n workflows, each with one job. They call each other as tools
+(<code>toolWorkflow</code> / <code>Execute Workflow</code> nodes) or through Supabase tables that act as the
+shared source of truth between them:</p>
+
+<pre>
+WhatsApp (Evolution API, instance "SDR")
+      │
+      ▼
+┌─────────────────────────────┐
+│ 1. CLÁUDIA (conversational)  │──tool──▶ 2. PAGAMENTO (Asaas)
+│    receives every message,   │──tool──▶ 3. AGENDAMENTO (Cal.com)
+│    holds the LLM agent       │──tool──▶ human_handoff (pre-existing)
+└─────────────────────────────┘
+      ▲                                4. WEBHOOK ASAAS
+      │                                   (listens for real payment
+      │ proactive WhatsApp message         confirmation, updates DB,
+      └───────────────────────────────────  messages the patient)
+
+5. FOLLOW-UP (cron, every 15 min)
+   reads the same Supabase tables independently and sends
+   reminders — it does not go through the agent at all.
+</pre>
+
+<p>The previous system's worst problem was a deterministic router (<code>Decision Router1</code>) sitting
+<em>before</em> the LLM agent that could send a real payment or booking message straight to the patient based
+on stale database state, completely bypassing the AI. That entire class of risk does not exist in this
+architecture: only the agent decides when to call a tool, and every tool re-validates its own preconditions
+(payment confirmed, valid slot, etc.) before doing anything real.</p>
+
+<h4>Design principle applied throughout</h4>
+<p>Every rule that the business actually needs to hold (correct price, no double payment link, no booking
+before payment) is enforced <em>in code</em>, not only in the LLM's instructions. The prompt guides tone and
+judgment calls; the workflow logic guards anything with a real-world consequence. This was a hard-won lesson
+from three separate incidents during today's build (see §10).</p>
+
+<h2 id="s2">2. Workflow 1 — Conversational Agent ("Cláudia")</h2>
+<p><strong>n8n workflow:</strong> <code>Dr. Weidson Lira. (agente 1)</code> — 77 nodes, active.</p>
+
+<h3>2.1 What it does</h3>
+<p>Receives every inbound WhatsApp message via an Evolution API webhook, debounces multi-bubble messages,
+handles audio (Whisper transcription) and images, checks a "human paused this chat" flag, loads/creates the
+patient's record, then hands the assembled context to a single GPT agent ("Cláudia") that carries the entire
+conversation: greeting, qualification, FAQ, objection handling, payment collection, and scheduling.</p>
+
+<figure>
+<img src="shot_claudia_overview.png" alt="Cláudia workflow canvas overview">
+<figcaption><strong>Figure 1 — Full canvas of Workflow 1 ("Cláudia").</strong> Left to right: the webhook and
+allowlist/pause checks, then the three parallel colour-coded lanes for text (blue), audio (green) and image
+(red) handling, converging into the concurrency lock and <em>Prepare Agent Context</em> step. The agent block
+in the centre-right shows its memory (Redis), model, the <span style="color:#8a6d1f">knowledge base (RAG)</span>
+box and the <span style="color:#8a6d1f">Pagamento Asaas</span> tool it can call, plus the four
+<span style="color:#7a2f2f">SCHEDULE</span> tools and the <strong>HAND-OFF HUMAN</strong> box. The far-right
+lane formats and sends the WhatsApp reply.</figcaption>
+</figure>
+
+<h3>2.2 Message pipeline (before the agent)</h3>
+<div class="flow-step">Webhook (Evolution, <code>MESSAGES_UPSERT</code>) <span class="arrow">→</span>
+allowlist check (only specific test numbers can reach the agent right now) <span class="arrow">→</span>
+mark read <span class="arrow">→</span> filter to real inbound messages <span class="arrow">→</span>
+extract name/phone/type/text (<code>Coleta1</code>)</div>
+<div class="flow-step"><code>fromMe == true</code>? <span class="arrow">→</span> a staff member replied manually
+from the connected number → set a Redis pause key (currently 60s TTL for testing; should be reset to 1800s
+[30 min] before real launch, see §12) and stop.</div>
+<div class="flow-step">Chat already paused? <span class="arrow">→</span> stop silently (the bot never talks
+over a human).</div>
+<div class="flow-step">Get-or-create customer row in Supabase <code>customers</code> table (the clinic's
+existing table, shared with the legacy bots) <span class="arrow">→</span> route by message type
+(text/audio/image) <span class="arrow">→</span> debounce buffer (Redis, ~5s window, joins fast multi-bubble
+texts into one) <span class="arrow">→</span> concurrency lock (prevents double-processing the same
+conversation) <span class="arrow">→</span> live payment status lookup (see §2.4) <span class="arrow">→</span>
+build agent context <span class="arrow">→</span> <strong>agent runs</strong> <span class="arrow">→</span>
+format reply (strips em-dashes/stage tags, splits on a blank line into up to 2 WhatsApp bubbles — used only
+for the opening message) <span class="arrow">→</span> send via Evolution, one bubble at a time with a pause
+between them <span class="arrow">→</span> release the concurrency lock.</div>
+
+<h3>2.3 The agent's tools</h3>
+<table>
+<tr><th>Tool</th><th>Calls</th><th>Purpose</th></tr>
+<tr><td><code>buscar_conhecimento</code></td><td>Supabase vector store (pgvector)</td>
+<td>RAG lookup for FAQ (clinic facts, DWL Method, addresses, cancellation policy).</td></tr>
+<tr><td><code>gerar_link_pagamento</code></td><td>Workflow 2 (Payment)</td>
+<td>Creates the real Asaas deposit charge and returns the checkout link.</td></tr>
+<tr><td><code>verificar_disponibilidade</code></td><td>Workflow 3 (Scheduling)</td>
+<td>Real Cal.com availability for one day.</td></tr>
+<tr><td><code>confirmar_agendamento</code></td><td>Workflow 3 (Scheduling)</td>
+<td>Creates the real Cal.com booking.</td></tr>
+<tr><td><code>reagendar_consulta</code></td><td>Workflow 3 (Scheduling)</td>
+<td>Moves an existing booking to a new slot.</td></tr>
+<tr><td><code>cancelar_consulta</code></td><td>Workflow 3 (Scheduling)</td>
+<td>Cancels an existing booking.</td></tr>
+<tr><td><code>human_handoff</code></td><td>Pre-existing workflow <code>Revisão Humana [FIXED]</code></td>
+<td>Pauses the bot, notifies staff on WhatsApp with a summary. Used for real escalations and as the fallback
+whenever another tool errors.</td></tr>
+</table>
+<p>Every tool that needs data the agent has gathered from conversation uses <code>$fromAI(field, description,
+type)</code> with an explicit description — the old system's biggest integration bug was a Cal.com field
+wired as <code>$fromAI('parameters0_Value', '', 'string')</code> with no description at all, so the model had
+no idea what to put there. Every field that is <em>known deterministically</em> (the patient's phone number)
+is passed as a fixed expression instead of asking the model for it, removing one whole class of possible
+hallucination.</p>
+
+<h3>2.4 Live payment status injection</h3>
+<p>This is the most important reliability fix made today. Initially, the agent was told (only in the prompt)
+to "always call the tool fresh, never trust memory." It didn't work: once the model saw one
+<code>ainda_nao_confirmado</code> result in the conversation, it started answering "payment not confirmed yet"
+from memory on later turns, without calling anything. Prompt instructions could not reliably override this
+pattern-matching behavior.</p>
+<p>The fix moved the check out of the LLM's judgment entirely. A Supabase node (<code>Buscar Status
+Pagamento</code>) now runs on <em>every single turn</em>, looks up the latest payment status for that phone
+number, and injects it directly into the agent's input as a labelled fact:</p>
+<pre>LIVE payment status (ground truth, always check this, never trust an older message in this
+conversation over this value): {{ $json.payment_status }}
+(NONE = no payment record yet, PENDING = link generated but not paid, CONFIRMED = paid, safe to schedule)</pre>
+<p>The model no longer decides whether to check — the current truth is simply part of what it reads every
+time. The four scheduling tools still re-validate this server-side as a second safety net.</p>
+
+<h3>2.5 System prompt structure</h3>
+<p>The 300+ line system prompt (English instructions, Portuguese patient-facing text) is organized as:</p>
+<ol>
+<li>Identity &amp; role (Cláudia, front-desk assistant, never reveals she's AI)</li>
+<li>Global behaviour rules</li>
+<li>WhatsApp communication style (one message per turn, except the two-bubble opening; no em-dashes; sound
+human, vary phrasing, never repeat verbatim)</li>
+<li>Doctor &amp; practice information (DWL Method, cities, addresses, cancellation policy)</li>
+<li>Hormone replacement / implants positioning</li>
+<li>Conversation flow (greeting → health goal → city → specialty → value → close)</li>
+<li>Specialty deduction (Nutrologist vs. General Practitioner, with the Barreiros-only GP rule)</li>
+<li>Payment section: pricing table, deposit notice, data collection bundle, generate link, set expectations</li>
+<li>Tool usage list</li>
+<li>Human handoff triggers</li>
+<li>Conversation recovery after interruptions/off-topic questions</li>
+<li>Scheduling section (§11): booking / rescheduling / cancelling, all gated on live payment status</li>
+<li>Rigid rules (never break)</li>
+</ol>
+
+<h3>2.6 Pricing table (source of truth, duplicated intentionally)</h3>
+<p>The same table lives in two places on purpose: in the prompt (so the agent can <em>state</em> the price
+in conversation) and in Workflow 2's code (so the <em>charge</em> is always computed the same way,
+independent of what the model says). Both were built from the same confirmed numbers, "Table B":</p>
+<table>
+<tr><th>City</th><th>Specialty</th><th>First consultation</th><th>Return</th><th>Deposit</th></tr>
+<tr><td>Recife</td><td>Nutrologist</td><td>R$ 550</td><td>R$ 500</td><td>50%</td></tr>
+<tr><td>Barreiros</td><td>Nutrologist</td><td>R$ 500</td><td>R$ 400</td><td>20%</td></tr>
+<tr><td>Palmares</td><td>Nutrologist</td><td colspan="2">R$ 400 (single value, no first/return split)</td><td>50%</td></tr>
+<tr><td>Barreiros</td><td>General Practitioner</td><td colspan="2">R$ 300 (single value)</td><td>20%</td></tr>
+</table>
+<p><em>First vs. return</em> is derived automatically: if a Supabase <code>customers</code> row already
+existed for that phone before this payment request, it's a return; otherwise it's a first consultation. This
+is a simplification (a customer row can exist without a completed past consultation) but is safe by design —
+it can only ever make the price equal or lower than a brand-new patient's, never higher.</p>
+
+<h2 id="s3">3. Workflow 2 — Payment (Asaas)</h2>
+<p><strong>n8n workflow:</strong> <code>Pagamento (Asaas) - Dr. Weidson Lira</code> — 17 nodes, active.
+Uses the <strong>production</strong> Asaas API (real charges).</p>
+
+<figure>
+<img src="shot_pagamento.png" alt="Payment (Asaas) workflow canvas">
+<figcaption><strong>Figure 2 — Full canvas of Workflow 2 (Payment).</strong> <em>Buscar Cliente</em> and
+<em>Cliente Tem Asaas Id?</em> are the first check described in §3.2. The three converging paths above
+<em>Atualizar Cliente na Asaas</em> are the three client-resolution cases (existing with ID, newly created,
+and backfilled), which all continue through the same refresh → price calculation (Table B) → real Asaas
+charge → log → format-reply chain on the right.</figcaption>
+</figure>
+
+<h3>3.1 Trigger &amp; inputs</h3>
+<p>Called via <code>Execute Workflow Trigger</code> with: <code>customer_name</code>, <code>cpf_cnpj</code>,
+<code>email</code>, <code>billing_type</code> (<code>PIX</code> or <code>CREDIT_CARD</code>),
+<code>consulting_city</code>, <code>specialty</code>, <code>phone</code>.</p>
+
+<h3>3.2 Client resolution — the three cases</h3>
+<p>The workflow must guarantee every customer has a valid Asaas customer ID before charging them. It handles
+three distinct situations, each converging on the same next step (<code>Atualizar Cliente na Asaas</code>):</p>
+<table>
+<tr><th>Case</th><th>Detected by</th><th>Action</th></tr>
+<tr><td>New customer</td><td>No Supabase row for this phone</td>
+<td>Create Asaas customer → create Supabase row with the new ID</td></tr>
+<tr><td>Existing, has Asaas ID</td><td>Supabase row exists with <code>asaas_customer_id</code> filled</td>
+<td>Use the existing ID directly</td></tr>
+<tr><td>Existing, missing Asaas ID</td><td>Row exists but <code>asaas_customer_id</code> is empty (this
+happens because the conversational workflow creates a bare customer record on first contact, before any
+payment intent, and never itself talks to Asaas)</td>
+<td><strong>Backfill:</strong> create the Asaas customer now, then <code>UPDATE</code> (not insert) the
+existing Supabase row with the new ID</td></tr>
+</table>
+<p>After resolution, the customer's Asaas record is always refreshed (<code>PUT /v3/customers/{id}</code>)
+with the latest name/email/CPF/phone, then the deposit charge is created
+(<code>POST /v3/payments</code>) and logged in <code>weidson_pagamentos</code> for tracking.</p>
+
+<h2 id="s4">4. Workflow 3 — Scheduling (Cal.com)</h2>
+<p><strong>n8n workflow:</strong> <code>Agendamento (Cal.com) - Dr. Weidson Lira [TESTE conta pessoal
+Igor]</code> — 18 nodes, active.</p>
+
+<div class="warn"><strong>Test account notice.</strong> This workflow currently points at Igor's <em>personal</em>
+Cal.com account (event type <code>907575</code>, "15 Min Meeting"), used only to prove the mechanism end to
+end. Before real use it must be repointed to the clinic's own Cal.com account and event types — see §12.</div>
+
+<figure>
+<img src="shot_calcom.png" alt="Cal.com scheduling workflow canvas">
+<figcaption><strong>Figure 3 — Full canvas of Workflow 3 (Scheduling).</strong> <em>Recebe Pedido de
+Agenda</em> is the trigger; <em>Buscar Pagamento do Cliente</em> and <em>Pagamento Confirmado?</em> are the
+payment gate described below — if false, execution stops at <em>Pagamento Pendente (bloqueia)</em> and nothing
+else runs. Past the gate, <em>Acao?</em> routes to one of the four branches on the right:
+<code>CHECK_AVAILABILITY</code> (top), <code>BOOK</code>, <code>RESCHEDULE</code> and <code>CANCEL</code>
+(bottom), each calling the Cal.com API and then writing the result back to Supabase.</figcaption>
+</figure>
+
+<h3>4.1 The payment gate (applies to all four actions)</h3>
+<p>The very first thing this workflow does, before looking at what action was requested, is look up the
+latest payment for that phone number in <code>weidson_pagamentos</code> and check
+<code>status == 'CONFIRMED'</code>. If not, every action returns <code>ainda_nao_confirmado</code> and stops —
+scheduling, rescheduling and cancelling are all impossible until a real payment has landed.</p>
+
+<h3>4.2 The four actions</h3>
+<table>
+<tr><th>action</th><th>Cal.com call</th><th>Notes</th></tr>
+<tr><td><code>CHECK_AVAILABILITY</code></td><td><code>GET /v2/slots</code></td>
+<td>One day at a time; grouped into manhã/tarde/noite, capped at 3 per period, in the code node
+<code>Formatar Horarios</code>.</td></tr>
+<tr><td><code>BOOK</code></td><td><code>POST /v2/bookings</code></td>
+<td>Only for one exact slot the patient picked; logs the booking (with its Cal.com <code>uid</code>) to
+<code>weidson_agendamentos</code>.</td></tr>
+<tr><td><code>RESCHEDULE</code></td><td><code>POST /v2/bookings/{uid}/reschedule</code></td>
+<td>Looks up the existing booking's <code>uid</code> by phone first.</td></tr>
+<tr><td><code>CANCEL</code></td><td><code>POST /v2/bookings/{uid}/cancel</code></td>
+<td>Marks the local row <code>CANCELLED</code> after the Cal.com call succeeds.</td></tr>
+</table>
+<p><em>Verification note:</em> <code>BOOK</code> and <code>CHECK_AVAILABILITY</code> were exercised end to end
+in a real WhatsApp conversation today. <code>RESCHEDULE</code> and <code>CANCEL</code> were built to the same
+pattern and code-reviewed, but not yet exercised live — treat them as implemented-but-unverified until tested.</p>
+
+<h2 id="s5">5. Workflow 4 — Payment Confirmation Webhook</h2>
+<p><strong>n8n workflow:</strong> <code>Webhook Asaas - Pagamento Confirmado (Dr. Weidson)</code> — 5 nodes,
+active. Endpoint: <code>/webhook/weidson-asaas-webhook</code>.</p>
+<p>A second, independent Asaas webhook subscription was registered for this endpoint (the existing legacy
+subscription pointing at the old bot's endpoint was left untouched). It listens for
+<code>PAYMENT_CONFIRMED</code> / <code>PAYMENT_RECEIVED</code> events, marks the matching row in
+<code>weidson_pagamentos</code> as <code>CONFIRMED</code>, and — outside of any conversation turn — proactively
+sends the patient a WhatsApp message announcing the confirmation and asking for their preferred day/period.
+This is what makes §2.4's "live payment status" actually change without the patient having to say anything.</p>
+
+<figure>
+<img src="shot_asaas_webhook.png" alt="Asaas payment confirmation webhook canvas">
+<figcaption><strong>Figure 4 — Full canvas of Workflow 4 (Payment Confirmation Webhook).</strong>
+<em>Webhook Asaas</em> receives the raw event from Asaas; <em>Evento de Confirmacao?</em> only lets
+<code>PAYMENT_CONFIRMED</code>/<code>PAYMENT_RECEIVED</code> events through (anything else, the "false"
+branch, is silently ignored). <em>Marcar Pagamento Confirmado</em> updates the row, <em>Buscar
+Pagamento</em> re-reads it for the patient's phone number, and <em>Avisar Paciente</em> sends the
+proactive WhatsApp message.</figcaption>
+</figure>
+<div class="warn"><strong>Not yet implemented:</strong> Asaas signs each webhook call with an
+<code>asaas-access-token</code> header (a secret returned when the subscription was created). The receiver does
+not currently verify this signature. Low risk today (the endpoint isn't guessable), but should be added
+before this handles real patient payments at volume.</div>
+
+<h2 id="s6">6. Workflow 5 — Follow-up (Cron)</h2>
+<p><strong>n8n workflow:</strong> <code>Follow-up 24h - Dr. Weidson Lira</code> — 15 nodes, active
+(runs every 15 minutes).</p>
+<p>Unlike the other four workflows, this one never talks to the LLM agent — it is a deterministic scheduled
+job that reads the same Supabase tables and messages patients directly. All three branches share one rule:
+<strong>nothing is ever sent outside 9:00–19:00 (America/Sao_Paulo)</strong>, even if the underlying condition
+became true earlier. A candidate just waits for the next poll inside business hours.</p>
+
+<figure>
+<img src="shot_followup.png" alt="Follow-up workflow canvas, three branches">
+<figcaption><strong>Figure 5 — Full canvas of Workflow 5 (Follow-up).</strong> One cron trigger
+("A cada 15 minutos") fans out into three independent rows: appointment reminder (top), payment-pending
+reminder (middle), and lead-abandoned re-engagement (bottom, which reads three tables — recent customers,
+all payments, and who's already been notified — before deciding). Each row ends in its own dedup marker so
+the same message is never sent twice.</figcaption>
+</figure>
+<table>
+<tr><th>Branch</th><th>Condition</th><th>Message</th><th>Dedup column</th></tr>
+<tr><td>Appointment reminder</td><td><code>weidson_agendamentos.status = CONFIRMED</code>, 0–24h before
+<code>start_time</code></td><td>Reminds the patient of tomorrow's appointment, mentions the 24h
+cancellation policy</td><td><code>reminder_sent</code></td></tr>
+<tr><td>Payment pending</td><td><code>weidson_pagamentos.status = PENDING</code>, 2–48h since the link was
+created</td><td>Resends the payment link, offers to help</td><td><code>payment_reminder_sent</code></td></tr>
+<tr><td>Lead abandoned</td><td>A <code>customers</code> row created 2–48h ago, with <strong>no</strong> row
+in <code>weidson_pagamentos</code> for that phone and not already notified</td><td>Re-engages, asks if they
+still want to book</td><td>presence in <code>weidson_lead_followups</code></td></tr>
+</table>
+<div class="warn"><strong>Deliberate safety bound on the "lead abandoned" branch:</strong> the
+<code>customers</code> table is shared with every legacy bot this clinic has run for months, so it holds real,
+already-treated patients. Querying it broadly for "no payment on file" would have wrongly re-engaged old
+patients who paid through the <em>old</em> system (never recorded in this new <code>weidson_pagamentos</code>
+table). The branch is therefore hard-limited to customer rows created in the last 48 hours — recent enough
+that they can only be leads from this new system.</div>
+
+<h2 id="s7">7. Database Schema</h2>
+<p>All new tables live in Igor's own Supabase project (<code>okolawlvmfyxzvnnpvtv</code>), prefixed
+<code>weidson_</code>, fully isolated from his other projects. The pre-existing <code>customers</code> table
+(columns used: <code>name</code>, <code>phone</code>, <code>email</code>, <code>cpf_cnpf</code> — note the
+legacy typo, not <code>cpf_cnpj</code> — <code>asaas_customer_id</code>, <code>created_at</code>) lives in the
+clinic's own separate Supabase project and was only ever read from / carefully updated, never restructured.</p>
+
+<h4>weidson_conhecimento (RAG knowledge base)</h4>
+<pre>id, titulo, conteudo, perguntas, embedding vector(1536), criado_em
++ function match_weidson_conhecimento(query_embedding, match_count, match_threshold=0.35)</pre>
+<p>Populated with 10 factual chunks (DWL Method, three addresses, cancellation policy, hormone/implant
+positioning, exam turnaround, cities/specialties, doctor bio, social contact). Each chunk's embedding text
+includes a "Perguntas relacionadas" field with the phrasings a real patient would use — the retrieval-accuracy
+pattern validated on an earlier project (SouClinic).</p>
+
+<h4>weidson_pagamentos</h4>
+<pre>id, phone, asaas_payment_id, invoice_url, value, billing_type, status,
+consulting_city, specialty, consultation_type, payment_reminder_sent, criado_em</pre>
+
+<h4>weidson_agendamentos</h4>
+<pre>id, phone, cal_booking_uid, patient_name, patient_email, start_time,
+event_type_id, consulting_city, specialty, status, reminder_sent, criado_em</pre>
+
+<h4>weidson_lead_followups</h4>
+<pre>id, phone (unique), sent_at</pre>
+<p>Pure dedup marker — one row means "this phone has already received the abandoned-lead nudge, never send
+it again."</p>
+
+<h2 id="s8">8. Credentials Reference</h2>
+<p>No secret values are recorded in this document. Names only, for locating them in the n8n Credentials list.</p>
+<table>
+<tr><th>Credential name</th><th>Type</th><th>Used by</th></tr>
+<tr><td>Dr Weidson Evolution account</td><td>Evolution API</td><td>Media download (audio/image) inside
+Workflow 1 only</td></tr>
+<tr><td>Evolution SDR (gruponexusmind)</td><td>Evolution API</td><td>All outbound WhatsApp sends, all five
+workflows — this is Igor's own "SDR" instance/number, used for testing; the incoming webhook was temporarily
+repointed here from its normal destination (the commercial funnel) for today's tests and should be pointed
+back once the clinic's own WhatsApp number is ready</td></tr>
+<tr><td>Dr Weidson Supabase account</td><td>Supabase API</td><td>Reading/writing the clinic's own
+<code>customers</code> table</td></tr>
+<tr><td>supabase_teste</td><td>Supabase API</td><td>All <code>weidson_*</code> tables, in Igor's own Supabase
+project</td></tr>
+<tr><td>Dr Weidson OpenAi / DR Weidson Premium OpenAi account</td><td>OpenAI API</td><td>Chat model, embeddings,
+audio/image analysis</td></tr>
+<tr><td>Dr Weidson Redis account</td><td>Redis</td><td>Debounce buffer, concurrency lock, manual-pause flag,
+conversation memory</td></tr>
+<tr><td>Asaas API Token - Prod</td><td>HTTP Header Auth</td><td>Workflow 2 — <strong>production</strong>,
+real charges</td></tr>
+<tr><td>Cal.com API (Igor pessoal - teste)</td><td>HTTP Header Auth</td><td>Workflow 3 — Igor's personal Cal.com
+account, test only</td></tr>
+</table>
+
+<div class="section-break"></div>
+<h2 id="s9">9. Why the Old System Was Rebuilt, Not Patched</h2>
+<p>The starting point was a single 115-node workflow (<code>Dr. Weidson Lira — Bot v4 (CORRECTED)</code>,
+itself already a fixed copy of an earlier version audited on 2026-08-14 and 2026-08-31) containing, in one
+canvas:</p>
+<ul>
+<li>A full customer/consultation state-machine (~20 nodes) that extracted structured fields via a second LLM
+call, updated records, and decided a <code>next_action</code></li>
+<li>A separate Objection Specialist sub-agent (~10 nodes) with its own prompt and its own routing</li>
+<li>A deterministic pre-agent router (<code>Decision Router1</code>) that could fire a hardcoded booking or
+payment-reminder message <em>without ever invoking the LLM</em>, based on whatever <code>next_action</code> the
+state machine last computed — found to still be live and reachable</li>
+<li>Pinecone-based RAG (single-tenant index, brittle to reconfigure)</li>
+<li>Two independently drifting hardcoded pricing tables, one of which had a first-consultation price of
+<strong>R$10</strong> for Palmares — almost certainly a forgotten test value left in a production path</li>
+</ul>
+<p>None of this was rewritten line-by-line. It was read, understood, and replaced with the minimum set of
+nodes that reproduces only the behaviour that's actually wanted, split across five workflows instead of one.
+The result is 77 + 17 + 18 + 5 + 15 = 132 nodes in total, but no single canvas has more than 77, each one has
+one job, and the dangerous "router without the AI in the loop" pattern was deleted rather than repaired.</p>
+
+<h2 id="s10">10. Bugs Found and Fixed During This Build</h2>
+<p>Listed in the order they were found, because the pattern repeats and is worth recognizing quickly next
+time.</p>
+
+<h4>10.1 The recurring pattern: <code>$json.field</code> after a node that replaces it</h4>
+<div class="fixed">
+<p>By far the most common bug today. Any HTTP Request, Supabase, or similar node replaces the entire
+<code>$json</code> with its own response — it does not merge with whatever came in. An expression written as
+<code>{{ $json.trigger_field }}</code> a few nodes downstream of the original trigger silently reads
+<code>undefined</code> instead of erroring, which is what made it so easy to miss.</p>
+<p>Found and fixed in: the payment workflow's client-merge step, the pricing calculation node (after removing
+an intermediate Merge node), the Cal.com workflow's action switch and two HTTP bodies, and the Asaas webhook's
+payment lookup. The fix is always the same: reference the origin node by name — <code>$('Node
+Name').item.json.field</code> — instead of relying on implicit passthrough.</p>
+</div>
+
+<h4>10.2 A `chooseBranch` Merge node silently stalling one path</h4>
+<div class="fixed">
+<p>The payment workflow originally used an n8n <em>Merge</em> node (mode "Choose Branch") to join the
+"customer exists" / "customer is new" paths. For the "exists" branch, execution stopped there — the run showed
+as <code>success</code> in the n8n executions list, but only 4 of 14 nodes had actually run. Replaced with a
+direct wire from both preceding Set nodes into the same next node — n8n runs whichever branch produced data,
+no merge node required for this pattern.</p>
+</div>
+
+<h4>10.3 Missing <code>condition: "eq"</code> on a Supabase <code>getAll</code> filter</h4>
+<div class="fixed">
+<p>A filter with only <code>keyName</code>/<code>keyValue</code> and no explicit <code>condition</code> works
+fine for the <code>get</code> operation, but throws <code>"failed to parse logic tree"</code> on
+<code>getAll</code> with <code>matchType: anyFilter</code>. Every <code>getAll</code> filter now has an
+explicit <code>condition</code> value; this was verified across all five workflows in a systematic pass (§ full
+review below).</p>
+</div>
+
+<h4>10.4 Sub-workflow caller policy denial</h4>
+<div class="fixed">
+<p><code>human_handoff</code> failed with <code>SubworkflowPolicyDenialError</code> — the target workflow
+(<code>Revisão Humana [FIXED]</code>) had <code>callerPolicy: workflowsFromSameOwner</code>, and the newly
+created Cláudia workflow wasn't recognized as the same owner (most likely an artifact of being created via the
+API rather than the UI). Changed the target's <code>callerPolicy</code> to <code>any</code> — a permissions-only
+change, no logic in that workflow was touched.</p>
+</div>
+
+<h4>10.5 Forgotten sub-workflow activation</h4>
+<div class="fixed">
+<p>The Cal.com workflow was created (inactive by default) and never explicitly activated, producing
+<code>"Workflow is not active and cannot be executed"</code> the first time the agent tried to call it as a
+tool. n8n sub-workflows called via <code>Execute Workflow</code> must be active, unlike sub-workflows called
+purely by internal reference in some other systems.</p>
+</div>
+
+<h4>10.6 A missing field in one of five near-identical tool definitions</h4>
+<div class="fixed">
+<p><code>verificar_disponibilidade</code> was defined without the deterministic <code>phone</code> field that
+the other four scheduling/payment tools all include — copy/paste drift across five similar tool definitions.
+Caught because the payment gate always evaluated to "not confirmed" for that one tool specifically.</p>
+</div>
+
+<h4>10.7 Behavioural bug: the model stopped re-checking payment status</h4>
+<div class="fixed">
+<p>Covered in depth in §2.4. Worth repeating here: telling the model "always re-check, don't trust memory" in
+the prompt was not sufficient once the conversation history already contained one "not confirmed" answer — it
+kept repeating that answer without calling anything. Solved by injecting the live value directly into every
+turn's input instead of asking the model to fetch it.</p>
+</div>
+
+<h4>10.8 A one-time echo mistaken for a manual staff reply</h4>
+<div class="fixed">
+<p>The very first live test produced a WhatsApp event with <code>fromMe: true</code> for the tester's own "oi"
+— consistent with the message being sent from the same account/session that is the connected Evolution
+instance, rather than from a separate phone messaging it. This triggered the "a human just replied manually,
+pause the bot" logic and blocked the real inbound copy that arrived a few seconds later. Not a code bug — a
+test-setup issue (send the test message from a genuinely different device than the one paired to the WhatsApp
+instance) — but worth documenting because it will look identical to a real bug if it happens again.</p>
+</div>
+
+<h4>10.9 Evolution instance/credential mismatch</h4>
+<div class="fixed">
+<p>Early tests used the Evolution credential/instance name hardcoded from the original template
+("Dr Weidson Evolution account" / instance "Test vitor") while the inbound webhook had been repointed to a
+completely different Evolution server (Igor's own "SDR" instance on gruponexusmind). The agent generated
+correct replies, but tried to send them through a server that never received the conversation. Fixed by
+creating a proper credential for the actual server in use and updating every Evolution node's instance name.</p>
+</div>
+
+<h2 id="s11">11. What Was Tested Today</h2>
+<table>
+<tr><th>Capability</th><th>Result</th></tr>
+<tr><td>Greeting, name recognition, health-goal question</td><td><span class="badge ok">Verified live</span></td></tr>
+<tr><td>Specialty deduction (Nutrologist) + confirmation</td><td><span class="badge ok">Verified live</span></td></tr>
+<tr><td>FAQ answer sourced from prompt content</td><td><span class="badge ok">Verified live</span> (content
+correct; retrieval tool itself not yet exercised — see §12)</td></tr>
+<tr><td>Price quoted from Table B before payment</td><td><span class="badge ok">Verified live</span></td></tr>
+<tr><td>Payment data bundle collection + real Asaas link generation</td><td><span class="badge ok">Verified live</span></td></tr>
+<tr><td>Live payment-status gating (blocks scheduling until confirmed)</td><td><span class="badge ok">Verified live</span></td></tr>
+<tr><td>Real Cal.com availability check + real booking</td><td><span class="badge ok">Verified live</span></td></tr>
+<tr><td>Rescheduling / cancelling a booking</td><td><span class="badge pending">Built, not yet tested live</span></td></tr>
+<tr><td>Proactive "payment confirmed" WhatsApp message</td><td><span class="badge pending">Logic verified by
+code review; not fired by a real Asaas event yet (test payment was confirmed by direct database edit, which
+correctly does not trigger the webhook)</span></td></tr>
+<tr><td>24h appointment reminder</td><td><span class="badge pending">Ran during a manual test outside business
+hours and correctly produced no message — behaviour confirmed, actual send not yet observed</span></td></tr>
+<tr><td>Payment-pending reminder / lead-abandoned reminder</td><td><span class="badge pending">Code-reviewed,
+not yet fired with real data</span></td></tr>
+</table>
+
+<h2 id="s12">12. Known Limitations &amp; Next Steps</h2>
+<ol>
+<li><strong>Cal.com is still Igor's personal test account.</strong> Needs the clinic's own account, and real
+<code>eventTypeId</code> values per city × specialty (the legacy prompt had partial values for this — Barreiros
+5005711, Palmares 5006147, Recife 5006292 — but flagged Barreiros's General Practitioner ID as likely wrong;
+confirm all four before going live).</li>
+<li><strong>Asaas webhook signature is not verified.</strong> The subscription returned an
+<code>asaas-access-token</code> secret at creation time; add a header check in Workflow 4 before this handles
+real volume.</li>
+<li><strong>Manual-pause TTL is set to 60 seconds for testing</strong> (was 1800s/30min in the original
+template, intentionally shortened to speed up today's iteration). Reset it to something appropriate for real
+staff handoff before launch.</li>
+<li><strong><code>buscar_conhecimento</code> (the RAG tool) has not actually fired in a real conversation
+yet</strong> — every FAQ question tested so far was already answered directly from the system prompt. Test a
+question whose answer exists <em>only</em> in the knowledge base to confirm the retrieval path end to end.</li>
+<li><strong>The inbound WhatsApp webhook is currently borrowed from the commercial funnel</strong>
+(Evolution instance "SDR", gruponexusmind server) for testing convenience. Point it back to
+<code>whatsapp-sdr</code> (saved before the change) once testing is done, or move this agent to the clinic's
+own dedicated WhatsApp number/instance.</li>
+<li><strong>Rescheduling and cancellation are unverified in a live conversation.</strong> Same code pattern as
+booking (already proven), but should be exercised at least once each before relying on them.</li>
+<li><strong>"First vs. return" pricing relies on a Supabase row existing</strong>, not on a confirmed past
+completed consultation. Acceptable for now (only ever under-charges), but a true consultation-history check
+would be more accurate.</li>
+<li><strong>Follow-up branches only reduce risk, they don't eliminate it.</strong> The lead-abandoned branch
+is bounded to customers created in the last 48 hours specifically to avoid messaging any patient from the
+legacy system — if that safety window is ever widened, re-derive the same protection some other way first.</li>
+</ol>
+
+<footer-note>Prepared by Claude (Anthropic) working directly against the n8n Cloud API, Supabase Management
+API, Asaas API and Cal.com API, at Igor Miguel's direction. All financial and calendar actions described as
+"real"/"production" in this document genuinely occurred against live third-party systems during testing.</footer-note>
+
+</body>
+</html>
