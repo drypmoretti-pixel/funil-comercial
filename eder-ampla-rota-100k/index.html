@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rota aos R$100k — Máquina de Agendamentos</title>
+<title>Rota aos R$100k — Método Ampla Elite</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -16,6 +16,7 @@
     --fg-muted:#9CA2AF;
     --accent:#6DF5E3;
     --accent-2:#21C45D;
+    --warn:#FFB84D;
     --line:#3A3A3A;
     --font-display:'Poppins',-apple-system,sans-serif;
     --font-body:'Inter',-apple-system,sans-serif;
@@ -80,6 +81,50 @@
   .name-alts{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;}
   .alt-chip{font:500 0.84rem var(--font-body);color:var(--fg-muted);border:1px solid var(--line);border-radius:20px;padding:6px 14px;}
   .alt-chip b{color:var(--fg);font-weight:600;}
+
+  /* ---- name options (mecanismo único em aberto) ---- */
+  .name-options{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
+  .name-opt{background:var(--surface);border-left:3px solid var(--accent-2);border-radius:0 6px 6px 0;padding:14px 18px;display:flex;gap:16px;align-items:baseline;}
+  .opt-num{font:700 0.78rem var(--font-mono);color:var(--accent-2);flex-shrink:0;}
+  .opt-name{font:600 1rem var(--font-display);color:var(--accent);flex-shrink:0;min-width:210px;}
+  .opt-why{font-size:0.86rem;color:var(--fg-muted);line-height:1.5;}
+  .decision-note{display:flex;align-items:center;gap:10px;background:var(--bg-deep);border:1px dashed var(--line);border-radius:6px;padding:12px 16px;margin-top:18px;font-size:0.85rem;color:var(--fg-muted);}
+  .decision-note b{color:var(--fg);}
+  @media (max-width:600px){.name-opt{flex-direction:column;gap:4px;}.opt-name{min-width:0;}}
+
+  /* ---- SWOT ---- */
+  .swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;}
+  .swot-card{background:var(--surface);border-radius:10px;padding:20px 20px 22px;border-left:4px solid var(--line);}
+  .swot-card.pos{border-left-color:var(--accent);}
+  .swot-card.neg{border-left-color:var(--warn);}
+  .swot-label{font:700 0.68rem var(--font-body);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;}
+  .swot-card.pos .swot-label{color:var(--accent);}
+  .swot-card.neg .swot-label{color:var(--warn);}
+  .swot-card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+  .swot-card li{font-size:0.87rem;line-height:1.5;color:var(--fg-muted);display:flex;gap:8px;}
+  .swot-card li::before{content:'—';flex-shrink:0;color:var(--fg-muted);}
+  .swot-flag{font-size:0.78rem;color:var(--warn);margin-top:2px;}
+  @media (max-width:620px){.swot-grid{grid-template-columns:1fr;}}
+
+  /* ---- KPI table ---- */
+  .kpi-wrap{overflow-x:auto;margin-top:18px;border:1px solid var(--line);border-radius:8px;}
+  table.kpi{width:100%;border-collapse:collapse;font-size:0.86rem;min-width:520px;}
+  table.kpi th{text-align:left;font:600 0.62rem var(--font-body);letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-muted);background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--line);}
+  table.kpi td{padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface);color:var(--fg);}
+  table.kpi td.n{font-family:var(--font-mono);color:var(--accent);}
+  table.kpi tr:last-child td{border-bottom:none;}
+
+  /* ---- roadmap por setor ---- */
+  .roadmap-sector{margin-top:30px;}
+  .roadmap-sector:first-of-type{margin-top:0;}
+  .roadmap-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+  .roadmap-head h3{font:700 1.05rem var(--font-display);color:var(--fg);}
+  .priority{font:600 0.64rem var(--font-body);letter-spacing:0.05em;text-transform:uppercase;padding:3px 10px;border-radius:10px;white-space:nowrap;}
+  .priority.alta{background:rgba(109,245,227,0.16);color:var(--accent);}
+  .priority.media{background:rgba(255,184,77,0.16);color:var(--warn);}
+  .priority.baixa{background:rgba(156,162,175,0.16);color:var(--fg-muted);}
+  .roadmap-when{font-size:0.8rem;color:var(--fg-muted);margin-left:auto;white-space:nowrap;}
+  .roadmap-note{font-size:0.84rem;color:var(--fg-muted);line-height:1.5;margin:10px 0 4px;font-style:italic;}
 
   /* ---- lever ---- */
   .lever{margin-top:44px;}
@@ -156,9 +201,9 @@
 
 <div class="cover">
   <img class="logo" src="logo.png" alt="Método Ampla Elite">
-  <div class="eyebrow">Plano comercial · 6 meses · Máquina de Agendamentos</div>
+  <div class="eyebrow">Plano comercial · 6 meses · Método Ampla Elite</div>
   <h1>Rota aos R$100k</h1>
-  <p class="lede">Como a Máquina de Agendamentos sai de R$40.000 para R$100.000 de faturamento mensal recorrente, usando três alavancas comerciais e um motor de conteúdo nichado em clínicas odontológicas e de saúde.</p>
+  <p class="lede">Como o Método Ampla Elite sai de R$40.000 para R$100.000 de faturamento mensal recorrente, usando três alavancas comerciais e um motor de conteúdo nichado em clínicas odontológicas e de saúde.</p>
   <div class="rule"></div>
   <div class="sign-card">
     <div class="name">Éder Santos</div>
@@ -215,17 +260,86 @@
 
   <div class="section">
     <div class="section-head">
-      <h2>Nome</h2>
+      <h2>Nome / Mecanismo único</h2>
       <div class="underline"></div>
-      <p class="section-sub">"Máquina de Agendamentos" já resolve o essencial de um nome de produto nichado: diz o resultado (agenda cheia), não o meio (tráfego, CRM), e qualquer dono de clínica entende em 2 segundos. Mantém.</p>
+      <p class="section-sub">"Máquina de Agendamentos" já existe no mercado — não é exclusivo, então não serve como mecanismo único defensável. As 5 opções abaixo miram a direção validada: não é só agenda cheia, é agenda cheia com o <b style="color:var(--fg)">paciente certo</b> — o diferencial real do método já é diagnóstico + recepção treinada + MetaLead filtrando quem entra. Decisão final é do Éder.</p>
     </div>
-    <div class="name-pick">
-      <div class="name">Máquina de Agendamentos</div>
-      <p class="section-sub" style="margin-top:8px;">Recomendado. Curto, concreto, fala a língua de quem compra (dentista, não profissional de marketing) e sobrevive bem a um logo, um domínio e uma isca em vídeo.</p>
+    <div class="name-options">
+      <div class="name-opt"><span class="opt-num">01</span><span class="opt-name">Agenda Qualificada</span><span class="opt-why">Curto e direto — já comunica que não é "qualquer lead" entrando na agenda.</span></div>
+      <div class="name-opt"><span class="opt-num">02</span><span class="opt-name">Protocolo Agenda Certa</span><span class="opt-why">"Certa" carrega a ideia de paciente certo, não só volume — soa a sistema proprietário.</span></div>
+      <div class="name-opt"><span class="opt-num">03</span><span class="opt-name">Agenda Cheia de Verdade</span><span class="opt-why">Tom mais coloquial, contraste implícito com concorrente que enche de lead ruim.</span></div>
+      <div class="name-opt"><span class="opt-num">04</span><span class="opt-name">Sistema Paciente Certo</span><span class="opt-why">Foca 100% na qualidade — "agenda cheia" vira consequência do método, não a promessa.</span></div>
+      <div class="name-opt"><span class="opt-num">05</span><span class="opt-name">Protocolo Agenda Qualificada</span><span class="opt-why">O mais "sistema proprietário" dos cinco — soa como método defensável e registrável.</span></div>
     </div>
-    <div class="name-alts">
-      <span class="alt-chip">Se quiser testar variações: <b>Agenda Lotada</b></span>
-      <span class="alt-chip"><b>Protocolo Agenda Cheia</b></span>
+    <div class="decision-note"><span><b>Em aberto</b> — Éder decide com o Igor. Até lá, qualquer material novo usa o nome antigo (Método Ampla Elite), não "Máquina de Agendamentos".</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Diagnóstico estratégico (SWOT)</h2>
+      <div class="underline"></div>
+      <p class="section-sub">Onde a Máquina/Método está agora, antes de qualquer alavanca ser puxada — o que já é força real, o que trava a escala, e o que pode virar problema se ninguém olhar antes.</p>
+    </div>
+    <div class="swot-grid">
+      <div class="swot-card pos">
+        <div class="swot-label">Forças</div>
+        <ul>
+          <li>MetaLead CRM próprio, já implementado e testado — visibilidade completa do funil, não depende de planilha.</li>
+          <li>Recepção/CRC treinados pra converter lead em paciente pagante, não só em horário marcado — é o que já diferencia de agência de tráfego genérica.</li>
+          <li>16 clientes ativos pagantes com ticket médio já validado (R$2.500/mês) — não é oferta nova no mercado, é oferta que já vende.</li>
+          <li>Base histórica de ~250 leads (clientes antigos, propostas não fechadas) parada — ativo dormente pronto pra reaquecer.</li>
+        </ul>
+      </div>
+      <div class="swot-card neg">
+        <div class="swot-label">Fraquezas</div>
+        <ul>
+          <li>Nome/mecanismo único ainda em aberto — sem ele, a diferenciação frente a concorrente genérico fica mais fraca até a decisão sair.</li>
+          <li>Capacidade de entrega dimensionada pra ~16 clientes; crescer pra ~35 sem reforço de equipe derruba qualidade de implantação bem na hora que mais precisa segurar quem fechou.</li>
+          <li>IA de SDR é camada nova — ainda não rodou em produção com cliente real, resultado de reativação automática é projeção, não histórico.</li>
+          <li>Parte da entrega depende de verba de mídia paga do próprio cliente — soma ao ticket e pode ser barreira de entrada em clínica menor.</li>
+        </ul>
+      </div>
+      <div class="swot-card pos">
+        <div class="swot-label">Oportunidades</div>
+        <ul>
+          <li>Nicho odonto/saúde pouco explorado com ângulo de IA de reativação — diferencial defensável assim que o nome fechar.</li>
+          <li>Motor de conteúdo (reels + TikTok) ainda não está rodando — canal orgânico gratuito inteiro por explorar.</li>
+          <li>Programa de Indicação ainda não ativado com os 16 clientes atuais — rede de confiança já existente, subaproveitada.</li>
+          <li>Webinar como canal de aquisição em massa nunca testado por esse cliente — primeira tentativa, sem teto conhecido.</li>
+        </ul>
+      </div>
+      <div class="swot-card neg">
+        <div class="swot-label">Ameaças</div>
+        <ul>
+          <li>Churn natural de base recorrente de consultoria (3–6%/mês é padrão do setor) pode corroer o crescimento líquido se não for monitorado mês a mês.</li>
+          <li>Concorrente de agência de tráfego genérica vendendo "promessa de agenda cheia" sem mecanismo nomeado — reforça a urgência de fechar o nome.</li>
+          <li>Crescer rápido de 16 para 35 clientes sem reforço de equipe pode gerar entrega ruim, que vira churn e prova social negativa ao mesmo tempo.</li>
+          <li class="swot-flag">Possível sazonalidade de procedimentos eletivos em clínica odonto/saúde — hipótese, não confirmada; validar com o Éder antes de tratar como fato no material final.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>KPIs de acompanhamento</h2>
+      <div class="underline"></div>
+      <p class="section-sub">O que medir pra saber se a rota está no rumo certo antes do fechamento do mês — não esperar o resultado final pra descobrir que uma alavanca não performou.</p>
+    </div>
+    <div class="kpi-wrap">
+      <table class="kpi">
+        <tr><th>KPI</th><th>Meta / alvo</th><th>Frequência</th><th>Onde acompanhar</th></tr>
+        <tr><td>MRR total</td><td class="n">R$ 100.000 até o mês 5</td><td>Mensal</td><td>Fechamento financeiro</td></tr>
+        <tr><td>Nº de clientes ativos</td><td class="n">~35 até o mês 6</td><td>Mensal</td><td>MetaLead CRM</td></tr>
+        <tr><td>Churn mensal</td><td class="n">≤ 6%</td><td>Mensal</td><td>MetaLead CRM</td></tr>
+        <tr><td>Setup arrecadado (acumulado)</td><td class="n">R$ 57.000 até o mês 6</td><td>Mensal</td><td>Financeiro</td></tr>
+        <tr><td>Leads contatados — Caixa Rápido</td><td class="n">250 (2 ondas)</td><td>Meses 1–2</td><td>MetaLead CRM</td></tr>
+        <tr><td>Taxa conversa → diagnóstico</td><td class="n">40%</td><td>Por onda</td><td>MetaLead CRM</td></tr>
+        <tr><td>Taxa diagnóstico → fechamento</td><td class="n">20–33%</td><td>Mensal</td><td>MetaLead CRM</td></tr>
+        <tr><td>Inscritos no webinar</td><td class="n">200</td><td>Mês 3</td><td>Ferramenta de inscrição</td></tr>
+        <tr><td>Indicações enviadas (acumulado)</td><td class="n">9</td><td>Mensal desde o mês 2</td><td>Programa de Indicação</td></tr>
+        <tr><td>Reels publicados</td><td class="n">cadência a definir com o Éder</td><td>Semanal</td><td>Instagram / TikTok</td></tr>
+      </table>
     </div>
   </div>
 
@@ -345,7 +459,7 @@
         <tr><th>Mês</th><th>Foco</th><th>Fechamentos</th><th>MRR acumulado</th></tr>
         <tr>
           <td><b class="num">1</b><br><span class="num">set/26</span></td>
-          <td>Rebranding pra Máquina de Agendamentos · segmentar a base de 250 · Caixa Rápido onda 1 · PDF de indicação pronto · início da produção de reels</td>
+          <td>Rebranding pro nome / mecanismo único escolhido · segmentar a base de 250 · Caixa Rápido onda 1 · PDF de indicação pronto · início da produção de reels</td>
           <td>3 novos + 2 upgrades</td>
           <td class="mrr num">R$ 52.000</td>
         </tr>
@@ -385,15 +499,80 @@
 
   <div class="section">
     <div class="section-head">
-      <h2>Pré-requisitos e riscos</h2>
+      <h2>Roadmap de execução por setor</h2>
       <div class="underline"></div>
+      <p class="section-sub">Traduz o SWOT e a matemática das alavancas em ação — organizado por setor, cada item com prioridade e prazo, pra saber exatamente o que atacar primeiro.</p>
     </div>
-    <ul class="plain">
-      <li>Capacidade de entrega: a base ativa vai de 16 para ~35 clientes em 6 meses. Sem reforço na equipe de diagnóstico, treinamento e configuração do MetaLead, a qualidade da implantação cai justo quando mais precisa segurar quem já fechou — o próprio material do Método Ampla estima R$29k/mês para montar essa estrutura internamente.</li>
-      <li>Churn não modelado: os R$64.500 são adições brutas. Numa base recorrente de consultoria, 3–6% de churn mensal é normal — o buffer de ~R$4.500 sobre a meta (e o mês 6 livre) existe para absorver isso, não para folga extra.</li>
-      <li>Sequência importa: tráfego pago só entra depois que posicionamento, diagnóstico e recepção treinada estão prontos — vale para os 19 clientes novos tanto quanto valeu para os 16 atuais.</li>
-      <li>O webinar depende do conteúdo já estar rodando antes do mês 3 para ter audiência orgânica de clínicas odontológicas — se a produção de reels atrasar no mês 1, a captação dos 200 inscritos fica só nas mãos de anúncio pago.</li>
-    </ul>
+
+    <div class="roadmap-sector">
+      <div class="roadmap-head">
+        <h3>Posicionamento &amp; Marca</h3>
+        <span class="priority alta">Prioridade alta</span>
+        <span class="roadmap-when">mês 1 — antes de qualquer material novo</span>
+      </div>
+      <ul class="check">
+        <li>Fechar o nome / mecanismo único (ver seção Nome)</li>
+        <li>Atualizar identidade visual dos materiais com o nome escolhido</li>
+        <li>Reservar domínio + perfis TikTok/Instagram com o nome novo</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-sector">
+      <div class="roadmap-head">
+        <h3>Comercial</h3>
+        <span class="priority alta">Prioridade alta</span>
+        <span class="roadmap-when">meses 1–4</span>
+      </div>
+      <ul class="check">
+        <li>Segmentar os 250 leads em quente / morno / frio</li>
+        <li>Abrir contato com os 16 clientes ativos (Caixa Rápido onda 1)</li>
+        <li>Rodar a 2ª onda com leads frios (mês 2)</li>
+        <li>Oferecer upgrade Essencial → Elite pros clientes ativos elegíveis</li>
+        <li>Retrabalhar diagnósticos mornos não fechados (mês 4)</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-sector">
+      <div class="roadmap-head">
+        <h3>Marketing &amp; Conteúdo</h3>
+        <span class="priority alta">Prioridade alta</span>
+        <span class="roadmap-when">cadência desde o mês 1</span>
+      </div>
+      <ul class="check">
+        <li>Gravar os 3 primeiros reels de atendimento nichado</li>
+        <li>Definir cadência fixa de publicação + repost TikTok</li>
+        <li>Iniciar captação de inscritos pro webinar (mês 2)</li>
+        <li>Realizar o webinar + follow-up de diagnóstico em até 72h (mês 3)</li>
+      </ul>
+      <p class="roadmap-note">Dependência: se a produção de reels atrasar no mês 1, a captação dos 200 inscritos do webinar fica só nas mãos de anúncio pago.</p>
+    </div>
+
+    <div class="roadmap-sector">
+      <div class="roadmap-head">
+        <h3>Operação &amp; CRM</h3>
+        <span class="priority media">Prioridade média-alta</span>
+        <span class="roadmap-when">contínuo</span>
+      </div>
+      <ul class="check">
+        <li>Redigir o PDF do Programa de Indicação com a regra dos 15%</li>
+        <li>Ativar o Programa de Indicação com os 16 clientes atuais (mês 2)</li>
+        <li>Configurar e testar a camada de IA de SDR nos clientes Elite</li>
+      </ul>
+      <p class="roadmap-note">Regra de sequência: tráfego pago só entra depois que posicionamento, diagnóstico e recepção treinada estão prontos — vale pros 19 clientes novos tanto quanto valeu pros 16 atuais.</p>
+    </div>
+
+    <div class="roadmap-sector">
+      <div class="roadmap-head">
+        <h3>Estrutura &amp; Capacidade</h3>
+        <span class="priority media">Prioridade média</span>
+        <span class="roadmap-when">antes do pico de crescimento, meses 2–3</span>
+      </div>
+      <ul class="check">
+        <li>Avaliar reforço de equipe pra sustentar ~35 clientes (diagnóstico, treinamento, configuração MetaLead)</li>
+        <li>Definir orçamento pra essa estrutura (referência do próprio material: ~R$29k/mês)</li>
+        <li>Monitorar churn mensal e agir se passar de 6%</li>
+      </ul>
+    </div>
   </div>
 
   <div class="section">
@@ -402,7 +581,7 @@
       <div class="underline"></div>
     </div>
     <ol class="steps">
-      <li>Fechar o nome (Máquina de Agendamentos) e reservar domínio + perfis TikTok/Instagram.</li>
+      <li>Fechar o nome / mecanismo único (ver as 5 opções) e reservar domínio + perfis TikTok/Instagram.</li>
       <li>Exportar e segmentar a base de 250 leads em quente / morno / frio.</li>
       <li>Redigir o PDF do Programa de Indicação com a regra dos 15%.</li>
       <li>Gravar os 3 primeiros reels de atendimento nichado em clínica odontológica.</li>
@@ -429,7 +608,7 @@
 
 <div class="bar"></div>
 
-<footer>Rota aos R$100k — plano comercial de 6 meses para a Máquina de Agendamentos (Método Ampla Elite).</footer>
+<footer>Rota aos R$100k — plano comercial de 6 meses para o Método Ampla Elite (nome/mecanismo único em decisão).</footer>
 
 </body>
 </html>
