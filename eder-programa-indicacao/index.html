@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Programa de Indicação — Método Ampla Elite</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#1A1A1A;
+    --bg-deep:#0A0A0A;
+    --surface:#2A2A2A;
+    --surface-2:#333333;
+    --fg:#FFFFFF;
+    --fg-muted:#9CA2AF;
+    --accent:#6DF5E3;
+    --accent-2:#21C45D;
+    --warn:#FFB84D;
+    --line:#3A3A3A;
+    --font-display:'Poppins',-apple-system,sans-serif;
+    --font-body:'Inter',-apple-system,sans-serif;
+    --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);}
+  body{font-family:var(--font-body);}
+  img{max-width:100%;display:block;}
+  h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;}
+  p{margin:0;}
+  .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+
+  .bar{height:7px;background:var(--accent);}
+  .page{max-width:720px;margin:0 auto;padding:0 24px;}
+  .section{padding:52px 0;}
+  .section + .section{border-top:1px solid var(--line);}
+
+  /* ---- cover ---- */
+  .cover{text-align:center;padding:64px 24px 56px;}
+  .cover img.logo{width:140px;margin:0 auto 26px;}
+  .eyebrow{font:600 0.72rem var(--font-body);letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  .cover h1{font-size:clamp(1.9rem,5.6vw,2.7rem);font-weight:800;color:var(--fg);line-height:1.1;}
+  .cover .lede{font-size:1.05rem;line-height:1.6;color:var(--fg-muted);max-width:50ch;margin:18px auto 0;}
+  .rule{height:1px;background:var(--line);max-width:420px;margin:32px auto;}
+  .sign-card{background:var(--surface);border-left:3px solid var(--accent-2);border-radius:6px;padding:18px 22px;max-width:420px;margin:0 auto;text-align:left;}
+  .sign-card .name{font:600 1.05rem var(--font-display);color:var(--fg);}
+  .sign-card .role{font-size:0.9rem;color:var(--accent);margin-top:3px;}
+  .sign-card .sub{font-size:0.82rem;color:var(--fg-muted);margin-top:2px;}
+  .download-btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--bg-deep);font:600 0.85rem var(--font-body);text-decoration:none;padding:10px 22px;border-radius:24px;margin-top:24px;}
+
+  /* ---- section head ---- */
+  .section-head{margin-bottom:20px;}
+  .section-head h2{font-size:clamp(1.3rem,3vw,1.55rem);font-weight:700;color:var(--fg);}
+  .underline{width:120px;height:3px;background:var(--accent-2);border-radius:2px;margin-top:10px;}
+  .section-sub{color:var(--fg-muted);font-size:0.96rem;line-height:1.6;max-width:58ch;margin-top:14px;}
+
+  /* ---- steps ---- */
+  ol.steps{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-direction:column;gap:16px;counter-reset:step;}
+  ol.steps li{display:flex;gap:16px;align-items:flex-start;}
+  ol.steps li::before{counter-increment:step;content:counter(step);font:700 0.85rem var(--font-mono);color:var(--bg-deep);background:var(--accent);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  ol.steps .step-body{padding-top:3px;}
+  ol.steps .step-title{font:600 1rem var(--font-display);color:var(--fg);}
+  ol.steps .step-desc{font-size:0.9rem;color:var(--fg-muted);line-height:1.55;margin-top:4px;}
+
+  /* ---- price block ---- */
+  .price-block{background:var(--bg-deep);border-top:3px solid var(--accent-2);border-bottom:3px solid var(--accent-2);border-radius:6px;padding:30px 20px;text-align:center;margin-top:8px;}
+  .price-block .label{font-size:0.82rem;color:var(--fg);text-transform:uppercase;letter-spacing:0.06em;}
+  .price-block .value{font:700 2.6rem var(--font-mono);color:var(--accent);margin-top:10px;}
+  .price-block .note{font-size:0.88rem;color:var(--fg-muted);margin-top:10px;max-width:44ch;margin-left:auto;margin-right:auto;line-height:1.5;}
+
+  /* ---- checklist ---- */
+  ul.check{list-style:none;margin:16px 0 0;padding:0;border-left:3px solid var(--accent-2);border-radius:0 6px 6px 0;overflow:hidden;}
+  ul.check li{background:var(--surface);color:var(--fg);font-size:0.92rem;padding:12px 16px;border-bottom:1px solid var(--bg);display:flex;gap:10px;}
+  ul.check li:last-child{border-bottom:none;}
+  ul.check li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
+  ul.check li.pending::before{content:'?';color:var(--warn);}
+  ul.check li.pending{color:var(--fg-muted);}
+
+  /* ---- final cta ---- */
+  .cta{text-align:center;padding:60px 24px;}
+  .cta .eyebrow2{font:700 1.35rem var(--font-display);color:var(--fg);}
+  .cta h2{font-size:clamp(1.4rem,4.2vw,1.9rem);font-weight:800;color:var(--accent);margin-top:6px;}
+  .cta .underline{margin:14px auto 0;}
+  .cta p.lede2{color:var(--fg-muted);font-size:0.95rem;max-width:48ch;margin:18px auto 0;line-height:1.6;}
+
+  footer{text-align:center;padding:24px 24px 36px;font-size:0.8rem;color:var(--fg-muted);}
+
+  @media print{
+    .download-btn{display:none !important;}
+    body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .section{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar"></div>
+
+<div class="cover">
+  <img class="logo" src="logo.png" alt="Método Ampla Elite">
+  <div class="eyebrow">Programa de Indicação · Método Ampla Elite</div>
+  <h1>Indique uma clínica, ganhe R$450</h1>
+  <p class="lede">Todo cliente ativo pode indicar donos e gestores de clínica que precisam de agenda cheia com o paciente certo. Cada indicação que fecha como cliente pagante vira comissão pra quem indicou.</p>
+  <a class="download-btn" href="programa-indicacao.pdf" download>Baixar PDF</a>
+  <div class="rule"></div>
+  <div class="sign-card">
+    <div class="name">Éder Santos</div>
+    <div class="role">Ampla Marketing Para Clínicas</div>
+    <div class="sub">lpedersantos.com.br</div>
+  </div>
+</div>
+
+<div class="bar"></div>
+
+<div class="page">
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Como funciona</h2>
+      <div class="underline"></div>
+      <p class="section-sub">Três passos, do seu lado até o dinheiro cair na conta.</p>
+    </div>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Indique</div>
+          <div class="step-desc">Mande o contato de um dono ou gestor de clínica que precisa estruturar o crescimento de agendamentos — pode ser um colega, um fornecedor, alguém que você conhece do setor.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">A gente cuida do resto</div>
+          <div class="step-desc">A equipe da Ampla entra em contato e oferece um diagnóstico gratuito da clínica indicada — você não precisa vender nada, só apresentar.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Fechou, você recebe</div>
+          <div class="step-desc">Se a indicação virar cliente pagante (assinou um dos planos), a comissão é sua — sem precisar esperar o próximo ciclo de pagamento.</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Sua comissão</h2>
+      <div class="underline"></div>
+    </div>
+    <div class="price-block">
+      <div class="label">Por indicação convertida em fechamento</div>
+      <div class="value num">R$ 450</div>
+      <p class="note">15% do valor do setup (R$3.000) de cada cliente novo fechado a partir da sua indicação.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Regras</h2>
+      <div class="underline"></div>
+    </div>
+    <ul class="check">
+      <li>Vale pra qualquer cliente ativo, plano Essencial ou Elite</li>
+      <li>A indicação precisa ser uma clínica que ainda não é cliente da Ampla</li>
+      <li>A comissão é paga por indicação convertida em fechamento — não por lead enviado nem por diagnóstico agendado</li>
+      <li class="pending">Prazo de pagamento da comissão — a definir com o Éder</li>
+      <li class="pending">Canal de envio da indicação (WhatsApp direto, formulário ou link exclusivo) — a definir com o Éder</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="bar"></div>
+
+<div class="cta">
+  <div class="eyebrow2">CONHECE ALGUÉM QUE PRECISA</div>
+  <h2>DE AGENDA CHEIA?</h2>
+  <div class="underline" style="margin-left:auto;margin-right:auto;"></div>
+  <p class="lede2">Manda o contato agora — o diagnóstico é por nossa conta.</p>
+  <div class="rule"></div>
+  <div class="sign-card" style="margin:0 auto;">
+    <div class="name">Éder Santos</div>
+    <div class="role">Ampla Marketing Para Clínicas</div>
+    <div class="sub">lpedersantos.com.br</div>
+  </div>
+</div>
+
+<div class="bar"></div>
+
+<footer>Programa de Indicação — Método Ampla Elite. Regras sujeitas a confirmação final com o Éder.</footer>
+
+</body>
+</html>
