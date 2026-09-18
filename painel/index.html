@@ -2638,7 +2638,15 @@ let mesAtual = primeiroDiaMes(new Date());
 
 function primeiroDiaMes(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
 function fmtMesRef(d) { return d.toISOString().slice(0,7); }
-function hojeStr() { return new Date().toISOString().slice(0,10); }
+// Datas de "hoje/ontem/amanhã" têm que ser no fuso do Brasil, não UTC — o Brasil está
+// sempre 2-3h atrás, então entre ~21h e meia-noite (horário de SP) o UTC já virou o dia
+// seguinte e qualquer `new Date().toISOString().slice(0,10)` mente sobre que dia é hoje
+// (achado 2026-09-17: "Leads hoje" sumia à noite porque os leads do dia caíam como UTC
+// de hoje, mas o próprio hoje virava UTC de amanhã).
+function dataLocalStr(d = new Date()) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+}
+function hojeStr() { return dataLocalStr(); }
 function fmtDataCurta(dataStr) {
   if (!dataStr) return '';
   const d = new Date(dataStr + 'T00:00:00');
@@ -2772,7 +2780,7 @@ async function carregarTudo() {
   carregarReunioesPendentes();
   if (checklistMetricas.length) renderChecklist();
   const ctrData = document.getElementById('ctr-data-inicio');
-  if (ctrData && !ctrData.value) ctrData.value = new Date().toISOString().slice(0, 10);
+  if (ctrData && !ctrData.value) ctrData.value = dataLocalStr();
   carregarContratos();
 }
 
@@ -3529,7 +3537,7 @@ function estadoAtividade(cardId) {
 
 function fmtQuandoAtividade(a) {
   const hoje = hojeStr();
-  const amanha = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  const amanha = dataLocalStr(new Date(Date.now() + 86400000));
   const dia = a.data === hoje ? 'hoje' : a.data === amanha ? 'amanhã' : fmtDataCurta(a.data);
   const hora = a.hora ? ` às ${a.hora.slice(0, 5)}` : '';
   if (a.data < hoje) {
@@ -3580,7 +3588,7 @@ function crmRenderAtividades(cardId) {
 function crmAtivAtalhoData(dias) {
   const d = new Date();
   d.setDate(d.getDate() + dias);
-  document.getElementById('crm-ativ-data').value = d.toISOString().slice(0, 10);
+  document.getElementById('crm-ativ-data').value = dataLocalStr(d);
 }
 
 async function crmCriarAtividade() {
@@ -5053,7 +5061,7 @@ async function carregarNotificacoes() {
     });
   });
 
-  const ontem = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const ontem = dataLocalStr(new Date(Date.now() - 24 * 60 * 60 * 1000));
   const { data: regsOntem } = await sb.from('com_checklist_registros').select('*').eq('data', ontem);
   perfis.filter(p => p.papel === 'sdr' || p.papel === 'vendedor').forEach(p => {
     checklistMetricas.filter(m => m.papel === p.papel).forEach(m => {
@@ -5508,7 +5516,7 @@ async function carregarSubmissionsSelecionadas() {
           (data.submissions || []).forEach(s => {
             const contato = extrairContato(s, perguntas);
             const lead = extrairLead(s, perguntas);
-            todas.push({ formId, formNome: formInfo ? formInfo.nome : formId, data: s.submittedAt.slice(0,10), nome: contato.nome, email: contato.email,
+            todas.push({ formId, formNome: formInfo ? formInfo.nome : formId, data: dataLocalStr(new Date(s.submittedAt)), nome: contato.nome, email: contato.email,
               submissionId: s.id, submittedAt: s.submittedAt, telefone: lead.telefone, cargo: lead.cargo, canal: lead.canal, dor: lead.dor,
               nomeReal: lead.nome, emailReal: lead.email });
           });
@@ -6329,7 +6337,7 @@ function diasUltimos14() {
   for (let i = 13; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    dias.push(d.toISOString().slice(0, 10));
+    dias.push(dataLocalStr(d));
   }
   return dias;
 }
@@ -7238,7 +7246,7 @@ function mpCorte(periodo) {
   const hoje = new Date();
   if (periodo === 'mes') return `${fmtMesRef(hoje)}-01`;
   if (periodo === 'ano') return `${hoje.getFullYear()}-01-01`;
-  if (periodo === '3m') return new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
+  if (periodo === '3m') return dataLocalStr(new Date(Date.now() - 90 * 86400000));
   return '1900-01-01';
 }
 
