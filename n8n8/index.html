@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O agente que constrói os workflows do seu n8n sozinho | Método Demanda Infinita®</title>
+<meta name="description" content="Liguei o Claude no meu n8n self-hosted e parei de desenhar workflow. Agora eu descrevo o problema comercial e ele constrói — qualifica lead de comentário, monta briefing antes da call, escreve follow-up, reativa quem sumiu. Sem limite de execução, sem programador.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --green:#008E43;
+    --green-light:#12B85E;
+    --green-dark:#0B3D26;
+    --bg:#F8F7F4;
+    --card:#ECEAE5;
+    --text:#111111;
+    --gray:#6B6B6B;
+    --line:#D8D5CE;
+    --warn:#C2410C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:18px; line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0 0 12px;}
+  .wrap{max-width:820px; margin:0 auto; padding:0 20px 80px;}
+  a{color:var(--green);}
+
+  /* Capa */
+  .cover{padding:48px 20px 20px; text-align:center;}
+  .cover img.logo{width:76px; height:76px; margin-bottom:20px;}
+  .cover .kicker{font-size:14px; font-weight:700; letter-spacing:1.5px; color:var(--green); text-transform:uppercase;}
+  .cover h1{font-size:43px; font-weight:800; margin-top:10px; line-height:1.15;}
+  .cover .sub{font-size:19px; color:var(--gray); max-width:580px; margin:14px auto 0;}
+  .cover .badge{display:inline-block; margin-top:18px; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--green); background:#fff; border:1px solid var(--green); border-radius:999px; padding:6px 16px;}
+
+  .lead{font-size:18.5px; margin-top:26px;}
+  .lead strong{color:var(--green);}
+
+  h2.section-title{font-size:25px; font-weight:800; margin-top:48px; padding-bottom:10px; border-bottom:2px solid var(--green); scroll-margin-top:20px;}
+  h2.section-title .part-tag{display:block; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); margin-bottom:6px;}
+  h3.sub-title{font-size:20px; font-weight:800; margin-top:28px;}
+
+  .card{background:var(--card); border-radius:14px; padding:20px 22px; margin-bottom:16px;}
+  .divider{height:1px; background:var(--line); margin:40px 0;}
+
+  /* Fluxo de 6 passos */
+  .flow{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px;}
+  .flow .f{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 14px; position:relative;}
+  .flow .f .n{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--green);}
+  .flow .f .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17px; margin-top:4px;}
+  .flow .f .d{font-size:15px; color:var(--gray); margin-top:4px; line-height:1.45;}
+  @media (max-width:680px){ .flow{grid-template-columns:1fr;} }
+
+  /* Sumário */
+  .toc{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 22px; margin-top:26px;}
+  .toc .t{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--gray); margin-bottom:10px;}
+  .toc ol{margin:0; padding-left:0; list-style:none; counter-reset:toc;}
+  .toc li{counter-increment:toc; margin-bottom:8px; font-size:17px; display:flex; gap:10px;}
+  .toc li::before{content:counter(toc,decimal-leading-zero); font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--green); flex:0 0 auto;}
+  .toc a{text-decoration:none; color:var(--text);}
+  .toc a:hover{color:var(--green);}
+
+  /* Passos numerados */
+  .steps{margin-top:18px; display:flex; flex-direction:column; gap:14px;}
+  .steps .step{display:flex; gap:14px; align-items:flex-start;}
+  .steps .step .n{flex:0 0 28px; height:28px; border-radius:50%; background:var(--text); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;}
+  .steps .step .t{font-size:17px;}
+  .steps .step .t strong{display:block; font-size:17.5px; font-family:'Plus Jakarta Sans',sans-serif;}
+  code{font-family:'JetBrains Mono',monospace; background:var(--card); padding:1px 6px; border-radius:5px; font-size:15px;}
+
+  /* Caixa de prompt copiável */
+  .prompt-box{background:#0A0F0C; border:1px solid rgba(18,184,94,.3); border-radius:14px; padding:16px 18px 14px; margin:14px 0; position:relative;}
+  .prompt-box .pb-head{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px;}
+  .prompt-box .pb-label{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--green-light);}
+  .prompt-box pre{margin:0; white-space:pre-wrap; word-break:break-word; font-family:'JetBrains Mono',monospace; font-size:14.5px; line-height:1.6; color:#E8F3EC;}
+  .copy-btn{background:rgba(18,184,94,.15); border:1px solid rgba(18,184,94,.45); color:#9BE9BE; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:6px 14px; border-radius:8px; cursor:pointer; white-space:nowrap;}
+  .copy-btn:hover{background:rgba(18,184,94,.28);}
+  .copy-btn.done{background:var(--green); border-color:var(--green); color:#fff;}
+
+  /* Tips e alertas */
+  .tip, .alert{border-left:4px solid var(--green); background:var(--card); border-radius:8px; padding:12px 16px; margin:16px 0; font-size:16.5px;}
+  .tip strong, .alert strong{display:block; font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--green); margin-bottom:4px; font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert strong{color:var(--warn);}
+
+  /* Tabelas */
+  .table-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:12px; background:#fff;}
+  table{border-collapse:collapse; width:100%; font-size:16px; min-width:560px;}
+  th{background:var(--card); text-align:left; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.4px; padding:12px 14px; border-bottom:1px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.45;}
+  tr:last-child td{border-bottom:0;}
+  td.mono{font-family:'JetBrains Mono',monospace; font-size:14.5px; white-space:nowrap; color:var(--green);}
+
+  /* Regras */
+  .rule{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-top:14px;}
+  .rule .num{display:inline-block; font-size:12px; font-weight:800; color:#fff; background:var(--green); border-radius:999px; padding:3px 11px; margin-bottom:8px; font-family:'JetBrains Mono',monospace;}
+  .rule h3{font-size:19px; margin-bottom:6px;}
+  .rule p{margin:0; font-size:16.5px;}
+  .rule .why{margin-top:8px; font-size:15px; color:var(--gray);}
+
+  /* Comparativo ruim/bom */
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;}
+  .vs .col{border-radius:14px; padding:16px 18px; font-size:16px;}
+  .vs .bad{background:#fff; border:1px solid var(--line);}
+  .vs .good{background:#fff; border:2px solid var(--green);}
+  .vs .col .h{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.6px; margin-bottom:8px;}
+  .vs .bad .h{color:var(--warn);}
+  .vs .good .h{color:var(--green);}
+  .vs .col em{color:var(--gray); font-size:14.5px; display:block; margin-top:8px; font-style:normal;}
+  @media (max-width:680px){ .vs{grid-template-columns:1fr;} }
+
+  /* Timeline */
+  .timeline{display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-top:18px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;}
+  .timeline .seg{padding:16px 16px; border-right:1px solid var(--line);}
+  .timeline .seg:last-child{border-right:0;}
+  .timeline .seg .s{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--green);}
+  .timeline .seg .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17px; margin:4px 0;}
+  .timeline .seg .d{font-size:15px; color:var(--gray); line-height:1.45;}
+  @media (max-width:680px){ .timeline{grid-template-columns:1fr;} .timeline .seg{border-right:0; border-bottom:1px solid var(--line);} }
+
+  /* Checklist */
+  .checklist{background:#fff; border:2px solid var(--green); border-radius:16px; padding:22px 24px; margin-top:22px;}
+  .checklist h3{font-size:21px; margin-bottom:4px;}
+  .checklist .cl-sub{font-size:15.5px; color:var(--gray); margin-bottom:16px;}
+  .check-item{display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--line); cursor:pointer;}
+  .check-item:last-of-type{border-bottom:0;}
+  .check-item input{appearance:none; flex:0 0 22px; height:22px; margin:2px 0 0; border:2px solid var(--line); border-radius:6px; cursor:pointer; position:relative; background:#fff;}
+  .check-item input:checked{background:var(--green); border-color:var(--green);}
+  .check-item input:checked::after{content:"✓"; color:#fff; font-size:14px; font-weight:800; position:absolute; top:-1px; left:3px;}
+  .check-item span{font-size:16.5px; line-height:1.45;}
+  .check-item input:checked + span{color:var(--gray); text-decoration:line-through;}
+  .progress{height:8px; background:var(--card); border-radius:999px; margin-top:16px; overflow:hidden;}
+  .progress i{display:block; height:100%; width:0; background:var(--green); transition:width .25s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray); margin-top:8px; text-align:right;}
+
+  /* Fecho */
+  .closing{background:var(--card); border-radius:16px; padding:24px 26px; margin-top:30px;}
+  .closing h3{font-size:21px;}
+  .closing ol{margin:10px 0 0; padding-left:20px;}
+  .closing li{margin-bottom:8px; font-size:17px;}
+
+  /* Vídeo */
+  .video-block{margin-top:40px;}
+  .video-headline{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:26px; text-align:center; max-width:600px; margin:0 auto 20px; line-height:1.3;}
+  .video-embed{position:relative; width:100%; padding-bottom:56.25%; height:0; border-radius:16px; overflow:hidden; background:#000;}
+  .video-embed iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:0;}
+
+  /* CTA */
+  .cta-final{
+    margin-top:40px; padding:56px 32px; border-radius:24px; text-align:center;
+    background:radial-gradient(circle at 50% 0%, #163825 0%, #0A0F0C 62%);
+    border:1px solid rgba(18,184,94,.35); color:#fff;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .cta-final .avatar{width:104px; height:104px; border-radius:50%; object-fit:cover; border:3px solid var(--green-light); margin:0 auto 20px; display:block; box-shadow:0 10px 28px rgba(0,0,0,.45);}
+  .cta-final .eyebrow{font-size:14px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--green-light); margin-bottom:14px;}
+  .cta-final .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:32px; line-height:1.28; max-width:520px; margin:0 auto 12px;}
+  .cta-final .s{font-size:17px; color:#a9b3ad; margin-bottom:30px;}
+  .btn-cta{
+    display:inline-flex; align-items:center; gap:10px;
+    background:linear-gradient(135deg,#17D26E,#008E43);
+    color:#fff; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800;
+    font-size:22px; padding:20px 44px; border-radius:999px;
+    box-shadow:0 14px 34px -8px rgba(18,184,94,.55), 0 0 0 1px rgba(255,255,255,.08) inset;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-cta:hover{transform:translateY(-2px); box-shadow:0 20px 40px -8px rgba(18,184,94,.7), 0 0 0 1px rgba(255,255,255,.1) inset;}
+
+  footer{text-align:center; font-size:14px; color:var(--gray); margin-top:40px; line-height:1.6;}
+  footer .mono{font-family:'JetBrains Mono',monospace; letter-spacing:1.4px; text-transform:uppercase; color:var(--text); font-weight:600;}
+
+  /* Extras visuais do passo a passo */
+  .shot .files{background:#fff; border:1px solid #E2DFD6; border-radius:10px; overflow:hidden;}
+  .shot .file{display:flex; align-items:center; gap:10px; padding:9px 12px; border-bottom:1px solid #EFEDE6; font-size:13.5px; color:#3A3A36;}
+  .shot .file:last-child{border-bottom:0;}
+  .shot .file .ic{width:22px; height:22px; border-radius:5px; background:#E8EEF6; color:#3A6EA5; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;}
+  .shot .file.on{background:#F2FBF5;}
+  .shot .file .tagme{margin-left:auto; font-size:11px; font-weight:700; color:#0B7A3C; background:#E4F6EA; border:1px solid #BFE3CD; border-radius:999px; padding:2px 8px;}
+  .shot .chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;}
+  .shot .chip{font-size:12px; padding:5px 11px; border-radius:999px; border:1px solid #D8D5CE; background:#fff; color:#4A4A45;}
+  .shot .chip.on{background:#DA7756; border-color:#DA7756; color:#fff; font-weight:600;}
+  .shot .doc{background:#fff; border:1px solid #E2DFD6; border-radius:10px; padding:16px 18px;}
+  .shot .doc h5{font-family:'Plus Jakarta Sans',sans-serif; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#8A8578; margin:0 0 4px; font-weight:800;}
+  .shot .doc p{font-size:13.5px; margin:0 0 12px; color:#3A3A36; line-height:1.5;}
+  .shot .doc .blank{border:1.5px dashed #D8D5CE; border-radius:8px; height:34px;}
+  .shot .callout{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; color:#fff; background:#0B7A3C; border-radius:999px; padding:2px 8px; margin-left:6px; vertical-align:1px;}
+
+  /* Hero visual */
+  .hero-img{margin:26px 0 4px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:10px; box-shadow:0 26px 60px -30px rgba(0,0,0,.5);}
+  .hero-img img{display:block; width:100%; height:auto; border-radius:12px;}
+  .hero-cap{text-align:center; font-size:14.5px; color:var(--gray); margin:10px 0 0;}
+  .hero-cap b{color:var(--text); font-weight:600;}
+
+  /* Telas recriadas (mockups de UI) */
+  .shot{background:#F0EEE6; border:1px solid #D8D5CE; border-radius:14px; overflow:hidden; margin:16px 0 6px; box-shadow:0 16px 40px -22px rgba(0,0,0,.45); font-family:'Inter',sans-serif;}
+  .shot .bar{display:flex; align-items:center; gap:7px; padding:10px 14px; background:#E6E3DA; border-bottom:1px solid #D8D5CE;}
+  .shot .bar i{width:10px; height:10px; border-radius:50%; background:#C9C5B8; display:block;}
+  .shot .bar .name{margin-left:8px; font-size:12.5px; color:#6B6B6B; font-family:'JetBrains Mono',monospace;}
+  .shot .body{display:grid; grid-template-columns:190px 1fr; min-height:230px;}
+  .shot .side{background:#E9E6DD; border-right:1px solid #D8D5CE; padding:14px 10px;}
+  .shot .side .sh{font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#8A8578; padding:0 8px 8px;}
+  .shot .side .it{font-size:14px; color:#4A4A45; padding:8px 10px; border-radius:8px; margin-bottom:2px;}
+  .shot .side .it.on{background:#fff; color:#111; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .shot .main{padding:18px 20px; background:#F7F6F1;}
+  .shot .main h4{font-family:'Plus Jakarta Sans',sans-serif; font-size:17px; font-weight:800; margin:0 0 4px;}
+  .shot .main .desc{font-size:13.5px; color:#6B6B6B; margin-bottom:14px; line-height:1.45;}
+  .shot .row{display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fff; border:1px solid #E2DFD6; border-radius:10px; padding:12px 14px; margin-bottom:10px;}
+  .shot .row .l{display:flex; align-items:center; gap:11px;}
+  .shot .row .ico{width:30px; height:30px; border-radius:8px; background:#0A0F0C; color:#12B85E; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; font-family:'JetBrains Mono',monospace;}
+  .shot .row .tt{font-size:14.5px; font-weight:600;}
+  .shot .row .ss{font-size:12.5px; color:#6B6B6B;}
+  .shot .pill{font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; background:#E8F4EC; color:#0B7A3C; border:1px solid #BFE3CD; white-space:nowrap;}
+  .shot .pill.grey{background:#EFEDE6; color:#6B6B6B; border-color:#DFDCD3;}
+  .shot .btn{display:inline-flex; align-items:center; gap:7px; background:#DA7756; color:#fff; font-size:14px; font-weight:600; padding:9px 16px; border-radius:9px; border:0;}
+  .shot .btn.ghost{background:#fff; color:#3A3A36; border:1px solid #D8D5CE;}
+  .shot .btn.hl{box-shadow:0 0 0 3px rgba(218,119,86,.28);}
+  .shot .field{margin-bottom:12px;}
+  .shot .field .lb{font-size:12.5px; font-weight:600; color:#4A4A45; margin-bottom:5px;}
+  .shot .field .inp{background:#fff; border:1px solid #D8D5CE; border-radius:9px; padding:10px 12px; font-size:14px; font-family:'JetBrains Mono',monospace; color:#111; overflow-x:auto; white-space:nowrap;}
+  .shot .field .inp.focus{border-color:#DA7756; box-shadow:0 0 0 3px rgba(218,119,86,.18);}
+  .shot .modal{max-width:430px; margin:0 auto; background:#F7F6F1; border:1px solid #D8D5CE; border-radius:12px; padding:18px 18px 16px; box-shadow:0 20px 40px -18px rgba(0,0,0,.35);}
+  .shot .modal h4{margin-bottom:12px;}
+  .shot .modal .acts{display:flex; justify-content:flex-end; gap:8px; margin-top:14px;}
+  .shot .chat{padding:18px 20px; background:#F7F6F1;}
+  .shot .msg{background:#fff; border:1px solid #E2DFD6; border-radius:12px; padding:12px 14px; font-size:14.5px; line-height:1.5; margin-bottom:10px;}
+  .shot .msg.me{background:#EFEDE6; border-color:#E2DFD6;}
+  .shot .msg .who{font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#8A8578; margin-bottom:5px;}
+  .shot .tool{display:flex; align-items:center; gap:9px; background:#0A0F0C; border:1px solid rgba(18,184,94,.35); border-radius:10px; padding:10px 13px; margin-bottom:10px;}
+  .shot .tool .d{width:8px; height:8px; border-radius:50%; background:#12B85E;}
+  .shot .tool .tx{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#9BE9BE;}
+  .shot .out{display:flex; gap:12px; align-items:center;}
+  .shot .thumb{width:78px; height:78px; border-radius:10px; background:linear-gradient(150deg,#3C2A1E 0%,#8A6A4B 55%,#D9C3A5 100%); flex:0 0 auto; border:1px solid #D8D5CE;}
+  .shot-cap{font-size:14px; color:var(--gray); margin:0 0 20px; text-align:center;}
+  .shot-cap b{color:var(--text); font-weight:600;}
+  .cal{display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:#DA7756; color:#fff; font-size:12px; font-weight:800; font-family:'JetBrains Mono',monospace; margin-right:7px; vertical-align:2px;}
+  /* Extras do passo a passo visual */
+  .shot .hot{box-shadow:0 0 0 3px rgba(218,119,86,.5); border-color:#DA7756 !important;}
+  .shot .browser{display:flex; align-items:center; gap:8px; padding:9px 14px; background:#E6E3DA; border-bottom:1px solid #D8D5CE;}
+  .shot .browser .url{flex:1; background:#fff; border:1px solid #D8D5CE; border-radius:999px; padding:5px 14px; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#4A4A45; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .shot .keyline{display:flex; align-items:center; gap:10px; background:#0A0F0C; border:1px solid rgba(18,184,94,.35); border-radius:10px; padding:12px 14px; font-family:'JetBrains Mono',monospace; font-size:13px; color:#9BE9BE; overflow:hidden;}
+  .shot .keyline span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .shot .keyline .cp{margin-left:auto; background:rgba(18,184,94,.18); border:1px solid rgba(18,184,94,.45); color:#9BE9BE; border-radius:8px; padding:5px 12px; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600; white-space:nowrap;}
+  .shot .warnline{font-size:12.5px; color:#B4531F; background:#FBEDE6; border:1px solid #F0D2C2; border-radius:8px; padding:9px 12px; margin-top:10px;}
+  .shot .menu{background:#fff; border:1px solid #E2DFD6; border-radius:10px; overflow:hidden; margin-top:4px;}
+  .shot .menu .mi{padding:11px 14px; font-size:14px; color:#3A3A36; border-bottom:1px solid #EFEDE6; display:flex; align-items:center; gap:10px;}
+  .shot .menu .mi:last-child{border-bottom:0;}
+  .shot .menu .mi.on{background:#F2FBF5; font-weight:600; color:#0B7A3C;}
+  .shot .menu .mi .arrow{margin-left:auto; color:#B5B1A6;}
+  .shot .perm{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 0; border-bottom:1px solid #EFEDE6; font-size:14px;}
+  .shot .perm:last-child{border-bottom:0;}
+  .shot .perm .pn{font-weight:600;}
+  .shot .perm .pd{font-size:12.5px; color:#8A8578;}
+  .shot .seg{display:inline-flex; border:1px solid #D8D5CE; border-radius:999px; overflow:hidden; background:#fff;}
+  .shot .seg b{font-size:11.5px; font-weight:700; padding:5px 12px; color:#8A8578;}
+  .shot .seg b.on{background:#0B7A3C; color:#fff;}
+  .shot .seg b.off{background:#EFEDE6; color:#6B6B6B;}
+  .shot .field-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .shot .toggle{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 0;}
+  .shot .toggle .tn{font-weight:600; font-size:14.5px;}
+  .shot .toggle .td{font-size:12.5px; color:#8A8578;}
+  .shot .sw{width:38px; height:22px; border-radius:999px; background:#D8D5CE; position:relative; flex:0 0 auto;}
+  .shot .sw.on{background:#12B85E;}
+  .shot .sw i{position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .shot .sw.on i{left:18px;}
+
+  /* Bloco "pro seu programador" */
+  .dev{border:2px dashed var(--line); border-radius:16px; padding:22px 24px; margin-top:26px; background:#fff;}
+  .dev h3{font-size:20px; margin-bottom:4px;}
+  .dev .dev-sub{font-size:15.5px; color:var(--gray); margin-bottom:14px;}
+  .dev ul{margin:14px 0 0; padding-left:20px;}
+  .dev li{font-size:16px; margin-bottom:8px;}
+
+  @media (max-width:680px){
+    .shot .body{grid-template-columns:1fr;}
+    .shot .side{display:none;}
+  }
+
+  @media (max-width:600px){
+    body{font-size:17px;}
+    .cover h1{font-size:33px;}
+    .cta-final .t{font-size:26px;}
+    .btn-cta{font-size:18px; padding:16px 30px;}
+  }
+  @media print{ body{background:#fff;} .copy-btn{display:none;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>O agente que constrói<br>os workflows do seu n8n sozinho</h1>
+    <div class="sub">Liguei o Claude no meu n8n self-hosted e parei de desenhar automação no braço. Agora eu descrevo o problema comercial e ele monta o workflow inteiro — arrumou os que já existiam e criou vários novos só de eu pedir.</div>
+    <div class="badge">Material gratuito · IA + Comercial</div>
+  </div>
+
+  <p class="lead">Não é sobre aprender n8n. <strong>É sobre parar de precisar aprender n8n.</strong> Esse ano o n8n lançou uma porta oficial de instância pro Claude entrar — self-hosted, <strong>sem limite de execução</strong>, sem plano pago pra desbloquear. Não precisa de desenvolvedor.</p>
+
+  <p class="lead">Pense num <strong>cabo entre os dois</strong>: de um lado a IA, do outro a sua instância de verdade — os workflows, os nós, os gatilhos, o que está ativo e o que está quebrado. Você descreve o resultado que quer em português, e deixa ele montar.</p>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">Claude — seu n8n</span></div>
+    <div class="chat">
+      <div class="msg me"><div class="who">Você</div>Quando alguém comentar no meu post do LinkedIn, qualifica o comentário na hora e já entrega pro closer certo.</div>
+      <div class="tool"><span class="d"></span><span class="tx">consultando os workflows da sua instância...</span></div>
+      <div class="msg"><div class="who">Claude</div>
+        Não existia nenhum workflow ouvindo comentário de post. Montei um do zero: webhook do LinkedIn → filtro de intenção (separa quem só marcou um amigo de quem demonstrou interesse real) → busca o closer responsável → manda o lead com o texto do comentário pro WhatsApp dele.<br><br>
+        Quer que eu deixe ativado ou prefere testar antes com um comentário de mentira?
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><b>É literalmente isso.</b> Uma frase descrevendo o problema, e o agente monta o workflow — nó por nó. O material inteiro é sobre como chegar nessa tela, e no que pedir depois.</p>
+
+  <div class="flow">
+    <div class="f"><div class="n">PASSO 01</div><div class="t">Ligar o cabo</div><div class="d">Conectar o n8n dentro do Claude. Poucos minutos, sem programador.</div></div>
+    <div class="f"><div class="n">PASSO 02</div><div class="t">Colar a base</div><div class="d">Um texto colado uma vez que trava as regras antes do primeiro workflow.</div></div>
+    <div class="f"><div class="n">PASSO 03</div><div class="t">Descrever o problema</div><div class="d">Em português, o gargalo comercial que você quer resolver.</div></div>
+    <div class="f"><div class="n">PASSO 04</div><div class="t">Ver nascer</div><div class="d">Ele monta os nós, explica a lógica e mostra antes de ativar.</div></div>
+    <div class="f"><div class="n">PASSO 05</div><div class="t">Testar sem medo</div><div class="d">Roda com dado de mentira antes de tocar em lead de verdade.</div></div>
+    <div class="f"><div class="n">PASSO 06</div><div class="t">Repetir</div><div class="d">Cada gargalo novo vira outro workflow, sem fila de desenvolvedor.</div></div>
+  </div>
+
+  <div class="toc">
+    <div class="t">O que tem aqui dentro</div>
+    <ol>
+      <li><a href="#parte1">Ligar o Claude no seu n8n (poucos minutos)</a></li>
+      <li><a href="#parte2">A base do agente: o texto que você cola uma vez</a></li>
+      <li><a href="#parte3">Os 6 workflows que nascem só de você descrever</a></li>
+      <li><a href="#parte4">As 5 regras pra não incendiar o n8n em produção</a></li>
+      <li><a href="#checklist">Checklist dos 15 minutos</a></li>
+    </ol>
+  </div>
+
+  <h2 class="section-title" id="parte1"><span class="part-tag">Parte 01</span>Ligar o Claude no seu n8n</h2>
+
+  <p><strong>Não precisa trocar de instância nem instalar nada novo.</strong> O n8n tem, dentro das próprias Configurações, uma porta oficial pra IA entrar — chamada de <b>MCP de instância</b>. Funciona na versão self-hosted gratuita (Community Edition), a mesma que já não tem limite de quantas vezes um workflow roda.</p>
+
+  <p>Você não vai copiar chave nenhuma pro chat. O caminho recomendado é login normal, o n8n pergunta se autoriza o Claude, você diz que sim.</p>
+
+  <div class="tip">
+    <strong>O que essa porta é, em português</strong>
+    O nome técnico dela é MCP. Esqueça a sigla: é um <b>cabo padrão</b> — o mesmo tipo de encaixe que faz qualquer carregador USB-C servir em qualquer aparelho. O n8n fabricou a ponta dele; o Claude só encaixa.
+  </div>
+
+  <h3 class="sub-title">Tela por tela</h3>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">n8n — Settings</span></div>
+    <div class="body">
+      <div class="side">
+        <div class="sh">Settings</div>
+        <div class="it">Users</div>
+        <div class="it">Variables</div>
+        <div class="it on">Instance-level MCP</div>
+        <div class="it">Log streaming</div>
+      </div>
+      <div class="main">
+        <h4>Instance-level MCP</h4>
+        <div class="desc">Permite que um app de IA construa, teste e rode os workflows desta instância.</div>
+        <div class="toggle"><div><div class="tn">Enable MCP access</div><div class="td">precisa ser owner ou admin da instância</div></div><div class="sw on"><i></i></div></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">1</span>No n8n, vá em <b>Settings → Instance-level MCP</b> e ligue <b>Enable MCP access</b>. Só o dono ou um admin da instância consegue fazer isso — se o botão estiver cinza, é permissão, não é bug.</p>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">n8n — Connect a client</span></div>
+    <div class="chat">
+      <div class="modal">
+        <h4>Connect a client</h4>
+        <div class="field"><div class="lb">Your client</div><div class="inp focus">Claude.ai</div></div>
+        <div class="field"><div class="lb">Server URL</div><div class="inp">https://sua-instancia.com/mcp-server/http</div></div>
+        <div class="acts"><span class="btn ghost">Cancelar</span><span class="btn hl">Continuar no Claude</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">2</span>Com o MCP ligado, aparece <b>Connect a client</b>. Escolha <b>Claude.ai</b> (ou Claude Desktop) na lista — o n8n já monta o endereço certo, sempre terminando em <code>/mcp-server/http</code>.</p>
+
+  <div class="shot">
+    <div class="chat">
+      <div class="modal">
+        <h4>Adicionar conector personalizado</h4>
+        <div class="field"><div class="lb">Nome</div><div class="inp focus">n8n</div></div>
+        <div class="field"><div class="lb">Endereço do servidor MCP</div><div class="inp">https://sua-instancia.com/mcp-server/http</div></div>
+        <div class="acts"><span class="btn ghost">Cancelar</span><span class="btn hl">Adicionar</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">3</span>Do lado do Claude: <b>Configurações → Conectores → Adicionar conector personalizado</b>. Nome <b>n8n</b>, cole o mesmo endereço da tela anterior e clique em <b>Adicionar</b>. Ele te leva de volta pro n8n pra confirmar — sem senha passando pelo chat.</p>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">Claude — Configurações</span></div>
+    <div class="body">
+      <div class="side">
+        <div class="sh">Configurações</div>
+        <div class="it">Perfil</div>
+        <div class="it">Aparência</div>
+        <div class="it on">Conectores</div>
+        <div class="it">Privacidade</div>
+      </div>
+      <div class="main">
+        <h4>Conectores</h4>
+        <div class="desc">Ferramentas que o Claude pode consultar e usar quando você pedir.</div>
+        <div class="row"><div class="l"><div class="ico" style="background:#EFEDE6;color:#3A6EA5;">31</div><div><div class="tt">Google Agenda</div><div class="ss">reuniões e compromissos</div></div></div><span class="pill">● Conectado</span></div>
+        <div class="row"><div class="l"><div class="ico" style="background:#E8F4EC;color:#0B7A3C;">n8</div><div><div class="tt">n8n</div><div class="ss">workflows, nós e execuções</div></div></div><span class="pill">● Conectado</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap"><span class="cal">4</span>Voltou pro Claude com a bolinha verde em <b>n8n</b>? Acabou. <b>Levou poucos minutos.</b></p>
+
+  <div class="tip">
+    <strong>Teste que não tem risco nenhum</strong>
+    Antes de pedir qualquer workflow, digite: <em>"quantos workflows eu tenho ativos no n8n agora?"</em>. Se ele responder com um número, o cabo está ligado. <b>Se ele disser que não tem ferramenta do n8n</b>, abra uma conversa nova — o Claude carrega os conectores no começo do chat, não no meio.
+  </div>
+
+  <h2 class="section-title" id="parte2"><span class="part-tag">Parte 02</span>A base do agente</h2>
+
+  <p>Aqui está a diferença entre "pedir um workflow" e "ter um construtor de automação". Sem esse texto, cada pedido vira um workflow do jeito que ele achar melhor. Com ele, o Claude passa a saber <strong>como o seu negócio funciona, o que nunca pode ativar sozinho e como te explicar o que montou</strong>.</p>
+
+  <p>É um bloco que você cola <strong>uma vez, no começo da conversa</strong>. Depois é só descrever o problema. Se quiser, cole também num <em>Projeto</em> do Claude — aí ele lembra em toda conversa nova.</p>
+
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Cole isso uma vez · a base do agente</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Você é o meu engenheiro de automação. Você trabalha em cima do meu n8n de verdade, e o seu trabalho é transformar problema comercial em workflow funcionando.
+
+COMO VOCÊ TRABALHA
+- Antes de montar qualquer coisa, confira se já existe workflow parecido na instância. Se existir, prefira ajustar em vez de duplicar.
+- Monte o workflow completo (gatilho, lógica, integrações) mas NUNCA deixe ativado sozinho. Ative só quando eu disser "pode ativar", em uma mensagem separada.
+- Depois de montar, me explique em português simples: o que dispara o workflow, o que ele faz em cada etapa, e o que pode dar errado.
+- Se faltar uma credencial, uma integração ou um dado que eu não te dei, pare e pergunte. Nunca invente endpoint, nunca invente nome de campo.
+- Se o meu pedido for ambíguo, escolha a interpretação mais conservadora (a que manda menos mensagem, a que arrisca menos) e me diga qual foi.
+
+COMO VOCÊ FALA COMIGO
+- Português do Brasil, direto, sem jargão técnico não explicado.
+- Antes de qualquer workflow que manda mensagem pra lead ou cliente, me mostra o texto que vai ser enviado.
+- Fecha toda resposta com uma frase só: o que eu preciso decidir ou aprovar agora.
+
+QUANDO O WORKFLOW ENVOLVE DADO SENSÍVEL
+- Nunca exponha token, senha ou chave de API no corpo da explicação — se precisar mostrar onde ela entra, use um placeholder tipo SUA_CHAVE_AQUI.
+- Prefira sempre testar com dado de mentira antes de rodar com lead ou cliente real.
+
+Confirme que entendeu e me diga em uma linha quantos workflows ativos e quantos inativos eu tenho hoje na instância.</pre>
+  </div>
+
+  <div class="tip">
+    <strong>Por que essa última linha importa</strong>
+    Pedir a contagem de workflows ativos/inativos no fim é um teste de sanidade: se o número bater com o que você vê no painel do n8n, o cabo está ligado na instância certa. Se vier estranho, você descobre <b>agora</b> — antes de pedir pra ele mexer em produção.
+  </div>
+
+  <h2 class="section-title" id="parte3"><span class="part-tag">Parte 03</span>Os 6 workflows que nascem só de você descrever</h2>
+
+  <p>Estes são exemplos reais do que dá pra pedir — adapte os nomes de ferramenta (CRM, WhatsApp, Cal.com) pros que você já usa. Cole o pedido, deixe ele perguntar o que faltar, e revise antes de ativar.</p>
+
+  <h3 class="sub-title">1. Lead comenta no post → qualifica na hora e entrega pro closer certo</h3>
+  <p>O comentário chega antes de qualquer formulário. Quem responde primeiro geralmente fecha primeiro — mas só se for o closer certo, não quem estiver livre.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pedido</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Quando alguém comentar num dos meus posts do LinkedIn, analisa o texto do comentário e classifica se é intenção real de compra ou só reação (emoji, marcação de amigo, elogio genérico). Se for intenção real, busca no meu CRM/planilha quem é o closer responsável por esse tipo de lead e manda pra ele no WhatsApp o nome, o comentário e o link do post. Antes de ativar, me mostra 5 exemplos de comentário real classificados, pra eu conferir se o critério está certo.</pre>
+  </div>
+
+  <h3 class="sub-title">2. Reunião cai no Cal.com → monta o briefing antes da call começar</h3>
+  <p>A call já começa com contexto, em vez de você perguntar de novo o que o lead já respondeu no formulário.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pedido</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Quando uma reunião nova cair no meu Cal.com, monta um briefing de uma página: nome, empresa, o que ele respondeu no formulário de agendamento, e qualquer histórico de conversa ou proposta anterior que exista no CRM. Manda esse briefing pra mim (WhatsApp ou Discord, o que for mais fácil de configurar) 30 minutos antes do horário da reunião.</pre>
+  </div>
+
+  <h3 class="sub-title">3. Proposta parada há dias → escreve o follow-up com o contexto da conversa inteira</h3>
+  <p>Não é "oi, tudo bem". É retomar de onde a conversa parou.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pedido</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Toda segunda de manhã, identifica no meu CRM as propostas que estão paradas há mais de 5 dias sem resposta. Pra cada uma, puxa o histórico da conversa (última mensagem, o que ficou combinado) e escreve um follow-up curto que retoma esse contexto específico — nunca um texto genérico. Me entrega a lista pronta pra eu revisar e mandar com a minha mão.</pre>
+  </div>
+
+  <h3 class="sub-title">4. Lead sumiu do funil → identifica sozinho e dispara a reativação</h3>
+  <p>Ninguém precisa lembrar de olhar quem parou de responder — o workflow olha por você.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pedido</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Uma vez por semana, varre o meu funil e identifica leads sem nenhuma atividade (mensagem, comentário, e-mail) há mais de 15 dias. Separa por etapa do funil e escreve uma mensagem de reativação diferente pra quem já teve reunião marcada versus quem nunca chegou a conversar comigo. Me manda a lista com os textos prontos, não envia nada sozinho.</pre>
+  </div>
+
+  <h3 class="sub-title">5. Mensagem chega no WhatsApp → qualifica e só te chama quando for hora de fechar</h3>
+  <p>Você não precisa estar na conversa desde a primeira pergunta — só quando ela virar decisão.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pedido</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Quando chegar mensagem nova no WhatsApp comercial, responde as perguntas simples (preço de tabela, como funciona, prazo médio) usando só informação que eu já te passei antes — nunca invente condição. Se o lead demonstrar intenção real de fechar (pedir contrato, perguntar forma de pagamento, marcar reunião), para de responder sozinho e me chama na hora, com o resumo da conversa até ali.</pre>
+  </div>
+
+  <h3 class="sub-title">6. Fim do dia → varre o funil inteiro e manda o resumo dos gargalos</h3>
+  <p>Uma visão do dia inteiro, sem você abrir o CRM pra caçar problema.</p>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Pedido</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Todo fim de tarde, varre o funil inteiro e monta um resumo: quantos leads entraram hoje, qual etapa está com mais gente parada, quem está parado há mais tempo em cada etapa, e quais 3 ações eu deveria tomar amanhã de manhã. Manda esse resumo pra mim de um jeito que dá pra ler em 2 minutos.</pre>
+  </div>
+
+  <div class="alert">
+    <strong>A regra que não se quebra</strong>
+    <b>Ele monta, você aprova, ele ativa.</b> Peça sempre pra ele te mostrar o workflow e o texto de qualquer mensagem antes de ligar o gatilho. Levar mais 2 minutos revisando evita um workflow mandando mensagem errada pra 40 leads de uma vez.
+  </div>
+
+  <h2 class="section-title" id="parte4"><span class="part-tag">Parte 04</span>As 5 regras pra não incendiar o n8n em produção</h2>
+
+  <p>Esse conector <strong>consegue</strong> criar, editar e ativar workflow de verdade. É útil — e é exatamente por isso que a primeira semana tem regra.</p>
+
+  <div class="rule">
+    <div class="num">REGRA 01</div>
+    <h3>A primeira semana é só de montar e testar</h3>
+    <p>Nada de "pode ativar" nos primeiros dias. Deixe ele montar, rode com dado de mentira, veja se o resultado bate com o esperado. Ativar é o último passo, não o primeiro.</p>
+    <div class="why">A base do agente da Parte 02 já trava isso por escrito. Cole o bloco inteiro, não só metade.</div>
+  </div>
+
+  <div class="rule">
+    <div class="num">REGRA 02</div>
+    <h3>Ele só enxerga o que o seu usuário enxerga</h3>
+    <p>A conexão herda as permissões de quem autorizou. Se você é owner da instância, ele vê e mexe em tudo — inclusive workflow de outra área do negócio. Se quiser limitar, autorize com um usuário que já tenha menos permissão.</p>
+    <div class="why">Vale pensar nisso antes de ligar numa instância que também roda automação financeira ou de outro time.</div>
+  </div>
+
+  <div class="rule">
+    <div class="num">REGRA 03</div>
+    <h3>Teste com dado de mentira antes de lead real</h3>
+    <p>Todo workflow novo, rode primeiro com um contato fake ("ZZ TESTE") ou um comentário simulado. Só depois de ver o resultado certo é que ele deve encostar em lead ou cliente de verdade.</p>
+  </div>
+
+  <div class="rule">
+    <div class="num">REGRA 04</div>
+    <h3>Toda execução fica gravada</h3>
+    <p>O n8n grava o histórico de execução de cada workflow, com o que entrou e o que saiu em cada nó. Isso não impede erro — mas garante que dá pra achar e entender o que aconteceu.</p>
+    <div class="why">Se um workflow se comportar estranho, o histórico de execuções é o primeiro lugar pra olhar, antes de desligar tudo no susto.</div>
+  </div>
+
+  <div class="rule">
+    <div class="num">REGRA 05</div>
+    <h3>Workflow que manda mensagem pra fora tem revisão humana na primeira semana</h3>
+    <p>Automação interna (organizar dado, gerar resumo) você pode deixar rodando sozinha mais cedo. Automação que manda mensagem pra lead ou cliente, revise manualmente pelo menos os primeiros dias de uso.</p>
+    <div class="why">O erro que dói é o que sai da sua instância e chega em alguém de fora.</div>
+  </div>
+
+  <div class="dev">
+    <h3>Se você tem alguém técnico, entregue esta parte pra ele</h3>
+    <div class="dev-sub">O corpo do material funciona sem nada disso. Isto aqui é só pra quem cuida da sua tecnologia.</div>
+    <ul>
+      <li>Recurso oficial: <b>Instance-level MCP</b>, em <code>Settings → Instance-level MCP</code>. Exige permissão de owner ou admin da instância para habilitar.</li>
+      <li>URL do servidor sempre termina em <code>/mcp-server/http</code>. A tela "Connect a client" gera o passo a passo específico por cliente (Claude.ai, Claude Desktop e outros) e cobre dois caminhos de autenticação: <b>OAuth</b> (recomendado, fluxo guiado) ou <b>API key</b> — um token pessoal (bearer, no header Authorization) gerado automaticamente na aba correspondente.</li>
+      <li>Diferente do nó <em>MCP Server Trigger</em> (que expõe UM workflow específico como ferramenta pra um agente externo chamar), o MCP de instância dá acesso de gestão — construir, editar, testar e rodar workflows da instância inteira.</li>
+      <li>Self-hosted Community Edition é gratuita e sem limite de execuções (Sustainable Use License) — diferente do n8n Cloud, que tem planos por volume de execução. É essa diferença que sustenta o "sem limite" do post.</li>
+      <li>Escopo efetivo = permissões do usuário que autorizou a conexão. Para acesso restrito, autorize com um usuário sem permissão de owner.</li>
+      <li>Toda execução cai no histórico de execuções do n8n, com timestamp e dados de entrada/saída de cada nó — dá pra auditar.</li>
+    </ul>
+  </div>
+
+  <div class="checklist" id="checklist">
+    <h3>Checklist dos 15 minutos</h3>
+    <div class="cl-sub">Marque os 7 e você tem um construtor de workflow olhando o seu n8n hoje à tarde.</div>
+    <label class="check-item"><input type="checkbox"><span>Liguei "Enable MCP access" em Settings → Instance-level MCP (sou owner ou admin)</span></label>
+    <label class="check-item"><input type="checkbox"><span>Adicionei o conector n8n no Claude com a URL terminando em /mcp-server/http</span></label>
+    <label class="check-item"><input type="checkbox"><span>Perguntei "quantos workflows ativos eu tenho?" e ele respondeu certo</span></label>
+    <label class="check-item"><input type="checkbox"><span>Colei a base do agente (Parte 02) inteira, antes de qualquer pedido</span></label>
+    <label class="check-item"><input type="checkbox"><span>Pedi o primeiro workflow (Parte 03) e revisei a explicação antes de aprovar</span></label>
+    <label class="check-item"><input type="checkbox"><span>Testei com dado de mentira antes de deixar ativado</span></label>
+    <label class="check-item"><input type="checkbox"><span>Disse "pode ativar" só depois de ver o resultado do teste</span></label>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="progress-label" id="plabel">0 de 7</div>
+  </div>
+
+  <div class="closing">
+    <h3>O que fazer com isso ainda hoje</h3>
+    <ol>
+      <li><strong>Ligue o MCP e faça uma pergunta boba.</strong> "Quantos workflows eu tenho?" Sem risco, poucos minutos.</li>
+      <li><strong>Cole a base do agente e peça o workflow mais simples da lista.</strong> Reunião no Cal.com ou proposta parada costumam ser os mais rápidos de montar.</li>
+      <li><strong>Teste com dado de mentira e leia a explicação.</strong> Não ative no primeiro pedido — leia o que ele montou.</li>
+      <li><strong>Peça o próximo só depois que o primeiro estiver rodando bem.</strong> Um workflow por vez, testado, vale mais que seis de uma vez sem revisão.</li>
+    </ol>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="video-block">
+    <h2 class="video-headline">Quer captar clientes qualificados sem investir 1 real de tráfego pago? Conheça a Demanda Infinita.</h2>
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/dQiAdW0Dguc" title="Método Demanda Infinita" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="cta-final">
+    <img class="avatar" src="igor-miguel.png" alt="Igor Miguel">
+    <div class="eyebrow">Fala direto comigo</div>
+    <div class="t">Quer saber como eu posso te ajudar a vender mais usando IA?</div>
+    <div class="s">20 minutos, sem compromisso, pra ver se faz sentido pro seu negócio.</div>
+    <a class="btn-cta" href="https://cal.com/admin-grupo-nexusmind-hxbhcy/bate-papo-nexusmind" target="_blank" rel="noopener">📅 Marcar meu bate-papo agora</a>
+  </div>
+
+  <footer>
+    <span class="mono">Método Demanda Infinita®</span><br>
+    Material gratuito — feito pra quem tem automação pra fazer e nenhuma vontade de aprender n8n do zero.<br>
+    Baseado na documentação oficial do n8n sobre MCP de instância, consultada em 18 de setembro de 2026. As telas são desenhos ilustrativos do caminho, não fotos do seu ambiente — a aparência muda com o tempo, o caminho não. Na dúvida, confira em docs.n8n.io.
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.closest('.prompt-box').querySelector('pre');
+      var text = pre.innerText;
+      var done = function(){
+        btn.textContent = 'Copiado!';
+        btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+      } else {
+        fallback(text, done);
+      }
+    });
+  });
+
+  function fallback(text, done){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  var boxes = document.querySelectorAll('.check-item input');
+  var bar = document.getElementById('bar');
+  var plabel = document.getElementById('plabel');
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      var n = 0;
+      boxes.forEach(function(x){ if (x.checked) n++; });
+      bar.style.width = (n / boxes.length * 100) + '%';
+      plabel.textContent = n + ' de ' + boxes.length;
+    });
+  });
+</script>
+</body>
+</html>
