@@ -1558,6 +1558,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
           </div>
         </div>
         <div id="tally-vazio" class="empty">Carregando formulários do Tally...</div>
+        <div id="tally-aviso-parcial" style="display:none; margin-top:12px; padding:10px 14px; border-radius:8px; border:1px solid var(--warning); background: color-mix(in srgb, var(--warning) 9%, var(--surface-1)); color: var(--warning); font-size:.85rem;"></div>
         <div id="tally-dashboard" style="display:none; margin-top:20px;">
           <div class="section-title">
             <h3 style="margin:0;">Métricas do formulário</h3>
@@ -5159,10 +5160,28 @@ function renderNotificacoes() {
 // ---------- GERAÇÃO DE DEMANDA (TALLY) ----------
 // as chamadas passam pelo proxy no n8n — a chave real do Tally nunca fica no código público
 const N8N_PROXY_URL = 'https://srv5224724.stayx.cloud/webhook';
-async function chamarTally(path) {
-  return fetch(`${N8N_PROXY_URL}/tally-proxy`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path }),
-  });
+async function chamarTally(path, tentativas = 3) {
+  for (let i = 1; i <= tentativas; i++) {
+    let resp;
+    try {
+      resp = await fetch(`${N8N_PROXY_URL}/tally-proxy`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path }),
+      });
+    } catch (e) {
+      // falha de rede (não chegou a ter resposta) — tenta de novo antes de desistir
+      if (i === tentativas) throw e;
+      await new Promise(r => setTimeout(r, 1500 * i));
+      continue;
+    }
+    // 5xx do proxy costuma ser soluço transitório entre o n8n e a api.tally.so, não erro
+    // real (a chave inválida e o rate limit do Tally voltam como 401/429, não 5xx) — vale
+    // tentar de novo em vez de abortar a carga inteira de leads por causa de 1 chamada
+    if (resp.status >= 500 && i < tentativas) {
+      await new Promise(r => setTimeout(r, 1500 * i));
+      continue;
+    }
+    return resp;
+  }
 }
 async function chamarEvolution(method, path, payload) {
   return fetch(`${N8N_PROXY_URL}/evolution-proxy`, {
@@ -5471,34 +5490,57 @@ async function carregarSubmissionsSelecionadas() {
 
   try {
     const todas = [];
+    const formsComErro = [];
     let feitos = 0;
     for (const formId of tallySelecionados) {
       const formInfo = tallyFormsAll.find(f => f.id === formId);
       feitos++;
       document.getElementById('tally-vazio').textContent = `Carregando formulários do Tally... (${feitos}/${tallySelecionados.length})`;
       let page = 1, hasMore = true, perguntas = [];
-      while (hasMore) {
-        const resp = await chamarTally(`/forms/${formId}/submissions?limit=100&page=${page}`);
-        if (!resp.ok) {
-          throw new Error(`formulário "${formInfo ? formInfo.nome : formId}": erro ${resp.status}${resp.status === 401 ? ' (chave inválida)' : ''}${resp.status === 429 ? ' (limite de requisições do Tally, espere um minuto e tente de novo)' : ''}`);
+      try {
+        while (hasMore) {
+          const resp = await chamarTally(`/forms/${formId}/submissions?limit=100&page=${page}`);
+          if (!resp.ok) {
+            throw new Error(`erro ${resp.status}${resp.status === 401 ? ' (chave inválida)' : ''}${resp.status === 429 ? ' (limite de requisições do Tally, espere um minuto)' : ''}`);
+          }
+          const data = await resp.json();
+          perguntas = data.questions || perguntas;
+          (data.submissions || []).forEach(s => {
+            const contato = extrairContato(s, perguntas);
+            const lead = extrairLead(s, perguntas);
+            todas.push({ formId, formNome: formInfo ? formInfo.nome : formId, data: s.submittedAt.slice(0,10), nome: contato.nome, email: contato.email,
+              submissionId: s.id, submittedAt: s.submittedAt, telefone: lead.telefone, cargo: lead.cargo, canal: lead.canal, dor: lead.dor,
+              nomeReal: lead.nome, emailReal: lead.email });
+          });
+          hasMore = !!data.hasMore;
+          page++;
         }
-        const data = await resp.json();
-        perguntas = data.questions || perguntas;
-        (data.submissions || []).forEach(s => {
-          const contato = extrairContato(s, perguntas);
-          const lead = extrairLead(s, perguntas);
-          todas.push({ formId, formNome: formInfo ? formInfo.nome : formId, data: s.submittedAt.slice(0,10), nome: contato.nome, email: contato.email,
-            submissionId: s.id, submittedAt: s.submittedAt, telefone: lead.telefone, cargo: lead.cargo, canal: lead.canal, dor: lead.dor,
-            nomeReal: lead.nome, emailReal: lead.email });
-        });
-        hasMore = !!data.hasMore;
-        page++;
+      } catch (e) {
+        // 1 formulário engasgando (mesmo depois do retry em chamarTally) não pode
+        // derrubar a carga dos outros ~50 — pula esse e segue a fila, avisa no final
+        console.warn(`formulário "${formInfo ? formInfo.nome : formId}" falhou:`, e);
+        formsComErro.push(formInfo ? formInfo.nome : formId);
       }
     }
     tallySubmissions = todas;
+
+    if (!todas.length && formsComErro.length) {
+      // nenhum formulário carregou — aí sim é falha de verdade (chave/proxy/Tally fora do ar)
+      throw new Error(`nenhum formulário carregou (ex.: "${formsComErro[0]}")`);
+    }
+
     document.getElementById('tally-vazio').style.display = 'none';
     document.getElementById('tally-dashboard').style.display = 'block';
     renderFormularioDashboard();
+
+    const avisoEl = document.getElementById('tally-aviso-parcial');
+    if (formsComErro.length) {
+      avisoEl.textContent = `${formsComErro.length} formulário(s) não carregaram nesta rodada e ficaram de fora da métrica: ${formsComErro.join(', ')}. Recarregue a aba em alguns minutos pra tentar de novo.`;
+      avisoEl.style.display = 'block';
+    } else {
+      avisoEl.style.display = 'none';
+    }
+
     // não trava a tela: o dashboard já apareceu, os cards entram logo atrás
     sincronizarLeadsTally(todas)
       .then(criados => { if (criados) carregarCardsDoFunil(); })
@@ -5507,6 +5549,7 @@ async function carregarSubmissionsSelecionadas() {
     document.getElementById('tally-vazio').textContent = 'Erro ao buscar dados do Tally: ' + e.message;
     document.getElementById('tally-vazio').style.display = 'block';
     document.getElementById('tally-dashboard').style.display = 'none';
+    document.getElementById('tally-aviso-parcial').style.display = 'none';
   } finally {
     tallyCarregando = false;
   }
