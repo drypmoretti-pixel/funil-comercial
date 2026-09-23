@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude para Pequenas e Médias Empresas: o que saiu no dia 15/09 | Método Demanda Infinita®</title>
+<meta name="description" content="A Anthropic atualizou o Claude para PME: 43 workflows prontos e 27 integrações novas (Shopify, Salesforce, HubSpot, Stripe, QuickBooks e mais), focados em 3 pontos — conversão de lead, expansão do negócio e relatório de gestão. Tudo roda em modo de aprovação humana por padrão. Veja o que mudou e como testar hoje.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --green:#008E43;
+    --green-light:#12B85E;
+    --green-dark:#0B3D26;
+    --bg:#F8F7F4;
+    --card:#ECEAE5;
+    --text:#111111;
+    --gray:#6B6B6B;
+    --line:#D8D5CE;
+    --warn:#C2410C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:18px; line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0 0 12px;}
+  .wrap{max-width:820px; margin:0 auto; padding:0 20px 80px;}
+  a{color:var(--green);}
+
+  /* Capa */
+  .cover{padding:48px 20px 20px; text-align:center;}
+  .cover img.logo{width:76px; height:76px; margin-bottom:20px;}
+  .cover .kicker{font-size:14px; font-weight:700; letter-spacing:1.5px; color:var(--green); text-transform:uppercase;}
+  .cover h1{font-size:41px; font-weight:800; margin-top:10px; line-height:1.15;}
+  .cover .sub{font-size:19px; color:var(--gray); max-width:600px; margin:14px auto 0;}
+  .cover .badge{display:inline-block; margin-top:18px; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--green); background:#fff; border:1px solid var(--green); border-radius:999px; padding:6px 16px;}
+
+  .lead{font-size:18.5px; margin-top:26px;}
+  .lead strong{color:var(--green);}
+
+  h2.section-title{font-size:25px; font-weight:800; margin-top:48px; padding-bottom:10px; border-bottom:2px solid var(--green); scroll-margin-top:20px;}
+  h2.section-title .part-tag{display:block; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); margin-bottom:6px;}
+  h3.sub-title{font-size:20px; font-weight:800; margin-top:28px;}
+
+  .card{background:var(--card); border-radius:14px; padding:20px 22px; margin-bottom:16px;}
+  .divider{height:1px; background:var(--line); margin:40px 0;}
+
+  /* Fluxo de 3 pilares */
+  .flow{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px;}
+  .flow .f{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 14px; position:relative;}
+  .flow .f .n{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--green);}
+  .flow .f .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17px; margin-top:4px;}
+  .flow .f .d{font-size:15px; color:var(--gray); margin-top:4px; line-height:1.45;}
+  @media (max-width:680px){ .flow{grid-template-columns:1fr;} }
+
+  /* Sumário */
+  .toc{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 22px; margin-top:26px;}
+  .toc .t{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--gray); margin-bottom:10px;}
+  .toc ol{margin:0; padding-left:0; list-style:none; counter-reset:toc;}
+  .toc li{counter-increment:toc; margin-bottom:8px; font-size:17px; display:flex; gap:10px;}
+  .toc li::before{content:counter(toc,decimal-leading-zero); font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--green); flex:0 0 auto;}
+  .toc a{text-decoration:none; color:var(--text);}
+  .toc a:hover{color:var(--green);}
+
+  /* Passos numerados */
+  .steps{margin-top:18px; display:flex; flex-direction:column; gap:14px;}
+  .steps .step{display:flex; gap:14px; align-items:flex-start;}
+  .steps .step .n{flex:0 0 28px; height:28px; border-radius:50%; background:var(--text); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;}
+  .steps .step .t{font-size:17px;}
+  .steps .step .t strong{display:block; font-size:17.5px; font-family:'Plus Jakarta Sans',sans-serif;}
+  code{font-family:'JetBrains Mono',monospace; background:var(--card); padding:1px 6px; border-radius:5px; font-size:15px;}
+
+  /* Tips e alertas */
+  .tip, .alert{border-left:4px solid var(--green); background:var(--card); border-radius:8px; padding:12px 16px; margin:16px 0; font-size:16.5px;}
+  .tip strong, .alert strong{display:block; font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--green); margin-bottom:4px; font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert strong{color:var(--warn);}
+
+  /* Tabelas */
+  .table-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:12px; background:#fff;}
+  table{border-collapse:collapse; width:100%; font-size:16px; min-width:560px;}
+  th{background:var(--card); text-align:left; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.4px; padding:12px 14px; border-bottom:1px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.45;}
+  tr:last-child td{border-bottom:0;}
+  td.mono{font-family:'JetBrains Mono',monospace; font-size:14.5px; white-space:nowrap; color:var(--green);}
+
+  /* Regras / cases de workflow */
+  .rule{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-top:14px;}
+  .rule .num{display:inline-block; font-size:12px; font-weight:800; color:#fff; background:var(--green); border-radius:999px; padding:3px 11px; margin-bottom:8px; font-family:'JetBrains Mono',monospace;}
+  .rule h3{font-size:19px; margin-bottom:6px;}
+  .rule p{margin:0; font-size:16.5px;}
+  .rule .why{margin-top:8px; font-size:15px; color:var(--gray);}
+
+  /* Timeline */
+  .timeline{display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-top:18px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;}
+  .timeline .seg{padding:16px 16px; border-right:1px solid var(--line);}
+  .timeline .seg:last-child{border-right:0;}
+  .timeline .seg .s{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--green);}
+  .timeline .seg .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17px; margin:4px 0;}
+  .timeline .seg .d{font-size:15px; color:var(--gray); line-height:1.45;}
+  @media (max-width:680px){ .timeline{grid-template-columns:1fr;} .timeline .seg{border-right:0; border-bottom:1px solid var(--line);} }
+
+  /* Checklist */
+  .checklist{background:#fff; border:2px solid var(--green); border-radius:16px; padding:22px 24px; margin-top:22px;}
+  .checklist h3{font-size:21px; margin-bottom:4px;}
+  .checklist .cl-sub{font-size:15.5px; color:var(--gray); margin-bottom:16px;}
+  .check-item{display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--line); cursor:pointer;}
+  .check-item:last-of-type{border-bottom:0;}
+  .check-item input{appearance:none; flex:0 0 22px; height:22px; margin:2px 0 0; border:2px solid var(--line); border-radius:6px; cursor:pointer; position:relative; background:#fff;}
+  .check-item input:checked{background:var(--green); border-color:var(--green);}
+  .check-item input:checked::after{content:"✓"; color:#fff; font-size:14px; font-weight:800; position:absolute; top:-1px; left:3px;}
+  .check-item span{font-size:16.5px; line-height:1.45;}
+  .check-item input:checked + span{color:var(--gray); text-decoration:line-through;}
+  .progress{height:8px; background:var(--card); border-radius:999px; margin-top:16px; overflow:hidden;}
+  .progress i{display:block; height:100%; width:0; background:var(--green); transition:width .25s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray); margin-top:8px; text-align:right;}
+
+  /* CTA */
+  .cta-final{
+    margin-top:40px; padding:56px 32px; border-radius:24px; text-align:center;
+    background:radial-gradient(circle at 50% 0%, #163825 0%, #0A0F0C 62%);
+    border:1px solid rgba(18,184,94,.35); color:#fff;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .cta-final .avatar{width:104px; height:104px; border-radius:50%; object-fit:cover; border:3px solid var(--green-light); margin:0 auto 20px; display:block; box-shadow:0 10px 28px rgba(0,0,0,.45);}
+  .cta-final .eyebrow{font-size:14px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--green-light); margin-bottom:14px;}
+  .cta-final .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:32px; line-height:1.28; max-width:520px; margin:0 auto 12px;}
+  .cta-final .s{font-size:17px; color:#a9b3ad; margin-bottom:30px;}
+  .btn-cta{
+    display:inline-flex; align-items:center; gap:10px;
+    background:linear-gradient(135deg,#17D26E,#008E43);
+    color:#fff; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800;
+    font-size:22px; padding:20px 44px; border-radius:999px;
+    box-shadow:0 14px 34px -8px rgba(18,184,94,.55), 0 0 0 1px rgba(255,255,255,.08) inset;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-cta:hover{transform:translateY(-2px); box-shadow:0 20px 40px -8px rgba(18,184,94,.7), 0 0 0 1px rgba(255,255,255,.1) inset;}
+
+  footer{text-align:center; font-size:14px; color:var(--gray); margin-top:40px; line-height:1.6;}
+  footer .mono{font-family:'JetBrains Mono',monospace; letter-spacing:1.4px; text-transform:uppercase; color:var(--text); font-weight:600;}
+  footer .src{display:block; margin-top:10px; font-size:12.5px; color:#9A968A;}
+
+  /* Tela recriada (mockup do modo aprovação) */
+  .shot{background:#F0EEE6; border:1px solid #D8D5CE; border-radius:14px; overflow:hidden; margin:16px 0 6px; box-shadow:0 16px 40px -22px rgba(0,0,0,.45); font-family:'Inter',sans-serif;}
+  .shot .bar{display:flex; align-items:center; gap:7px; padding:10px 14px; background:#E6E3DA; border-bottom:1px solid #D8D5CE;}
+  .shot .bar i{width:10px; height:10px; border-radius:50%; background:#C9C5B8; display:block;}
+  .shot .bar .name{margin-left:8px; font-size:12.5px; color:#6B6B6B; font-family:'JetBrains Mono',monospace;}
+  .shot .main{padding:18px 20px; background:#F7F6F1;}
+  .shot .main h4{font-family:'Plus Jakarta Sans',sans-serif; font-size:17px; font-weight:800; margin:0 0 4px;}
+  .shot .main .desc{font-size:13.5px; color:#6B6B6B; margin-bottom:14px; line-height:1.45;}
+  .shot .row{display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fff; border:1px solid #E2DFD6; border-radius:10px; padding:12px 14px; margin-bottom:10px;}
+  .shot .row .l{display:flex; align-items:center; gap:11px;}
+  .shot .row .ico{width:30px; height:30px; border-radius:8px; background:#0A0F0C; color:#12B85E; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; font-family:'JetBrains Mono',monospace;}
+  .shot .row .tt{font-size:14.5px; font-weight:600;}
+  .shot .row .ss{font-size:12.5px; color:#6B6B6B;}
+  .shot .pill{font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; background:#E8F4EC; color:#0B7A3C; border:1px solid #BFE3CD; white-space:nowrap;}
+  .shot .pill.grey{background:#EFEDE6; color:#6B6B6B; border-color:#DFDCD3;}
+  .shot .btn{display:inline-flex; align-items:center; gap:7px; background:#DA7756; color:#fff; font-size:14px; font-weight:600; padding:9px 16px; border-radius:9px; border:0;}
+  .shot .btn.ghost{background:#fff; color:#3A3A36; border:1px solid #D8D5CE;}
+  .shot-cap{font-size:14px; color:var(--gray); margin:0 0 20px; text-align:center;}
+  .shot-cap b{color:var(--text); font-weight:600;}
+
+  @media (max-width:600px){
+    body{font-size:17px;}
+    .cover h1{font-size:31px;}
+    .cta-final .t{font-size:26px;}
+    .btn-cta{font-size:18px; padding:16px 30px;}
+  }
+  @media print{ body{background:#fff;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>O Claude ganhou uma versão pra Pequena e Média Empresa — e quase ninguém viu</h1>
+    <div class="sub">Dia 15/09 a Anthropic lançou 43 workflows prontos e 27 integrações novas pro Claude, mirando nos 3 pontos que mais travam empresário pequeno: conversão de lead, expansão do negócio e relatório de gestão.</div>
+    <div class="badge">Material gratuito · Claude para PME</div>
+  </div>
+
+  <p class="lead">Não é sobre ter o modelo mais avançado. <strong>É sobre ter o workflow certo plugado na ferramenta que você já paga</strong> e não usa direito. Reuni aqui exatamente o que mudou, os workflows reais por trás dos 3 pontos que a Anthropic mirou, e o passo a passo pra você testar isso ainda essa semana.</p>
+
+  <div class="toc">
+    <div class="t">Neste material</div>
+    <ol>
+      <li><a href="#parte1">O que saiu de verdade no dia 15/09</a></li>
+      <li><a href="#parte2">Os 3 pontos que travam empresário pequeno</a></li>
+      <li><a href="#parte3">Como funciona a aprovação humana por padrão</a></li>
+      <li><a href="#parte4">Passo a passo: como testar isso hoje</a></li>
+      <li><a href="#checklist">Checklist antes de instalar</a></li>
+    </ol>
+  </div>
+
+  <h2 class="section-title" id="parte1"><span class="part-tag">Parte 01</span>O que saiu de verdade no dia 15/09</h2>
+
+  <p>O Claude para Pequenas e Médias Empresas não é lançamento novo — é upgrade de um produto que já rodava desde maio. A diferença é o tamanho do salto.</p>
+
+  <div class="timeline">
+    <div class="seg"><div class="s">Maio · 2026</div><div class="n">Lançamento original</div><div class="d">15 workflows prontos + 7 integrações: QuickBooks, PayPal, HubSpot, Canva, Docusign, Google Workspace e Microsoft 365.</div></div>
+    <div class="seg"><div class="s">Entre maio e setembro</div><div class="n">+900 mil instalações</div><div class="d">Foco em fechamento financeiro, folha de pagamento e triagem administrativa de lead.</div></div>
+    <div class="seg"><div class="s">15/09 · 2026</div><div class="n">43 workflows + 27 integrações</div><div class="d">Sai do "cuidar do financeiro" e entra em vender, crescer e reportar a operação.</div></div>
+  </div>
+
+  <div class="tip">
+    <strong>Por que a Anthropic mudou o foco</strong>
+    A empresa passou o verão perguntando pra dono de pequena empresa o que ele queria que a IA fizesse a seguir. Cerca de 1 em cada 3 respondeu a mesma coisa: <em>"me ajuda a vender"</em>.
+  </div>
+
+  <h3 class="sub-title">Parte das 27 integrações novas</h3>
+  <p>Você conecta a ferramenta que já usa — o Claude não pede pra trocar de sistema.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Área</th><th>Ferramentas</th></tr></thead>
+      <tbody>
+        <tr><td>Vendas &amp; CRM</td><td>Salesforce, HubSpot, Zoho CRM, Apollo, Clay</td></tr>
+        <tr><td>E-commerce &amp; pagamento</td><td>Shopify, Stripe, Square, Xero, Airwallex</td></tr>
+        <tr><td>Marketing</td><td>TikTok Ads, Notion, Canva (já existente)</td></tr>
+        <tr><td>Operação &amp; comunicação</td><td>Zoom, RingCentral, Atlassian, Zapier, Wix, Gusto, MYOB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2 class="section-title" id="parte2"><span class="part-tag">Parte 02</span>Os 3 pontos que travam empresário pequeno</h2>
+
+  <p>Não é uma lista genérica de "casos de uso". A Anthropic mirou exatamente nos 3 gargalos que mais aparecem quando o negócio ainda é pequeno demais pra ter um time só de vendas, um de marketing e um de BI.</p>
+
+  <div class="flow">
+    <div class="f"><div class="n">PONTO 01</div><div class="t">Conversão de lead</div><div class="d">Responder rápido, com contexto, antes que o lead esfrie ou vá pro concorrente.</div></div>
+    <div class="f"><div class="n">PONTO 02</div><div class="t">Expansão do negócio</div><div class="d">Criar conteúdo e proposta na velocidade de quem tem o dia inteiro tomado pela operação.</div></div>
+    <div class="f"><div class="n">PONTO 03</div><div class="t">Relatório de gestão</div><div class="d">Saber onde o dinheiro está sem precisar abrir 5 sistemas diferentes toda segunda.</div></div>
+  </div>
+
+  <h3 class="sub-title">→ Conversão de lead</h3>
+
+  <div class="rule">
+    <span class="num">Workflow</span>
+    <h3>Speed to Lead</h3>
+    <p>Qualifica quem chegou por formulário ou WhatsApp, redige a resposta já com horários livres na agenda e registra tudo no CRM — sem o lead esperar você abrir o e-mail.</p>
+    <div class="why">Por que importa: a maior parte do lead que esfria, esfria nas primeiras 2 horas.</div>
+  </div>
+
+  <div class="rule">
+    <span class="num">Workflow</span>
+    <h3>Proposal Builder</h3>
+    <p>Você grava uma nota de voz descrevendo o que fechou de escopo e preço com o cliente. O Claude devolve a proposta formatada, com a marca da sua empresa, pronta pra enviar.</p>
+    <div class="why">Por que importa: proposta que demora a sair é venda que esfria junto com o lead.</div>
+  </div>
+
+  <h3 class="sub-title">→ Expansão do negócio</h3>
+
+  <div class="rule">
+    <span class="num">Workflow</span>
+    <h3>Social Content Engine</h3>
+    <p>Rascunha post, cria a peça gráfica e agenda em vários canais de uma vez — pensado pra quem não tem verba pra um social media dedicado.</p>
+    <div class="why">Por que importa: negócio pequeno perde constância de conteúdo assim que a operação aperta.</div>
+  </div>
+
+  <div class="rule">
+    <span class="num">Workflow</span>
+    <h3>Marketing Monday</h3>
+    <p>Toda segunda, monta o relatório de vendas por canal e já deixa rascunhada a resposta pras avaliações novas do negócio.</p>
+    <div class="why">Por que importa: dá pra saber o que está funcionando em marketing sem virar analista de dados.</div>
+  </div>
+
+  <h3 class="sub-title">→ Relatório de gestão do dia a dia</h3>
+
+  <div class="rule">
+    <span class="num">Workflow</span>
+    <h3>Monday Brief</h3>
+    <p>Junta posição de caixa, vendas da semana, pipeline aberto e contas vencidas — tudo em uma página só, pronta pra ler com o café.</p>
+    <div class="why">Por que importa: é a diferença entre gerir o negócio e só reagir a ele.</div>
+  </div>
+
+  <div class="rule">
+    <span class="num">Workflow</span>
+    <h3>Close Month</h3>
+    <p>Reconcilia as contas do mês, monta o DRE (P&amp;L) e prepara o pacote de fechamento pra mandar direto pro contador.</p>
+    <div class="why">Por que importa: fechamento de mês é a tarefa que todo empresário pequeno mais adia.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2 class="section-title" id="parte3"><span class="part-tag">Parte 03</span>Como funciona a aprovação humana por padrão</h2>
+
+  <p>Esse é o detalhe que muda o jogo pra quem tem medo de "deixar a IA solta" na operação — e é regra, não opção escondida em configuração.</p>
+
+  <div class="shot">
+    <div class="bar"><i></i><i></i><i></i><span class="name">claude · workflow: speed-to-lead</span></div>
+    <div class="main">
+      <h4>Resposta pronta pro lead da Shopify</h4>
+      <div class="desc">O Claude qualificou, escreveu a resposta e já puxou 2 horários livres da sua agenda.</div>
+      <div class="row">
+        <div class="l"><div class="ico">✓</div><div><div class="tt">Rascunho gerado</div><div class="ss">Aguardando sua revisão</div></div></div>
+        <span class="pill grey">Não enviado</span>
+      </div>
+      <div class="row">
+        <div class="l"><div class="ico">→</div><div><div class="tt">Enviar resposta ao lead</div><div class="ss">CRM será atualizado depois do envio</div></div></div>
+        <button class="btn">Aprovar e enviar</button>
+      </div>
+    </div>
+  </div>
+  <p class="shot-cap">Ilustração de como o modo de aprovação se comporta, baseada na descrição oficial do fluxo — não é captura de tela real da interface.</p>
+
+  <div class="alert">
+    <strong>A regra que a Anthropic descreve como padrão</strong>
+    "Por padrão, o Claude faz o trabalho e espera sua aprovação antes de qualquer coisa ser enviada, postada ou paga." Nada sai, publica ou paga sozinho — você aprova antes.
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Camada</th><th>Como funciona</th></tr></thead>
+      <tbody>
+        <tr><td>Permissão</td><td>O Claude herda exatamente o acesso que sua conta já tem em cada ferramenta — não ganha permissão extra.</td></tr>
+        <tr><td>Dados</td><td>Não treina o modelo com os dados do seu negócio, por padrão, nos planos Team e Enterprise.</td></tr>
+        <tr><td>Automação</td><td>Você liga o modo automático workflow por workflow, só depois de já ter visto o resultado em modo aprovação.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2 class="section-title" id="parte4"><span class="part-tag">Parte 04</span>Passo a passo: como testar isso hoje</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="n">1</div>
+      <div class="t"><strong>Conecte as ferramentas que você já paga</strong>Pelo menos uma de CRM/vendas (HubSpot, Salesforce), uma de pagamento (Stripe, QuickBooks) e sua agenda (Google Calendar).</div>
+    </div>
+    <div class="step">
+      <div class="n">2</div>
+      <div class="t"><strong>Peça pro Claude te guiar na configuração</strong>Pergunte diretamente "help me get set up" ou use o atalho <code>/smb-onboard</code> — ele te mostra os 43 workflows disponíveis pras ferramentas que você acabou de conectar.</div>
+    </div>
+    <div class="step">
+      <div class="n">3</div>
+      <div class="t"><strong>Escolha 1 workflow por ponto de dor</strong>Comece pelo ponto que mais trava seu negócio hoje: lead esfriando, conteúdo parado ou fechamento de mês atrasado — não tente ligar os 3 de uma vez.</div>
+    </div>
+    <div class="step">
+      <div class="n">4</div>
+      <div class="t"><strong>Deixe em modo aprovação por pelo menos 1 semana</strong>Revise o que o Claude prepara antes de qualquer coisa sair. Só depois de confiar no padrão do resultado, considere ligar o modo automático.</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="checklist">
+    <h3>Checklist antes de instalar</h3>
+    <div class="cl-sub">Responda com sinceridade antes de conectar qualquer ferramenta.</div>
+    <label class="check-item"><input type="checkbox"><span>Eu já uso pelo menos 2 das ferramentas da lista de integrações (CRM, pagamento, agenda ou e-commerce).</span></label>
+    <label class="check-item"><input type="checkbox"><span>Eu sei qual dos 3 pontos — lead, expansão ou relatório — mais trava meu negócio hoje.</span></label>
+    <label class="check-item"><input type="checkbox"><span>Eu tenho um responsável definido pra revisar o que o Claude prepara antes de aprovar.</span></label>
+    <label class="check-item"><input type="checkbox"><span>Eu vou testar 1 workflow por vez, em modo aprovação, antes de automatizar qualquer coisa.</span></label>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="progress-label" id="plabel">0 de 4</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="cta-final">
+    <img class="avatar" src="igor-miguel.png" alt="Igor Miguel">
+    <div class="eyebrow">Fala direto comigo</div>
+    <div class="t">Quer saber qual desses workflows faz sentido pro seu negócio?</div>
+    <div class="s">20 minutos, sem compromisso, pra ver se faz sentido pro seu momento.</div>
+    <a class="btn-cta" href="https://cal.com/admin-grupo-nexusmind-hxbhcy/bate-papo-nexusmind" target="_blank" rel="noopener">📅 Marcar meu bate-papo agora</a>
+  </div>
+
+  <footer>
+    <span class="mono">Método Demanda Infinita®</span><br>
+    Material gratuito — feito pra empresário que não tem tempo de ler nota de lançamento da Anthropic inteira.
+    <span class="src">Baseado no anúncio oficial "Claude for Small Business" da Anthropic, publicado em 15/09/2026 (anthropic.com/news/claude-for-small-business e claude.com/blog). Material escrito em 23/09/2026 — números e nomes de workflow podem mudar conforme a Anthropic atualiza o produto.</span>
+  </footer>
+
+</div>
+
+<script>
+  var boxes = document.querySelectorAll('.check-item input');
+  var bar = document.getElementById('bar');
+  var plabel = document.getElementById('plabel');
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      var n = 0;
+      boxes.forEach(function(x){ if (x.checked) n++; });
+      bar.style.width = (n / boxes.length * 100) + '%';
+      plabel.textContent = n + ' de ' + boxes.length;
+    });
+  });
+</script>
+</body>
+</html>
