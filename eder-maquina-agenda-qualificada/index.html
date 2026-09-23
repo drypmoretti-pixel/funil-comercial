@@ -21,66 +21,113 @@
   --wa:#25D366;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;}
+body::before{content:'';position:fixed;inset:-15%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(620px circle at 12% 18%, rgba(109,245,227,0.10), transparent 62%),
+    radial-gradient(520px circle at 88% 28%, rgba(33,196,93,0.08), transparent 60%),
+    radial-gradient(560px circle at 20% 88%, rgba(33,196,93,0.07), transparent 60%),
+    radial-gradient(480px circle at 92% 82%, rgba(109,245,227,0.08), transparent 60%);
+  animation:drift 26s ease-in-out infinite alternate;
+}
+@keyframes drift{from{transform:translate(0,0) scale(1);}to{transform:translate(2.5%,-2%) scale(1.05);}}
+@media(prefers-reduced-motion:reduce){body::before{animation:none;}}
+header.nav,main,.hero,.section,footer{position:relative;z-index:1;}
 img{max-width:100%;display:block;}
 a{color:inherit;text-decoration:none;}
 .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
-.tarja{height:8px;background:var(--accent);}
+.tarja{height:8px;background:var(--accent);position:relative;z-index:2;}
 h1,h2,h3{font-family:var(--font-display);line-height:1.15;}
 .eyebrow{font:700 0.78rem var(--font-display);letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);}
-.section{padding:88px 0;}
+.section{padding:88px 0;position:relative;}
+.section:not(:last-of-type)::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);}
 .section-head{max-width:680px;margin:0 auto 48px;text-align:center;}
 .section-head h2{font-size:clamp(1.6rem,3vw,2.3rem);font-weight:700;margin-top:10px;}
-.section-head .rule{width:110px;height:3px;background:var(--accent-2);margin:16px auto 0;}
+.section-head .rule{width:110px;height:3px;background:var(--accent-2);margin:16px auto 0;position:relative;overflow:hidden;}
+.section-head .rule::after{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-100%);animation:ruleSlide 2.2s ease-in-out infinite;}
+@keyframes ruleSlide{0%{transform:translateX(-100%);}50%{transform:translateX(0);}100%{transform:translateX(100%);}}
 .muted{color:var(--fg-muted);}
 
+/* reveal-on-scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}}
+
+/* scroll progress + floating whatsapp */
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));z-index:100;box-shadow:0 0 12px rgba(109,245,227,0.6);}
+.float-wa{position:fixed;right:20px;bottom:20px;z-index:50;width:58px;height:58px;border-radius:50%;background:var(--wa);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,0.45);transition:transform .25s ease;}
+.float-wa:hover{transform:scale(1.08);}
+.float-wa svg{width:28px;height:28px;fill:#fff;}
+.float-wa::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--wa);animation:ring 1.8s ease-out infinite;}
+@keyframes ring{0%{transform:scale(1);opacity:.7;}100%{transform:scale(1.9);opacity:0;}}
+@media(prefers-reduced-motion:reduce){.float-wa::after{animation:none;}}
+
 /* nav */
-header.nav{position:sticky;top:0;z-index:20;background:rgba(26,26,26,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+header.nav{position:sticky;top:0;z-index:20;background:rgba(26,26,26,0.7);backdrop-filter:blur(8px);border-bottom:1px solid transparent;transition:background .3s ease,border-color .3s ease,box-shadow .3s ease;}
+header.nav.scrolled{background:rgba(10,10,10,0.85);border-bottom-color:var(--line);box-shadow:0 8px 24px rgba(0,0,0,0.35);}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1120px;margin:0 auto;}
-.nav-inner img{height:34px;}
+.nav-inner img{height:34px;transition:filter .3s ease;}
 .nav-links{display:flex;gap:28px;align-items:center;}
-.nav-links a{font:500 0.92rem var(--font-body);color:var(--fg-muted);}
+.nav-links a{font:500 0.92rem var(--font-body);color:var(--fg-muted);position:relative;transition:color .25s ease;}
+.nav-links a:not(.btn-wa-nav)::after{content:'';position:absolute;left:0;right:100%;bottom:-4px;height:2px;background:var(--accent);transition:right .25s ease;}
+.nav-links a:not(.btn-wa-nav):hover::after{right:0;}
 .nav-links a:hover{color:var(--accent);}
-.btn-wa-nav{background:var(--wa);color:#fff !important;padding:9px 18px;border-radius:24px;font-weight:600;font-size:0.88rem;display:flex;align-items:center;gap:6px;}
+.btn-wa-nav{background:var(--wa);color:#fff !important;padding:9px 18px;border-radius:24px;font-weight:600;font-size:0.88rem;display:flex;align-items:center;gap:6px;transition:transform .2s ease,box-shadow .2s ease;}
+.btn-wa-nav:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(37,211,102,0.4);}
 .nav-toggle{display:none;}
 
 /* hero */
 .hero{padding:72px 0 80px;}
 .hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
 .hero-grid>*,.sobre-grid>*,.cta-final-grid>*{min-width:0;}
-.hero h1{font-size:clamp(2rem,4.2vw,3.1rem);font-weight:800;margin:16px 0 20px;}
-.hero h1 .hl{color:var(--accent);}
+.hero h1{font-size:clamp(2rem,4.2vw,3.1rem);font-weight:800;margin:16px 0 20px;letter-spacing:-0.01em;}
+.hero h1 .hl{background:linear-gradient(90deg,var(--accent),#9dfaee);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .hero p.lede{font-size:1.08rem;color:var(--fg-muted);max-width:560px;margin-bottom:28px;}
 .badge-proof{display:inline-flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font-size:0.85rem;color:var(--fg-muted);margin-bottom:22px;}
+.badge-proof .dot{position:relative;width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none;}
+.badge-proof .dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--accent);animation:ring 1.6s ease-out infinite;}
 .badge-proof b{color:var(--accent);font-family:var(--font-display);}
 .cta-row{display:flex;gap:14px;flex-wrap:wrap;}
-.btn{display:inline-flex;align-items:center;gap:8px;font:700 0.95rem var(--font-display);padding:15px 28px;border-radius:100px;border:none;cursor:pointer;}
-.btn-primary{background:var(--accent);color:var(--bg-deep);}
-.btn-primary:hover{filter:brightness(1.08);}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 0.95rem var(--font-display);padding:15px 28px;border-radius:100px;border:none;cursor:pointer;transition:transform .25s cubic-bezier(.2,.7,.3,1),box-shadow .25s ease,filter .25s ease,border-color .25s ease,color .25s ease;}
+.btn-primary{background:var(--accent);color:var(--bg-deep);box-shadow:0 0 0 0 rgba(109,245,227,0.5);}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-3px);box-shadow:0 10px 30px -8px rgba(109,245,227,0.6);}
+.btn-primary.btn-pulse{animation:pulseGlow 2.6s ease-in-out infinite;}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(109,245,227,0.45);}50%{box-shadow:0 0 0 12px rgba(109,245,227,0);}}
 .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--fg);}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-3px);}
 .hero-photo{position:relative;min-width:0;}
-.hero-photo img{margin:0 auto;width:100%;max-width:400px;}
+.hero-photo::before{content:'';position:absolute;inset:8% 10%;background:radial-gradient(circle,rgba(109,245,227,0.4),transparent 68%);filter:blur(48px);z-index:-1;}
+.hero-photo img{margin:0 auto;width:100%;max-width:400px;animation:float 5.5s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+@media(prefers-reduced-motion:reduce){.hero-photo img{animation:none;}.badge-proof .dot::after{animation:none;}}
 
 /* checklist */
 ul.check{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
-ul.check li{background:var(--surface);border-left:3px solid var(--accent-2);border-radius:8px;padding:20px 22px;font-size:0.96rem;color:var(--fg);min-width:0;}
+ul.check li{background:var(--surface);border-left:3px solid var(--accent-2);border-radius:8px;padding:20px 22px;font-size:0.96rem;color:var(--fg);min-width:0;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease,background .3s ease;}
+ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 14px 30px -14px rgba(0,0,0,0.55);background:var(--surface-2);}
 
 /* pilares */
-.pilares{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
-.pilar{min-width:0;}
-.pilar{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:28px 22px;}
-.pilar .num{font-family:var(--font-display);font-weight:800;color:var(--accent);font-size:1.6rem;margin-bottom:14px;}
+.pilares{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;}
+.pilar{min-width:0;flex:1 1 300px;max-width:320px;}
+.pilar{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:28px 22px;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease;}
+.pilar:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 16px 34px -14px rgba(109,245,227,0.25);}
+.pilar .num{font-family:var(--font-display);font-weight:800;color:var(--accent);font-size:1.6rem;margin-bottom:14px;transition:transform .3s ease;}
+.pilar:hover .num{transform:scale(1.12);}
 .pilar h3{font-size:1.05rem;margin-bottom:10px;}
 .pilar p{color:var(--fg-muted);font-size:0.92rem;}
 
 /* resultados */
 .bg-deep{background:var(--bg-deep);}
 .resultados{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
-.card-result{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:30px;min-width:0;}
-.card-result.destaque{grid-column:1/-1;background:linear-gradient(135deg,#16302c,var(--surface));border:1px solid var(--accent-2);display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;}
+.card-result{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:30px;min-width:0;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease;}
+.card-result:hover{transform:translateY(-5px);border-color:var(--accent-2);box-shadow:0 16px 34px -16px rgba(0,0,0,0.55);}
+.card-result.destaque{grid-column:1/-1;position:relative;background:linear-gradient(135deg,#16302c,var(--surface));border:1px solid var(--accent-2);display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;overflow:hidden;}
+.card-result.destaque::before{content:'';position:absolute;top:0;left:-40%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(109,245,227,0.12),transparent);animation:sheen 4s ease-in-out infinite;}
+@keyframes sheen{0%{left:-40%;}100%{left:120%;}}
+.card-result.destaque:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 20px 40px -16px rgba(109,245,227,0.3);}
 .card-result h4{font-family:var(--font-display);font-size:1.05rem;margin-bottom:10px;}
-.result-num{font-family:var(--font-display);font-weight:800;font-size:2.4rem;white-space:nowrap;}
+.result-num{font-family:var(--font-display);font-weight:800;font-size:2.4rem;white-space:nowrap;position:relative;z-index:1;}
 .result-num .to{color:var(--fg-muted);font-size:1.2rem;font-weight:600;margin:0 8px;}
 .result-num .from{color:var(--fg-muted);}
 .result-num .go{color:var(--accent);}
@@ -89,8 +136,10 @@ ul.check li{background:var(--surface);border-left:3px solid var(--accent-2);bord
 
 /* depoimentos */
 .depo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
-.depo{background:var(--surface);border-radius:14px;padding:14px 16px 22px;border:1px solid var(--line);min-width:0;}
-.depo-video{position:relative;width:100%;padding-top:177.78%;border-radius:10px;overflow:hidden;background:#000;}
+.depo{background:var(--surface);border-radius:14px;padding:14px 16px 22px;border:1px solid var(--line);min-width:0;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease;}
+.depo:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 16px 34px -16px rgba(0,0,0,0.55);}
+.depo-video{position:relative;width:100%;padding-top:177.78%;border-radius:10px;overflow:hidden;background:#000;transition:transform .3s ease;}
+.depo:hover .depo-video{transform:scale(1.02);}
 .depo-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
 .depo .quote{font-size:0.9rem;font-style:italic;margin:14px 0 0;color:var(--fg);}
 .depo .who{font-family:var(--font-display);font-weight:700;font-size:0.9rem;margin-top:14px;}
@@ -101,14 +150,19 @@ ul.check li{background:var(--surface);border-left:3px solid var(--accent-2);bord
 
 /* diagnostico cenarios */
 .cenarios{display:flex;flex-direction:column;gap:18px;max-width:820px;margin:0 auto;min-width:0;}
-.cenario{background:var(--surface);border-radius:12px;padding:24px 26px;border-left:3px solid var(--warn);}
+.cenario{background:var(--surface);border-radius:12px;padding:24px 26px;border-left:3px solid var(--warn);transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s ease,background .3s ease;}
+.cenario:hover{transform:translateX(6px);box-shadow:0 14px 30px -16px rgba(0,0,0,0.5);background:var(--surface-2);}
 .cenario h4{font-family:var(--font-display);font-size:1rem;color:var(--warn);margin-bottom:8px;}
 .cenario p{color:var(--fg-muted);font-size:0.95rem;}
 .reversao{text-align:center;margin-top:28px;font-family:var(--font-display);font-weight:700;font-size:1.25rem;}
-.reversao span{color:var(--accent);}
+.reversao span{color:var(--accent);position:relative;}
+.reversao span::after{content:'';position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;animation:underline 1.2s ease forwards;animation-delay:.6s;}
+@keyframes underline{to{transform:scaleX(1);}}
 
 /* sobre */
 .sobre-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:48px;align-items:center;}
+.sobre-photo{position:relative;}
+.sobre-photo::before{content:'';position:absolute;inset:10%;background:radial-gradient(circle,rgba(109,245,227,0.3),transparent 68%);filter:blur(44px);z-index:-1;}
 .sobre-grid img{width:100%;max-width:320px;margin:0 auto;}
 .sobre-grid h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:18px;}
 .sobre-grid p{color:var(--fg-muted);margin-bottom:14px;font-size:0.98rem;}
@@ -118,33 +172,40 @@ ul.check li{background:var(--surface);border-left:3px solid var(--accent-2);bord
 .cta-final-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
 .cta-final h2{font-size:clamp(1.6rem,3.4vw,2.3rem);margin-bottom:16px;}
 .cta-final h2 span{color:var(--accent);}
-.form-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:32px;}
+.form-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:32px;transition:border-color .3s ease,box-shadow .3s ease;}
+.form-card:hover{border-color:var(--line);box-shadow:0 20px 50px -24px rgba(109,245,227,0.2);}
 .form-card h3{font-family:var(--font-display);font-size:1.05rem;margin-bottom:20px;}
 .field{margin-bottom:16px;}
 .field label{display:block;font-size:0.82rem;color:var(--fg-muted);margin-bottom:6px;}
-.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--fg);font:500 0.95rem var(--font-body);}
-.field input:focus,.field select:focus{outline:none;border-color:var(--accent);}
+.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--fg);font:500 0.95rem var(--font-body);transition:border-color .25s ease,box-shadow .25s ease;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(109,245,227,0.15);}
 .form-card .btn{width:100%;justify-content:center;margin-top:6px;}
 
 /* footer */
 footer{padding:44px 0;text-align:center;}
 footer img{height:30px;margin:0 auto 16px;}
-footer .btn-wa{display:inline-flex;gap:8px;align-items:center;background:var(--wa);color:#fff;padding:11px 22px;border-radius:100px;font-weight:600;font-size:0.9rem;margin-bottom:20px;}
+footer .btn-wa{display:inline-flex;gap:8px;align-items:center;background:var(--wa);color:#fff;padding:11px 22px;border-radius:100px;font-weight:600;font-size:0.9rem;margin-bottom:20px;transition:transform .25s ease,box-shadow .25s ease;}
+footer .btn-wa:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(37,211,102,0.4);}
 footer .legal{color:var(--fg-muted);font-size:0.8rem;}
 
 @media(max-width:860px){
   .nav-links{display:none;}
   .hero-grid,.cta-final-grid,.sobre-grid{grid-template-columns:1fr;}
   .hero-photo{order:-1;}
-  ul.check,.pilares,.resultados{grid-template-columns:1fr;}
+  ul.check,.resultados{grid-template-columns:1fr;}
+  .pilar{flex-basis:100%;max-width:420px;}
   .card-result.destaque{grid-template-columns:1fr;text-align:center;}
   .result-num{white-space:normal;font-size:1.9rem;}
   .section{padding:64px 0;}
+  .float-wa{width:50px;height:50px;right:16px;bottom:16px;}
+  .float-wa svg{width:24px;height:24px;}
 }
+section[id]{scroll-margin-top:74px;}
 </style>
 </head>
 <body>
 
+<div class="progress-bar" id="progressBar"></div>
 <div class="tarja"></div>
 
 <header class="nav">
@@ -162,16 +223,16 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">Exclusivo para médicos e dentistas</span>
-      <h1>A <span class="hl">Máquina Agenda Qualificada</span> que tira sua clínica da dependência de indicação</h1>
-      <p class="lede">Desde 2023 eu trabalho exclusivamente com médicos e dentistas, estruturando posicionamento, oferta, funil e processo comercial pra sua clínica ter agenda cheia de paciente particular — todos os dias, não só quando alguém indica.</p>
-      <div class="badge-proof">💬 <span>Clínica DenttMaster saiu de <b>R$65 mil</b> pra <b>R$250 mil/mês</b> em 3 meses com a metodologia</span></div>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="#cta">Quero meu diagnóstico gratuito</a>
+      <span class="eyebrow reveal">Exclusivo para médicos e dentistas</span>
+      <h1 class="reveal">A <span class="hl">Máquina Agenda Qualificada</span> que tira sua clínica da dependência de indicação</h1>
+      <p class="lede reveal">Desde 2023 eu trabalho exclusivamente com médicos e dentistas, estruturando posicionamento, oferta, funil e processo comercial pra sua clínica ter agenda cheia de paciente particular — todos os dias, não só quando alguém indica.</p>
+      <div class="badge-proof reveal"><span class="dot"></span> <span>Clínica DenttMaster saiu de <b>R$65 mil</b> pra <b>R$250 mil/mês</b> em 3 meses com a metodologia</span></div>
+      <div class="cta-row reveal">
+        <a class="btn btn-primary btn-pulse" href="#cta">Quero meu diagnóstico gratuito</a>
         <a class="btn btn-ghost" href="#diagnostico">Ver como funciona</a>
       </div>
     </div>
-    <div class="hero-photo">
+    <div class="hero-photo reveal">
       <img src="assets/eder-foto.webp" alt="Eder Santos, especialista em marketing médico e odontológico">
     </div>
   </div>
@@ -179,49 +240,51 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">O que muda na prática</span>
       <h2>Com a Máquina Agenda Qualificada, sua clínica passa a:</h2>
       <div class="rule"></div>
     </div>
     <ul class="check">
-      <li>Gerar demanda qualificada de paciente particular sem depender só de indicação ou da própria rede de contatos.</li>
-      <li>Ter consistência e previsibilidade de agenda — sem mês bom seguido de mês fraco.</li>
-      <li>Atrair paciente que fecha o procedimento de maior ticket, não só o de convênio.</li>
-      <li>Ter alto valor percebido, sem paciente pedindo desconto ou comparando com concorrente.</li>
-      <li>Ter processo comercial estruturado — sua secretária ou CRC só fala com lead qualificado.</li>
-      <li>Construir a reputação e a autoridade do seu nome na sua cidade ou região.</li>
+      <li class="reveal">Gerar demanda qualificada de paciente particular sem depender só de indicação ou da própria rede de contatos.</li>
+      <li class="reveal">Ter consistência e previsibilidade de agenda — sem mês bom seguido de mês fraco.</li>
+      <li class="reveal">Atrair paciente que fecha o procedimento de maior ticket, não só o de convênio.</li>
+      <li class="reveal">Ter alto valor percebido, sem paciente pedindo desconto ou comparando com concorrente.</li>
+      <li class="reveal">Ter processo comercial estruturado — sua secretária ou CRC só fala com lead qualificado.</li>
+      <li class="reveal">Construir a reputação e a autoridade do seu nome na sua cidade ou região.</li>
     </ul>
   </div>
 </section>
 
 <section class="section bg-deep" id="diagnostico">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">Como funciona</span>
-      <h2>Os 4 pilares da Máquina Agenda Qualificada</h2>
+      <h2>Os 5 pilares da Máquina Agenda Qualificada</h2>
       <div class="rule"></div>
+      <p class="muted" style="margin-top:14px;">Não é só anúncio. É um sistema completo — da captação do paciente novo até o comercial fechando o tratamento, sem deixar oportunidade esfriar no meio do caminho.</p>
     </div>
     <div class="pilares">
-      <div class="pilar"><div class="num">01</div><h3>Posicionamento Digital</h3><p>Orientação e planejamento pra você se posicionar do jeito certo nas redes e atrair o tipo de paciente que você quer atender.</p></div>
-      <div class="pilar"><div class="num">02</div><h3>Diagnóstico e Oferta</h3><p>Construção da oferta certa pro seu procedimento e pro seu perfil de paciente — sem promessa vazia, sem estratégia copiada de outra clínica.</p></div>
-      <div class="pilar"><div class="num">03</div><h3>Funil de Captação</h3><p>Estrutura de tráfego pago e captação pra atração, qualificação e conversão — sua clínica deixa de depender só de indicação.</p></div>
-      <div class="pilar"><div class="num">04</div><h3>Treinamento da Recepção</h3><p>Preparo do seu time comercial e da recepção pra que o lead qualificado chegue no consultório pronto pra fechar o tratamento.</p></div>
+      <div class="pilar reveal"><div class="num">01</div><h3>Captação de Pacientes</h3><p>Funil de tráfego pago estruturado pra atrair todos os dias o perfil certo de paciente particular — sem depender só de indicação.</p></div>
+      <div class="pilar reveal"><div class="num">02</div><h3>Recuperação de Base Inteligente</h3><p>Reativação da sua base de contatos — quem já passou pela clínica, pediu orçamento ou sumiu no meio do caminho — pra virar agenda de novo.</p></div>
+      <div class="pilar reveal"><div class="num">03</div><h3>Máquina de Reaquecimento de Oportunidades</h3><p>Fluxo automático que reaquece quem esfriou no funil antes de virar lead perdido — ninguém some sem uma segunda tentativa.</p></div>
+      <div class="pilar reveal"><div class="num">04</div><h3>Treinamento de Vendas</h3><p>Preparo da recepção e do time comercial pra transformar lead qualificado em paciente fechado, com técnica — não no improviso.</p></div>
+      <div class="pilar reveal"><div class="num">05</div><h3>CRM Inteligente</h3><p>Cada oportunidade organizada e priorizada no MetaLead, com follow-up automático — nada fica esquecido na régua de atendimento.</p></div>
     </div>
   </div>
 </section>
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">Resultados reais</span>
       <h2>Os resultados reais. Com nome, número e tempo.</h2>
       <div class="rule"></div>
     </div>
     <div class="resultados">
-      <div class="card-result destaque">
+      <div class="card-result destaque reveal">
         <div>
-          <div class="result-num"><span class="from">R$65K</span><span class="to">→</span><span class="go">R$250K</span></div>
+          <div class="result-num"><span class="from">R$65K</span><span class="to">→</span><span class="go" data-count-to="250">R$0K</span></div>
           <span class="result-tag">Em 3 meses</span>
         </div>
         <div>
@@ -229,15 +292,15 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
           <p>De R$65 mil pra R$250 mil por mês, em 3 meses. Não foi sorte — foi posicionamento, processo comercial e tráfego pago com estratégia específica pro perfil de paciente da clínica.</p>
         </div>
       </div>
-      <div class="card-result">
+      <div class="card-result reveal">
         <h4>Dr. Guilherme Nannetti</h4>
         <p>Atendia plantões longos e cansativos no SUS. Depois de 6 meses trabalhando junto, saiu do SUS e dos plantões — passou a faturar acima de R$100 mil por mês com paciente particular.</p>
       </div>
-      <div class="card-result">
+      <div class="card-result reveal">
         <h4>Dra. Júlia Blazzi</h4>
         <p>Médica dermatologista, vendia poucos procedimentos por mês. Hoje consegue vender procedimentos acima de R$25 mil por dia com a metodologia de crescimento de faturamento.</p>
       </div>
-      <div class="card-result">
+      <div class="card-result reveal">
         <h4>Instituto Rafael Totti</h4>
         <p>Com apenas 3 meses de clínica aberta, entregou faturamento em dezenas de milhares de reais — o método gerou conversão todos os dias, desde o início.</p>
       </div>
@@ -247,13 +310,13 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
 
 <section class="section bg-deep" id="depoimentos">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">Depoimentos</span>
       <h2>Eu não vendo anúncio. Eu estruturo crescimento.</h2>
       <div class="rule"></div>
     </div>
     <div class="depo-grid">
-      <div class="depo">
+      <div class="depo reveal">
         <div class="depo-video"><iframe src="https://www.youtube.com/embed/E3fjHWsi4x0" title="Depoimento Dra Julia Blazzi" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
         <div class="who">Dra. Julia Blazzi</div>
         <div class="arrow">
@@ -262,7 +325,7 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
         </div>
         <p class="quote">"Os procedimentos praticamente dobraram com valor agregado alto, eu indico de olhos fechados…"</p>
       </div>
-      <div class="depo">
+      <div class="depo reveal">
         <div class="depo-video"><iframe src="https://www.youtube.com/embed/9wSMwzh0orU" title="Depoimento Dr Guilherme Nannetti" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
         <div class="who">Dr. Guilherme Nannetti</div>
         <div class="arrow">
@@ -271,11 +334,11 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
         </div>
         <p class="quote">"Em menos de um ano aumentei meu faturamento e o número de pacientes…"</p>
       </div>
-      <div class="depo">
+      <div class="depo reveal">
         <div class="depo-video"><iframe src="https://www.youtube.com/embed/myOKQKAUZo0" title="Depoimento Mariana Unix" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
         <div class="who">Mariana · Unix</div>
       </div>
-      <div class="depo">
+      <div class="depo reveal">
         <div class="depo-video"><iframe src="https://www.youtube.com/embed/_86lci-WNWQ" title="Depoimento" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
         <p class="quote">"Nosso método funciona e traz faturamento."</p>
       </div>
@@ -285,33 +348,35 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
 
 <section class="section">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="eyebrow">Onde você está agora</span>
       <h2>Eu sei exatamente onde você está agora.</h2>
       <div class="rule"></div>
     </div>
     <div class="cenarios">
-      <div class="cenario">
+      <div class="cenario reveal">
         <h4>Se você é dentista</h4>
         <p>Investiu pesado na clínica — cadeira de última geração, equipamento importado, espaço impecável. Mas atende pouco, quase só por indicação. E quando aparece paciente novo, não sabe como apresentar valor pra fechar os procedimentos mais caros.</p>
       </div>
-      <div class="cenario">
+      <div class="cenario reveal">
         <h4>Se você é médico com agenda cheia de plano</h4>
         <p>Atende muito, mas não sobra nada. O plano paga pouco, a agenda está lotada, você está exausto — e o faturamento não reflete o quanto você trabalha. Sabe que precisa de mais particular, mas não sabe como chegar lá.</p>
       </div>
-      <div class="cenario">
+      <div class="cenario reveal">
         <h4>Se você já tentou marketing</h4>
         <p>Contratou agência, gastou com anúncio. O lead chegou e a secretária não sabia o que fazer com ele — ou não atendeu rápido, ou mandou preço no primeiro contato. E você concluiu que marketing não funciona pra você.</p>
       </div>
     </div>
-    <div class="reversao">Funciona. Só que nunca foi feito do jeito <span>certo</span>.</div>
+    <div class="reversao reveal">Funciona. Só que nunca foi feito do jeito <span>certo</span>.</div>
   </div>
 </section>
 
 <section class="section bg-deep" id="sobre">
   <div class="wrap sobre-grid">
-    <img src="assets/eder-foto.webp" alt="Eder Santos">
-    <div>
+    <div class="sobre-photo reveal">
+      <img src="assets/eder-foto.webp" alt="Eder Santos">
+    </div>
+    <div class="reveal">
       <span class="eyebrow">Prazer, sou Eder Santos</span>
       <h2>Por que eu larguei tudo pra trabalhar só com médico e dentista</h2>
       <p>Em 2022 eu tinha uma agência que faturava bem — sócios, clientes de vários segmentos, crescimento. Do lado de fora, estava tudo bem. Por dentro, eu sabia que estava fazendo mais do mesmo.</p>
@@ -324,12 +389,12 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
 
 <section class="section cta-final" id="cta">
   <div class="wrap cta-final-grid">
-    <div>
+    <div class="reveal">
       <span class="eyebrow">Chegou até aqui? É hora da gente conversar.</span>
       <h2>Quero meu <span>diagnóstico gratuito</span> com o Eder Santos</h2>
       <p class="muted">Médico e dentista com potencial faturando abaixo do que merece é o que mais me incomoda nesse mercado. Preenche o formulário ao lado que eu te chamo no WhatsApp pra marcar seu diagnóstico.</p>
     </div>
-    <div class="form-card">
+    <div class="form-card reveal">
       <h3>Preencha as informações</h3>
       <form id="lead-form">
         <div class="field"><label for="nome">Nome</label><input id="nome" type="text" placeholder="Digite o seu nome" required></div>
@@ -360,6 +425,10 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
   </div>
 </footer>
 
+<a class="float-wa" href="https://wa.me/5531997047088?text=Ol%C3%A1%2C%20Eder!%20Quero%20saber%20mais%20sobre%20a%20M%C3%A1quina%20Agenda%20Qualificada." target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.01 3C9.38 3 4 8.38 4 15.01c0 2.3.64 4.45 1.75 6.29L4 29l7.9-1.7a11.9 11.9 0 0 0 4.1.73h.01c6.63 0 12.01-5.38 12.01-12.01C28.02 8.38 22.64 3 16.01 3zm0 21.8h-.01a9.8 9.8 0 0 1-4.99-1.37l-.36-.21-4.69 1 1.02-4.57-.24-.38a9.77 9.77 0 0 1-1.5-5.25c0-5.4 4.4-9.8 9.8-9.8 2.62 0 5.08 1.02 6.93 2.87a9.72 9.72 0 0 1 2.87 6.93c0 5.4-4.4 9.78-9.83 9.78zm5.37-7.33c-.29-.15-1.74-.86-2.01-.96-.27-.1-.47-.15-.66.15-.2.29-.76.96-.93 1.16-.17.2-.34.22-.63.07-.29-.15-1.23-.45-2.34-1.44-.86-.77-1.45-1.71-1.62-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.49.1-.2.05-.37-.02-.51-.07-.15-.66-1.59-.9-2.18-.24-.57-.48-.49-.66-.5h-.56c-.2 0-.51.07-.78.37-.27.29-1.02 1-1.02 2.44s1.05 2.83 1.19 3.03c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.34.19 1.84.12.56-.08 1.74-.71 1.98-1.4.25-.68.25-1.27.17-1.4-.07-.12-.26-.19-.55-.34z"/></svg>
+</a>
+
 <script>
 document.getElementById('lead-form').addEventListener('submit', function(e){
   e.preventDefault();
@@ -370,6 +439,66 @@ document.getElementById('lead-form').addEventListener('submit', function(e){
   var msg = 'Olá, Eder! Quero aplicar pro diagnóstico gratuito da Máquina Agenda Qualificada.\n\nNome: ' + nome + '\nTelefone: ' + tel + '\nInstagram da clínica: ' + (insta || 'não informado') + '\nFaturamento médio mensal: ' + fat;
   window.open('https://wa.me/5531997047088?text=' + encodeURIComponent(msg), '_blank');
 });
+
+// barra de progresso de leitura
+var progressBar = document.getElementById('progressBar');
+function updateProgress(){
+  var h = document.documentElement;
+  var scrollable = h.scrollHeight - h.clientHeight;
+  var pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
+  progressBar.style.width = pct + '%';
+}
+document.addEventListener('scroll', updateProgress, {passive:true});
+updateProgress();
+
+// nav muda de aparência ao rolar
+var navEl = document.querySelector('header.nav');
+function updateNav(){
+  if(window.scrollY > 12){ navEl.classList.add('scrolled'); }
+  else{ navEl.classList.remove('scrolled'); }
+}
+document.addEventListener('scroll', updateNav, {passive:true});
+updateNav();
+
+// reveal on scroll, com stagger por grupo
+var groups = document.querySelectorAll('.pilares, .resultados, ul.check, .depo-grid, .cenarios, .sobre-grid, .cta-final-grid');
+groups.forEach(function(group){
+  var items = group.querySelectorAll(':scope > .reveal');
+  items.forEach(function(el, i){ el.style.transitionDelay = (i * 0.09) + 's'; });
+});
+document.querySelectorAll('.hero .reveal').forEach(function(el, i){ el.style.transitionDelay = (i * 0.12) + 's'; });
+
+if('IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        if(entry.target.dataset.counted !== 'true'){
+          var counterEl = entry.target.querySelector('[data-count-to]');
+          if(counterEl){ animateCount(counterEl); entry.target.dataset.counted = 'true'; }
+        }
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+} else {
+  document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+}
+
+function animateCount(el){
+  var target = parseInt(el.getAttribute('data-count-to'), 10);
+  var start = performance.now();
+  var duration = 1400;
+  function tick(now){
+    var progress = Math.min((now - start) / duration, 1);
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var value = Math.round(eased * target);
+    el.textContent = 'R$' + value + 'K';
+    if(progress < 1){ requestAnimationFrame(tick); }
+  }
+  requestAnimationFrame(tick);
+}
 </script>
 
 </body>
