@@ -163,7 +163,8 @@ ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 .card-result p{color:var(--fg-muted);font-size:0.94rem;margin-top:6px;}
 
 /* depoimentos */
-.depo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.depo-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;}
+.depo-grid>.depo{flex:1 1 240px;max-width:260px;}
 .depo{background:var(--surface);border-radius:14px;padding:14px 16px 22px;border:1px solid var(--line);min-width:0;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease;}
 .depo:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 16px 34px -16px rgba(0,0,0,0.55);}
 .depo-video{position:relative;width:100%;padding-top:177.78%;border-radius:10px;overflow:hidden;background:#000;transition:transform .3s ease;}
@@ -173,8 +174,7 @@ ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 .depo .who{font-family:var(--font-display);font-weight:700;font-size:0.9rem;margin-top:14px;}
 .depo .arrow{display:flex;flex-direction:column;gap:6px;font-size:0.78rem;color:var(--fg-muted);margin-top:8px;}
 .depo .arrow b{color:var(--accent);display:block;font-family:var(--font-display);font-size:0.66rem;letter-spacing:0.06em;text-transform:uppercase;}
-@media(max-width:860px){.depo-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:480px){.depo-grid{grid-template-columns:1fr;}}
+@media(max-width:480px){.depo-grid>.depo{flex-basis:100%;max-width:320px;}}
 
 /* diagnostico cenarios */
 .cenarios{display:flex;flex-direction:column;gap:18px;max-width:820px;margin:0 auto;min-width:0;}
@@ -411,6 +411,10 @@ section[id]{scroll-margin-top:74px;}
       <div class="depo reveal">
         <div class="depo-video"><iframe src="https://www.youtube.com/embed/_86lci-WNWQ" title="Depoimento" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
         <p class="quote">"Nosso método funciona e traz faturamento."</p>
+      </div>
+      <div class="depo reveal">
+        <div class="depo-video"><iframe src="https://www.youtube.com/embed/7Un1U7VtYkQ" title="Depoimento" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+        <p class="quote">"Eles cresceram muito o faturamento após a utilização do nosso método."</p>
       </div>
     </div>
   </div>
