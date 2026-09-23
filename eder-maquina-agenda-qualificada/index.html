@@ -79,7 +79,7 @@ header.nav.scrolled{background:rgba(10,10,10,0.85);border-bottom-color:var(--lin
 
 /* hero */
 .hero{padding:72px 0 80px;}
-.hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
+.hero-grid{display:grid;grid-template-columns:0.95fr 1.15fr;gap:32px;align-items:center;}
 .hero-grid>*,.sobre-grid>*,.cta-final-grid>*{min-width:0;}
 .hero h1{font-size:clamp(2rem,4.2vw,3.1rem);font-weight:800;margin:16px 0 20px;letter-spacing:-0.01em;}
 .hero h1 .hl{background:linear-gradient(90deg,var(--accent),#9dfaee);-webkit-background-clip:text;background-clip:text;color:transparent;}
@@ -97,8 +97,8 @@ header.nav.scrolled{background:rgba(10,10,10,0.85);border-bottom-color:var(--lin
 .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--fg);}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-3px);}
 .hero-photo{position:relative;min-width:0;}
-.hero-photo::before{content:'';position:absolute;inset:8% 10%;background:radial-gradient(circle,rgba(109,245,227,0.4),transparent 68%);filter:blur(48px);z-index:-1;}
-.hero-photo img{margin:0 auto;width:100%;max-width:400px;animation:float 5.5s ease-in-out infinite;}
+.hero-photo::before{content:'';position:absolute;inset:2% 2%;background:radial-gradient(circle,rgba(109,245,227,0.45),transparent 68%);filter:blur(54px);z-index:-1;}
+.hero-photo img{margin:0 auto;width:100%;max-width:560px;animation:float 5.5s ease-in-out infinite;}
 @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
 @media(prefers-reduced-motion:reduce){.hero-photo img{animation:none;}.badge-proof .dot::after{animation:none;}}
 
@@ -116,6 +116,34 @@ ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 .pilar:hover .num{transform:scale(1.12);}
 .pilar h3{font-size:1.05rem;margin-bottom:10px;}
 .pilar p{color:var(--fg-muted);font-size:0.92rem;}
+
+/* ciclo do método (diagrama visual) */
+.cycle-wrap{position:relative;max-width:600px;aspect-ratio:1;margin:8px auto 56px;}
+.cycle-arcs{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.cycle-arcs path{fill:none;stroke:var(--line);stroke-width:1.5;}
+.cycle-arcs path.animated{stroke:var(--accent);stroke-width:2;stroke-dasharray:6 8;animation:flowDash 2.4s linear infinite;opacity:.7;}
+@keyframes flowDash{to{stroke-dashoffset:-56;}}
+.cycle-hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--surface-2),var(--surface));border:1px solid var(--accent-2);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6%;box-shadow:0 0 0 10px rgba(33,196,93,0.06);}
+.cycle-hub .hub-eyebrow{font:700 clamp(0.5rem,1vw,0.6rem) var(--font-display);letter-spacing:.1em;color:var(--fg-muted);text-transform:uppercase;}
+.cycle-hub strong{font-family:var(--font-display);font-weight:800;color:var(--accent);font-size:clamp(0.78rem,1.8vw,1rem);line-height:1.25;margin-top:4px;}
+.cycle-node{position:absolute;transform:translate(-50%,-50%);width:24%;aspect-ratio:1;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4%;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease,background .3s ease;}
+.cycle-node:hover{transform:translate(-50%,-50%) scale(1.1);border-color:var(--accent);box-shadow:0 0 0 8px rgba(109,245,227,0.12),0 16px 30px -12px rgba(0,0,0,.55);background:var(--surface-2);z-index:2;}
+.cycle-node .icon{width:26%;color:var(--accent);flex:none;}
+.cycle-node .icon svg{width:100%;height:100%;display:block;}
+.cycle-node .num{position:absolute;top:-4%;right:2%;background:var(--accent);color:var(--bg-deep);font:800 0.66rem var(--font-display);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cycle-node .label{font-family:var(--font-display);font-weight:700;font-size:clamp(0.62rem,1.3vw,0.8rem);line-height:1.22;color:var(--fg);margin-top:6%;}
+.node-1{top:13.3%;left:50%;} .node-2{top:38.7%;left:84.8%;} .node-3{top:79.7%;left:71.5%;} .node-4{top:79.7%;left:28.5%;} .node-5{top:38.7%;left:15.2%;}
+@media(max-width:760px){
+  .cycle-wrap{max-width:320px;aspect-ratio:auto;display:flex;flex-direction:column;align-items:center;gap:0;padding:8px 0 0;margin:0 auto 40px;}
+  .cycle-arcs{display:none;}
+  .cycle-hub{position:static;transform:none;width:150px;margin-bottom:22px;box-shadow:none;}
+  .cycle-node{position:relative;top:0;left:0;transform:none;width:100%;max-width:280px;min-width:0;aspect-ratio:auto;flex-direction:row;text-align:left;border-radius:14px;padding:14px 16px;gap:14px;justify-content:flex-start;margin-bottom:18px;}
+  .cycle-node:hover{transform:none;}
+  .cycle-node .icon{width:32px;height:32px;margin:0;flex:none;}
+  .cycle-node .num{position:absolute;top:-8px;left:-8px;right:auto;}
+  .cycle-node .label{margin-top:0;font-size:0.85rem;flex:1;min-width:0;}
+  .cycle-node:not(:last-child)::after{content:'';position:absolute;left:24px;bottom:-18px;width:2px;height:18px;background:var(--line);}
+}
 
 /* resultados */
 .bg-deep{background:var(--bg-deep);}
@@ -264,6 +292,48 @@ section[id]{scroll-margin-top:74px;}
       <div class="rule"></div>
       <p class="muted" style="margin-top:14px;">Não é só anúncio. É um sistema completo — da captação do paciente novo até o comercial fechando o tratamento, sem deixar oportunidade esfriar no meio do caminho.</p>
     </div>
+
+    <div class="cycle-wrap reveal">
+      <svg class="cycle-arcs" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <path class="animated" d="M300,80 A220,220 0 0,1 509,232"/>
+        <path class="animated" d="M509,232 A220,220 0 0,1 429,478"/>
+        <path class="animated" d="M429,478 A220,220 0 0,1 171,478"/>
+        <path class="animated" d="M171,478 A220,220 0 0,1 91,232"/>
+        <path class="animated" d="M91,232 A220,220 0 0,1 300,80"/>
+      </svg>
+
+      <div class="cycle-hub">
+        <span class="hub-eyebrow">Método</span>
+        <strong>Máquina Agenda Qualificada</strong>
+      </div>
+
+      <div class="cycle-node node-1">
+        <span class="num">01</span>
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-6.5 8.5V19l-3 1.5v-8z"/></svg></span>
+        <span class="label">Captação de Pacientes</span>
+      </div>
+      <div class="cycle-node node-2">
+        <span class="num">02</span>
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.9-3.5"/><path d="M4 13a8 8 0 0 0 14.9 3.5"/><path d="M4 4v5h5"/><path d="M20 20v-5h-5"/></svg></span>
+        <span class="label">Recuperação de Base</span>
+      </div>
+      <div class="cycle-node node-3">
+        <span class="num">03</span>
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c-1.6 3-4.7 5-4.7 8.8a4.7 4.7 0 0 0 9.4 0c0-1.3-.4-2.2-.9-3 .1 1.3-.5 2.2-1.3 2.6.4-1.8-.9-3-2.5-8.4z"/></svg></span>
+        <span class="label">Reaquecimento de Oportunidades</span>
+      </div>
+      <div class="cycle-node node-4">
+        <span class="num">04</span>
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.2 7.8-7 9.5-3.8-1.7-7-4.5-7-9.5V6z"/><path d="M9 12.2l2 2 4-4.2"/></svg></span>
+        <span class="label">Treinamento de Vendas</span>
+      </div>
+      <div class="cycle-node node-5">
+        <span class="num">05</span>
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="2.5"/><path d="M4 6v6c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5V6"/><path d="M4 12v6c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5v-6"/></svg></span>
+        <span class="label">CRM Inteligente</span>
+      </div>
+    </div>
+
     <div class="pilares">
       <div class="pilar reveal"><div class="num">01</div><h3>Captação de Pacientes</h3><p>Funil de tráfego pago estruturado pra atrair todos os dias o perfil certo de paciente particular — sem depender só de indicação.</p></div>
       <div class="pilar reveal"><div class="num">02</div><h3>Recuperação de Base Inteligente</h3><p>Reativação da sua base de contatos — quem já passou pela clínica, pediu orçamento ou sumiu no meio do caminho — pra virar agenda de novo.</p></div>
