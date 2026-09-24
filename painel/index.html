@@ -5167,7 +5167,7 @@ function renderNotificacoes() {
 
 // ---------- GERAÇÃO DE DEMANDA (TALLY) ----------
 // as chamadas passam pelo proxy no n8n — a chave real do Tally nunca fica no código público
-const N8N_PROXY_URL = 'https://srv5224724.stayx.cloud/webhook';
+const N8N_PROXY_URL = 'https://okolawlvmfyxzvnnpvtv.supabase.co/functions/v1'; // ex-n8n (StayCloud saiu do ar 2026-09-24) — agora Supabase Edge Functions
 async function chamarTally(path, tentativas = 3) {
   for (let i = 1; i <= tentativas; i++) {
     let resp;
