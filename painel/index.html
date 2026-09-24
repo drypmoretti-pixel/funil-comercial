@@ -2394,6 +2394,17 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
   </div>
 </div>
 
+<div id="lembrete-checklist-fundo" class="tour-fundo">
+  <div class="tour-card" style="max-width:380px; text-align:center;">
+    <div class="tour-emoji">📋</div>
+    <div class="tour-titulo">Checklist de Produtividade</div>
+    <div class="tour-texto">Você já preencheu o checklist de produtividade hoje?</div>
+    <div class="tour-rodape" style="justify-content:center; margin-top:22px;">
+      <button type="button" class="btn" onclick="fecharLembreteChecklist()">Ok</button>
+    </div>
+  </div>
+</div>
+
 <div id="modal-card-crm" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-card-crm')">
   <div class="modal-card" style="max-width:560px; text-align:left;">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
@@ -2740,6 +2751,7 @@ async function entrarNoApp(user) {
   ajustarIndicadores(document.querySelector('.sidebar nav button.active')?.dataset.tab || 'dashboard');
   verificarReunioesPendentes();   // pergunta antes do tour: é trabalho pendente, não novidade
   verificarNovidades();   // por último: o tour aparece com o painel já montado atrás dele
+  verificarLembreteChecklist();   // cobrança do checklist, se a janela de horário já estiver valendo
 }
 (async function initSession() {
   const { data } = await sb.auth.getSession();
@@ -7586,6 +7598,71 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') fecharTour();
   if (e.key === 'ArrowRight' || e.key === 'Enter') tourProximo();
 });
+
+// ---------- LEMBRETE DE CHECKLIST (8h30 e 18h30) ----------
+// Pop-up bloqueante no centro da tela, igual ao tour de novidades — mas só sai com "Ok"
+// (sem X, sem Esc, sem clicar fora) porque é cobrança, não informativo. Só pergunta, não mostra
+// o que falta: pedido explícito do Igor foi mensagem curta. Só aparece pra quem tem checklist
+// (sdr/vendedor) e só se a pessoa ainda não bateu a meta de hoje — quem já preencheu não é
+// incomodado à toa.
+let lembreteChecklistAberto = false;
+let lembreteChecklistMomentoAtual = null;
+
+function horaMinutoSaoPauloAgora() {
+  const partes = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(new Date());
+  const h = Number(partes.find(p => p.type === 'hour').value);
+  const m = Number(partes.find(p => p.type === 'minute').value);
+  return h * 60 + m;
+}
+
+// qual das duas janelas está valendo agora (a última que já passou no dia)
+function janelaLembreteChecklistAtual() {
+  const minutos = horaMinutoSaoPauloAgora();
+  if (minutos >= 18 * 60 + 30) return 'fim_dia';
+  if (minutos >= 8 * 60 + 30) return 'manha';
+  return null;
+}
+
+async function verificarLembreteChecklist() {
+  if (lembreteChecklistAberto || tourAberto) return;
+  if (!currentPerfil || (currentPerfil.papel !== 'sdr' && currentPerfil.papel !== 'vendedor')) return;
+  const momento = janelaLembreteChecklistAtual();
+  if (!momento) return;
+
+  const hoje = hojeStr();
+  const { data: visto } = await sb.from('com_checklist_lembretes_vistos')
+    .select('momento').eq('perfil_id', currentPerfil.id).eq('data', hoje).eq('momento', momento).maybeSingle();
+  if (visto) return;
+
+  const metricasDaPessoa = (checklistMetricas || []).filter(m => m.papel === currentPerfil.papel);
+  if (metricasDaPessoa.length) {
+    const { data: registros } = await sb.from('com_checklist_registros')
+      .select('metrica_id, valor').eq('perfil_id', currentPerfil.id).eq('data', hoje);
+    const valores = new Map((registros || []).map(r => [r.metrica_id, r.valor]));
+    const faltando = metricasDaPessoa.some(m => (valores.get(m.id) || 0) < m.meta_min);
+    if (!faltando) return;   // já bateu tudo hoje, não precisa cobrar
+  }
+
+  lembreteChecklistMomentoAtual = momento;
+  lembreteChecklistAberto = true;
+  document.getElementById('lembrete-checklist-fundo').classList.add('aberto');
+}
+
+async function fecharLembreteChecklist() {
+  document.getElementById('lembrete-checklist-fundo').classList.remove('aberto');
+  lembreteChecklistAberto = false;
+  if (!currentPerfil || !lembreteChecklistMomentoAtual) return;
+  await sb.from('com_checklist_lembretes_vistos').upsert(
+    { perfil_id: currentPerfil.id, data: hojeStr(), momento: lembreteChecklistMomentoAtual },
+    { onConflict: 'perfil_id,data,momento', ignoreDuplicates: true },
+  );
+  lembreteChecklistMomentoAtual = null;
+}
+
+// reconfere a cada 5min: cobre quem deixa o painel aberto atravessando 8h30/18h30
+setInterval(verificarLembreteChecklist, 5 * 60 * 1000);
 
 // ---------- AGENTE DE SOCIAL SELLING ----------
 // O prompt NÃO mora aqui, mora no Code node do n8n (workflow "Agente Social Selling"). Esta página
