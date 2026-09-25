@@ -7,35 +7,62 @@
 <meta name="description" content="Evento gratuito ao vivo em 1 de outubro: como gerar leads qualificados todos os dias no LinkedIn usando IA, sem investir em tráfego pago."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-.di-root *,.di-root :before,.di-root :after{box-sizing:border-box;margin:0;padding:0}
-.di-root{color:#f5f5f5;font-family:"Inter",sans-serif;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;background:#0a0a0a;min-height:100vh;line-height:1.6}
+*,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#008E43;
+  --green-light:#12B85E;
+  --bg:#F8F7F4;
+  --card:#ECEAE5;
+  --text:#111111;
+  --gray:#6B6B6B;
+  --line:#D8D5CE;
+}
+.di-root{
+  color:var(--text);
+  font-family:"Inter",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  scroll-behavior:smooth;
+  background:var(--bg);
+  min-height:100vh;
+  line-height:1.6;
+}
 .di-root .container{width:100%;max-width:680px;margin:0 auto;padding:0 24px}
-.di-root .top-bar{text-align:center;background:#c00;padding:10px 24px}
+
+.di-root .top-bar{text-align:center;background:var(--green);padding:10px 24px}
 .di-root .top-bar p{letter-spacing:.08em;text-transform:uppercase;color:#fff;font-size:13px;font-weight:600;line-height:1.5}
 .di-root .top-bar span{opacity:.85;letter-spacing:0;text-transform:none;font-weight:400}
-.di-root .hero{text-align:center;padding:64px 0 48px}
-.di-root .hero-label{color:#c00;letter-spacing:.15em;text-transform:uppercase;margin-bottom:28px;font-size:13px;font-weight:600;display:inline-block}
-.di-root .hero-headline{letter-spacing:-.02em;color:#f5f5f5;margin-bottom:24px;font-size:clamp(36px,6vw,56px);font-weight:700;line-height:1.1}
-.di-root .hero-sub{color:#999;max-width:520px;margin:0 auto;font-size:18px;line-height:1.65}
-.di-root .hero-divider{background:#c00;width:60px;height:1px;margin:32px auto 0}
+
+.di-root .hero{text-align:center;padding:56px 0 48px}
+.di-root .hero-logo{width:56px;height:56px;margin:0 auto 24px;display:block;border-radius:50%}
+.di-root .hero-headline{font-family:"Plus Jakarta Sans",sans-serif;letter-spacing:-.02em;color:var(--text);margin-bottom:24px;font-size:clamp(36px,6vw,56px);font-weight:800;line-height:1.1}
+.di-root .hero-sub{color:var(--gray);max-width:520px;margin:0 auto;font-size:18px;line-height:1.65}
+.di-root .hero-divider{background:var(--green);width:60px;height:2px;margin:32px auto 0}
+
 .di-root .video-section{padding:48px 0}
-.di-root .video-wrap{background:#111;border:1px solid #1f1f1f;border-radius:8px;width:100%;max-width:640px;margin:0 auto;padding-top:56.25%;position:relative;overflow:hidden}
+.di-root .video-wrap{background:var(--card);border:1px solid var(--line);border-radius:12px;width:100%;max-width:640px;margin:0 auto;padding-top:56.25%;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(17,17,17,.06);cursor:pointer}
 .di-root .video-wrap iframe{border:0;width:100%;height:100%;display:block;position:absolute;inset:0}
+.di-root .video-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.di-root .video-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,.35);transition:background .2s,transform .2s}
+.di-root .video-wrap:hover .video-play{background:var(--green-light);transform:translate(-50%,-50%) scale(1.06)}
+.di-root .video-play svg{width:26px;height:26px;fill:#fff;margin-left:4px}
+
 .di-root .cta-section{padding:0 0 64px}
 .di-root .cta-row{flex-direction:row;align-items:flex-start;gap:16px;max-width:680px;margin:0 auto;display:flex}
 .di-root .btn-wrap{flex-direction:column;flex:1;align-items:center;gap:8px;display:flex}
-.di-root .btn{width:100%;font-family:"Inter",sans-serif;text-align:center;cursor:pointer;letter-spacing:.03em;border-radius:6px;padding:18px 16px;font-size:14px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s;display:block}
-.di-root .btn-primary{color:#fff;background:#c00;border:1px solid #c00}
-.di-root .btn-primary:hover{background:#a00;border-color:#a00}
-.di-root .btn-secondary{color:#f5f5f5;background:transparent;border:1px solid #444}
-.di-root .btn-secondary:hover{color:#c00;border-color:#c00}
-.di-root .btn-sublabel{color:#666;text-align:center;font-size:11.5px;line-height:1.4}
-.di-root footer{text-align:center;border-top:1px solid #161616;padding:32px 0 40px}
-.di-root footer p{color:#555;font-size:13px}
+.di-root .btn{width:100%;font-family:"Inter",sans-serif;text-align:center;cursor:pointer;letter-spacing:.03em;border-radius:8px;padding:18px 16px;font-size:14px;font-weight:700;text-decoration:none;transition:background .2s,border-color .2s,color .2s;display:block}
+.di-root .btn-primary{color:#fff;background:var(--green);border:1px solid var(--green)}
+.di-root .btn-primary:hover{background:var(--green-light);border-color:var(--green-light)}
+.di-root .btn-secondary{color:var(--text);background:#fff;border:1px solid var(--line)}
+.di-root .btn-secondary:hover{color:var(--green);border-color:var(--green)}
+.di-root .btn-sublabel{color:var(--gray);text-align:center;font-size:11.5px;line-height:1.4}
+
+.di-root footer{text-align:center;border-top:1px solid var(--line);padding:32px 0 40px}
+.di-root footer p{color:#9C9890;font-size:13px}
+
 @media (max-width:560px){
-  .di-root .hero{padding:48px 0 36px}
+  .di-root .hero{padding:44px 0 32px}
   .di-root .video-section{padding:32px 0}
   .di-root .cta-section{padding:0 0 48px}
   .di-root .hero-sub{font-size:17px}
@@ -49,6 +76,7 @@
   <div class="top-bar"><p>Evento Gratuito  ·  <span>Quinta-feira, 1 de outubro · 19h · Ao vivo · Sem replay</span></p></div>
   <section class="hero">
     <div class="container">
+      <img src="logo-demanda-infinita.png" alt="Demanda Infinita" class="hero-logo"/>
       <h1 class="hero-headline">Como Gerar 10-40 Reuniões Qualificadas<br/>por Mês Usando o LinkedIn</h1>
       <p class="hero-sub">Vou te mostrar ao vivo como criamos a demanda infinita que gera leads qualificados todos os dias sem investir 1 real em tráfego pago e lotar o seu comercial.</p>
       <div class="hero-divider"></div>
@@ -56,8 +84,9 @@
   </section>
   <section class="video-section">
     <div class="container">
-      <div class="video-wrap">
-        <iframe src="https://www.youtube-nocookie.com/embed/VtcvWKqzXdQ?si=923wYHkRiM6C_DJl" title="Demanda Infinita — Preview do Evento" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <div class="video-wrap" id="videoWrap" onclick="playVideo()">
+        <img class="video-thumb" src="https://img.youtube.com/vi/VtcvWKqzXdQ/maxresdefault.jpg" alt="Demanda Infinita — Preview do Evento"/>
+        <div class="video-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
       </div>
     </div>
   </section>
@@ -75,7 +104,17 @@
       </div>
     </div>
   </section>
-  <footer><div class="container"><p>© 2025 Grupo Nexus Mind · gruponexusmind.com.br</p></div></footer>
+  <footer><div class="container"><p>© 2026 Método Demanda Infinita® · demandainfinita.com</p></div></footer>
 </div>
+
+<script>
+  function playVideo() {
+    const wrap = document.getElementById('videoWrap');
+    wrap.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/VtcvWKqzXdQ?autoplay=1" title="Demanda Infinita — Preview do Evento" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+    wrap.style.cursor = 'default';
+    wrap.onclick = null;
+  }
+</script>
+
 </body>
 </html>
