@@ -107,22 +107,7 @@ header.nav.scrolled{background:rgba(10,10,10,0.85);border-bottom-color:var(--lin
   .hero-mobile-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;}
 }
 
-/* checklist */
-ul.check{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
-ul.check li{background:var(--surface);border-left:3px solid var(--accent-2);border-radius:8px;padding:20px 22px;font-size:0.96rem;color:var(--fg);min-width:0;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease,background .3s ease;}
-ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 14px 30px -14px rgba(0,0,0,0.55);background:var(--surface-2);}
 
-/* visual do método (imagens) */
-.method-visual{max-width:620px;margin:8px auto 0;position:relative;}
-.method-visual img{width:100%;display:block;border-radius:22px;border:1px solid var(--line);box-shadow:0 30px 70px -30px rgba(0,0,0,0.65);}
-.method-visual.ciclo{animation:wiggle 7s ease-in-out infinite;}
-@keyframes wiggle{0%,100%{transform:rotate(-1.6deg) translateY(0);}50%{transform:rotate(1.6deg) translateY(-12px);}}
-.method-visual.ciclo::before{content:'';position:absolute;inset:-6%;border-radius:50%;background:radial-gradient(circle,rgba(109,245,227,0.35),transparent 65%);filter:blur(40px);z-index:-1;animation:drift 10s ease-in-out infinite alternate;}
-.method-cards{max-width:980px;margin:40px auto 0;transition:transform .3s ease,box-shadow .3s ease;}
-.method-cards img{border-radius:18px;}
-.method-cards:hover{transform:translateY(-4px);}
-@media(prefers-reduced-motion:reduce){.method-visual.ciclo{animation:none;}.method-visual.ciclo::before{animation:none;}}
-@media(max-width:640px){.method-visual{max-width:340px;}}
 
 .bg-deep{background:var(--bg-deep);}
 
@@ -133,7 +118,13 @@ ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 .image-block.glow::before{content:'';position:absolute;inset:-6% -4%;background:radial-gradient(circle,rgba(109,245,227,0.25),transparent 65%);filter:blur(50px);z-index:-1;animation:drift 12s ease-in-out infinite alternate;}
 .image-block.sheen{overflow:hidden;}
 .image-block.sheen::after{content:'';position:absolute;top:0;left:-40%;width:30%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.09),transparent);animation:heroSheen 8s ease-in-out infinite;pointer-events:none;}
-@media(prefers-reduced-motion:reduce){.image-block.glow::before{animation:none;}.image-block.sheen::after{display:none;}}
+.image-block.zoom img{animation:kenburns 16s ease-in-out infinite alternate;}
+.image-block.zoom{overflow:hidden;}
+.section-head + .image-block{margin-top:-8px;}
+.section.flush-bottom{padding-bottom:0;}
+.section.flush{padding:0;}
+.section.flush::after,.section.flush-bottom::after{display:none;}
+@media(prefers-reduced-motion:reduce){.image-block.glow::before{animation:none;}.image-block.sheen::after{display:none;}.image-block.zoom img{animation:none;}}
 
 /* depoimentos */
 .depo-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;}
@@ -156,16 +147,10 @@ ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 .reversao span::after{content:'';position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;animation:underline 1.2s ease forwards;animation-delay:.6s;}
 @keyframes underline{to{transform:scaleX(1);}}
 
-/* sobre */
-.sobre-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:48px;align-items:center;}
-.sobre-photo{position:relative;}
-.sobre-photo::before{content:'';position:absolute;inset:10%;background:radial-gradient(circle,rgba(109,245,227,0.3),transparent 68%);filter:blur(44px);z-index:-1;}
-.sobre-grid img{width:100%;max-width:320px;margin:0 auto;}
-.sobre-grid h2{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:18px;}
-.sobre-grid p{color:var(--fg-muted);margin-bottom:14px;font-size:0.98rem;}
 
 /* cta final + form */
 .cta-final{background:var(--bg-deep);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.cta-final-grid>*{min-width:0;}
 .cta-final-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
 .cta-final h2{font-size:clamp(1.6rem,3.4vw,2.3rem);margin-bottom:16px;}
 .cta-final h2 span{color:var(--accent);}
@@ -187,9 +172,8 @@ footer .legal{color:var(--fg-muted);font-size:0.8rem;}
 
 @media(max-width:860px){
   .nav-links{display:none;}
-  .hero-grid,.cta-final-grid,.sobre-grid{grid-template-columns:1fr;}
+  .cta-final-grid{grid-template-columns:1fr;}
   .hero-photo{order:-1;}
-  ul.check,.resultados{grid-template-columns:1fr;}
   .pilar{flex-basis:100%;max-width:420px;}
   .card-result.destaque{grid-template-columns:1fr;text-align:center;}
   .result-num{white-space:normal;font-size:1.9rem;}
@@ -234,25 +218,20 @@ section[id]{scroll-margin-top:74px;}
   </div>
 </section>
 
-<section class="section">
+<section class="section flush-bottom">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">O que muda na prática</span>
       <h2>Com a Máquina Agenda Qualificada, sua clínica passa a:</h2>
       <div class="rule"></div>
     </div>
-    <ul class="check">
-      <li class="reveal">Gerar demanda qualificada de paciente particular sem depender só de indicação ou da própria rede de contatos.</li>
-      <li class="reveal">Ter consistência e previsibilidade de agenda — sem mês bom seguido de mês fraco.</li>
-      <li class="reveal">Atrair paciente que fecha o procedimento de maior ticket, não só o de convênio.</li>
-      <li class="reveal">Ter alto valor percebido, sem paciente pedindo desconto ou comparando com concorrente.</li>
-      <li class="reveal">Ter processo comercial estruturado — sua secretária ou CRC só fala com lead qualificado.</li>
-      <li class="reveal">Construir a reputação e a autoridade do seu nome na sua cidade ou região.</li>
-    </ul>
+    <div class="image-block full-bleed glow sheen reveal">
+      <img src="assets/o-que-muda.jpg" alt="Com a Máquina Agenda Qualificada, sua clínica passa a: gerar demanda qualificada de paciente particular; ter consistência e previsibilidade de agenda; atrair paciente de maior ticket; ter alto valor percebido; ter processo comercial estruturado; construir sua autoridade e reputação na cidade ou região.">
+    </div>
   </div>
 </section>
 
-<section class="section bg-deep" id="diagnostico">
+<section class="section bg-deep flush-bottom" id="diagnostico">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">Como funciona</span>
@@ -261,17 +240,17 @@ section[id]{scroll-margin-top:74px;}
       <p class="muted" style="margin-top:14px;">Não é só anúncio. É um sistema completo — da captação do paciente novo até o comercial fechando o tratamento, sem deixar oportunidade esfriar no meio do caminho.</p>
     </div>
 
-    <div class="method-visual ciclo reveal">
+    <div class="image-block full-bleed glow zoom sheen reveal">
       <img src="assets/ciclo-metodo.jpg" alt="Ciclo da Máquina Agenda Qualificada: Captação de Pacientes, Recuperação de Base, Reagendamento de Oportunidades, Treinamento de Vendas e CRM Inteligente">
     </div>
 
-    <div class="method-cards reveal">
+    <div class="image-block full-bleed sheen reveal">
       <img src="assets/pilares-cards.jpg" alt="Os 5 pilares detalhados: Captação de Pacientes, Recuperação de Base Inteligente, Máquina de Reaquecimento de Oportunidades, Treinamento de Vendas e CRM Inteligente">
     </div>
   </div>
 </section>
 
-<section class="section">
+<section class="section flush-bottom">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">Resultados reais</span>
@@ -340,18 +319,11 @@ section[id]{scroll-margin-top:74px;}
   </div>
 </section>
 
-<section class="section bg-deep" id="sobre">
-  <div class="wrap sobre-grid">
-    <div class="sobre-photo reveal">
-      <img src="assets/eder-foto.webp" alt="Eder Santos">
-    </div>
-    <div class="reveal">
-      <span class="eyebrow">Prazer, sou Eder Santos</span>
-      <h2>Por que eu larguei tudo pra trabalhar só com médico e dentista</h2>
-      <p>Em 2022 eu tinha uma agência que faturava bem — sócios, clientes de vários segmentos, crescimento. Do lado de fora, estava tudo bem. Por dentro, eu sabia que estava fazendo mais do mesmo.</p>
-      <p>Em 2023 desfiz a sociedade. Recomecei do zero. E foi nesse recomeço — duro, que exigiu reinvenção completa — que entendi o que eu realmente queria construir.</p>
-      <p>Me aprofundei no mercado de saúde. Aprendi as dores reais de quem vive dentro de uma clínica: a secretária que faz tudo ao mesmo tempo e ainda precisa atender lead com qualidade; o médico que estudou anos e se vê perdido tentando entender funil de vendas; o dentista com a melhor cadeira da cidade mas sem saber vender o tratamento mais caro; o especialista com agenda cheia de convênio, sem qualidade de vida e sem crescer o faturamento.</p>
-      <p>Eu vivo esse mercado todos os dias — não de fora, de dentro. E foi desse recomeço que nasceu a Máquina Agenda Qualificada: uma metodologia construída em cima das dores reais de quem está na linha de frente de uma clínica médica ou odontológica.</p>
+<section class="section bg-deep flush" id="sobre">
+  <div class="wrap">
+    <h2 class="sr-only">Prazer, sou Eder Santos — por que eu larguei tudo pra trabalhar só com médico e dentista</h2>
+    <div class="image-block full-bleed glow sheen reveal">
+      <img src="assets/sobre.jpg" alt="Eder Santos. 2022: tinha uma agência que faturava bem, mas fazia mais do mesmo. 2023: desfez a sociedade e recomeçou do zero. Entendeu o mercado de saúde por dentro. Hoje: criou a Máquina Agenda Qualificada, metodologia 100% focada em clínicas médicas e odontológicas.">
     </div>
   </div>
 </section>
@@ -430,7 +402,7 @@ document.addEventListener('scroll', updateNav, {passive:true});
 updateNav();
 
 // reveal on scroll, com stagger por grupo
-var groups = document.querySelectorAll('.pilares, .resultados, ul.check, .depo-grid, .cenarios, .sobre-grid, .cta-final-grid');
+var groups = document.querySelectorAll('.depo-grid, .cta-final-grid');
 groups.forEach(function(group){
   var items = group.querySelectorAll(':scope > .reveal');
   items.forEach(function(el, i){ el.style.transitionDelay = (i * 0.09) + 's'; });
