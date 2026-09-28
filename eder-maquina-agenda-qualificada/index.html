@@ -123,45 +123,16 @@ ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 @media(prefers-reduced-motion:reduce){.method-visual.ciclo{animation:none;}.method-visual.ciclo::before{animation:none;}}
 @media(max-width:640px){.method-visual{max-width:340px;}}
 
-/* resultados */
 .bg-deep{background:var(--bg-deep);}
-.resultados{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
-.card-result{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:30px;min-width:0;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease;}
-.card-result:hover{transform:translateY(-5px);border-color:var(--accent-2);box-shadow:0 16px 34px -16px rgba(0,0,0,0.55);}
-.card-result.destaque{grid-column:1/-1;position:relative;background:linear-gradient(135deg,#16302c,var(--surface));border:1px solid var(--accent-2);display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;overflow:hidden;}
-.card-result.destaque::before{content:'';position:absolute;top:0;left:-40%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(109,245,227,0.12),transparent);animation:sheen 4s ease-in-out infinite;}
-@keyframes sheen{0%{left:-40%;}100%{left:120%;}}
-.card-result.destaque:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 20px 40px -16px rgba(109,245,227,0.3);}
-.card-result h4{font-family:var(--font-display);font-size:1.05rem;margin-bottom:10px;}
-.result-num{font-family:var(--font-display);font-weight:800;font-size:2.4rem;white-space:nowrap;position:relative;z-index:1;}
-.result-num .to{color:var(--fg-muted);font-size:1.2rem;font-weight:600;margin:0 8px;}
-.result-num .from{color:var(--fg-muted);}
-.result-num .go{color:var(--accent);}
-.result-tag{font:700 0.72rem var(--font-body);letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-2);margin-top:8px;display:block;}
-.card-result p{color:var(--fg-muted);font-size:0.94rem;margin-top:6px;}
 
-/* mini gráfico animado (destaque) */
-.mini-chart{display:flex;align-items:flex-end;gap:9px;height:100px;position:relative;z-index:1;padding:0 6px;}
-.mini-chart .bar{width:16px;border-radius:5px 5px 0 0;background:var(--line);height:0;transition:height 1.3s cubic-bezier(.16,.8,.2,1);}
-.mini-chart .bar.highlight{background:linear-gradient(180deg,var(--accent),var(--accent-2));box-shadow:0 0 16px rgba(109,245,227,0.5);}
-.reveal.in .mini-chart .bar{height:var(--h);}
-.mini-chart-wrap{text-align:center;}
-.mini-chart-wrap span{display:block;margin-top:10px;font:700 0.68rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-muted);}
-
-/* cards de pessoa (foto + estatística) */
-.card-result.people{display:flex;align-items:center;gap:20px;}
-.people-photo{width:92px;height:92px;border-radius:16px;overflow:hidden;flex:none;border:1px solid var(--line);}
-.people-photo img{width:100%;height:100%;object-fit:cover;display:block;}
-.people-body{min-width:0;}
-.people-body .eyebrow-sm{display:block;font:700 0.7rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:6px;}
-.big-stat{font-family:var(--font-display);font-weight:800;font-size:1.6rem;color:var(--accent);margin-bottom:6px;}
-.big-stat small{font-size:0.82rem;color:var(--fg-muted);font-weight:600;margin-left:4px;}
-@media(max-width:480px){.card-result.people{flex-direction:column;text-align:center;}.people-body .eyebrow-sm{margin-top:6px;}}
-
-/* linha de fechamento (wordmark) */
-.card-result.lockup{grid-column:1/-1;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
-.lockup-mark{font-family:var(--font-display);font-weight:800;font-size:1.6rem;color:var(--fg-muted);border:1px solid var(--line);border-radius:12px;padding:14px 20px;flex:none;}
-@media(max-width:640px){.card-result.destaque{grid-template-columns:1fr;text-align:center;}.mini-chart,.mini-chart-wrap{justify-content:center;margin:0 auto;}.card-result.lockup{flex-direction:column;text-align:center;}}
+/* blocos de imagem cheia (com efeito) */
+.image-block{position:relative;max-width:1100px;margin:0 auto;}
+.image-block img{width:100%;display:block;border-radius:20px;border:1px solid var(--line);box-shadow:0 30px 70px -30px rgba(0,0,0,0.6);transition:transform .4s ease;}
+.image-block:hover img{transform:scale(1.01);}
+.image-block.glow::before{content:'';position:absolute;inset:-6% -4%;background:radial-gradient(circle,rgba(109,245,227,0.25),transparent 65%);filter:blur(50px);z-index:-1;animation:drift 12s ease-in-out infinite alternate;}
+.image-block.sheen{overflow:hidden;border-radius:20px;}
+.image-block.sheen::after{content:'';position:absolute;top:0;left:-40%;width:30%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.09),transparent);animation:heroSheen 8s ease-in-out infinite;pointer-events:none;}
+@media(prefers-reduced-motion:reduce){.image-block.glow::before{animation:none;}.image-block.sheen::after{display:none;}}
 
 /* depoimentos */
 .depo-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;}
@@ -179,17 +150,6 @@ ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 @media(max-width:480px){.depo-grid>.depo{flex-basis:100%;max-width:320px;}}
 
 /* diagnostico cenarios */
-.cenarios{display:flex;flex-direction:column;gap:20px;max-width:900px;margin:0 auto;min-width:0;}
-.cenario{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--surface),var(--surface-2));border:1px solid var(--line);border-radius:16px;padding:30px 34px;transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s ease,border-color .3s ease;min-width:0;}
-.cenario:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(0,0,0,0.55);border-color:var(--accent);}
-.cenario-icon{width:52px;height:52px;border-radius:12px;border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);margin-bottom:16px;flex:none;background:rgba(109,245,227,0.08);}
-.cenario-icon svg{width:26px;height:26px;}
-.cenario .eyebrow-sm{display:block;font:700 0.7rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:10px;}
-.cenario h4{font-family:var(--font-display);font-size:clamp(1.1rem,2.4vw,1.35rem);line-height:1.32;margin-bottom:12px;max-width:70%;position:relative;z-index:1;}
-.cenario h4 .hl{color:var(--accent);display:block;}
-.cenario p{color:var(--fg-muted);font-size:0.95rem;max-width:560px;position:relative;z-index:1;}
-.cenario .ghost-num{position:absolute;right:28px;top:50%;transform:translateY(-50%);font-family:var(--font-display);font-weight:800;font-size:5.5rem;color:var(--line);opacity:.6;line-height:1;pointer-events:none;z-index:0;}
-@media(max-width:640px){.cenario h4{max-width:100%;}.cenario .ghost-num{display:none;}.cenario{padding:26px 24px;}}
 .reversao{text-align:center;margin-top:28px;font-family:var(--font-display);font-weight:700;font-size:1.25rem;}
 .reversao span{color:var(--accent);position:relative;}
 .reversao span::after{content:'';position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;animation:underline 1.2s ease forwards;animation-delay:.6s;}
@@ -317,45 +277,8 @@ section[id]{scroll-margin-top:74px;}
       <h2>Os resultados reais. Com nome, número e tempo.</h2>
       <div class="rule"></div>
     </div>
-    <div class="resultados">
-      <div class="card-result destaque reveal">
-        <div>
-          <h4>Clínica DenttMaster</h4>
-          <div class="result-num"><span class="from">R$65K</span><span class="to">→</span><span class="go" data-count-to="250">R$0K</span></div>
-          <span class="result-tag">Em 3 meses</span>
-          <p>Não foi sorte — foi posicionamento, processo comercial e tráfego pago com estratégia específica pro perfil de paciente da clínica.</p>
-        </div>
-        <div class="mini-chart-wrap">
-          <div class="mini-chart" aria-hidden="true">
-            <div class="bar" style="--h:18%"></div>
-            <div class="bar" style="--h:26%"></div>
-            <div class="bar" style="--h:40%"></div>
-            <div class="bar" style="--h:62%"></div>
-            <div class="bar highlight" style="--h:100%"></div>
-          </div>
-          <span>Mês 1 → Mês 3</span>
-        </div>
-      </div>
-      <div class="card-result people reveal">
-        <div class="people-photo"><img src="assets/guilherme-crop.jpg" alt="Dr. Guilherme Nannetti"></div>
-        <div class="people-body">
-          <span class="eyebrow-sm">Dr. Guilherme Nannetti</span>
-          <div class="big-stat">&gt;R$100 mil<small>/mês</small></div>
-          <p>Atendia plantões longos e cansativos no SUS. Depois de 6 meses trabalhando junto, saiu do SUS e dos plantões — passou a faturar com paciente particular.</p>
-        </div>
-      </div>
-      <div class="card-result people reveal">
-        <div class="people-photo"><img src="assets/julia-crop.jpg" alt="Dra. Júlia Blazzi"></div>
-        <div class="people-body">
-          <span class="eyebrow-sm">Dra. Júlia Blazzi</span>
-          <div class="big-stat">R$25 mil<small>/dia</small></div>
-          <p>Médica dermatologista, vendia poucos procedimentos por mês. Hoje consegue vender procedimentos de alto valor com a metodologia de crescimento de faturamento.</p>
-        </div>
-      </div>
-      <div class="card-result lockup reveal">
-        <div class="lockup-mark">RR Instituto<br>Rafael Totti</div>
-        <p>Com apenas 3 meses de clínica aberta, entregou faturamento em <b style="color:var(--accent)">dezenas de milhares de reais</b> — o método gerou conversão todos os dias, desde o início.</p>
-      </div>
+    <div class="image-block glow sheen reveal">
+      <img src="assets/resultados-reais.jpg" alt="Resultados reais: Clínica DenttMaster de R$65 mil pra R$250 mil em 3 meses, Dr. Guilherme Nannetti acima de R$100 mil por mês, Dra. Júlia Blazzi R$25 mil por dia, Instituto Rafael Totti de zero a dezenas de milhares de reais">
     </div>
   </div>
 </section>
@@ -409,28 +332,8 @@ section[id]{scroll-margin-top:74px;}
       <h2>Eu sei exatamente onde você está agora.</h2>
       <div class="rule"></div>
     </div>
-    <div class="cenarios">
-      <div class="cenario reveal">
-        <div class="cenario-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.3 0-2 .8-3.2.8S6.9 3 5.6 3C4.3 3 3.3 4.2 3.3 6c0 2.7.9 4.2 1.5 7.3.3 1.5.8 3 1.8 3 .9 0 1.1-1.5 1.4-3 .2-1.1.6-2 2-2s1.8.9 2 2c.3 1.5.5 3 1.4 3 1 0 1.5-1.5 1.8-3 .6-3.1 1.5-4.6 1.5-7.3 0-1.8-1-3-2.3-3C15.1 3.8 14.4 3 12 3z"/></svg></div>
-        <span class="eyebrow-sm">Se você é dentista</span>
-        <h4>Investiu pesado na clínica, <span class="hl">mas atende pouco.</span></h4>
-        <p>Cadeira de última geração, equipamento importado, espaço impecável. Mas o paciente novo chega quase só por indicação. E quando aparece, você não sabe como apresentar valor pra fechar os procedimentos mais caros.</p>
-        <span class="ghost-num">01</span>
-      </div>
-      <div class="cenario reveal">
-        <div class="cenario-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></div>
-        <span class="eyebrow-sm">Se você é médico com agenda cheia de plano</span>
-        <h4>Atende muito, <span class="hl">mas não sobra nada.</span></h4>
-        <p>O plano paga pouco, a agenda está lotada, você está exausto — e o faturamento não reflete o quanto você trabalha. Sabe que precisa de mais particular, mas não sabe como chegar lá.</p>
-        <span class="ghost-num">02</span>
-      </div>
-      <div class="cenario reveal">
-        <div class="cenario-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4h3l7 4V6l-7 4H3z"/><path d="M17.5 9a3.5 3.5 0 0 1 0 6"/></svg></div>
-        <span class="eyebrow-sm">Se você já tentou marketing</span>
-        <h4>Contratou agência, gastou com anúncio, <span class="hl">mas não viu resultado.</span></h4>
-        <p>O lead chegou e a secretária não sabia o que fazer com ele — ou não atendeu rápido, ou mandou preço no primeiro contato. E você concluiu que marketing não funciona pra você.</p>
-        <span class="ghost-num">03</span>
-      </div>
+    <div class="image-block glow sheen reveal">
+      <img src="assets/cenarios.jpg" alt="Se você é dentista: investiu pesado na clínica mas atende pouco. Se você é médico com agenda cheia de plano: atende muito mas não sobra nada. Se você já tentou marketing: contratou agência, gastou com anúncio, mas não viu resultado.">
     </div>
     <div class="reversao reveal">Funciona. Só que nunca foi feito do jeito <span>certo</span>.</div>
   </div>
