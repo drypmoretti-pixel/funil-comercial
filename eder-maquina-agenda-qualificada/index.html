@@ -88,9 +88,10 @@ header.nav.scrolled{background:rgba(10,10,10,0.85);border-bottom-color:var(--lin
 .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--fg);}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-3px);}
 
+.full-bleed{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;}
 .hero-banner-wrap{position:relative;}
 .hero-banner-wrap::before{content:'';position:absolute;inset:-6% -4%;background:radial-gradient(circle,rgba(109,245,227,0.28),transparent 65%);filter:blur(60px);z-index:-1;animation:drift 14s ease-in-out infinite alternate;}
-.hero-banner{position:relative;border-radius:22px;overflow:hidden;box-shadow:0 40px 90px -36px rgba(0,0,0,0.7);border:1px solid var(--line);}
+.hero-banner{position:relative;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,0.7);}
 .hero-banner img{width:100%;display:block;animation:kenburns 16s ease-in-out infinite alternate;}
 @keyframes kenburns{from{transform:scale(1);}to{transform:scale(1.045);}}
 .hero-banner::after{content:'';position:absolute;top:0;left:-45%;width:30%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.10),transparent);animation:heroSheen 7s ease-in-out infinite;pointer-events:none;}
@@ -126,11 +127,11 @@ ul.check li:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 .bg-deep{background:var(--bg-deep);}
 
 /* blocos de imagem cheia (com efeito) */
-.image-block{position:relative;max-width:1100px;margin:0 auto;}
-.image-block img{width:100%;display:block;border-radius:20px;border:1px solid var(--line);box-shadow:0 30px 70px -30px rgba(0,0,0,0.6);transition:transform .4s ease;}
+.image-block{position:relative;}
+.image-block img{width:100%;display:block;transition:transform .4s ease;}
 .image-block:hover img{transform:scale(1.01);}
 .image-block.glow::before{content:'';position:absolute;inset:-6% -4%;background:radial-gradient(circle,rgba(109,245,227,0.25),transparent 65%);filter:blur(50px);z-index:-1;animation:drift 12s ease-in-out infinite alternate;}
-.image-block.sheen{overflow:hidden;border-radius:20px;}
+.image-block.sheen{overflow:hidden;}
 .image-block.sheen::after{content:'';position:absolute;top:0;left:-40%;width:30%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.09),transparent);animation:heroSheen 8s ease-in-out infinite;pointer-events:none;}
 @media(prefers-reduced-motion:reduce){.image-block.glow::before{animation:none;}.image-block.sheen::after{display:none;}}
 
@@ -220,7 +221,7 @@ section[id]{scroll-margin-top:74px;}
   <div class="wrap">
     <h1 class="sr-only">A Máquina Agenda Qualificada que tira sua clínica da dependência de indicação — Eder Santos, especialista em crescimento de clínicas médicas e odontológicas</h1>
     <div class="hero-banner-wrap reveal">
-      <div class="hero-banner">
+      <div class="hero-banner full-bleed">
         <img src="assets/hero-banner.jpg" alt="A Máquina Agenda Qualificada — Eder Santos, especialista em marketing médico e odontológico. Clínica DenttMaster saiu de R$65 mil pra R$250 mil por mês em 3 meses com a metodologia.">
         <a class="hero-hit hero-hit-primary" href="#cta" aria-label="Quero meu diagnóstico gratuito"></a>
         <a class="hero-hit hero-hit-ghost" href="#diagnostico" aria-label="Ver como funciona"></a>
@@ -277,7 +278,7 @@ section[id]{scroll-margin-top:74px;}
       <h2>Os resultados reais. Com nome, número e tempo.</h2>
       <div class="rule"></div>
     </div>
-    <div class="image-block glow sheen reveal">
+    <div class="image-block full-bleed glow sheen reveal">
       <img src="assets/resultados-reais.jpg" alt="Resultados reais: Clínica DenttMaster de R$65 mil pra R$250 mil em 3 meses, Dr. Guilherme Nannetti acima de R$100 mil por mês, Dra. Júlia Blazzi R$25 mil por dia, Instituto Rafael Totti de zero a dezenas de milhares de reais">
     </div>
   </div>
@@ -332,7 +333,7 @@ section[id]{scroll-margin-top:74px;}
       <h2>Eu sei exatamente onde você está agora.</h2>
       <div class="rule"></div>
     </div>
-    <div class="image-block glow sheen reveal">
+    <div class="image-block full-bleed glow sheen reveal">
       <img src="assets/cenarios.jpg" alt="Se você é dentista: investiu pesado na clínica mas atende pouco. Se você é médico com agenda cheia de plano: atende muito mas não sobra nada. Se você já tentou marketing: contratou agência, gastou com anúncio, mas não viu resultado.">
     </div>
     <div class="reversao reveal">Funciona. Só que nunca foi feito do jeito <span>certo</span>.</div>
