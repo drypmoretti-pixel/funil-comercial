@@ -1325,6 +1325,21 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
 
 .midia-falhou { font-size: .76rem; color: var(--critical); background: color-mix(in srgb, var(--critical) 10%, transparent);
   border: 1px solid color-mix(in srgb, var(--critical) 32%, transparent); border-radius: 8px; padding: 6px 9px; max-width: 260px; }
+
+/* ---- Relatório do dia (só admin) ---- */
+.rel-topo { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.rel-nav { display: flex; align-items: center; gap: 8px; }
+.rel-nav .btn { padding: 6px 12px; line-height: 1; }
+.rel-nav span { font-weight: 600; min-width: 150px; text-align: center; }
+.rel-tabela th:not(:first-child), .rel-tabela td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rel-tabela td.zero { color: var(--muted); }
+.rel-tabela tr.rel-grupo td { font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; font-weight: 700; color: var(--muted); padding-top: 14px; }
+.rel-tabela th .rel-papel { display: block; font-weight: 400; font-size: .68rem; }
+.rel-linha { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--grid); flex-wrap: wrap; }
+.rel-linha:last-child { border-bottom: none; }
+.rel-linha .rel-hora { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 42px; }
+.rel-linha .rel-nome { font-weight: 600; min-width: 0; }
+.rel-linha .pill { margin-left: auto; }
 </style>
 </head>
 <body>
@@ -1358,6 +1373,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
         <button data-tab="social" title="Playbook de Mensagens"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         <button data-tab="whatsapp" title="WhatsApp" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 11.9a8.6 8.6 0 0 1-12.8 7.5l-4.4 1.2 1.2-4.3A8.6 8.6 0 1 1 20.6 11.9Z"/><g transform="translate(7.1 6.8) scale(.425)" stroke-width="4.24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g></svg><span id="whats-badge" style="display:none; position:absolute; top:6px; right:10px; width:8px; height:8px; border-radius:50%; background:var(--critical);"></span></button>
+        <button data-tab="relatorio" title="Relatório do dia" id="nav-relatorio" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="17" x2="9" y2="14"/><line x1="12" y1="17" x2="12" y2="11"/><line x1="15" y1="17" x2="15" y2="13"/></svg></button>
         <button data-tab="admin" title="Admin" id="nav-admin" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M18 8l1.5 1.5L22 7"/></svg></button>
       </nav>
     </aside>
@@ -2140,6 +2156,32 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </section>
     </div>
 
+    <div class="tab-panel" id="tab-relatorio">
+      <section class="card">
+        <div class="section-title rel-topo">
+          <h2>Relatório do dia</h2>
+          <div class="rel-nav">
+            <button type="button" class="btn btn-secondary" onclick="relMudaDia(-1)" aria-label="Dia anterior">‹</button>
+            <span id="rel-dia-label"></span>
+            <button type="button" class="btn btn-secondary" id="rel-btn-prox" onclick="relMudaDia(1)" aria-label="Próximo dia">›</button>
+          </div>
+        </div>
+        <p class="muted" id="rel-gerado"></p>
+        <div class="tiles" id="rel-time" style="margin-top:14px;"></div>
+      </section>
+
+      <section class="card">
+        <h2>Por pessoa</h2>
+        <div class="tabela-wrap" style="margin-top:10px;"><table class="tabela-leads rel-tabela" id="rel-pessoas"></table></div>
+        <p class="muted" id="rel-aviso-whats" style="display:none; margin-top:10px;"></p>
+      </section>
+
+      <section class="card">
+        <h2>Reuniões e vendas do dia</h2>
+        <div id="rel-reunioes" style="margin-top:10px;"></div>
+      </section>
+    </div>
+
     <div class="tab-panel" id="tab-admin">
       <section class="card">
         <div class="section-title">
@@ -2765,6 +2807,8 @@ async function carregarDadosBase(userId) {
   currentPerfil = perfis.find(x => x.id === userId) || null;
   const navAdmin = document.getElementById('nav-admin');
   if (navAdmin) navAdmin.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
+  const navRel = document.getElementById('nav-relatorio');
+  if (navRel) navRel.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
 
   const popularSelect = (id, permitirVazio) => {
     const el = document.getElementById(id);
@@ -4995,10 +5039,10 @@ function importarCSV() {
 }
 
 // ---------- NOTIFICAÇÕES ----------
-const NOTIF_ROTULOS = { integracao: 'Integrações', atividade: 'Atividades', whatsapp: 'WhatsApp', crm: 'CRM', reuniao: 'Reuniões de hoje', checklist: 'Checklist' };
+const NOTIF_ROTULOS = { integracao: 'Integrações', relatorio: 'Relatório do dia', atividade: 'Atividades', whatsapp: 'WhatsApp', crm: 'CRM', reuniao: 'Reuniões de hoje', checklist: 'Checklist' };
 // atividade em primeiro: é a única que representa compromisso que a pessoa assumiu com ela mesma
 // integração em primeiro: chave morta é lead parando de entrar, ganha de qualquer outro aviso
-const NOTIF_ORDEM_TIPOS = ['integracao', 'atividade', 'whatsapp', 'crm', 'reuniao', 'checklist'];
+const NOTIF_ORDEM_TIPOS = ['integracao', 'relatorio', 'atividade', 'whatsapp', 'crm', 'reuniao', 'checklist'];
 
 async function carregarNotificacoes() {
   const notifs = [];
@@ -5020,6 +5064,20 @@ async function carregarNotificacoes() {
       });
     });
   } catch (e) { /* tabela ausente não pode derrubar o sino */ }
+
+  // relatório do dia: só pro admin. Antes das 19h aponta pro de ontem, depois pro de hoje — a chave
+  // embute a data, então cada dia vira uma notificação nova sem limpar nada no banco
+  if (currentPerfil && currentPerfil.papel === 'admin') {
+    const diaRel = relDiaDoAviso();
+    const [a, m, d] = diaRel.split('-');
+    notifs.push({
+      chave: `relatorio-${diaRel}`, tipo: 'relatorio', pessoaId: currentPerfil.id,
+      createdAt: `${diaRel}T${String(REL_HORA_AVISO).padStart(2, '0')}:00:00`,
+      titulo: `Relatório do dia ${d}/${m} pronto`,
+      descricao: 'Quem chamou quantos leads, cards movimentados, reuniões e vendas. Toque pra abrir.',
+      acao: `abrirRelatorio('${diaRel}')`,
+    });
+  }
 
   const desde3d = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
   const { data: msgs } = await sb.from('com_whatsapp_mensagens').select('*')
@@ -5166,7 +5224,7 @@ function renderNotificacoes() {
     <div class="notif-secao">
       <div class="notif-secao-titulo">${NOTIF_ROTULOS[t]}</div>
       ${porTipo[t].slice(0, 10).map(n => `
-        <div class="notif-item ${notifLidasSet.has(n.chave) ? '' : 'nao-lida'}" onclick="marcarNotifLida('${n.chave}')">
+        <div class="notif-item ${notifLidasSet.has(n.chave) ? '' : 'nao-lida'}" onclick="marcarNotifLida('${n.chave}')${n.acao ? ';' + n.acao : ''}">
           <div class="notif-item-titulo">${n.titulo}</div>
           ${n.descricao ? `<div class="notif-item-desc">${n.descricao}</div>` : ''}
           <div class="notif-item-hora">${fmtNotifHora(n.createdAt)}</div>
@@ -5176,6 +5234,139 @@ function renderNotificacoes() {
   `).join('');
   corpo.innerHTML = secoes || '<div class="empty" style="padding:20px;">Nenhuma notificação por aqui.</div>';
 }
+
+// ---------- RELATÓRIO DO DIA (só admin) ----------
+// Tudo é calculado no banco pela RPC relatorio_diario(p_dia) — sem foto guardada: abrir o
+// relatório de um dia passado refaz a conta com o que está no banco agora.
+const REL_HORA_AVISO = 19;   // a partir desse horário o sino do admin avisa que o relatório do dia está pronto
+let relDia = null;
+
+function relEsc(t) {
+  return String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function relDiaDoAviso() {
+  const agora = new Date();
+  return agora.getHours() >= REL_HORA_AVISO ? hojeStr() : dataLocalStr(new Date(Date.now() - 24 * 60 * 60 * 1000));
+}
+
+function relMudaDia(delta) {
+  const d = new Date((relDia || hojeStr()) + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  const novo = dataLocalStr(d);
+  if (novo > hojeStr()) return;
+  carregarRelatorio(novo);
+}
+
+function abrirRelatorio(dia) {
+  const btn = document.querySelector('.sidebar nav button[data-tab="relatorio"]');
+  if (btn) btn.click();
+  carregarRelatorio(dia);
+  const painel = document.getElementById('notif-panel');
+  if (painel) painel.classList.remove('aberto');
+}
+
+async function carregarRelatorio(dia) {
+  relDia = dia || relDia || hojeStr();
+  const d = new Date(relDia + 'T12:00:00');
+  const ehHoje = relDia === hojeStr();
+  document.getElementById('rel-dia-label').textContent = (ehHoje ? 'Hoje, ' : '') +
+    d.toLocaleDateString('pt-BR', { weekday: ehHoje ? undefined : 'short', day: '2-digit', month: '2-digit' });
+  document.getElementById('rel-btn-prox').disabled = ehHoje;
+  document.getElementById('rel-gerado').textContent = 'Carregando...';
+
+  const { data, error } = await sb.rpc('relatorio_diario', { p_dia: relDia });
+  if (error || !data) {
+    document.getElementById('rel-gerado').textContent = 'Não consegui montar o relatório: ' + (error ? error.message : 'sem resposta');
+    return;
+  }
+  if (data.dia !== relDia) return;   // o usuário já navegou pra outro dia enquanto este carregava
+  renderRelatorio(data, ehHoje);
+}
+
+function renderRelatorio(r, ehHoje) {
+  const t = r.time;
+  const hora = new Date(r.gerado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('rel-gerado').textContent = ehHoje
+    ? `Parcial, atualizado às ${hora}. O dia ainda está rolando.`
+    : 'Dia fechado.';
+
+  const reunioes = r.reunioes || [];
+  const realizadas = reunioes.filter(x => ['realizada', 'proposta', 'venda'].includes(x.status)).length;
+  const vendasDia = (r.vendas || []).reduce((s, v) => s + Number(v.valor || 0), 0);
+  const pctMes = t.meta_mes ? Math.round((t.faturamento_mes / t.meta_mes) * 100) : 0;
+  document.getElementById('rel-time').innerHTML = `
+    <div class="tile"><div class="label">Leads novos</div><div class="value">${t.leads_tally}</div><div class="sub">${t.mql} viraram MQL</div></div>
+    <div class="tile"><div class="label">Reuniões do dia</div><div class="value">${reunioes.length}</div><div class="sub">${realizadas} realizada(s)</div></div>
+    <div class="tile"><div class="label">Vendas do dia</div><div class="value ${r.vendas.length ? 'good' : ''}">${r.vendas.length}</div><div class="sub">${fmtBRL(vendasDia)}</div></div>
+    <div class="tile"><div class="label">Faturamento do mês</div><div class="value">${fmtBRL(Number(t.faturamento_mes))}</div><div class="sub">${pctMes}% da meta de ${fmtBRL(t.meta_mes)} · ${t.vendas_mes} venda(s)</div></div>
+  `;
+
+  const pessoas = r.pessoas || [];
+  const PAPEL = { sdr: 'SDR', vendedor: 'Closer', admin: 'Admin' };
+  const cel = v => `<td class="${Number(v) ? '' : 'zero'}">${v}</td>`;
+  const linha = (rotulo, fn) => `<tr><td>${rotulo}</td>${pessoas.map(p => cel(fn(p))).join('')}</tr>`;
+  const grupo = rotulo => `<tr class="rel-grupo"><td colspan="${pessoas.length + 1}">${rotulo}</td></tr>`;
+  const checklist = p => {
+    if (!p.checklist) return '<td class="zero">não preencheu</td>';
+    const bateu = p.checklist.filter(c => c.valor >= c.meta).length;
+    return `<td title="${relEsc(p.checklist.map(c => `${c.nome}: ${c.valor}/${c.meta}`).join(' · '))}">${bateu}/${p.checklist.length} metas</td>`;
+  };
+  document.getElementById('rel-pessoas').innerHTML = `
+    <thead><tr><th></th>${pessoas.map(p => `<th>${relEsc(p.nome)}<span class="rel-papel">${PAPEL[p.papel] || p.papel}</span></th>`).join('')}</tr></thead>
+    <tbody>
+      ${grupo('WhatsApp')}
+      ${linha('Pessoas chamadas', p => p.contatos)}
+      ${linha('Primeiro contato', p => p.contatos_novos)}
+      ${linha('Mensagens enviadas', p => p.msg_enviadas)}
+      ${linha('Leads que responderam', p => p.responderam)}
+      ${grupo('CRM')}
+      ${linha('Cards movimentados', p => p.cards_mexidos)}
+      ${linha('Mudanças de etapa', p => p.movimentos)}
+      ${linha('Tarefas concluídas', p => p.tarefas)}
+      ${linha('Notas', p => p.notas)}
+      ${linha('Marcados como perdido', p => p.perdidos)}
+      ${grupo('Resultado')}
+      ${linha('Reuniões agendadas', p => p.agendou)}
+      ${linha('Vendas', p => p.vendas)}
+      <tr><td>Valor vendido</td>${pessoas.map(p => `<td class="${Number(p.valor_vendas) ? '' : 'zero'}">${fmtBRL(Number(p.valor_vendas))}</td>`).join('')}</tr>
+      <tr><td>Checklist</td>${pessoas.map(checklist).join('')}</tr>
+    </tbody>
+  `;
+
+  // o WhatsApp enviado pelo celular só entra se a captura estiver no ar — zero geral num dia útil
+  // é mais provável ser a captura parada do que o time inteiro sem mandar nada
+  const totalEnviadas = pessoas.reduce((s, p) => s + Number(p.msg_enviadas || 0), 0);
+  const aviso = document.getElementById('rel-aviso-whats');
+  aviso.style.display = totalEnviadas ? 'none' : '';
+  aviso.textContent = 'Nenhuma mensagem enviada foi registrada neste dia. Se o time mandou mensagem pelo celular, a captura do WhatsApp pode estar fora.';
+
+  const STATUS = { agendada: 'Agendada', realizada: 'Realizada', proposta: 'Proposta', venda: 'Venda', no_show: 'Não apareceu', remarcada: 'Remarcou', perdida: 'Perdida' };
+  const linhasReuniao = reunioes.map(x => `
+    <div class="rel-linha">
+      <span class="rel-hora">${x.hora || '--:--'}</span>
+      <span class="rel-nome">${relEsc(x.cliente)}</span>
+      <span class="muted">${[x.sdr, x.vendedor].filter(Boolean).map(relEsc).join(' → ')}</span>
+      <span class="pill">${STATUS[x.status] || relEsc(x.status)}</span>
+    </div>`).join('');
+  const linhasVenda = (r.vendas || []).map(v => `
+    <div class="rel-linha">
+      <span class="rel-hora">venda</span>
+      <span class="rel-nome">${relEsc(v.cliente)}</span>
+      <span class="muted">${relEsc(v.vendedor || '')}</span>
+      <span class="pill">${fmtBRL(Number(v.valor))}</span>
+    </div>`).join('');
+  document.getElementById('rel-reunioes').innerHTML = (linhasReuniao + linhasVenda) ||
+    '<div class="empty">Nenhuma reunião marcada nem venda neste dia.</div>';
+}
+
+// se o painel ficar aberto até o horário do aviso, o sino acende sozinho sem precisar recarregar
+(function agendarAvisoRelatorio() {
+  const alvo = new Date();
+  alvo.setHours(REL_HORA_AVISO, 0, 30, 0);
+  const falta = alvo - new Date();
+  if (falta > 0) setTimeout(() => { if (currentPerfil) carregarNotificacoes(); }, falta);
+})();
 
 // ---------- GERAÇÃO DE DEMANDA (TALLY) ----------
 // as chamadas passam pelo proxy no n8n — a chave real do Tally nunca fica no código público
@@ -9000,6 +9191,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
     ajustarIndicadores(btn.dataset.tab);
     if (btn.dataset.tab === 'whatsapp') document.getElementById('whats-badge').style.display = 'none';
+    if (btn.dataset.tab === 'relatorio') carregarRelatorio();
   });
 });
 </script>
