@@ -3,192 +3,293 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Programa de Indicação — Método Ampla Elite</title>
+<title>Programa de Indicação | Máquina Agenda Qualificada — Eder Santos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+:root{
+  --bg:#050c0e; --surface:#0e1a1c; --surface-2:#142326; --line:#1d2f32;
+  --fg:#FFFFFF; --fg-muted:#9fb0b3;
+  --accent:#6DF5E3; --accent-2:#21C45D;
+  --font-display:'Poppins',-apple-system,sans-serif;
+  --font-body:'Inter',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+@page{size:297mm 210mm;margin:0;}
+html,body{background:#020607;}
+body{color:var(--fg);font-family:var(--font-body);line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+img{display:block;max-width:100%;}
+h1,h2,h3{font-family:var(--font-display);line-height:1.12;}
+.hl{color:var(--accent);}
+.eyebrow{font:700 10.5px var(--font-display);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);}
+.rule{width:64px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:2px;margin:14px 0 0;}
+.muted{color:var(--fg-muted);}
 
-  :root{
-    --bg:#1A1A1A;
-    --bg-deep:#0A0A0A;
-    --surface:#2A2A2A;
-    --surface-2:#333333;
-    --fg:#FFFFFF;
-    --fg-muted:#9CA2AF;
-    --accent:#6DF5E3;
-    --accent-2:#21C45D;
-    --warn:#FFB84D;
-    --line:#3A3A3A;
-    --font-display:'Poppins',-apple-system,sans-serif;
-    --font-body:'Inter',-apple-system,sans-serif;
-    --font-mono:'IBM Plex Mono',ui-monospace,monospace;
-  }
+.deck{display:flex;flex-direction:column;align-items:center;gap:28px;padding:28px 0 60px;}
+.page{position:relative;width:297mm;height:210mm;overflow:hidden;background:var(--bg);padding:15mm 18mm;
+  background-image:radial-gradient(520px circle at 8% 12%,rgba(109,245,227,.10),transparent 60%),radial-gradient(520px circle at 95% 95%,rgba(33,196,93,.09),transparent 60%);
+  box-shadow:0 30px 80px -30px rgba(0,0,0,.8);}
+.page::before{content:'';position:absolute;left:0;top:0;right:0;height:5px;background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+.pfoot{position:absolute;left:18mm;right:18mm;bottom:9mm;display:flex;justify-content:space-between;align-items:center;font-size:9.5px;color:var(--fg-muted);letter-spacing:.04em;}
+.pfoot img{height:18px;}
+.phead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8mm;}
+.phead h2{font-size:28px;margin-top:8px;}
+.pnum{font:800 44px var(--font-display);color:var(--line);line-height:1;}
 
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);}
-  body{font-family:var(--font-body);}
-  img{max-width:100%;display:block;}
-  h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;}
-  p{margin:0;}
-  .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+/* capa */
+.cover{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:6mm;padding-right:0;}
+.cover .logo{height:40px;margin-bottom:12mm;}
+.cover h1{font-size:50px;font-weight:800;letter-spacing:-.01em;margin:10px 0 16px;}
+.cover .lede{font-size:15px;color:var(--fg-muted);max-width:125mm;margin-bottom:9mm;}
+.chips{display:flex;flex-wrap:wrap;gap:10px;}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:100px;padding:9px 16px;font-size:12.5px;display:flex;align-items:center;gap:8px;}
+.chip b{font-family:var(--font-display);color:var(--accent);}
+.cover-photo{position:relative;align-self:end;margin-bottom:-15mm;}
+.cover-photo::before{content:'';position:absolute;inset:8% 4%;background:radial-gradient(circle,rgba(109,245,227,.42),transparent 66%);filter:blur(40px);}
+.cover-photo img{position:relative;width:100%;}
 
-  .bar{height:7px;background:var(--accent);}
-  .page{max-width:720px;margin:0 auto;padding:0 24px;}
-  .section{padding:52px 0;}
-  .section + .section{border-top:1px solid var(--line);}
+/* imagem-bloco */
+.img-full{border-radius:14px;overflow:hidden;border:1px solid var(--line);}
+.img-full img{width:100%;}
 
-  /* ---- cover ---- */
-  .cover{text-align:center;padding:64px 24px 56px;}
-  .cover img.logo{width:140px;margin:0 auto 26px;}
-  .eyebrow{font:600 0.72rem var(--font-body);letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
-  .cover h1{font-size:clamp(1.9rem,5.6vw,2.7rem);font-weight:800;color:var(--fg);line-height:1.1;}
-  .cover .lede{font-size:1.05rem;line-height:1.6;color:var(--fg-muted);max-width:50ch;margin:18px auto 0;}
-  .rule{height:1px;background:var(--line);max-width:420px;margin:32px auto;}
-  .sign-card{background:var(--surface);border-left:3px solid var(--accent-2);border-radius:6px;padding:18px 22px;max-width:420px;margin:0 auto;text-align:left;}
-  .sign-card .name{font:600 1.05rem var(--font-display);color:var(--fg);}
-  .sign-card .role{font-size:0.9rem;color:var(--accent);margin-top:3px;}
-  .sign-card .sub{font-size:0.82rem;color:var(--fg-muted);margin-top:2px;}
-  .download-btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--bg-deep);font:600 0.85rem var(--font-body);text-decoration:none;padding:10px 22px;border-radius:24px;margin-top:24px;}
+/* método */
+.method{display:grid;grid-template-columns:.95fr 1.05fr;gap:10mm;align-items:center;}
+.method .img-full{border:none;border-radius:16px;}
+.method p.intro{font-size:13.5px;color:var(--fg-muted);margin:12px 0 7mm;}
+.pillars{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.pillars li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;}
+.pillars .n{font:800 13px var(--font-display);color:var(--bg);background:var(--accent);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.pillars h3{font-size:13.5px;margin-bottom:2px;}
+.pillars p{font-size:11.5px;color:var(--fg-muted);}
 
-  /* ---- section head ---- */
-  .section-head{margin-bottom:20px;}
-  .section-head h2{font-size:clamp(1.3rem,3vw,1.55rem);font-weight:700;color:var(--fg);}
-  .underline{width:120px;height:3px;background:var(--accent-2);border-radius:2px;margin-top:10px;}
-  .section-sub{color:var(--fg-muted);font-size:0.96rem;line-height:1.6;max-width:58ch;margin-top:14px;}
+/* como funciona */
+.how{display:grid;grid-template-columns:1.25fr .75fr;gap:10mm;align-items:stretch;}
+.steps{list-style:none;display:flex;flex-direction:column;gap:12px;}
+.steps li{position:relative;display:grid;grid-template-columns:52px 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+.steps .n{font:800 30px var(--font-display);color:var(--accent);line-height:1;}
+.steps h3{font-size:16px;margin-bottom:5px;}
+.steps p{font-size:12.5px;color:var(--fg-muted);}
+.commission{background:linear-gradient(160deg,#10302c,var(--surface));border:1px solid var(--accent-2);border-radius:18px;padding:22px 22px;display:flex;flex-direction:column;justify-content:center;text-align:center;position:relative;overflow:hidden;}
+.commission .big{font:800 88px var(--font-display);color:var(--accent);line-height:1;margin:10px 0 4px;text-shadow:0 0 40px rgba(109,245,227,.35);}
+.commission .sub{font-size:13px;color:var(--fg);font-weight:600;}
+.commission .note{font-size:11.5px;color:var(--fg-muted);margin-top:12px;}
+.example{margin-top:16px;background:rgba(5,12,14,.6);border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:11.5px;color:var(--fg-muted);}
+.example b{color:var(--accent);font-family:var(--font-display);font-size:15px;display:block;margin-top:2px;}
 
-  /* ---- steps ---- */
-  ol.steps{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-direction:column;gap:16px;counter-reset:step;}
-  ol.steps li{display:flex;gap:16px;align-items:flex-start;}
-  ol.steps li::before{counter-increment:step;content:counter(step);font:700 0.85rem var(--font-mono);color:var(--bg-deep);background:var(--accent);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  ol.steps .step-body{padding-top:3px;}
-  ol.steps .step-title{font:600 1rem var(--font-display);color:var(--fg);}
-  ol.steps .step-desc{font-size:0.9rem;color:var(--fg-muted);line-height:1.55;margin-top:4px;}
+/* recomendar */
+.recommend{display:grid;grid-template-columns:1fr 1fr;gap:9mm;}
+.block h3{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.block h3::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);}
+.ticks{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:7mm;}
+.ticks li{position:relative;padding-left:22px;font-size:12.5px;color:#d7e2e3;}
+.ticks li::before{content:'';position:absolute;left:0;top:5px;width:12px;height:7px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg);}
+.ticks.no li::before{content:'×';border:none;transform:none;top:-3px;left:1px;color:#ff8a7a;font:700 15px var(--font-display);width:auto;height:auto;}
+.script{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:14px;padding:18px 20px;}
+.script .tag{font:700 10px var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:block;}
+.script p{font-size:13px;color:#e6eeee;font-style:italic;line-height:1.6;}
+.script p + p{margin-top:9px;}
+.script .tip{font-style:normal;font-size:11px;color:var(--fg-muted);margin-top:12px;}
 
-  /* ---- price block ---- */
-  .price-block{background:var(--bg-deep);border-top:3px solid var(--accent-2);border-bottom:3px solid var(--accent-2);border-radius:6px;padding:30px 20px;text-align:center;margin-top:8px;}
-  .price-block .label{font-size:0.82rem;color:var(--fg);text-transform:uppercase;letter-spacing:0.06em;}
-  .price-block .value{font:700 2.6rem var(--font-mono);color:var(--accent);margin-top:10px;}
-  .price-block .note{font-size:0.88rem;color:var(--fg-muted);margin-top:10px;max-width:44ch;margin-left:auto;margin-right:auto;line-height:1.5;}
+/* regras */
+.rules{display:grid;grid-template-columns:1.2fr .8fr;gap:10mm;align-items:center;}
+.rule-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.rule-list li{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:13px;}
+.rule-list .ic{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font:700 12px var(--font-display);}
+.rule-list li.key{border-color:var(--accent-2);background:linear-gradient(120deg,#10302c,var(--surface));}
+.final{text-align:center;}
+.final h2{font-size:30px;margin-bottom:12px;}
+.final p{font-size:13px;color:var(--fg-muted);margin-bottom:18px;}
+.final .photo{width:190px;margin:0 auto 14px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);aspect-ratio:1;background:#0b1a1c;}
+.final .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;transform:scale(1.35);transform-origin:50% 10%;}
+.final .sig{font:700 16px var(--font-display);}
+.final .role{font-size:11px;color:var(--fg-muted);letter-spacing:.06em;}
 
-  /* ---- checklist ---- */
-  ul.check{list-style:none;margin:16px 0 0;padding:0;border-left:3px solid var(--accent-2);border-radius:0 6px 6px 0;overflow:hidden;}
-  ul.check li{background:var(--surface);color:var(--fg);font-size:0.92rem;padding:12px 16px;border-bottom:1px solid var(--bg);display:flex;gap:10px;}
-  ul.check li:last-child{border-bottom:none;}
-  ul.check li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
-  ul.check li.pending::before{content:'?';color:var(--warn);}
-  ul.check li.pending{color:var(--fg-muted);}
+/* ocupar a página inteira */
+.how,.recommend,.rules{height:132mm;align-items:center;}
+.steps{gap:16px;}
+.steps li{padding:22px 24px;}
+.steps .n{font-size:36px;}
+.steps h3{font-size:19px;margin-bottom:7px;}
+.steps p{font-size:14px;}
+.commission{height:100%;padding:28px;}
+.commission .big{font-size:110px;}
+.commission .sub{font-size:15px;}
+.commission .note{font-size:12.5px;}
+.example{font-size:12.5px;padding:16px;}
+.example b{font-size:18px;}
+.block h3{font-size:18px;margin-bottom:14px;}
+.ticks{gap:11px;margin-bottom:9mm;}
+.ticks li{font-size:14.5px;padding-left:26px;}
+.script{padding:28px 30px;}
+.script p{font-size:15px;}
+.script p + p{margin-top:12px;}
+.script .tip{font-size:12px;margin-top:18px;}
+.rule-list{gap:13px;}
+.rule-list li{font-size:14px;padding:15px 18px;}
 
-  /* ---- final cta ---- */
-  .cta{text-align:center;padding:60px 24px;}
-  .cta .eyebrow2{font:700 1.35rem var(--font-display);color:var(--fg);}
-  .cta h2{font-size:clamp(1.4rem,4.2vw,1.9rem);font-weight:800;color:var(--accent);margin-top:6px;}
-  .cta .underline{margin:14px auto 0;}
-  .cta p.lede2{color:var(--fg-muted);font-size:0.95rem;max-width:48ch;margin:18px auto 0;line-height:1.6;}
-
-  footer{text-align:center;padding:24px 24px 36px;font-size:0.8rem;color:var(--fg-muted);}
-
-  @media print{
-    .download-btn{display:none !important;}
-    body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    .section{page-break-inside:avoid;}
-  }
+.download{position:fixed;right:22px;bottom:22px;z-index:10;background:var(--accent);color:var(--bg);font:700 14px var(--font-display);text-decoration:none;padding:13px 22px;border-radius:100px;box-shadow:0 10px 30px -8px rgba(109,245,227,.6);}
+@media print{
+  html,body{background:var(--bg);}
+  .deck{padding:0;gap:0;zoom:1 !important;}
+  .page{box-shadow:none;page-break-after:always;break-after:page;}
+  .download{display:none !important;}
+}
 </style>
 </head>
 <body>
+<a class="download" href="programa-indicacao.pdf" download>Baixar PDF</a>
+<main class="deck" id="deck">
 
-<div class="bar"></div>
-
-<div class="cover">
-  <img class="logo" src="logo.png" alt="Método Ampla Elite">
-  <div class="eyebrow">Programa de Indicação · Método Ampla Elite</div>
-  <h1>Indique uma clínica, ganhe R$450</h1>
-  <p class="lede">Todo cliente ativo pode indicar donos e gestores de clínica que precisam de agenda cheia com o paciente certo. Cada indicação que fecha como cliente pagante vira comissão pra quem indicou.</p>
-  <a class="download-btn" href="programa-indicacao.pdf" download>Baixar PDF</a>
-  <div class="rule"></div>
-  <div class="sign-card">
-    <div class="name">Éder Santos</div>
-    <div class="role">Ampla Marketing Para Clínicas</div>
-    <div class="sub">lpedersantos.com.br</div>
-  </div>
-</div>
-
-<div class="bar"></div>
-
-<div class="page">
-
-  <div class="section">
-    <div class="section-head">
-      <h2>Como funciona</h2>
-      <div class="underline"></div>
-      <p class="section-sub">Três passos, do seu lado até o dinheiro cair na conta.</p>
-    </div>
-    <ol class="steps">
-      <li>
-        <div class="step-body">
-          <div class="step-title">Indique</div>
-          <div class="step-desc">Mande o contato de um dono ou gestor de clínica que precisa estruturar o crescimento de agendamentos — pode ser um colega, um fornecedor, alguém que você conhece do setor.</div>
-        </div>
-      </li>
-      <li>
-        <div class="step-body">
-          <div class="step-title">A gente cuida do resto</div>
-          <div class="step-desc">A equipe da Ampla entra em contato e oferece um diagnóstico gratuito da clínica indicada — você não precisa vender nada, só apresentar.</div>
-        </div>
-      </li>
-      <li>
-        <div class="step-body">
-          <div class="step-title">Fechou, você recebe</div>
-          <div class="step-desc">Se a indicação virar cliente pagante (assinou um dos planos), a comissão é sua — sem precisar esperar o próximo ciclo de pagamento.</div>
-        </div>
-      </li>
-    </ol>
-  </div>
-
-  <div class="section">
-    <div class="section-head">
-      <h2>Sua comissão</h2>
-      <div class="underline"></div>
-    </div>
-    <div class="price-block">
-      <div class="label">Por indicação convertida em fechamento</div>
-      <div class="value num">R$ 450</div>
-      <p class="note">15% do valor do setup (R$3.000) de cada cliente novo fechado a partir da sua indicação.</p>
+<!-- 1. CAPA -->
+<section class="page cover">
+  <div>
+    <img class="logo" src="assets/logo.png" alt="Método Ampla Elite">
+    <span class="eyebrow">Programa de Indicação · Máquina Agenda Qualificada</span>
+    <h1>Indique uma clínica.<br><span class="hl">Ganhe 10%.</span></h1>
+    <p class="lede">Você já viu de perto o que a Máquina Agenda Qualificada faz numa clínica. Agora pode levar isso pra um amigo — e ser recompensado por cada indicação que vira cliente.</p>
+    <div class="chips">
+      <span class="chip"><b>10%</b> de comissão</span>
+      <span class="chip">Válido no <b>1º pagamento</b></span>
+      <span class="chip">Você indica, <b>o Éder cuida do resto</b></span>
     </div>
   </div>
+  <div class="cover-photo"><img src="assets/eder-foto.webp" alt="Eder Santos"></div>
+  <div class="pfoot"><span>Eder Santos · Especialista em crescimento de clínicas médicas e odontológicas</span><span></span></div>
+</section>
 
-  <div class="section">
-    <div class="section-head">
-      <h2>Regras</h2>
-      <div class="underline"></div>
-    </div>
-    <ul class="check">
-      <li>Vale pra qualquer cliente ativo, plano Essencial ou Elite</li>
-      <li>A indicação precisa ser uma clínica que ainda não é cliente da Ampla</li>
-      <li>A comissão é paga por indicação convertida em fechamento — não por lead enviado nem por diagnóstico agendado</li>
-      <li class="pending">Prazo de pagamento da comissão — a definir com o Éder</li>
-      <li class="pending">Canal de envio da indicação (WhatsApp direto, formulário ou link exclusivo) — a definir com o Éder</li>
+<!-- 2. QUEM SOMOS -->
+<section class="page">
+  <div class="phead">
+    <div><span class="eyebrow">Quem somos</span><h2>Quem está por trás da <span class="hl">Máquina Agenda Qualificada</span></h2><div class="rule"></div></div>
+    <span class="pnum">01</span>
+  </div>
+  <div class="img-full"><img src="assets/sobre.jpg" alt="Eder Santos: da agência generalista à metodologia 100% focada em clínicas médicas e odontológicas"></div>
+  <div class="pfoot"><span>Programa de Indicação · Máquina Agenda Qualificada</span><img src="assets/logo.png" alt=""></div>
+</section>
+
+<!-- 3. O QUE FAZEMOS -->
+<section class="page method">
+  <div class="img-full"><img src="assets/ciclo-metodo.jpg" alt="Ciclo da Máquina Agenda Qualificada"></div>
+  <div>
+    <span class="eyebrow">O que fazemos</span>
+    <h2 style="font-size:28px;margin-top:8px;">O método <span class="hl">Máquina Agenda Qualificada</span></h2>
+    <div class="rule"></div>
+    <p class="intro">Um sistema completo pra clínicas médicas e odontológicas saírem da dependência de indicação e terem agenda cheia de paciente particular — da captação até o comercial fechando o tratamento.</p>
+    <ul class="pillars">
+      <li><span class="n">1</span><div><h3>Captação de Pacientes</h3><p>Tráfego pago estruturado pra atrair todo dia o perfil certo de paciente particular.</p></div></li>
+      <li><span class="n">2</span><div><h3>Recuperação de Base Inteligente</h3><p>Reativa quem já passou pela clínica, pediu orçamento ou sumiu no meio do caminho.</p></div></li>
+      <li><span class="n">3</span><div><h3>Máquina de Reaquecimento</h3><p>Fluxo automático que reaquece quem esfriou antes de virar lead perdido.</p></div></li>
+      <li><span class="n">4</span><div><h3>Treinamento de Vendas</h3><p>Recepção e comercial preparados pra transformar lead em paciente fechado.</p></div></li>
+      <li><span class="n">5</span><div><h3>CRM Inteligente</h3><p>Cada oportunidade organizada no MetaLead, com follow-up automático.</p></div></li>
     </ul>
   </div>
+  <div class="pfoot"><span>Programa de Indicação · Máquina Agenda Qualificada</span><img src="assets/logo.png" alt=""></div>
+</section>
 
-</div>
-
-<div class="bar"></div>
-
-<div class="cta">
-  <div class="eyebrow2">CONHECE ALGUÉM QUE PRECISA</div>
-  <h2>DE AGENDA CHEIA?</h2>
-  <div class="underline" style="margin-left:auto;margin-right:auto;"></div>
-  <p class="lede2">Manda o contato agora — o diagnóstico é por nossa conta.</p>
-  <div class="rule"></div>
-  <div class="sign-card" style="margin:0 auto;">
-    <div class="name">Éder Santos</div>
-    <div class="role">Ampla Marketing Para Clínicas</div>
-    <div class="sub">lpedersantos.com.br</div>
+<!-- 4. RESULTADOS -->
+<section class="page">
+  <div class="phead">
+    <div><span class="eyebrow">Resultados reais</span><h2>O que você vai estar indicando: <span class="hl">resultado com nome, número e tempo</span></h2><div class="rule"></div></div>
+    <span class="pnum">02</span>
   </div>
-</div>
+  <div class="img-full"><img src="assets/resultados-reais.jpg" alt="Clínica DenttMaster de R$65 mil pra R$250 mil em 3 meses; Dr. Guilherme Nannetti acima de R$100 mil por mês; Dra. Júlia Blazzi R$25 mil por dia; Instituto Rafael Totti de zero a dezenas de milhares de reais"></div>
+  <div class="pfoot"><span>Programa de Indicação · Máquina Agenda Qualificada</span><img src="assets/logo.png" alt=""></div>
+</section>
 
-<div class="bar"></div>
+<!-- 5. COMO FUNCIONA -->
+<section class="page">
+  <div class="phead">
+    <div><span class="eyebrow">Como funciona</span><h2>Três passos. <span class="hl">Você só faz o primeiro.</span></h2><div class="rule"></div></div>
+    <span class="pnum">03</span>
+  </div>
+  <div class="how">
+    <ol class="steps">
+      <li><span class="n">01</span><div><h3>Você indica</h3><p>Pensou num dono ou gestor de clínica que precisa de mais paciente particular? Pergunte se pode passar o contato e envie pro Éder o nome, a clínica e o telefone da pessoa.</p></div></li>
+      <li><span class="n">02</span><div><h3>O Éder cuida do resto</h3><p>Ele chama a pessoa indicada pra um diagnóstico gratuito da clínica. Você não precisa vender nada, explicar preço nem acompanhar a negociação.</p></div></li>
+      <li><span class="n">03</span><div><h3>Fechou e pagou, você recebe</h3><p>Quando a clínica indicada fecha e realiza o primeiro pagamento, a sua comissão de 10% está garantida.</p></div></li>
+    </ol>
+    <div class="commission">
+      <span class="eyebrow">Sua comissão</span>
+      <div class="big">10%</div>
+      <div class="sub">do valor da implementação ou da primeira mensalidade</div>
+      <div class="note">Paga por clínica indicada que fecha e realiza o primeiro pagamento.</div>
+      <div class="example">Exemplo: a clínica indicada fecha com implementação de R$ 3.000<b>Você recebe R$ 300</b></div>
+    </div>
+  </div>
+  <div class="pfoot"><span>Programa de Indicação · Máquina Agenda Qualificada</span><img src="assets/logo.png" alt=""></div>
+</section>
 
-<footer>Programa de Indicação — Método Ampla Elite. Regras sujeitas a confirmação final com o Éder.</footer>
+<!-- 6. COMO RECOMENDAR -->
+<section class="page">
+  <div class="phead">
+    <div><span class="eyebrow">Como recomendar</span><h2>Como indicar pra um <span class="hl">amigo</span></h2><div class="rule"></div></div>
+    <span class="pnum">04</span>
+  </div>
+  <div class="recommend">
+    <div class="block">
+      <h3>Quem indicar</h3>
+      <ul class="ticks">
+        <li>Dono ou gestor de clínica médica ou odontológica</li>
+        <li>Clínica que depende de indicação e tem agenda irregular</li>
+        <li>Quem quer mais paciente particular e menos convênio</li>
+        <li>Quem já contratou agência e não viu resultado</li>
+      </ul>
+      <h3>Como falar</h3>
+      <ul class="ticks">
+        <li>Conte a sua experiência, do seu jeito</li>
+        <li>Peça permissão antes de passar o contato</li>
+        <li>Deixe o diagnóstico gratuito fazer o trabalho</li>
+      </ul>
+      <ul class="ticks no">
+        <li>Não prometa números nem fale de preço — isso o Éder mostra no diagnóstico</li>
+      </ul>
+    </div>
+    <div class="script">
+      <span class="tag">Mensagem pronta pra mandar</span>
+      <p>"Oi, [nome]! Tudo bem?</p>
+      <p>Tô trabalhando com o Éder Santos na minha clínica — ele é especialista em crescimento de clínicas médicas e odontológicas e tem me ajudado muito a [trazer mais paciente particular / organizar a agenda].</p>
+      <p>Lembrei de você. Ele faz um diagnóstico gratuito da clínica, sem compromisso. Posso passar seu contato pra ele te chamar?"</p>
+      <p class="tip">Troque o que está entre colchetes pelo resultado que você teve. Mensagem curta e pessoal funciona melhor que texto pronto de marketing.</p>
+    </div>
+  </div>
+  <div class="pfoot"><span>Programa de Indicação · Máquina Agenda Qualificada</span><img src="assets/logo.png" alt=""></div>
+</section>
 
+<!-- 7. REGRAS + CTA -->
+<section class="page">
+  <div class="phead">
+    <div><span class="eyebrow">Regras</span><h2>Quando a indicação <span class="hl">é válida</span></h2><div class="rule"></div></div>
+    <span class="pnum">05</span>
+  </div>
+  <div class="rules">
+    <ul class="rule-list">
+      <li class="key"><span class="ic">✓</span><span>A comissão é de <b>10% sobre o valor da implementação ou da primeira mensalidade</b> da clínica indicada.</span></li>
+      <li class="key"><span class="ic">✓</span><span>A indicação é válida quando a clínica indicada <b>fecha e realiza o primeiro pagamento</b>.</span></li>
+      <li><span class="ic">!</span><span>Contato enviado ou diagnóstico agendado, sozinhos, não geram comissão — só o fechamento com pagamento.</span></li>
+      <li><span class="ic">!</span><span>A clínica indicada não pode ser cliente atual do Éder.</span></li>
+      <li><span class="ic">✓</span><span>Qualquer cliente ativo pode participar.</span></li>
+    </ul>
+    <div class="final">
+      <div class="photo"><img src="assets/eder-foto.webp" alt="Eder Santos"></div>
+      <h2>Conhece alguém que precisa de <span class="hl">agenda cheia?</span></h2>
+      <p>Manda o contato pro Éder hoje.</p>
+      <div class="sig">Eder Santos</div>
+      <div class="role">Especialista em crescimento de clínicas médicas e odontológicas</div>
+    </div>
+  </div>
+  <div class="pfoot"><span>Programa de Indicação · Máquina Agenda Qualificada</span><img src="assets/logo.png" alt=""></div>
+</section>
+
+</main>
+<script>
+function fit(){
+  if(window.matchMedia('print').matches) return;
+  var deck=document.getElementById('deck');
+  var pw=297*96/25.4, avail=window.innerWidth-24;
+  deck.style.zoom = avail<pw ? (avail/pw).toFixed(3) : '';
+}
+window.addEventListener('resize',fit); fit();
+</script>
 </body>
 </html>
