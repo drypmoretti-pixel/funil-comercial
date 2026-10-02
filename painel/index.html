@@ -884,6 +884,25 @@ form.form-grid button { grid-column: 1 / -1; }
 }
 .btn-secondary { background: var(--field-bg) !important; color: var(--text-primary) !important; }
 
+/* ---- Atividades do dia ---- */
+.ad-botao { width: auto; padding: 8px 14px; display: inline-flex; align-items: center; gap: 7px; }
+.ad-badge { background: var(--critical); color: #fff; border-radius: 999px; font-size: .68rem; font-weight: 700; padding: 1px 7px; min-width: 18px; text-align: center; }
+.ad-badge.zero { background: var(--good); }
+.ad-grupo { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--muted); margin: 16px 0 4px; }
+.ad-grupo.atrasada { color: var(--critical); }
+.ad-item { display: flex; align-items: flex-start; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--grid); }
+.ad-item:last-child { border-bottom: 0; }
+.ad-check { flex: none; width: 22px; height: 22px; margin-top: 1px; border-radius: 6px; border: 2px solid var(--border); background: var(--field-bg); color: #fff; cursor: pointer; display: grid; place-items: center; font-size: .8rem; padding: 0; line-height: 1; }
+.ad-check:hover { border-color: var(--good); }
+.ad-item.feita .ad-check { background: var(--good); border-color: var(--good); }
+.ad-item.feita .ad-titulo { text-decoration: line-through; color: var(--muted); }
+.ad-corpo { flex: 1; min-width: 0; }
+.ad-titulo { font-size: .92rem; font-weight: 600; line-height: 1.35; }
+.ad-meta { font-size: .76rem; color: var(--text-secondary); margin-top: 3px; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+.ad-lead { background: none; border: 0; padding: 0; color: var(--accent); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.ad-hora { font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; min-width: 42px; text-align: right; flex: none; font-size: .84rem; padding-top: 2px; }
+
+
 /* ---- card do CRM: tela quase cheia, rodapé fixo ---- */
 .modal-card.crm-modal {
   max-width: 1280px; width: 100%; height: calc(100vh - 40px); max-height: none;
@@ -1521,6 +1540,10 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px;">
           <select id="crm-funil-select" onchange="crmMudaFunil()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600;"></select>
           <button class="btn" style="width:auto; padding:8px 14px;" onclick="crmAbrirNovoCard(null)">+ Novo card</button>
+          <button class="btn btn-secondary ad-botao" onclick="abrirAtividadesDoDia()" title="Tudo o que está marcado pra hoje e o que ficou atrasado, em todos os funis">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8.5 14.5l2.3 2.3 4.7-4.8"/></svg>
+            Atividades do dia <span class="ad-badge" id="ad-badge" style="display:none;"></span>
+          </button>
         </div>
         <div class="crm-filtros">
           <input type="text" id="crm-busca" placeholder="Buscar por nome, e-mail ou telefone..." oninput="crmAplicarFiltros()" autocomplete="off">
@@ -2618,6 +2641,26 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
   </div>
 </div>
 
+<!-- modal: atividades do dia (checklist de todos os funis) -->
+<div id="modal-atividades-dia" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-atividades-dia')">
+  <div class="modal-card" style="max-width:640px; text-align:left; padding:0; display:flex; flex-direction:column; max-height:88vh; overflow:hidden;">
+    <div style="padding:16px 20px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px;">
+      <div style="flex:1; min-width:0;">
+        <h2 style="margin:0; font-size:1.1rem;">Atividades do dia</h2>
+        <div class="muted" id="ad-resumo" style="font-size:.78rem; margin-top:2px;"></div>
+      </div>
+      <select id="ad-quem" onchange="renderAtividadesDoDia()" style="width:auto; padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
+        <option value="minhas">Minhas</option>
+        <option value="todas">Todas</option>
+      </select>
+    </div>
+    <div id="ad-lista" style="overflow-y:auto; padding:6px 20px 16px; flex:1; min-height:120px;"></div>
+    <div style="padding:12px 20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end;">
+      <button type="button" class="btn btn-secondary" style="width:auto; padding:9px 18px;" onclick="fecharModal('modal-atividades-dia')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- modal de gerenciar funis e estágios -->
 <div id="modal-funis" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-funis')">
   <div class="modal-card" style="max-width:520px; text-align:left;">
@@ -3392,6 +3435,7 @@ async function carregarCRM() {
   sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.rotulo}</option>`).join('')
     || '<option value="">Nenhum funil — crie um em "⚙️ Funis"</option>';
   await carregarCardsDoFunil();
+  adAtualizarBadgeAoCarregar();
 }
 
 // O PostgREST corta a resposta em 1000 linhas e não avisa nada. Com 1200+ cards no funil e 1300
@@ -3747,6 +3791,123 @@ async function crmCarregarFeitas(cardId) {
         <div class="ativ-corpo"><div class="ativ-titulo">${a.titulo}</div>
         <div class="ativ-quando">${fmtDataCurta((a.concluida_em || a.data).slice(0, 10))}</div></div>
       </div>`).join('')}` : '';
+}
+
+
+// ---------- ATIVIDADES DO DIA (checklist de todos os funis) ----------
+// Reúne o que está marcado pra hoje + o que ficou atrasado, de TODOS os funis, num checklist só —
+// o closer não precisa abrir card por card. Mostra também o que já foi feito hoje (riscado), pra o
+// checklist dar a sensação de andar; desmarcar reabre a atividade.
+let adItens = [];       // atividades abertas (<= hoje) e as de hoje já feitas
+let adCards = {};       // card_id -> { titulo, funil_id }
+const adEsc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function adEhMinha(a) {
+  if (!currentPerfil) return false;
+  return a.responsavel_id === currentPerfil.id || (!a.responsavel_id && a.criado_por === currentPerfil.id);
+}
+
+async function adCarregar() {
+  const hoje = hojeStr();
+  const [abertas, feitas] = await Promise.all([
+    buscarPaginado('com_atividades', q => q.select('*').eq('concluida', false).lte('data', hoje).order('data').order('id')),
+    buscarPaginado('com_atividades', q => q.select('*').eq('concluida', true).eq('data', hoje).order('id')),
+  ]);
+  adItens = [...abertas, ...feitas];
+  const ids = [...new Set(adItens.map(a => a.card_id))];
+  adCards = {};
+  for (let i = 0; i < ids.length; i += 250) {
+    const { data } = await sb.from('com_cards').select('id,titulo,pessoa_nome,funil_id').in('id', ids.slice(i, i + 250));
+    (data || []).forEach(c => { adCards[c.id] = c; });
+  }
+}
+
+function adAtualizarBadge() {
+  const b = document.getElementById('ad-badge');
+  if (!b) return;
+  const quem = currentPerfil ? adItens.filter(a => !a.concluida && adEhMinha(a)) : adItens.filter(a => !a.concluida);
+  b.style.display = '';
+  b.classList.toggle('zero', quem.length === 0);
+  b.textContent = quem.length || '✓';
+}
+
+async function adAtualizarBadgeAoCarregar() {
+  try { await adCarregar(); adAtualizarBadge(); } catch (e) { /* o botão funciona sem o contador */ }
+}
+
+async function abrirAtividadesDoDia() {
+  document.getElementById('ad-quem').value = currentPerfil ? 'minhas' : 'todas';
+  document.getElementById('ad-lista').innerHTML = '<div class="empty">Carregando…</div>';
+  document.getElementById('modal-atividades-dia').classList.add('open');
+  await adCarregar();
+  renderAtividadesDoDia();
+  adAtualizarBadge();
+}
+
+function renderAtividadesDoDia() {
+  const hoje = hojeStr();
+  const agora = new Date();
+  const soMinhas = document.getElementById('ad-quem').value === 'minhas';
+  const lista = adItens.filter(a => !soMinhas || adEhMinha(a))
+    .sort((x, y) => (x.data + (x.hora || '23:59')).localeCompare(y.data + (y.hora || '23:59')));
+  const atrasadas = lista.filter(a => !a.concluida && a.data < hoje);
+  const deHoje = lista.filter(a => a.data === hoje);
+  const feitas = deHoje.filter(a => a.concluida).length;
+  const pendentes = atrasadas.length + deHoje.length - feitas;
+  document.getElementById('ad-resumo').textContent = (atrasadas.length + deHoje.length)
+    ? `${pendentes} pendente${pendentes === 1 ? '' : 's'}${atrasadas.length ? ` · ${atrasadas.length} atrasada${atrasadas.length === 1 ? '' : 's'}` : ''} · ${feitas} feita${feitas === 1 ? '' : 's'} hoje · todos os funis`
+    : 'todos os funis';
+  const funilNome = id => { const f = crmFunis.find(x => x.id === id); return f ? f.rotulo : ''; };
+  const tipoNome = k => (ATIV_TIPOS.find(t => t.chave === k) || {}).nome || '';
+  const quemNome = a => { const p = perfis.find(x => x.id === a.responsavel_id); return p ? p.nome : ''; };
+  const item = a => {
+    const c = adCards[a.card_id] || {};
+    const venc = !a.concluida && atividadeVencida(a, agora);
+    const quando = a.data < hoje ? fmtQuandoAtividade(a) : '';
+    return `
+    <div class="ad-item ${a.concluida ? 'feita' : ''}">
+      <button class="ad-check" onclick="adAlternar(${a.id})" title="${a.concluida ? 'Reabrir' : 'Marcar como feita'}">${a.concluida ? '✓' : ''}</button>
+      <div class="ad-corpo">
+        <div class="ad-titulo">${adEsc(a.titulo)}</div>
+        <div class="ad-meta">
+          <button class="ad-lead" onclick="adAbrirCard(${a.card_id})">${adEsc(c.titulo || 'lead')}</button>
+          ${funilNome(c.funil_id) ? `<span class="pill" style="background:var(--chip-1)">${adEsc(funilNome(c.funil_id))}</span>` : ''}
+          ${tipoNome(a.tipo) ? `<span>${tipoNome(a.tipo)}</span>` : ''}
+          ${!soMinhas && quemNome(a) ? `<span>· ${adEsc(quemNome(a))}</span>` : ''}
+          ${quando ? `<span style="color:var(--critical);">${quando}</span>` : venc ? '<span style="color:var(--critical);">já passou da hora</span>' : ''}
+        </div>
+      </div>
+      <div class="ad-hora">${a.hora ? a.hora.slice(0, 5) : 'dia todo'}</div>
+    </div>`;
+  };
+  document.getElementById('ad-lista').innerHTML = (atrasadas.length || deHoje.length)
+    ? (atrasadas.length ? `<div class="ad-grupo atrasada">Atrasadas · ${atrasadas.length}</div>${atrasadas.map(item).join('')}` : '')
+      + (deHoje.length ? `<div class="ad-grupo">Hoje · ${deHoje.length}</div>${deHoje.map(item).join('')}` : '')
+    : `<div class="empty">${soMinhas ? 'Nada marcado pra você hoje.' : 'Nada marcado pra hoje.'}</div>`;
+}
+
+async function adAlternar(id) {
+  const a = adItens.find(x => x.id === id);
+  if (!a) return;
+  const feita = !a.concluida;
+  const { error } = await sb.from('com_atividades').update({ concluida: feita, concluida_em: feita ? new Date().toISOString() : null }).eq('id', id);
+  if (error) { alert('Não consegui atualizar: ' + error.message); return; }
+  a.concluida = feita;
+  // mantém o resto do app coerente: bolinha do board e mapa de abertas
+  const lista = crmAtividadesMap[a.card_id] || [];
+  if (feita) crmAtividadesMap[a.card_id] = lista.filter(x => x.id !== id);
+  else if (!lista.find(x => x.id === id)) (crmAtividadesMap[a.card_id] = lista).push(a);
+  try { await crmLogAtividade(a.card_id, 'atividade', `${feita ? 'Atividade concluída' : 'Atividade reaberta'}: ${a.titulo}`); } catch (e) {}
+  renderAtividadesDoDia();
+  adAtualizarBadge();
+  if (document.getElementById('crm-board')) renderCRMBoard();
+}
+
+async function adAbrirCard(cardId) {
+  const c = adCards[cardId];
+  if (!c) return;
+  fecharModal('modal-atividades-dia');
+  await crmIrParaCard(cardId, c.funil_id);
 }
 
 // ---------- LEAD SCORE ----------
@@ -5249,6 +5410,7 @@ async function carregarNotificacoes() {
       createdAt: `${a.data}T${a.hora || '08:00'}`,
       titulo: `${atrasada ? 'Atividade atrasada' : 'Atividade para hoje'}: ${a.titulo}`,
       descricao: fmtQuandoAtividade(a),
+      acao: "planoIr('crm'); abrirAtividadesDoDia()",
     });
   });
 
