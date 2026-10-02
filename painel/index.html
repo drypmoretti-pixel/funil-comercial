@@ -790,6 +790,10 @@ form.form-grid button { grid-column: 1 / -1; }
 .sidebar nav button:hover { background: rgba(255,255,255,0.08); color: white; }
 .sidebar nav button.active { background: rgba(255,255,255,0.16); color: white; border-left-color: white; }
 .main-content { flex: 1; min-width: 0; }
+@media (min-width: 781px) {
+  /* coluna verde presa na tela: não desce junto com a página */
+  .sidebar { position: sticky; top: 0; height: 100vh; align-self: flex-start; overflow-y: auto; }
+}
 .main-content .wrap { max-width: 1360px; }
 /* a aba WhatsApp aproveita mais a largura da tela — os outros conteúdos (dashboard, CRM) ficam
    estranhos muito largos, então só ela ganha esse respiro extra */
@@ -890,6 +894,14 @@ form.form-grid button { grid-column: 1 / -1; }
 .btn-secondary { background: var(--field-bg) !important; color: var(--text-primary) !important; }
 
 /* ---- Atividades do dia ---- */
+.ad-pessoas { display: flex; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--border); overflow-x: auto; flex-shrink: 0; }
+.ad-pessoa { flex: 1 0 96px; border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); border-radius: 12px; padding: 10px 12px; cursor: pointer; text-align: left; font: inherit; display: flex; flex-direction: column; gap: 6px; }
+.ad-pessoa:hover { border-color: var(--accent); }
+.ad-pessoa.ativo { border-color: var(--accent); background: var(--accent-wash); box-shadow: inset 0 0 0 1px var(--accent); }
+.ad-pessoa-nome { font-weight: 700; font-size: .92rem; }
+.ad-pessoa-n { font-size: .72rem; color: var(--text-secondary); }
+.ad-pessoa-n b { color: var(--critical); }
+
 .ad-botao { width: auto; padding: 8px 14px; display: inline-flex; align-items: center; gap: 7px; }
 .ad-badge { background: var(--critical); color: #fff; border-radius: 999px; font-size: .68rem; font-weight: 700; padding: 1px 7px; min-width: 18px; text-align: center; }
 .ad-badge.zero { background: var(--good); }
@@ -2650,16 +2662,15 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 
 <!-- modal: atividades do dia (checklist de todos os funis) -->
 <div id="modal-atividades-dia" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-atividades-dia')">
-  <div class="modal-card" style="max-width:640px; text-align:left; padding:0; display:flex; flex-direction:column; max-height:88vh; overflow:hidden;">
+  <div class="modal-card" style="max-width:700px; text-align:left; padding:0; display:flex; flex-direction:column; height:88vh; max-height:88vh; overflow:hidden;">
     <div style="padding:16px 20px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px;">
       <div style="flex:1; min-width:0;">
         <h2 style="margin:0; font-size:1.1rem;">Atividades do dia</h2>
         <div class="muted" id="ad-resumo" style="font-size:.78rem; margin-top:2px;"></div>
       </div>
-      <select id="ad-quem" onchange="renderAtividadesDoDia()" style="width:auto; padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
-        <option value="todas">Todas</option>
-      </select>
+      <input type="hidden" id="ad-quem" value="todas">
     </div>
+    <div id="ad-pessoas" class="ad-pessoas"></div>
     <div id="ad-lista" style="overflow-y:auto; padding:6px 20px 16px; flex:1; min-height:120px;"></div>
     <div style="padding:12px 20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end;">
       <button type="button" class="btn btn-secondary" style="width:auto; padding:9px 18px;" onclick="fecharModal('modal-atividades-dia')">Fechar</button>
@@ -3876,7 +3887,7 @@ function adPerfilSelecionado() {
 async function adCarregar() {
   const hoje = hojeStr();
   const [abertas, feitas] = await Promise.all([
-    buscarPaginado('com_atividades', q => q.select('*').eq('concluida', false).lte('data', hoje).order('data').order('id')),
+    buscarPaginado('com_atividades', q => q.select('*').eq('concluida', false).order('data').order('id')),   // inclui as futuras
     buscarPaginado('com_atividades', q => q.select('*').eq('concluida', true).eq('data', hoje).order('id')),
   ]);
   adItens = [...abertas, ...feitas];
@@ -3897,7 +3908,7 @@ async function adCarregar() {
 function adAtualizarBadge() {
   const b = document.getElementById('ad-badge');
   if (!b) return;
-  const quem = adItens.filter(a => !a.concluida && adPertence(a, currentPerfil));
+  const quem = adItens.filter(a => !a.concluida && a.data <= hojeStr() && adPertence(a, currentPerfil));
   b.style.display = '';
   b.classList.toggle('zero', quem.length === 0);
   b.textContent = quem.length || '✓';
@@ -3908,9 +3919,7 @@ async function adAtualizarBadgeAoCarregar() {
 }
 
 async function abrirAtividadesDoDia() {
-  const selQuem = document.getElementById('ad-quem');
-  selQuem.innerHTML = '<option value="todas">Todas</option>' + perfis.map(p => `<option value="${p.id}">${adEsc(p.nome)}</option>`).join('');
-  selQuem.value = currentPerfil ? currentPerfil.id : 'todas';
+  document.getElementById('ad-quem').value = currentPerfil ? currentPerfil.id : 'todas';
   document.getElementById('ad-lista').innerHTML = '<div class="empty">Carregando…</div>';
   document.getElementById('modal-atividades-dia').classList.add('open');
   await adCarregar();
@@ -3918,7 +3927,32 @@ async function abrirAtividadesDoDia() {
   adAtualizarBadge();
 }
 
+const adNomeExibido = p => ({ eduarda: 'Duda' }[semAcento(p.nome)] || p.nome);
+
+function adSelecionarPessoa(v) {
+  document.getElementById('ad-quem').value = v;
+  renderAtividadesDoDia();
+}
+
+function adRenderPessoas() {
+  const hoje = hojeStr();
+  const atual = document.getElementById('ad-quem').value;
+  const card = (valor, nome, perfil) => {
+    const abertas = adItens.filter(a => !a.concluida && adPertence(a, perfil));
+    const atras = abertas.filter(a => a.data < hoje).length;
+    const hojeN = abertas.filter(a => a.data === hoje).length;
+    const fut = abertas.filter(a => a.data > hoje).length;
+    return `<button type="button" class="ad-pessoa ${atual === valor ? 'ativo' : ''}" onclick="adSelecionarPessoa('${valor}')">
+      <span class="ad-pessoa-nome">${adEsc(nome)}</span>
+      <span class="ad-pessoa-n">${atras ? `<b>${atras} atrasada${atras > 1 ? 's' : ''}</b> · ` : ''}${hojeN} hoje · ${fut} próx.</span>
+    </button>`;
+  };
+  document.getElementById('ad-pessoas').innerHTML = card('todas', 'Todos', null)
+    + perfis.map(p => card(p.id, adNomeExibido(p), p)).join('');
+}
+
 function renderAtividadesDoDia() {
+  adRenderPessoas();
   const hoje = hojeStr();
   const agora = new Date();
   const perfilSel = adPerfilSelecionado();
@@ -3927,18 +3961,20 @@ function renderAtividadesDoDia() {
     .sort((x, y) => (x.data + (x.hora || '23:59')).localeCompare(y.data + (y.hora || '23:59')));
   const atrasadas = lista.filter(a => !a.concluida && a.data < hoje);
   const deHoje = lista.filter(a => a.data === hoje);
+  const proximas = lista.filter(a => !a.concluida && a.data > hoje);
   const feitas = deHoje.filter(a => a.concluida).length;
   const pendentes = atrasadas.length + deHoje.length - feitas;
   document.getElementById('ad-resumo').textContent = (atrasadas.length + deHoje.length)
-    ? `${pendentes} pendente${pendentes === 1 ? '' : 's'}${atrasadas.length ? ` · ${atrasadas.length} atrasada${atrasadas.length === 1 ? '' : 's'}` : ''} · ${feitas} feita${feitas === 1 ? '' : 's'} hoje · todos os funis`
-    : 'todos os funis';
+    ? `${pendentes} pendente${pendentes === 1 ? '' : 's'}${atrasadas.length ? ` · ${atrasadas.length} atrasada${atrasadas.length === 1 ? '' : 's'}` : ''} · ${feitas} feita${feitas === 1 ? '' : 's'} hoje${proximas.length ? ` · ${proximas.length} próxima${proximas.length === 1 ? '' : 's'}` : ''} · todos os funis`
+    : (proximas.length ? `${proximas.length} próxima${proximas.length === 1 ? '' : 's'} · todos os funis` : 'todos os funis');
   const funilNome = id => { const f = crmFunis.find(x => x.id === id); return f ? f.rotulo : ''; };
   const tipoNome = k => (ATIV_TIPOS.find(t => t.chave === k) || {}).nome || '';
   const quemNome = a => { const p = perfis.find(x => x.id === a.responsavel_id); return p ? p.nome : ''; };
   const item = a => {
     const c = adCards[a.card_id] || {};
     const venc = !a.concluida && atividadeVencida(a, agora);
-    const quando = a.data < hoje ? fmtQuandoAtividade(a) : '';
+    const quando = a.data !== hoje ? fmtQuandoAtividade(a) : '';
+    const corQuando = a.data < hoje ? 'var(--critical)' : 'var(--text-secondary)';
     return `
     <div class="ad-item ${a.concluida ? 'feita' : ''}">
       <button class="ad-check" onclick="adAlternar(${a.id})" title="${a.concluida ? 'Reabrir' : 'Marcar como feita'}">${a.concluida ? '✓' : ''}</button>
@@ -3949,15 +3985,16 @@ function renderAtividadesDoDia() {
           ${funilNome(c.funil_id) ? `<span class="pill" style="background:var(--chip-1)">${adEsc(funilNome(c.funil_id))}</span>` : ''}
           ${tipoNome(a.tipo) ? `<span>${tipoNome(a.tipo)}</span>` : ''}
           ${!soMinhas && quemNome(a) ? `<span>· ${adEsc(quemNome(a))}</span>` : ''}
-          ${quando ? `<span style="color:var(--critical);">${quando}</span>` : venc ? '<span style="color:var(--critical);">já passou da hora</span>' : ''}
+          ${quando ? `<span style="color:${corQuando};">${quando}</span>` : venc ? '<span style="color:var(--critical);">já passou da hora</span>' : ''}
         </div>
       </div>
       <div class="ad-hora">${a.hora ? a.hora.slice(0, 5) : 'dia todo'}</div>
     </div>`;
   };
-  document.getElementById('ad-lista').innerHTML = (atrasadas.length || deHoje.length)
+  document.getElementById('ad-lista').innerHTML = (atrasadas.length || deHoje.length || proximas.length)
     ? (atrasadas.length ? `<div class="ad-grupo atrasada">Atrasadas · ${atrasadas.length}</div>${atrasadas.map(item).join('')}` : '')
       + (deHoje.length ? `<div class="ad-grupo">Hoje · ${deHoje.length}</div>${deHoje.map(item).join('')}` : '')
+      + (proximas.length ? `<div class="ad-grupo">Próximas · ${proximas.length}</div>${proximas.map(item).join('')}` : '')
     : `<div class="empty">${perfilSel ? `Nada marcado pra ${adEsc(perfilSel.nome)} hoje.` : 'Nada marcado pra hoje.'}</div>`;
 }
 
