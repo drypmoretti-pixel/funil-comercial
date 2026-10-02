@@ -4102,6 +4102,17 @@ let scoreTelefonesResponderam = new Set();
 function scoreEhTagDeDono(tag) {
   return /^\s*\[(sdr|closer)\]/i.test(tag && tag.nome || '');
 }
+// Só tag de MATERIAL (isca baixada) prova interesse. Tag de dono, de temperatura/status ("Frio",
+// "Morno", "STAND-BY", "Não tem interesse"), de teste ("Fake") ou de canal ("Prospecção Ativa",
+// "Evento") é organização interna: colar uma delas no card não pode inflar o score.
+// A mesma regra vive na view com_iscas_por_pessoa (SQL) — se mudar aqui, mude lá.
+const SCORE_TAG_NAO_MATERIAL = /^\s*(frio|morno|quente|n[aã]o tem interesse|stand-?by|fake|contato realizada|prospec[cç][aã]o ativa|evento)\b/i;
+function scoreEhTagDeMaterial(tag) {
+  const nome = (tag && tag.nome) || '';
+  return !scoreEhTagDeDono(tag) && !SCORE_TAG_NAO_MATERIAL.test(nome);
+}
+const SCORE_TAG_QUENTE = 5;   // lead marcado "Quente" sobe um pouquinho; "Frio" e "Morno" não mexem
+function scoreEhTagQuente(tag) { return /^\s*quente\b/i.test((tag && tag.nome) || ''); }
 
 function scoreCasar(regras, valor) {
   const alvo = semAcento(valor || '');
@@ -4146,7 +4157,7 @@ function calcularLeadScore(card, tagsDoCard) {
   }
 
   // comportamento (teto 30): baixar um 2º material é o sinal mais forte que a base tem
-  const iscasCard = (tagsDoCard || []).filter(t => !scoreEhTagDeDono(t)).length;
+  const iscasCard = (tagsDoCard || []).filter(scoreEhTagDeMaterial).length;
   const email = String((card && card.pessoa_email) || '').trim().toLowerCase();
   const iscasPessoa = email ? (scoreIscasPessoa.get(email) || 0) : 0;
   const iscas = Math.max(iscasCard, iscasPessoa);
@@ -4154,6 +4165,10 @@ function calcularLeadScore(card, tagsDoCard) {
   let comportamento = 0;
   if (iscas >= 3) { comportamento += SCORE_ISCA_3; itens.push({ label: `Baixou ${iscas} materiais${somouCards ? ' (somando os cards desta pessoa)' : ''}`, pts: SCORE_ISCA_3 }); }
   else if (iscas === 2) { comportamento += SCORE_ISCA_2; itens.push({ label: `Baixou 2 materiais${somouCards ? ' (somando os cards desta pessoa)' : ''}`, pts: SCORE_ISCA_2 }); }
+  if ((tagsDoCard || []).some(scoreEhTagQuente)) {
+    comportamento += SCORE_TAG_QUENTE;
+    itens.push({ label: 'Marcado como lead quente', pts: SCORE_TAG_QUENTE });
+  }
   const tel = normalizarTelefoneWhats(card && card.pessoa_telefone);
   if (tel && scoreTelefonesResponderam.has(tel)) {
     comportamento += SCORE_WHATS;
