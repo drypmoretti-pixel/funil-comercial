@@ -2584,11 +2584,16 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       <div class="full"><label style="font-weight:700; margin-top:4px;">Anotações da equipe</label></div>
       <div class="full">
         <label>Anotações SDR</label>
-        <textarea id="crm-anotacao-sdr" rows="3" placeholder="O que a SDR precisa registrar sobre esse lead..."></textarea>
+        <textarea id="crm-anotacao-sdr" oninput="crmAtualizarAnaliseIA()" rows="3" placeholder="O que a SDR precisa registrar sobre esse lead..."></textarea>
       </div>
       <div class="full">
         <label>Anotação Closer</label>
-        <textarea id="crm-anotacao-closer" rows="3" placeholder="O que o closer precisa registrar sobre esse lead..."></textarea>
+        <textarea id="crm-anotacao-closer" oninput="crmAtualizarAnaliseIA()" rows="3" placeholder="O que o closer precisa registrar sobre esse lead..."></textarea>
+      </div>
+      <div class="full">
+        <label>Análise da IA</label>
+        <textarea id="crm-analise-ia" rows="7" readonly style="background:var(--surface-1); cursor:default; line-height:1.5;"></textarea>
+        <p class="muted" style="font-size:.72rem; margin:4px 0 0;">Gerada na hora a partir das anotações do SDR e do Closer (basta uma delas), sem gastar token. Entra no score do lead, de −8 a +8.</p>
       </div>
     </form>
     </div>
@@ -4121,6 +4126,87 @@ function scoreCasar(regras, valor) {
   return null;
 }
 
+
+// ---------- ANÁLISE DAS ANOTAÇÕES (SDR + Closer) ----------
+// Roda inteira no navegador, por regras de palavras — não chama IA externa, então não gasta token
+// nem manda anotação de lead pra fora. Lê o que a SDR e o closer escreveram (basta UM dos dois ter
+// preenchido), pesa os sinais a favor e contra, e devolve veredito, resumo e próximo passo.
+// Pura de propósito (só recebe os dois textos), pra dar pra testar sem banco.
+const ANOTACAO_SINAIS = {
+  pos: [
+    ['pediu proposta', /pediu (a |uma )?(proposta|orcamento|valores?|preco|contrato)|mandar proposta|enviar proposta|quer (a )?proposta/],
+    ['reunião marcada', /reuniao (marcada|agendada|confirmada)|call (marcada|agendada)|agendou|marcou (a )?(reuniao|call)/],
+    ['interesse claro', /interessad[oa]|tem interesse|gostou|quer saber mais|curios[oa] com a solucao|quer (conhecer|contratar|fechar|avancar)|vai fechar|topou/],
+    ['é decisor', /\b(e|eh) (o )?(decisor|dono|socio|ceo)|decide (sozinho|ele)|dono da empresa/],
+    ['tem verba', /tem (verba|budget|orcamento)|budget (aprovado|ok|liberado)|cabe no (orcamento|bolso)/],
+    ['dor/urgência', /urgente|urgencia|precisa (muito|urgente)|dor (clara|forte|real)|sofrendo com|prejuizo|perdendo (venda|cliente|lead)|quer resolver (logo|agora)|ja tentou/],
+    ['engajado', /(?<!nao )(?<!nunca )(respondeu|retornou)|engajad[oa]|ligou de volta|pediu (retorno|contato)/],
+    ['indicação', /indicad[oa]|indicacao|veio de indicacao/],
+  ],
+  neg: [
+    ['sem interesse', /sem interesse|nao (tem|tinha) interesse|nao quer|nao (vai|pretende) (contratar|fechar)|desistiu|recusou|disse que nao/],
+    ['sem budget', /sem (verba|budget|orcamento|caixa)|nao tem (verba|budget|orcamento|dinheiro)|fora do orcamento/],
+    ['achou caro', /achou caro|muito caro|esta caro|preco (alto|e (um )?problema)|acima do (orcamento|que)/],
+    ['sem resposta', /nao respondeu|sem resposta|sumiu|visualizou e (nao|sumiu)|ghost|fantasma|nao atende|nao retornou|parou de responder|caixa postal/],
+    ['não é decisor', /nao (e|eh) (o )?decisor|nao decide|precisa (falar|alinhar) com (o )?(socio|chefe|diretor|dono)|so repassa|estagiari[oa]/],
+    ['fora do perfil', /fora do (icp|perfil)|nao (e|eh) (o )?(publico|perfil)|so curiosidade|esta so pesquisando|so pesquisando|vaga de emprego|procurando emprego|aluno|estudante/],
+    ['já tem solução', /ja tem (fornecedor|agencia|solucao|equipe|time interno)|faz (tudo )?internamente|usa (a )?concorrente/],
+    ['contato inválido', /numero (errado|invalido)|email (errado|invalido|devolveu)|bloqueou|telefone (errado|invalido)/],
+  ],
+  timing: /mes que vem|proximo (mes|trimestre|ano)|depois (do|das) (ferias|feriado|carnaval)|volta(r)? (em|a falar)|sem tempo (agora|no momento)|momento (ruim|nao e bom)|retornar (em|dia)|apos (o )?(evento|lancamento)/,
+};
+
+function analisarAnotacoes(sdr, closer) {
+  const norm = t => semAcento(String(t || '')).replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  const t1 = String(sdr || '').trim(), t2 = String(closer || '').trim();
+  const n1 = norm(t1), n2 = norm(t2);
+  if ((n1 + n2).length < 12) {
+    return { temDado: false, pts: 0, veredito: null, texto: 'Preencha a anotação do SDR e/ou do Closer (basta uma delas) para a análise aparecer aqui.', proximo: null };
+  }
+  const peso = { sdr: 1, closer: 1.5 };   // o closer fala com o lead já qualificado: o que ele escreve pesa mais
+  const achou = { pos: new Map(), neg: new Map() };
+  let pos = 0, neg = 0, timing = false;
+  [[n1, peso.sdr], [n2, peso.closer]].forEach(([txt, p]) => {
+    if (!txt) return;
+    ANOTACAO_SINAIS.pos.forEach(([nome, re]) => { if (re.test(txt)) { pos += p; achou.pos.set(nome, true); } });
+    ANOTACAO_SINAIS.neg.forEach(([nome, re]) => { if (re.test(txt)) { neg += p; achou.neg.set(nome, true); } });
+    if (ANOTACAO_SINAIS.timing.test(txt)) timing = true;
+  });
+  const saldo = pos - neg;
+  const pts = Math.max(-8, Math.min(8, Math.round(saldo * 3)));
+  const veredito = saldo >= 2 ? 'Lead promissor' : saldo > 0 ? 'Lead com bons sinais' : saldo === 0 && !pos ? 'Sem sinal claro ainda'
+    : saldo === 0 ? 'Sinais misturados' : saldo > -2 ? 'Lead com ressalvas' : 'Lead com baixa chance';
+
+  const nomes = m => [...m.keys()];
+  const juntos = n1 + ' ' + n2;
+  let proximo;
+  if (achou.neg.has('contato inválido')) proximo = 'Corrigir o contato (outro telefone/e-mail ou LinkedIn) antes de gastar mais tentativa.';
+  else if (achou.neg.has('sem interesse') || achou.neg.has('fora do perfil')) proximo = 'Encerrar com cordialidade e mover para Perdidos com o motivo — insistir aqui custa tempo que rende mais em outro lead.';
+  else if (achou.pos.has('pediu proposta')) proximo = 'Enviar a proposta ainda hoje, com prazo de resposta combinado, e já deixar o retorno agendado.';
+  else if (achou.pos.has('reunião marcada')) proximo = 'Confirmar a reunião na véspera e abrir a call com o que a SDR registrou (dor e contexto), sem refazer as perguntas.';
+  else if (achou.neg.has('achou caro') || achou.neg.has('sem budget')) proximo = 'Voltar ao valor antes do preço: mostrar o custo de continuar como está e oferecer a opção mais enxuta.';
+  else if (achou.neg.has('não é decisor')) proximo = 'Pedir para incluir o decisor numa conversa curta — ou entregar um resumo de uma página que a pessoa consiga repassar.';
+  else if (achou.neg.has('já tem solução')) proximo = 'Abordar pelo que a solução atual não resolve (pergunta de diagnóstico), sem atacar o fornecedor dele.';
+  else if (timing) proximo = 'Marcar o follow-up na data combinada e deixar registrado no card (atividade com data), para não depender de memória.';
+  else if (achou.neg.has('sem resposta')) proximo = 'Mudar de canal (ligação ou WhatsApp) com uma mensagem curta; sem retorno em 7 dias, mover para Frio.';
+  else if (achou.pos.size) proximo = 'Avançar: marcar a conversa e definir uma atividade com data para o próximo contato.';
+  else proximo = 'Registrar mais contexto (dor, decisor, prazo, orçamento) — com pouco escrito não dá para recomendar abordagem.';
+
+  const quem = t1 && t2 ? 'SDR e Closer' : t1 ? 'só o SDR' : 'só o Closer';
+  const faltou = !t1 ? ' O SDR ainda não anotou nada.' : !t2 ? ' O Closer ainda não anotou nada.' : '';
+  const cort = t => { const f = t.replace(/\s+/g, ' ').split(/(?<=[.!?])\s/)[0]; return f.length > 140 ? f.slice(0, 137).trim() + '…' : f; };
+  const linhas = [
+    `${veredito} (${pts > 0 ? '+' : ''}${pts} no score) — baseado em ${quem}.${faltou}`,
+    t1 ? `SDR: ${cort(t1)}` : '',
+    t2 ? `Closer: ${cort(t2)}` : '',
+    achou.pos.size ? `A favor: ${nomes(achou.pos).join(', ')}.` : '',
+    achou.neg.size ? `Contra: ${nomes(achou.neg).join(', ')}.` : '',
+    timing ? 'Timing: o lead sinalizou que não é o momento — combinar uma data de retorno.' : '',
+    `Próximo passo: ${proximo}`,
+  ].filter(Boolean);
+  return { temDado: true, pts, veredito, texto: linhas.join('\n'), proximo };
+}
+
 // pura de propósito: recebe tudo que precisa por parâmetro pra dar pra testar sem banco nenhum
 function calcularLeadScore(card, tagsDoCard) {
   const cv = (card && card.campos_valores) || {};
@@ -4175,6 +4261,15 @@ function calcularLeadScore(card, tagsDoCard) {
     itens.push({ label: 'Respondeu no WhatsApp', pts: SCORE_WHATS });
   }
   total += Math.min(comportamento, 30);
+
+  // análise das anotações (SDR + Closer): sobe ou desce até 8 pontos, ou fica em zero
+  const an = analisarAnotacoes(card && card.anotacao_sdr, card && card.anotacao_closer);
+  if (an.temDado) {
+    total += an.pts;
+    itens.push(an.pts
+      ? { label: `Análise da IA: ${an.veredito}`, pts: an.pts }
+      : { label: `Análise da IA: ${an.veredito}`, pts: null, detalhe: 'neutro (0)' });
+  }
 
   // decaimento: sem isso um MQL de junho fica quente pra sempre e a fila do dia vira museu
   const ref = (card && (card.updated_at || card.created_at)) || null;
@@ -4800,6 +4895,12 @@ function crmColetarCamposPersonalizados() {
   return valores;
 }
 
+function crmAtualizarAnaliseIA() {
+  const el = document.getElementById('crm-analise-ia');
+  if (!el) return;
+  el.value = analisarAnotacoes(document.getElementById('crm-anotacao-sdr').value, document.getElementById('crm-anotacao-closer').value).texto;
+}
+
 function crmAbrirNovoCard(estagioId) {
   if (!crmFunilAtualId) { alert('Crie um funil primeiro em "⚙️ Funis".'); return; }
   crmCardAtualId = null;
@@ -4815,6 +4916,7 @@ function crmAbrirNovoCard(estagioId) {
   document.getElementById('crm-observacao').value = '';
   document.getElementById('crm-anotacao-sdr').value = '';
   document.getElementById('crm-anotacao-closer').value = '';
+  crmAtualizarAnaliseIA();
   crmPopularSelectsBase();
   const estagiosDoFunil = crmEstagios.filter(e => e.funil_id === crmFunilAtualId).sort((a,b) => a.ordem - b.ordem);
   document.getElementById('crm-estagio').value = estagioId || (estagiosDoFunil[0] && estagiosDoFunil[0].id) || '';
@@ -4848,6 +4950,7 @@ function crmAbrirCard(id) {
   document.getElementById('crm-observacao').value = c.observacao || '';
   document.getElementById('crm-anotacao-sdr').value = c.anotacao_sdr || '';
   document.getElementById('crm-anotacao-closer').value = c.anotacao_closer || '';
+  crmAtualizarAnaliseIA();
   crmPopularSelectsBase();
   document.getElementById('crm-estagio').value = c.estagio_id;
   document.getElementById('crm-responsavel').value = c.responsavel_id || '';
