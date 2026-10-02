@@ -3505,8 +3505,7 @@ function crmCardsVisiveis() {
   const ativ = (document.getElementById('crm-filtro-atividade') || {}).value || '';
   return crmCards.filter(c => {
     if (ativ === 'dia') {
-      const hoje = hojeStr();
-      if (!(crmAtividadesMap[c.id] || []).some(a => a.data <= hoje)) return false;
+      if (!cardTemAtividadeDoDia(c)) return false;
     } else if (ativ && estadoAtividade(c.id).estado !== ativ) return false;
     if (tagId && !(crmCardTagsMap[c.id] || []).includes(tagId)) return false;
     if (faixa && (c._score || (c._score = scoreDoCard(c))).faixa !== faixa) return false;
@@ -3543,6 +3542,20 @@ function crmPopularFiltros() {
   selTag.value = tagAntes; selResp.value = respAntes;
 }
 
+// "Do dia" = atividade marcada pra hoje/atrasada OU reunião do lead marcada pra hoje (reunião mora em
+// com_negocios; liga pelo card_id e, na falta dele, pelo nome — o vínculo ainda é raro).
+const REUNIAO_STATUS_DO_DIA = ['agendada', 'remarcada', 'realizada', 'proposta'];
+function cardTemReuniaoHoje(c) {
+  const hoje = hojeStr();
+  const nomes = [c.titulo, c.pessoa_nome].filter(Boolean).map(semAcento);
+  return negocios.some(n => n.data_agendada === hoje && REUNIAO_STATUS_DO_DIA.includes(n.status)
+    && (n.card_id === c.id || (!n.card_id && nomes.includes(semAcento(n.cliente_nome || '')))));
+}
+function cardTemAtividadeDoDia(c) {
+  const hoje = hojeStr();
+  return (crmAtividadesMap[c.id] || []).some(a => a.data <= hoje) || cardTemReuniaoHoje(c);
+}
+
 function crmToggleFiltroDia() {
   const sel = document.getElementById('crm-filtro-atividade');
   sel.value = sel.value === 'dia' ? '' : 'dia';
@@ -3552,8 +3565,7 @@ function crmToggleFiltroDia() {
 function crmAtualizarChipDia() {
   const btn = document.getElementById('crm-filtro-dia');
   if (!btn) return;
-  const hoje = hojeStr();
-  const n = crmCards.filter(c => (crmAtividadesMap[c.id] || []).some(a => a.data <= hoje)).length;
+  const n = crmCards.filter(cardTemAtividadeDoDia).length;
   document.getElementById('crm-filtro-dia-n').textContent = n;
   btn.classList.toggle('ativo', document.getElementById('crm-filtro-atividade').value === 'dia');
 }
@@ -3841,8 +3853,8 @@ function perfilNomesBusca(p) {
   const base = semAcento(p.nome || '').split(/\s+/).filter(Boolean);
   return [...base, ...(PERFIL_APELIDOS[base[0]] || [])];
 }
-function tagDeDonoBate(nomeTag, perfil) {
-  if (!/^\s*\[/.test(nomeTag || '')) return false;   // só tags de dono: [SDR] …, [CLOSER] …
+function tagDeDonoBate(nomeTag, perfil, qualquerNome) {
+  if (!qualquerNome && !/^\s*\[/.test(nomeTag || '')) return false;   // só tags de dono: [SDR] …, [CLOSER] …
   const t = semAcento(nomeTag);
   return perfilNomesBusca(perfil).some(n => n.length > 2 && new RegExp('\\b' + n + '\\b').test(t));
 }
@@ -3852,7 +3864,9 @@ function adPertence(a, perfil) {
   if (a.responsavel_id === perfil.id) return true;
   const c = adCards[a.card_id] || {};
   if (c.responsavel_id === perfil.id) return true;
-  return (adTagsDoCard[a.card_id] || []).some(n => tagDeDonoBate(n, perfil));
+  if ((adTagsDoCard[a.card_id] || []).some(n => tagDeDonoBate(n, perfil))) return true;
+  const f = crmFunis.find(x => x.id === c.funil_id);   // funil pessoal: "Bruno [SDR]", "[SDR] - Duda", "[SDR] Dry"
+  return !!f && tagDeDonoBate(f.nome, perfil, true);
 }
 function adPerfilSelecionado() {
   const v = document.getElementById('ad-quem').value;
