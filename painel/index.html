@@ -1558,6 +1558,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
           </select>
           <select id="crm-filtro-atividade" onchange="crmAplicarFiltros()" title="Estado da próxima atividade">
             <option value="">Qualquer atividade</option>
+            <option value="dia">Atividades do dia (hoje + atrasadas)</option>
             <option value="atrasada">Atrasada</option>
             <option value="hoje">Para hoje</option>
             <option value="futura">Agendada pra frente</option>
@@ -3498,7 +3499,10 @@ function crmCardsVisiveis() {
   const faixa = (document.getElementById('crm-filtro-score') || {}).value || '';
   const ativ = (document.getElementById('crm-filtro-atividade') || {}).value || '';
   return crmCards.filter(c => {
-    if (ativ && estadoAtividade(c.id).estado !== ativ) return false;
+    if (ativ === 'dia') {
+      const hoje = hojeStr();
+      if (!(crmAtividadesMap[c.id] || []).some(a => a.data <= hoje)) return false;
+    } else if (ativ && estadoAtividade(c.id).estado !== ativ) return false;
     if (tagId && !(crmCardTagsMap[c.id] || []).includes(tagId)) return false;
     if (faixa && (c._score || (c._score = scoreDoCard(c))).faixa !== faixa) return false;
     if (resp && (resp === 'sem' ? c.responsavel_id : c.responsavel_id !== resp)) return false;
