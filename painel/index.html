@@ -2657,7 +2657,6 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <div class="muted" id="ad-resumo" style="font-size:.78rem; margin-top:2px;"></div>
       </div>
       <select id="ad-quem" onchange="renderAtividadesDoDia()" style="width:auto; padding:7px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
-        <option value="minhas">Minhas</option>
         <option value="todas">Todas</option>
       </select>
     </div>
@@ -3511,7 +3510,13 @@ function crmCardsVisiveis() {
     } else if (ativ && estadoAtividade(c.id).estado !== ativ) return false;
     if (tagId && !(crmCardTagsMap[c.id] || []).includes(tagId)) return false;
     if (faixa && (c._score || (c._score = scoreDoCard(c))).faixa !== faixa) return false;
-    if (resp && (resp === 'sem' ? c.responsavel_id : c.responsavel_id !== resp)) return false;
+    if (resp === 'sem') { if (c.responsavel_id) return false; }
+    else if (resp && c.responsavel_id !== resp) {
+      // também vale a tag de dono ([CLOSER] - Bruno, [SDR] Duda…)
+      const p = perfis.find(x => x.id === resp);
+      const tagsNomes = (crmCardTagsMap[c.id] || []).map(id => (crmTags.find(t => t.id === id) || {}).nome);
+      if (!p || !tagsNomes.some(n => tagDeDonoBate(n, p))) return false;
+    }
     if (!busca) return true;
     const alvo = semAcento([c.titulo, c.pessoa_nome, c.pessoa_email, c.pessoa_telefone,
       (c.campos_valores || {}).cargo].filter(Boolean).join(' '));
@@ -3828,9 +3833,30 @@ let adItens = [];       // atividades abertas (<= hoje) e as de hoje já feitas
 let adCards = {};       // card_id -> { titulo, funil_id }
 const adEsc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-function adEhMinha(a) {
-  if (!currentPerfil) return false;
-  return a.responsavel_id === currentPerfil.id || (!a.responsavel_id && a.criado_por === currentPerfil.id);
+// Uma atividade é "do Bruno" quando QUALQUER um destes bate: responsável da atividade, responsável
+// do card ou tag de dono no card ("[CLOSER] - Bruno Alves", "[SDR] Duda"). É o padrão do time:
+// a pessoa aparece em um dos três lugares, nem sempre nos três.
+const PERFIL_APELIDOS = { eduarda: ['duda'] };
+function perfilNomesBusca(p) {
+  const base = semAcento(p.nome || '').split(/\s+/).filter(Boolean);
+  return [...base, ...(PERFIL_APELIDOS[base[0]] || [])];
+}
+function tagDeDonoBate(nomeTag, perfil) {
+  if (!/^\s*\[/.test(nomeTag || '')) return false;   // só tags de dono: [SDR] …, [CLOSER] …
+  const t = semAcento(nomeTag);
+  return perfilNomesBusca(perfil).some(n => n.length > 2 && new RegExp('\\b' + n + '\\b').test(t));
+}
+let adTagsDoCard = {};   // card_id -> [nomes de tag]
+function adPertence(a, perfil) {
+  if (!perfil) return true;
+  if (a.responsavel_id === perfil.id) return true;
+  const c = adCards[a.card_id] || {};
+  if (c.responsavel_id === perfil.id) return true;
+  return (adTagsDoCard[a.card_id] || []).some(n => tagDeDonoBate(n, perfil));
+}
+function adPerfilSelecionado() {
+  const v = document.getElementById('ad-quem').value;
+  return v === 'todas' ? null : perfis.find(p => p.id === v) || null;
 }
 
 async function adCarregar() {
@@ -3843,15 +3869,21 @@ async function adCarregar() {
   const ids = [...new Set(adItens.map(a => a.card_id))];
   adCards = {};
   for (let i = 0; i < ids.length; i += 250) {
-    const { data } = await sb.from('com_cards').select('id,titulo,pessoa_nome,funil_id').in('id', ids.slice(i, i + 250));
+    const { data } = await sb.from('com_cards').select('id,titulo,pessoa_nome,funil_id,responsavel_id').in('id', ids.slice(i, i + 250));
     (data || []).forEach(c => { adCards[c.id] = c; });
+  }
+  adTagsDoCard = {};
+  const nomeTag = Object.fromEntries((crmTags || []).map(t => [t.id, t.nome]));
+  for (let i = 0; i < ids.length; i += 250) {
+    const rel = await buscarPaginado('com_card_tags', q => q.select('card_id,tag_id').in('card_id', ids.slice(i, i + 250)).order('card_id').order('tag_id'));
+    rel.forEach(r => { if (nomeTag[r.tag_id]) (adTagsDoCard[r.card_id] = adTagsDoCard[r.card_id] || []).push(nomeTag[r.tag_id]); });
   }
 }
 
 function adAtualizarBadge() {
   const b = document.getElementById('ad-badge');
   if (!b) return;
-  const quem = currentPerfil ? adItens.filter(a => !a.concluida && adEhMinha(a)) : adItens.filter(a => !a.concluida);
+  const quem = adItens.filter(a => !a.concluida && adPertence(a, currentPerfil));
   b.style.display = '';
   b.classList.toggle('zero', quem.length === 0);
   b.textContent = quem.length || '✓';
@@ -3862,7 +3894,9 @@ async function adAtualizarBadgeAoCarregar() {
 }
 
 async function abrirAtividadesDoDia() {
-  document.getElementById('ad-quem').value = currentPerfil ? 'minhas' : 'todas';
+  const selQuem = document.getElementById('ad-quem');
+  selQuem.innerHTML = '<option value="todas">Todas</option>' + perfis.map(p => `<option value="${p.id}">${adEsc(p.nome)}</option>`).join('');
+  selQuem.value = currentPerfil ? currentPerfil.id : 'todas';
   document.getElementById('ad-lista').innerHTML = '<div class="empty">Carregando…</div>';
   document.getElementById('modal-atividades-dia').classList.add('open');
   await adCarregar();
@@ -3873,8 +3907,9 @@ async function abrirAtividadesDoDia() {
 function renderAtividadesDoDia() {
   const hoje = hojeStr();
   const agora = new Date();
-  const soMinhas = document.getElementById('ad-quem').value === 'minhas';
-  const lista = adItens.filter(a => !soMinhas || adEhMinha(a))
+  const perfilSel = adPerfilSelecionado();
+  const soMinhas = !!perfilSel;
+  const lista = adItens.filter(a => adPertence(a, perfilSel))
     .sort((x, y) => (x.data + (x.hora || '23:59')).localeCompare(y.data + (y.hora || '23:59')));
   const atrasadas = lista.filter(a => !a.concluida && a.data < hoje);
   const deHoje = lista.filter(a => a.data === hoje);
@@ -3909,7 +3944,7 @@ function renderAtividadesDoDia() {
   document.getElementById('ad-lista').innerHTML = (atrasadas.length || deHoje.length)
     ? (atrasadas.length ? `<div class="ad-grupo atrasada">Atrasadas · ${atrasadas.length}</div>${atrasadas.map(item).join('')}` : '')
       + (deHoje.length ? `<div class="ad-grupo">Hoje · ${deHoje.length}</div>${deHoje.map(item).join('')}` : '')
-    : `<div class="empty">${soMinhas ? 'Nada marcado pra você hoje.' : 'Nada marcado pra hoje.'}</div>`;
+    : `<div class="empty">${perfilSel ? `Nada marcado pra ${adEsc(perfilSel.nome)} hoje.` : 'Nada marcado pra hoje.'}</div>`;
 }
 
 async function adAlternar(id) {
