@@ -2622,6 +2622,11 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 <div id="modal-funis" class="modal-overlay" onclick="fecharModalSeFora(event, 'modal-funis')">
   <div class="modal-card" style="max-width:520px; text-align:left;">
     <h2>Funis e estágios</h2>
+    <div style="margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--border);">
+      <label style="font-weight:700; display:block; margin-bottom:2px;">Meus funis</label>
+      <p class="muted" style="font-size:.74rem; margin:0 0 8px;">Ordem e nome só do seu jeito. Só você vê — cada pessoa organiza o seu e ninguém mexe no do outro.</p>
+      <div id="meus-funis-lista" style="border:1px solid var(--border); border-radius:8px; padding:4px 10px; background:var(--field-bg); max-height:240px; overflow-y:auto;"></div>
+    </div>
     <div style="display:flex; gap:6px; margin-bottom:12px;">
       <input type="text" id="novo-funil-nome" placeholder="Nome do novo funil" style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
       <button type="button" class="btn" style="width:auto; padding:8px 14px;" onclick="criarFunil()">+ Criar funil</button>
@@ -2815,7 +2820,9 @@ async function logout() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
 }
+let crmUserId = null;
 async function entrarNoApp(user) {
+  crmUserId = user.id;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-email').textContent = user.email;
@@ -3373,6 +3380,7 @@ async function carregarCRM() {
     carregarIscasPorPessoa(),
   ]);
   crmFunis = funis || [];
+  await crmAplicarPrefsFunis();
   crmEstagios = estagios || [];
   crmCampos = campos || [];
   crmTags = tags || [];
@@ -3381,7 +3389,7 @@ async function carregarCRM() {
   }
   crmPopularFiltros();
   const sel = document.getElementById('crm-funil-select');
-  sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.nome}</option>`).join('')
+  sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.rotulo}</option>`).join('')
     || '<option value="">Nenhum funil — crie um em "⚙️ Funis"</option>';
   await carregarCardsDoFunil();
 }
@@ -3522,7 +3530,7 @@ async function crmBuscarEmTodosOsFunis() {
         const funil = crmFunis.find(f => f.id === c.funil_id);
         return `<button type="button" class="crm-resultado-item" onclick="crmIrParaCard(${c.id}, ${c.funil_id})">
           <b>${c.titulo}</b><span class="muted">${c.pessoa_email || ''}</span>
-          <span class="pill" style="margin-left:auto; background:var(--chip-1)">${funil ? funil.nome : 'funil ' + c.funil_id}</span>
+          <span class="pill" style="margin-left:auto; background:var(--chip-1)">${funil ? funil.rotulo : 'funil ' + c.funil_id}</span>
         </button>`;
       }).join('')
     : '<span class="muted">Nenhum card com esse texto em nenhum funil.</span>') + '</div>';
@@ -4575,7 +4583,7 @@ function crmAbrirCard(id) {
 function crmPopularSelectMoverFunil() {
   const sel = document.getElementById('crm-mover-funil-select');
   const outros = crmFunis.filter(f => f.id !== crmFunilAtualId);
-  sel.innerHTML = outros.map(f => `<option value="${f.id}">${f.nome}</option>`).join('');
+  sel.innerHTML = outros.map(f => `<option value="${f.id}">${f.rotulo}</option>`).join('');
   crmPopularEstagiosDestino();
 }
 
@@ -4592,7 +4600,7 @@ async function crmMoverParaFunil() {
   if (!novoFunilId || !novoEstagioId) { alert('Escolha o funil e o estágio de destino.'); return; }
   const funilAtual = crmFunis.find(f => f.id === crmFunilAtualId);
   const funilNovo = crmFunis.find(f => f.id === novoFunilId);
-  if (!confirm(`Mover este card de "${funilAtual ? funilAtual.nome : '?'}" para "${funilNovo ? funilNovo.nome : '?'}"?`)) return;
+  if (!confirm(`Mover este card de "${funilAtual ? funilAtual.rotulo : '?'}" para "${funilNovo ? funilNovo.rotulo : '?'}"?`)) return;
   const cardAtual = crmCards.find(c => c.id === crmCardAtualId);
   const patch = { funil_id: novoFunilId, estagio_id: novoEstagioId, updated_at: new Date().toISOString() };
   crmMarcarMqlSeAplicavel(patch, cardAtual, novoEstagioId);
@@ -4822,10 +4830,90 @@ async function crmExcluirCard() {
   await carregarCardsDoFunil();
 }
 
+
+// ---------- ORDEM E NOME DOS FUNIS, POR USUÁRIO ----------
+// A ordem/nome é preferência pessoal (com_funis_prefs, RLS por auth.uid()): o Bruno arruma do jeito
+// dele e a Duda do dela. `f.nome` continua o nome real do banco (é o que as regras de Ganhos/Perdidos
+// procuram); `f.rotulo` é o que a pessoa enxerga.
+let crmFunisPrefs = {};
+async function crmAplicarPrefsFunis() {
+  crmFunisPrefs = {};
+  if (crmUserId) {
+    const { data } = await sb.from('com_funis_prefs').select('*').eq('user_id', crmUserId);
+    (data || []).forEach(p => { crmFunisPrefs[p.funil_id] = p; });
+  }
+  crmFunis.forEach(f => {
+    const p = crmFunisPrefs[f.id];
+    f.rotulo = (p && p.nome_custom) || f.nome;
+  });
+  const chave = f => { const p = crmFunisPrefs[f.id]; return p && p.ordem != null ? p.ordem : 100000 + f.ordem; };
+  crmFunis.sort((a, b) => chave(a) - chave(b));
+}
+
+function renderMeusFunis() {
+  const el = document.getElementById('meus-funis-lista');
+  if (!el) return;
+  el.innerHTML = crmFunis.length ? crmFunis.map((f, i) => {
+    const renomeado = f.rotulo !== f.nome;
+    return `
+    <div class="negocio-row" style="padding:6px 0;">
+      <div class="negocio-nome">${f.rotulo}${renomeado ? ` <span class="muted" style="font-size:.7rem;">(original: ${f.nome})</span>` : ''}</div>
+      <div class="negocio-actions">
+        <button class="btn-edit" onclick="funilPrefMover(${f.id}, -1)" title="Subir" ${i===0?'disabled':''}>↑</button>
+        <button class="btn-edit" onclick="funilPrefMover(${f.id}, 1)" title="Descer" ${i===crmFunis.length-1?'disabled':''}>↓</button>
+        <button class="btn-edit" onclick="funilPrefRenomear(${f.id})" title="Renomear (só pra você)">✎</button>
+      </div>
+    </div>`;
+  }).join('') : '<div class="empty">Nenhum funil ainda.</div>';
+}
+
+async function crmSalvarPrefsFunis(ids) {
+  const linhas = ids.map(id => {
+    const f = crmFunis.find(x => x.id === id);
+    const p = crmFunisPrefs[id] || {};
+    return { user_id: crmUserId, funil_id: id, ordem: crmFunis.indexOf(f), nome_custom: p.nome_custom || null, updated_at: new Date().toISOString() };
+  });
+  const { error } = await sb.from('com_funis_prefs').upsert(linhas, { onConflict: 'user_id,funil_id' });
+  if (error) { alert('Não consegui salvar a preferência: ' + error.message); return false; }
+  return true;
+}
+
+async function crmRecarregarFunisUI() {
+  await crmAplicarPrefsFunis();
+  const sel = document.getElementById('crm-funil-select');
+  sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.rotulo}</option>`).join('');
+  const ed = document.getElementById('funis-select-editar');
+  if (ed) { const v = ed.value; ed.innerHTML = crmFunis.map(f => `<option value="${f.id}">${f.rotulo}</option>`).join(''); ed.value = v; }
+  renderMeusFunis();
+}
+
+async function funilPrefMover(id, delta) {
+  if (!crmUserId) return;
+  const i = crmFunis.findIndex(f => f.id === id);
+  const j = i + delta;
+  if (i < 0 || j < 0 || j >= crmFunis.length) return;
+  [crmFunis[i], crmFunis[j]] = [crmFunis[j], crmFunis[i]];
+  // grava a ordem de TODOS os funis: com ordem completa, funil novo cai no fim em vez de embaralhar
+  if (await crmSalvarPrefsFunis(crmFunis.map(f => f.id))) await crmRecarregarFunisUI();
+  else await crmRecarregarFunisUI();
+}
+
+async function funilPrefRenomear(id) {
+  if (!crmUserId) return;
+  const f = crmFunis.find(x => x.id === id);
+  if (!f) return;
+  const novo = prompt('Nome do funil só pra você (deixe vazio pra voltar ao original):', f.rotulo);
+  if (novo === null) return;
+  const nome = novo.trim();
+  crmFunisPrefs[id] = { ...(crmFunisPrefs[id] || {}), nome_custom: (nome && nome !== f.nome) ? nome : null };
+  if (await crmSalvarPrefsFunis(crmFunis.map(x => x.id))) await crmRecarregarFunisUI();
+}
+
 // ---------- GERENCIAR FUNIS E ESTÁGIOS ----------
 function abrirGerenciarFunis() {
   const sel = document.getElementById('funis-select-editar');
-  sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.nome}</option>`).join('');
+  sel.innerHTML = crmFunis.map(f => `<option value="${f.id}" ${f.id === crmFunilAtualId ? 'selected' : ''}>${f.rotulo}</option>`).join('');
+  renderMeusFunis();
   renderEstagiosEdicao();
   document.getElementById('modal-funis').classList.add('open');
 }
