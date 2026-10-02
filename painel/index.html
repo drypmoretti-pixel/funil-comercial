@@ -640,6 +640,11 @@ tr.isca-sem-amostra .isca-barra > b { background: var(--baseline); }
   background: var(--field-bg); color: var(--text-primary); font-size: .8rem;
 }
 .crm-filtros input { flex: 1; min-width: 200px; }
+.filtro-dia { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); font-size: .8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+.filtro-dia .n { background: var(--border); border-radius: 999px; padding: 0 7px; font-size: .7rem; min-width: 18px; text-align: center; }
+.filtro-dia:hover { border-color: var(--accent); }
+.filtro-dia.ativo { background: var(--accent); border-color: var(--accent); color: #fff; }
+.filtro-dia.ativo .n { background: rgba(255,255,255,.28); }
 .crm-resultado-global {
   border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: var(--field-bg);
 }
@@ -1547,6 +1552,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         </div>
         <div class="crm-filtros">
           <input type="text" id="crm-busca" placeholder="Buscar por nome, e-mail ou telefone..." oninput="crmAplicarFiltros()" autocomplete="off">
+          <button type="button" class="filtro-dia" id="crm-filtro-dia" onclick="crmToggleFiltroDia()" title="Mostra só os cards com atividade pra hoje ou atrasada neste funil">Atividades do dia <span class="n" id="crm-filtro-dia-n">0</span></button>
           <select id="crm-filtro-tag" onchange="crmAplicarFiltros()"></select>
           <select id="crm-filtro-responsavel" onchange="crmAplicarFiltros()"></select>
           <select id="crm-filtro-score" onchange="crmAplicarFiltros()" title="Faixa do lead score">
@@ -3532,6 +3538,21 @@ function crmPopularFiltros() {
   selTag.value = tagAntes; selResp.value = respAntes;
 }
 
+function crmToggleFiltroDia() {
+  const sel = document.getElementById('crm-filtro-atividade');
+  sel.value = sel.value === 'dia' ? '' : 'dia';
+  crmAplicarFiltros();
+}
+
+function crmAtualizarChipDia() {
+  const btn = document.getElementById('crm-filtro-dia');
+  if (!btn) return;
+  const hoje = hojeStr();
+  const n = crmCards.filter(c => (crmAtividadesMap[c.id] || []).some(a => a.data <= hoje)).length;
+  document.getElementById('crm-filtro-dia-n').textContent = n;
+  btn.classList.toggle('ativo', document.getElementById('crm-filtro-atividade').value === 'dia');
+}
+
 function crmAplicarFiltros() {
   renderCRMBoard();
   const filtrando = crmFiltrandoAlgo();
@@ -3595,6 +3616,7 @@ async function crmIrParaCard(cardId, funilId) {
 }
 
 function renderCRMBoard() {
+  crmAtualizarChipDia();
   const el = document.getElementById('crm-board');
   const estagiosDoFunil = crmEstagios.filter(e => e.funil_id === crmFunilAtualId).sort((a,b) => a.ordem - b.ordem);
   if (!estagiosDoFunil.length) {
