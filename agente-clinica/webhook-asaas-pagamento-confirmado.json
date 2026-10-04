@@ -1,0 +1,209 @@
+{
+ "name": "Clínica · Webhook Asaas pagamento confirmado (template)",
+ "nodes": [
+  {
+   "parameters": {
+    "httpMethod": "POST",
+    "path": "asaas-pagamento-confirmado",
+    "options": {}
+   },
+   "id": "asaaswh-0001",
+   "name": "Webhook Asaas",
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2.1,
+   "position": [
+    -2000,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "leftValue": "={{ $json.body.event }}",
+       "rightValue": "PAYMENT_CONFIRMED",
+       "operator": {
+        "type": "string",
+        "operation": "equals"
+       }
+      },
+      {
+       "leftValue": "={{ $json.body.event }}",
+       "rightValue": "PAYMENT_RECEIVED",
+       "operator": {
+        "type": "string",
+        "operation": "equals"
+       }
+      }
+     ],
+     "combinator": "or"
+    },
+    "options": {}
+   },
+   "id": "asaaswh-if-0001",
+   "name": "Evento de Confirmacao?",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -1808,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "tableId": "clinica_pagamentos",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "asaas_payment_id",
+       "condition": "eq",
+       "keyValue": "={{ $json.body.payment.id }}"
+      }
+     ]
+    },
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "status",
+       "fieldValue": "CONFIRMED"
+      }
+     ]
+    }
+   },
+   "id": "asaaswh-update-0001",
+   "name": "Marcar Pagamento Confirmado",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -1600,
+    -96
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "tableId": "clinica_pagamentos",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "asaas_payment_id",
+       "keyValue": "={{ $('Webhook Asaas').item.json.body.payment.id }}"
+      }
+     ]
+    }
+   },
+   "id": "asaaswh-getpay-0001",
+   "name": "Buscar Pagamento",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -1408,
+    -96
+   ],
+   "alwaysOutputData": true,
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "resource": "messages-api",
+    "instanceName": "SDR",
+    "remoteJid": "={{ $json.phone.split('@')[0] }}",
+    "messageText": "Boa noticia! Recebemos a confirmacao do seu pagamento. Bora escolher o melhor dia e horario pra sua consulta? Me diz o dia e o periodo (manha, tarde ou noite) que prefere.",
+    "options_message": {
+     "linkPreview": true
+    }
+   },
+   "id": "asaaswh-notify-0001",
+   "name": "Avisar Paciente",
+   "type": "n8n-nodes-evolution-api.evolutionApi",
+   "typeVersion": 1,
+   "position": [
+    -1200,
+    -96
+   ],
+   "credentials": {
+    "evolutionApi": {
+     "id": "",
+     "name": "Evolution API"
+    }
+   }
+  }
+ ],
+ "connections": {
+  "Webhook Asaas": {
+   "main": [
+    [
+     {
+      "node": "Evento de Confirmacao?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Evento de Confirmacao?": {
+   "main": [
+    [
+     {
+      "node": "Marcar Pagamento Confirmado",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    []
+   ]
+  },
+  "Marcar Pagamento Confirmado": {
+   "main": [
+    [
+     {
+      "node": "Buscar Pagamento",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Buscar Pagamento": {
+   "main": [
+    [
+     {
+      "node": "Avisar Paciente",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Avisar Paciente": {
+   "main": [
+    []
+   ]
+  }
+ },
+ "active": false,
+ "settings": {
+  "executionOrder": "v1",
+  "callerPolicy": "workflowsFromSameOwner",
+  "availableInMCP": false
+ }
+}
