@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agente de IA para clínicas no n8n: workflows prontos + passo a passo | Método Demanda Infinita®</title>
+<meta name="description" content="Material gratuito: os 5 workflows genéricos do agente de IA para clínicas (atende no WhatsApp, qualifica, mostra horários, cobra o sinal no Asaas e agenda no Cal.com) + o passo a passo para colocar no ar com a ajuda do Claude.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --green:#008E43;
+    --green-light:#12B85E;
+    --green-dark:#0B3D26;
+    --bg:#F8F7F4;
+    --card:#ECEAE5;
+    --text:#111111;
+    --gray:#6B6B6B;
+    --line:#D8D5CE;
+    --warn:#C2410C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:18px; line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0 0 12px;}
+  .wrap{max-width:820px; margin:0 auto; padding:0 20px 80px;}
+  a{color:var(--green);}
+
+  /* Capa */
+  .cover{padding:48px 20px 20px; text-align:center;}
+  .cover img.logo{width:76px; height:76px; margin-bottom:20px;}
+  .cover .kicker{font-size:14px; font-weight:700; letter-spacing:1.5px; color:var(--green); text-transform:uppercase;}
+  .cover h1{font-size:43px; font-weight:800; margin-top:10px; line-height:1.15;}
+  .cover .sub{font-size:19px; color:var(--gray); max-width:580px; margin:14px auto 0;}
+  .cover .badge{display:inline-block; margin-top:18px; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--green); background:#fff; border:1px solid var(--green); border-radius:999px; padding:6px 16px;}
+
+  .lead{font-size:18.5px; margin-top:26px;}
+  .lead strong{color:var(--green);}
+
+  h2.section-title{font-size:25px; font-weight:800; margin-top:48px; padding-bottom:10px; border-bottom:2px solid var(--green); scroll-margin-top:20px;}
+  h2.section-title .part-tag{display:block; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); margin-bottom:6px;}
+  h3.sub-title{font-size:20px; font-weight:800; margin-top:28px;}
+
+  .card{background:var(--card); border-radius:14px; padding:20px 22px; margin-bottom:16px;}
+  .divider{height:1px; background:var(--line); margin:40px 0;}
+
+  /* Fluxo de 6 passos */
+  .flow{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px;}
+  .flow .f{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 14px; position:relative;}
+  .flow .f .n{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--green);}
+  .flow .f .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17px; margin-top:4px;}
+  .flow .f .d{font-size:15px; color:var(--gray); margin-top:4px; line-height:1.45;}
+  @media (max-width:680px){ .flow{grid-template-columns:1fr;} }
+
+  /* Sumário */
+  .toc{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 22px; margin-top:26px;}
+  .toc .t{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--gray); margin-bottom:10px;}
+  .toc ol{margin:0; padding-left:0; list-style:none; counter-reset:toc;}
+  .toc li{counter-increment:toc; margin-bottom:8px; font-size:17px; display:flex; gap:10px;}
+  .toc li::before{content:counter(toc,decimal-leading-zero); font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:600; color:var(--green); flex:0 0 auto;}
+  .toc a{text-decoration:none; color:var(--text);}
+  .toc a:hover{color:var(--green);}
+
+  /* Passos numerados */
+  .steps{margin-top:18px; display:flex; flex-direction:column; gap:14px;}
+  .steps .step{display:flex; gap:14px; align-items:flex-start;}
+  .steps .step .n{flex:0 0 28px; height:28px; border-radius:50%; background:var(--text); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;}
+  .steps .step .t{font-size:17px;}
+  .steps .step .t strong{display:block; font-size:17.5px; font-family:'Plus Jakarta Sans',sans-serif;}
+  code{font-family:'JetBrains Mono',monospace; background:var(--card); padding:1px 6px; border-radius:5px; font-size:15px;}
+
+  /* Caixa de prompt copiável */
+  .prompt-box{background:#0A0F0C; border:1px solid rgba(18,184,94,.3); border-radius:14px; padding:16px 18px 14px; margin:14px 0; position:relative;}
+  .prompt-box .pb-head{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px;}
+  .prompt-box .pb-label{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--green-light);}
+  .prompt-box pre{margin:0; white-space:pre-wrap; word-break:break-word; font-family:'JetBrains Mono',monospace; font-size:14.5px; line-height:1.6; color:#E8F3EC;}
+  .copy-btn{background:rgba(18,184,94,.15); border:1px solid rgba(18,184,94,.45); color:#9BE9BE; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:6px 14px; border-radius:8px; cursor:pointer; white-space:nowrap;}
+  .copy-btn:hover{background:rgba(18,184,94,.28);}
+  .copy-btn.done{background:var(--green); border-color:var(--green); color:#fff;}
+
+  /* Tips e alertas */
+  .tip, .alert{border-left:4px solid var(--green); background:var(--card); border-radius:8px; padding:12px 16px; margin:16px 0; font-size:16.5px;}
+  .tip strong, .alert strong{display:block; font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--green); margin-bottom:4px; font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert strong{color:var(--warn);}
+
+  /* Tabelas */
+  .table-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:12px; background:#fff;}
+  table{border-collapse:collapse; width:100%; font-size:16px; min-width:560px;}
+  th{background:var(--card); text-align:left; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.4px; padding:12px 14px; border-bottom:1px solid var(--line);}
+  td{padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.45;}
+  tr:last-child td{border-bottom:0;}
+  td.mono{font-family:'JetBrains Mono',monospace; font-size:14.5px; white-space:nowrap; color:var(--green);}
+
+  /* Regras */
+  .rule{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-top:14px;}
+  .rule .num{display:inline-block; font-size:12px; font-weight:800; color:#fff; background:var(--green); border-radius:999px; padding:3px 11px; margin-bottom:8px; font-family:'JetBrains Mono',monospace;}
+  .rule h3{font-size:19px; margin-bottom:6px;}
+  .rule p{margin:0; font-size:16.5px;}
+  .rule .why{margin-top:8px; font-size:15px; color:var(--gray);}
+
+  /* Comparativo ruim/bom */
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;}
+  .vs .col{border-radius:14px; padding:16px 18px; font-size:16px;}
+  .vs .bad{background:#fff; border:1px solid var(--line);}
+  .vs .good{background:#fff; border:2px solid var(--green);}
+  .vs .col .h{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:.6px; margin-bottom:8px;}
+  .vs .bad .h{color:var(--warn);}
+  .vs .good .h{color:var(--green);}
+  .vs .col em{color:var(--gray); font-size:14.5px; display:block; margin-top:8px; font-style:normal;}
+  @media (max-width:680px){ .vs{grid-template-columns:1fr;} }
+
+  /* Timeline */
+  .timeline{display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-top:18px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;}
+  .timeline .seg{padding:16px 16px; border-right:1px solid var(--line);}
+  .timeline .seg:last-child{border-right:0;}
+  .timeline .seg .s{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--green);}
+  .timeline .seg .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17px; margin:4px 0;}
+  .timeline .seg .d{font-size:15px; color:var(--gray); line-height:1.45;}
+  @media (max-width:680px){ .timeline{grid-template-columns:1fr;} .timeline .seg{border-right:0; border-bottom:1px solid var(--line);} }
+
+  /* Checklist */
+  .checklist{background:#fff; border:2px solid var(--green); border-radius:16px; padding:22px 24px; margin-top:22px;}
+  .checklist h3{font-size:21px; margin-bottom:4px;}
+  .checklist .cl-sub{font-size:15.5px; color:var(--gray); margin-bottom:16px;}
+  .check-item{display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--line); cursor:pointer;}
+  .check-item:last-of-type{border-bottom:0;}
+  .check-item input{appearance:none; flex:0 0 22px; height:22px; margin:2px 0 0; border:2px solid var(--line); border-radius:6px; cursor:pointer; position:relative; background:#fff;}
+  .check-item input:checked{background:var(--green); border-color:var(--green);}
+  .check-item input:checked::after{content:"✓"; color:#fff; font-size:14px; font-weight:800; position:absolute; top:-1px; left:3px;}
+  .check-item span{font-size:16.5px; line-height:1.45;}
+  .check-item input:checked + span{color:var(--gray); text-decoration:line-through;}
+  .progress{height:8px; background:var(--card); border-radius:999px; margin-top:16px; overflow:hidden;}
+  .progress i{display:block; height:100%; width:0; background:var(--green); transition:width .25s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--gray); margin-top:8px; text-align:right;}
+
+  /* Fecho */
+  .closing{background:var(--card); border-radius:16px; padding:24px 26px; margin-top:30px;}
+  .closing h3{font-size:21px;}
+  .closing ol{margin:10px 0 0; padding-left:20px;}
+  .closing li{margin-bottom:8px; font-size:17px;}
+
+  /* Vídeo */
+  .video-block{margin-top:40px;}
+  .video-headline{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:26px; text-align:center; max-width:600px; margin:0 auto 20px; line-height:1.3;}
+  .video-embed{position:relative; width:100%; padding-bottom:56.25%; height:0; border-radius:16px; overflow:hidden; background:#000;}
+  .video-embed iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:0;}
+
+  /* CTA */
+  .cta-final{
+    margin-top:40px; padding:56px 32px; border-radius:24px; text-align:center;
+    background:radial-gradient(circle at 50% 0%, #163825 0%, #0A0F0C 62%);
+    border:1px solid rgba(18,184,94,.35); color:#fff;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .cta-final .avatar{width:104px; height:104px; border-radius:50%; object-fit:cover; border:3px solid var(--green-light); margin:0 auto 20px; display:block; box-shadow:0 10px 28px rgba(0,0,0,.45);}
+  .cta-final .eyebrow{font-size:14px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--green-light); margin-bottom:14px;}
+  .cta-final .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:32px; line-height:1.28; max-width:520px; margin:0 auto 12px;}
+  .cta-final .s{font-size:17px; color:#a9b3ad; margin-bottom:30px;}
+  .btn-cta{
+    display:inline-flex; align-items:center; gap:10px;
+    background:linear-gradient(135deg,#17D26E,#008E43);
+    color:#fff; text-decoration:none; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800;
+    font-size:22px; padding:20px 44px; border-radius:999px;
+    box-shadow:0 14px 34px -8px rgba(18,184,94,.55), 0 0 0 1px rgba(255,255,255,.08) inset;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-cta:hover{transform:translateY(-2px); box-shadow:0 20px 40px -8px rgba(18,184,94,.7), 0 0 0 1px rgba(255,255,255,.1) inset;}
+
+  footer{text-align:center; font-size:14px; color:var(--gray); margin-top:40px; line-height:1.6;}
+  footer .mono{font-family:'JetBrains Mono',monospace; letter-spacing:1.4px; text-transform:uppercase; color:var(--text); font-weight:600;}
+
+  /* Extras visuais do passo a passo */
+  .shot .files{background:#fff; border:1px solid #E2DFD6; border-radius:10px; overflow:hidden;}
+  .shot .file{display:flex; align-items:center; gap:10px; padding:9px 12px; border-bottom:1px solid #EFEDE6; font-size:13.5px; color:#3A3A36;}
+  .shot .file:last-child{border-bottom:0;}
+  .shot .file .ic{width:22px; height:22px; border-radius:5px; background:#E8EEF6; color:#3A6EA5; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;}
+  .shot .file.on{background:#F2FBF5;}
+  .shot .file .tagme{margin-left:auto; font-size:11px; font-weight:700; color:#0B7A3C; background:#E4F6EA; border:1px solid #BFE3CD; border-radius:999px; padding:2px 8px;}
+  .shot .chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;}
+  .shot .chip{font-size:12px; padding:5px 11px; border-radius:999px; border:1px solid #D8D5CE; background:#fff; color:#4A4A45;}
+  .shot .chip.on{background:#DA7756; border-color:#DA7756; color:#fff; font-weight:600;}
+  .shot .doc{background:#fff; border:1px solid #E2DFD6; border-radius:10px; padding:16px 18px;}
+  .shot .doc h5{font-family:'Plus Jakarta Sans',sans-serif; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:#8A8578; margin:0 0 4px; font-weight:800;}
+  .shot .doc p{font-size:13.5px; margin:0 0 12px; color:#3A3A36; line-height:1.5;}
+  .shot .doc .blank{border:1.5px dashed #D8D5CE; border-radius:8px; height:34px;}
+  .shot .callout{display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; color:#fff; background:#0B7A3C; border-radius:999px; padding:2px 8px; margin-left:6px; vertical-align:1px;}
+
+  /* Hero visual */
+  .hero-img{margin:26px 0 4px; background:#fff; border:1px solid var(--line); border-radius:20px; padding:10px; box-shadow:0 26px 60px -30px rgba(0,0,0,.5);}
+  .hero-img img{display:block; width:100%; height:auto; border-radius:12px;}
+  .hero-cap{text-align:center; font-size:14.5px; color:var(--gray); margin:10px 0 0;}
+  .hero-cap b{color:var(--text); font-weight:600;}
+
+  /* Telas recriadas (mockups de UI) */
+  .shot{background:#F0EEE6; border:1px solid #D8D5CE; border-radius:14px; overflow:hidden; margin:16px 0 6px; box-shadow:0 16px 40px -22px rgba(0,0,0,.45); font-family:'Inter',sans-serif;}
+  .shot .bar{display:flex; align-items:center; gap:7px; padding:10px 14px; background:#E6E3DA; border-bottom:1px solid #D8D5CE;}
+  .shot .bar i{width:10px; height:10px; border-radius:50%; background:#C9C5B8; display:block;}
+  .shot .bar .name{margin-left:8px; font-size:12.5px; color:#6B6B6B; font-family:'JetBrains Mono',monospace;}
+  .shot .body{display:grid; grid-template-columns:190px 1fr; min-height:230px;}
+  .shot .side{background:#E9E6DD; border-right:1px solid #D8D5CE; padding:14px 10px;}
+  .shot .side .sh{font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#8A8578; padding:0 8px 8px;}
+  .shot .side .it{font-size:14px; color:#4A4A45; padding:8px 10px; border-radius:8px; margin-bottom:2px;}
+  .shot .side .it.on{background:#fff; color:#111; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .shot .main{padding:18px 20px; background:#F7F6F1;}
+  .shot .main h4{font-family:'Plus Jakarta Sans',sans-serif; font-size:17px; font-weight:800; margin:0 0 4px;}
+  .shot .main .desc{font-size:13.5px; color:#6B6B6B; margin-bottom:14px; line-height:1.45;}
+  .shot .row{display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fff; border:1px solid #E2DFD6; border-radius:10px; padding:12px 14px; margin-bottom:10px;}
+  .shot .row .l{display:flex; align-items:center; gap:11px;}
+  .shot .row .ico{width:30px; height:30px; border-radius:8px; background:#0A0F0C; color:#12B85E; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; font-family:'JetBrains Mono',monospace;}
+  .shot .row .tt{font-size:14.5px; font-weight:600;}
+  .shot .row .ss{font-size:12.5px; color:#6B6B6B;}
+  .shot .pill{font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; background:#E8F4EC; color:#0B7A3C; border:1px solid #BFE3CD; white-space:nowrap;}
+  .shot .pill.grey{background:#EFEDE6; color:#6B6B6B; border-color:#DFDCD3;}
+  .shot .btn{display:inline-flex; align-items:center; gap:7px; background:#DA7756; color:#fff; font-size:14px; font-weight:600; padding:9px 16px; border-radius:9px; border:0;}
+  .shot .btn.ghost{background:#fff; color:#3A3A36; border:1px solid #D8D5CE;}
+  .shot .btn.hl{box-shadow:0 0 0 3px rgba(218,119,86,.28);}
+  .shot .field{margin-bottom:12px;}
+  .shot .field .lb{font-size:12.5px; font-weight:600; color:#4A4A45; margin-bottom:5px;}
+  .shot .field .inp{background:#fff; border:1px solid #D8D5CE; border-radius:9px; padding:10px 12px; font-size:14px; font-family:'JetBrains Mono',monospace; color:#111; overflow-x:auto; white-space:nowrap;}
+  .shot .field .inp.focus{border-color:#DA7756; box-shadow:0 0 0 3px rgba(218,119,86,.18);}
+  .shot .modal{max-width:430px; margin:0 auto; background:#F7F6F1; border:1px solid #D8D5CE; border-radius:12px; padding:18px 18px 16px; box-shadow:0 20px 40px -18px rgba(0,0,0,.35);}
+  .shot .modal h4{margin-bottom:12px;}
+  .shot .modal .acts{display:flex; justify-content:flex-end; gap:8px; margin-top:14px;}
+  .shot .chat{padding:18px 20px; background:#F7F6F1;}
+  .shot .msg{background:#fff; border:1px solid #E2DFD6; border-radius:12px; padding:12px 14px; font-size:14.5px; line-height:1.5; margin-bottom:10px;}
+  .shot .msg.me{background:#EFEDE6; border-color:#E2DFD6;}
+  .shot .msg .who{font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#8A8578; margin-bottom:5px;}
+  .shot .tool{display:flex; align-items:center; gap:9px; background:#0A0F0C; border:1px solid rgba(18,184,94,.35); border-radius:10px; padding:10px 13px; margin-bottom:10px;}
+  .shot .tool .d{width:8px; height:8px; border-radius:50%; background:#12B85E;}
+  .shot .tool .tx{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#9BE9BE;}
+  .shot .out{display:flex; gap:12px; align-items:center;}
+  .shot .thumb{width:78px; height:78px; border-radius:10px; background:linear-gradient(150deg,#3C2A1E 0%,#8A6A4B 55%,#D9C3A5 100%); flex:0 0 auto; border:1px solid #D8D5CE;}
+  .shot-cap{font-size:14px; color:var(--gray); margin:0 0 20px; text-align:center;}
+  .shot-cap b{color:var(--text); font-weight:600;}
+  .cal{display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:#DA7756; color:#fff; font-size:12px; font-weight:800; font-family:'JetBrains Mono',monospace; margin-right:7px; vertical-align:2px;}
+  /* Extras do passo a passo visual */
+  .shot .hot{box-shadow:0 0 0 3px rgba(218,119,86,.5); border-color:#DA7756 !important;}
+  .shot .browser{display:flex; align-items:center; gap:8px; padding:9px 14px; background:#E6E3DA; border-bottom:1px solid #D8D5CE;}
+  .shot .browser .url{flex:1; background:#fff; border:1px solid #D8D5CE; border-radius:999px; padding:5px 14px; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#4A4A45; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .shot .keyline{display:flex; align-items:center; gap:10px; background:#0A0F0C; border:1px solid rgba(18,184,94,.35); border-radius:10px; padding:12px 14px; font-family:'JetBrains Mono',monospace; font-size:13px; color:#9BE9BE; overflow:hidden;}
+  .shot .keyline span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .shot .keyline .cp{margin-left:auto; background:rgba(18,184,94,.18); border:1px solid rgba(18,184,94,.45); color:#9BE9BE; border-radius:8px; padding:5px 12px; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600; white-space:nowrap;}
+  .shot .warnline{font-size:12.5px; color:#B4531F; background:#FBEDE6; border:1px solid #F0D2C2; border-radius:8px; padding:9px 12px; margin-top:10px;}
+  .shot .menu{background:#fff; border:1px solid #E2DFD6; border-radius:10px; overflow:hidden; margin-top:4px;}
+  .shot .menu .mi{padding:11px 14px; font-size:14px; color:#3A3A36; border-bottom:1px solid #EFEDE6; display:flex; align-items:center; gap:10px;}
+  .shot .menu .mi:last-child{border-bottom:0;}
+  .shot .menu .mi.on{background:#F2FBF5; font-weight:600; color:#0B7A3C;}
+  .shot .menu .mi .arrow{margin-left:auto; color:#B5B1A6;}
+  .shot .perm{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 0; border-bottom:1px solid #EFEDE6; font-size:14px;}
+  .shot .perm:last-child{border-bottom:0;}
+  .shot .perm .pn{font-weight:600;}
+  .shot .perm .pd{font-size:12.5px; color:#8A8578;}
+  .shot .seg{display:inline-flex; border:1px solid #D8D5CE; border-radius:999px; overflow:hidden; background:#fff;}
+  .shot .seg b{font-size:11.5px; font-weight:700; padding:5px 12px; color:#8A8578;}
+  .shot .seg b.on{background:#0B7A3C; color:#fff;}
+  .shot .seg b.off{background:#EFEDE6; color:#6B6B6B;}
+  .shot .field-row{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .shot .toggle{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 0;}
+  .shot .toggle .tn{font-weight:600; font-size:14.5px;}
+  .shot .toggle .td{font-size:12.5px; color:#8A8578;}
+  .shot .sw{width:38px; height:22px; border-radius:999px; background:#D8D5CE; position:relative; flex:0 0 auto;}
+  .shot .sw.on{background:#12B85E;}
+  .shot .sw i{position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .shot .sw.on i{left:18px;}
+
+  /* Bloco "pro seu programador" */
+  .dev{border:2px dashed var(--line); border-radius:16px; padding:22px 24px; margin-top:26px; background:#fff;}
+  .dev h3{font-size:20px; margin-bottom:4px;}
+  .dev .dev-sub{font-size:15.5px; color:var(--gray); margin-bottom:14px;}
+  .dev ul{margin:14px 0 0; padding-left:20px;}
+  .dev li{font-size:16px; margin-bottom:8px;}
+
+  @media (max-width:680px){
+    .shot .body{grid-template-columns:1fr;}
+    .shot .side{display:none;}
+  }
+
+  @media (max-width:600px){
+    body{font-size:17px;}
+    .cover h1{font-size:33px;}
+    .cta-final .t{font-size:26px;}
+    .btn-cta{font-size:18px; padding:16px 30px;}
+  }
+  @media print{ body{background:#fff;} .copy-btn{display:none;} }
+
+  /* Downloads */
+  .dl-grid{display:grid; grid-template-columns:1fr; gap:12px; margin-top:18px;}
+  .dl{display:flex; gap:16px; align-items:center; background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px;}
+  .dl .num{flex:0 0 34px; height:34px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-family:'JetBrains Mono',monospace; font-size:14px;}
+  .dl .info{flex:1; min-width:0;}
+  .dl .info .t{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:17.5px;}
+  .dl .info .d{font-size:15px; color:var(--gray); line-height:1.45; margin-top:2px;}
+  .dl .info .f{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--green); margin-top:4px;}
+  .dl a.get{flex:0 0 auto; background:var(--text); color:#fff; text-decoration:none; font-weight:700; font-size:14px; padding:10px 18px; border-radius:999px; font-family:'Plus Jakarta Sans',sans-serif;}
+  .dl a.get:hover{background:var(--green);}
+  .dl .badge2{font-size:11px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:var(--warn); border:1px solid var(--warn); border-radius:999px; padding:2px 8px; margin-left:8px; vertical-align:2px; font-family:'JetBrains Mono',monospace;}
+  @media (max-width:600px){ .dl{flex-wrap:wrap;} .dl a.get{width:100%; text-align:center;} }
+  .analogy{font-size:15px; color:var(--gray);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>O agente de IA para clínicas<br>no n8n: workflows prontos<br>+ passo a passo</h1>
+    <div class="sub">Os 5 workflows do agente que atende no WhatsApp, qualifica, mostra horários reais, cobra o sinal e agenda a consulta. Genéricos, prontos pra você importar e adaptar.</div>
+    <div class="badge">Material gratuito · IA + Atendimento</div>
+  </div>
+
+  <p class="lead">Esse é o agente que eu mostrei no vídeo. <strong>Você não precisa montar nenhum nó do zero.</strong> Baixe os arquivos, importe no seu n8n, troque os dados da sua clínica e, quando travar em qualquer ferramenta, <strong>peça o passo a passo pro Claude</strong> (os pedidos prontos estão na Parte 04).</p>
+
+  <div class="flow">
+    <div class="f"><div class="n">PASSO 01</div><div class="t">Paciente manda mensagem</div><div class="d">Texto, áudio ou foto. O agente entende os três.</div></div>
+    <div class="f"><div class="n">PASSO 02</div><div class="t">Conversa e qualifica</div><div class="d">Descobre o objetivo e a cidade, sem menu de "digite 1".</div></div>
+    <div class="f"><div class="n">PASSO 03</div><div class="t">Mostra horários reais</div><div class="d">Consulta a agenda de verdade antes de falar de dinheiro.</div></div>
+    <div class="f"><div class="n">PASSO 04</div><div class="t">Cobra o sinal</div><div class="d">Gera o link de pagamento no Asaas.</div></div>
+    <div class="f"><div class="n">PASSO 05</div><div class="t">Confirma o agendamento</div><div class="d">Só reserva o horário depois que o pagamento cai.</div></div>
+    <div class="f"><div class="n">PASSO 06</div><div class="t">Passa pra um humano</div><div class="d">Se alguém da equipe assume, a IA para de responder.</div></div>
+  </div>
+
+  <div class="toc">
+    <div class="t">O que tem aqui</div>
+    <ol>
+      <li><a href="#p1">Baixe os 5 workflows</a></li>
+      <li><a href="#p2">O que você precisa ter antes (em linguagem simples)</a></li>
+      <li><a href="#p3">Passo a passo pra colocar no ar</a></li>
+      <li><a href="#p4">Peça ao Claude: Evolution API, Asaas e agenda</a></li>
+      <li><a href="#p5">Checklist final antes de ligar</a></li>
+    </ol>
+  </div>
+
+  <h2 class="section-title" id="p1"><span class="part-tag">Parte 01</span>Baixe os 5 workflows</h2>
+  <p>São arquivos <code>.json</code>. Clique em baixar, guarde na mesma pasta e <strong>importe nesta ordem</strong> (a ordem importa porque o agente principal chama os outros quatro).</p>
+
+  <div class="dl-grid">
+    <div class="dl"><div class="num">1</div><div class="info"><div class="t">Revisão Humana</div><div class="d">Quando o paciente pede uma pessoa, avisa a equipe no WhatsApp e a IA para de responder.</div><div class="f">revisao-humana.json</div></div><a class="get" href="revisao-humana.json" download>Baixar</a></div>
+    <div class="dl"><div class="num">2</div><div class="info"><div class="t">Pagamento (Asaas)</div><div class="d">Calcula o sinal pela sua tabela de preços e gera o link de cobrança.</div><div class="f">pagamento-asaas.json</div></div><a class="get" href="pagamento-asaas.json" download>Baixar</a></div>
+    <div class="dl"><div class="num">3</div><div class="info"><div class="t">Agendamento (Cal.com)</div><div class="d">Consulta horários livres, reserva, remarca e cancela.</div><div class="f">agendamento-calcom.json</div></div><a class="get" href="agendamento-calcom.json" download>Baixar</a></div>
+    <div class="dl"><div class="num">4</div><div class="info"><div class="t">Webhook do Asaas: pagamento confirmado</div><div class="d">Recebe o aviso do Asaas, atualiza o pagamento e avisa o paciente que já pode escolher o horário.</div><div class="f">webhook-asaas-pagamento-confirmado.json</div></div><a class="get" href="webhook-asaas-pagamento-confirmado.json" download>Baixar</a></div>
+    <div class="dl"><div class="num">5</div><div class="info"><div class="t">Agente Principal <span class="badge2">importe por último</span></div><div class="d">O atendente: recebe a mensagem, entende texto/áudio/imagem, lembra da conversa, consulta a base de conhecimento e usa os outros 4 como ferramentas.</div><div class="f">agente-principal.json</div></div><a class="get" href="agente-principal.json" download>Baixar</a></div>
+  </div>
+
+  <div class="tip">
+    <strong>Estão limpos de propósito</strong>
+    Nenhum nome, telefone, cidade, preço ou credencial de cliente real. Onde você precisa colocar o seu dado aparece <code>[ENTRE COLCHETES]</code>, <code>SUA_INSTANCIA</code> ou <code>5500000000000</code>. Eles vêm <b>desativados</b>: só ligue no fim, depois do checklist.
+  </div>
+
+  <h2 class="section-title" id="p2"><span class="part-tag">Parte 02</span>O que você precisa ter antes</h2>
+  <p>Sete ferramentas. Pense numa clínica de verdade: cada uma faz o papel de alguém da equipe.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>Ferramenta</th><th>Papel na clínica</th><th>Pra que o agente usa</th></tr></thead>
+    <tbody>
+      <tr><td><b>n8n</b></td><td>O maestro</td><td>Onde os 5 workflows rodam e conversam entre si.</td></tr>
+      <tr><td><b>Evolution API</b></td><td>O carteiro do WhatsApp</td><td>Entrega a mensagem do paciente pro n8n e leva a resposta de volta.</td></tr>
+      <tr><td><b>OpenAI</b></td><td>O cérebro</td><td>Entende e escreve as respostas, transcreve áudio e lê imagem.</td></tr>
+      <tr><td><b>Redis</b></td><td>O bloco de notas rápido</td><td>Guarda a conversa em andamento e o "pausa, tem humano atendendo".</td></tr>
+      <tr><td><b>Supabase</b></td><td>O arquivo da clínica</td><td>Cadastro de pacientes, pagamentos, agendamentos e a base de conhecimento.</td></tr>
+      <tr><td><b>Asaas</b></td><td>A maquininha de cobrança</td><td>Gera o link do sinal e avisa quando o pagamento cai.</td></tr>
+      <tr><td><b>Cal.com</b></td><td>A agenda</td><td>Mostra horários livres e cria a reserva. (Dá pra usar Google Agenda no lugar, veja a Parte 04.)</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="alert">
+    <strong>Regra de ouro das chaves</strong>
+    Nunca cole uma chave de API direto no chat do Claude. Peça pra ele criar uma pasta de segurança com um arquivo <code>.env</code>, cole a chave lá e diga: "nunca repita o valor em nenhuma resposta". É o que eu faço no vídeo.
+  </div>
+
+  <h2 class="section-title" id="p3"><span class="part-tag">Parte 03</span>Passo a passo pra colocar no ar</h2>
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div class="t"><strong>Crie as contas e separe as chaves</strong>As 7 ferramentas da Parte 02. Se travar em alguma, vá direto na Parte 04 e peça o passo a passo pro Claude.</div></div>
+    <div class="step"><div class="n">2</div><div class="t"><strong>Crie as tabelas no Supabase</strong>No Supabase, abra o <b>SQL Editor</b>, cole o bloco do final desta parte ("Pro seu programador") e rode. Ou peça pro Claude: <i>"leia estes workflows e crie as tabelas que eles usam"</i>.</div></div>
+    <div class="step"><div class="n">3</div><div class="t"><strong>Importe os workflows, nesta ordem</strong>No n8n: <b>Workflows → Create workflow → menu "⋯" no canto superior direito → Import from file</b>. Ordem: Revisão Humana, Pagamento, Agendamento, Webhook do Asaas e, por último, o Agente Principal.</div></div>
+    <div class="step"><div class="n">4</div><div class="t"><strong>Crie as credenciais</strong>Em <b>Credentials</b>, crie uma de cada: Evolution API, OpenAI, Redis, Supabase, Postgres (opcional, só pro comando de limpar memória), e duas do tipo "Header Auth": uma pro Asaas (nome do cabeçalho <code>access_token</code>) e uma pro Cal.com (nome <code>Authorization</code>, valor <code>Bearer SUA_CHAVE</code>). Depois abra cada nó que mostra aviso vermelho e escolha a credencial.</div></div>
+    <div class="step"><div class="n">5</div><div class="t"><strong>Ligue as ferramentas do agente</strong>Abra o <b>Agente Principal</b>. Cada ferramenta (<code>human_handoff</code>, <code>gerar_link_pagamento</code>, <code>verificar_disponibilidade</code>, <code>confirmar_agendamento</code>, <code>reagendar_consulta</code>, <code>cancelar_consulta</code>, <code>salvar_horario_escolhido</code>) pede qual workflow chamar. Escolha o certo na lista: é isso que dá "braço" pra IA.</div></div>
+    <div class="step"><div class="n">6</div><div class="t"><strong>Troque os dados da sua clínica</strong>Veja a tabela logo abaixo. É a única parte que exige atenção de verdade.</div></div>
+    <div class="step"><div class="n">7</div><div class="t"><strong>Conecte o WhatsApp ao n8n</strong>Na Evolution API, na sua instância, aponte o webhook para a <b>Production URL</b> do nó "Webhook1" do Agente Principal (termina em <code>/webhook/clinica-agente</code>), com o evento de mensagem recebida ligado. Peça o passo a passo pro Claude (Parte 04).</div></div>
+    <div class="step"><div class="n">8</div><div class="t"><strong>Alimente a base de conhecimento</strong>É onde a IA busca preço, endereço, preparo e regras da clínica, em vez de inventar. Coloque os textos na tabela <code>clinica_conhecimento</code>. Peça pro Claude: <i>"transforme este documento da minha clínica em registros para a tabela clinica_conhecimento, com embeddings da OpenAI"</i>.</div></div>
+    <div class="step"><div class="n">9</div><div class="t"><strong>Teste, só depois ative</strong>Mande mensagem do seu próprio celular. Use o ambiente de testes (sandbox) do Asaas. Confira o checklist da Parte 05 e então ative os 5 workflows.</div></div>
+  </div>
+
+  <h3 class="sub-title">O que trocar, e onde</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Onde</th><th>O que trocar</th></tr></thead>
+    <tbody>
+      <tr><td><b>Agente Principal → nó "Front Desk Agent1"</b></td><td>O prompt tem tudo entre <code>[COLCHETES]</code>: nome da clínica, atendente, cidades, horários, tabela de preços e regras. Preencha tudo.</td></tr>
+      <tr><td><b>Agente Principal → nós "Coleta1" e "Marcar mensagens como lidas1"</b></td><td>Troque <code>SUA_INSTANCIA</code> pelo nome da sua instância na Evolution API.</td></tr>
+      <tr><td><b>Agente Principal → nó "Switch6"</b></td><td>Os telefones da equipe (<code>5500000000000</code>) que podem liberar a IA depois de atender.</td></tr>
+      <tr><td><b>Pagamento → nó "Calcular Preco"</b></td><td>A tabela <code>PRICING</code> com suas cidades, especialidades, valores e a fração do sinal (0.2 = 20%). Tem que bater com a tabela do prompt.</td></tr>
+      <tr><td><b>Pagamento → nó "Criar Cobranca na Asaas"</b></td><td>O texto de descrição da cobrança (<code>[NOME DA CLÍNICA]</code>).</td></tr>
+      <tr><td><b>Agendamento → nós "Buscar Horarios", "Criar Reserva" e "Registrar Agendamento"</b></td><td>O <code>eventTypeId</code> (<code>0000000</code>) do seu tipo de evento no Cal.com.</td></tr>
+      <tr><td><b>Revisão Humana → nó "Set Support Team Number1"</b></td><td>O telefone de quem recebe o aviso de "paciente quer um humano".</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="dev">
+    <h3>Pro seu programador (ou pro Claude)</h3>
+    <div class="dev-sub">As tabelas mínimas que os workflows usam, lidas direto dos nós. Confira com o Claude antes de rodar em produção.</div>
+    <div class="prompt-box">
+      <div class="pb-head"><span class="pb-label">SQL · Supabase · SQL Editor</span><button class="copy-btn" type="button">Copiar</button></div>
+      <pre>create table if not exists customers (
+  id bigint generated always as identity primary key,
+  name text, phone text unique, email text,
+  cpf_cnpf text, asaas_customer_id text,
+  created_at timestamptz default now()
+);
+create table if not exists clinica_pagamentos (
+  id bigint generated always as identity primary key,
+  phone text, asaas_payment_id text, invoice_url text,
+  value numeric, billing_type text, status text,
+  consulting_city text, specialty text, consultation_type text,
+  created_at timestamptz default now()
+);
+create table if not exists clinica_agendamentos (
+  id bigint generated always as identity primary key,
+  phone text, patient_name text, patient_email text,
+  start_time timestamptz, event_type_id text,
+  cal_booking_uid text, status text,
+  created_at timestamptz default now()
+);
+create table if not exists customer_consulting (
+  id bigint generated always as identity primary key, cust_id bigint
+);
+create table if not exists follow_up_queue (
+  id bigint generated always as identity primary key, phone text
+);
+
+-- Base de conhecimento (RAG)
+create extension if not exists vector;
+create table if not exists clinica_conhecimento (
+  id bigserial primary key, content text,
+  metadata jsonb, embedding vector(1536)
+);
+create or replace function match_documents (
+  query_embedding vector(1536), match_count int default null, filter jsonb default '{}'
+) returns table (id bigint, content text, metadata jsonb, similarity float)
+language plpgsql as $$
+#variable_conflict use_column
+begin
+  return query
+  select id, content, metadata, 1 - (clinica_conhecimento.embedding &lt;=&gt; query_embedding) as similarity
+  from clinica_conhecimento
+  where metadata @&gt; filter
+  order by clinica_conhecimento.embedding &lt;=&gt; query_embedding
+  limit match_count;
+end;
+$$;
+
+-- Segurança: dados de paciente. Ligue o RLS em tudo.
+-- (a chave service_role, usada só dentro do n8n, ignora o RLS)
+alter table customers enable row level security;
+alter table clinica_pagamentos enable row level security;
+alter table clinica_agendamentos enable row level security;
+alter table customer_consulting enable row level security;
+alter table follow_up_queue enable row level security;
+alter table clinica_conhecimento enable row level security;</pre>
+    </div>
+    <ul>
+      <li>Use a chave <code>service_role</code> do Supabase <b>somente</b> dentro do n8n. Nunca em página, app ou chat.</li>
+      <li>O agente calcula as datas a partir do fuso <code>America/Sao_Paulo</code> e fecha sábado e domingo. Ajuste no nó "Prepare Agent Context1" se a sua clínica atende diferente.</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title" id="p4"><span class="part-tag">Parte 04</span>Peça ao Claude o passo a passo</h2>
+  <p>É o que eu faço quando preciso configurar uma ferramenta que não conheço: em vez de assistir uma videoaula inteira, peço pro Claude me guiar <b>uma etapa de cada vez</b>. Troque o que está entre colchetes e cole.</p>
+
+  <h3 class="sub-title">1. Evolution API (WhatsApp)</h3>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Cole no Claude · Evolution API</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Quero conectar um número de WhatsApp ao meu n8n usando a Evolution API.
+
+Meu cenário: [meu n8n é self-hosted / n8n cloud]. A Evolution API [já está instalada / ainda não].
+
+Me guie em português simples, UMA etapa por vez, e espere eu confirmar antes de seguir:
+1. Como instalar ou contratar a Evolution API.
+2. Como criar a instância e ler o QR Code com o celular da clínica.
+3. Onde pegar a URL e a API key, e como criar a credencial no n8n.
+4. Como apontar o webhook da instância para a Production URL do meu nó Webhook (termina em /webhook/clinica-agente), com o evento de mensagem recebida.
+5. Como testar mandando uma mensagem do meu celular.
+
+Regra: não peça a minha chave no chat. Crie uma pasta de segurança com um arquivo .env e me diga onde colar.</pre>
+  </div>
+
+  <h3 class="sub-title">2. Asaas (pagamento)</h3>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Cole no Claude · Asaas</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Quero configurar o Asaas para cobrar o sinal da consulta pelo meu agente no n8n.
+
+Me guie em português simples, UMA etapa por vez:
+1. Como criar a conta e usar o ambiente de testes (sandbox) antes do ambiente real.
+2. Onde gerar a chave de API e como criar a credencial "Header Auth" no n8n (o cabeçalho é access_token).
+3. Como configurar o webhook de pagamento confirmado apontando para a Production URL do workflow "Webhook do Asaas" (termina em /webhook/asaas-pagamento-confirmado).
+4. Como testar uma cobrança no sandbox, do link até a confirmação.
+5. Como trocar do sandbox para o ambiente real com segurança.
+
+Regra: não peça a minha chave no chat. Use um arquivo .env.</pre>
+  </div>
+
+  <h3 class="sub-title">3. Agenda (Cal.com ou Google Agenda)</h3>
+  <div class="prompt-box">
+    <div class="pb-head"><span class="pb-label">Cole no Claude · Agenda</span><button class="copy-btn" type="button">Copiar</button></div>
+    <pre>Quero configurar a agenda do meu agente de clínica no n8n. O workflow "Agendamento" usa o Cal.com.
+
+Me guie em português simples, UMA etapa por vez:
+1. Como criar o tipo de evento no Cal.com (duração da consulta) e achar o eventTypeId.
+2. Como gerar a chave de API (v2) e criar a credencial "Header Auth" no n8n (Authorization: Bearer ...).
+3. Onde colocar o eventTypeId nos nós "Buscar Horarios", "Criar Reserva" e "Registrar Agendamento".
+4. Como testar: consultar horários livres, reservar, remarcar e cancelar.
+
+[Opcional] Se eu preferir o Google Agenda: me diga quais nós do workflow "Agendamento" eu preciso trocar e como manter as mesmas 5 ações (verificar, salvar, confirmar, reagendar, cancelar).
+
+Regra: não peça a minha chave no chat. Use um arquivo .env.</pre>
+  </div>
+
+  <div class="tip">
+    <strong>Dica de ouro</strong>
+    Peça sempre "uma etapa por vez e espere eu confirmar". Assim o Claude não despeja 30 passos de uma vez e você acompanha na tela.
+  </div>
+
+  <h2 class="section-title" id="p5"><span class="part-tag">Parte 05</span>Checklist final antes de ligar</h2>
+  <div class="checklist">
+    <h3>Só ative quando marcar tudo</h3>
+    <div class="cl-sub">Dados de paciente são dados de saúde. Teste com o seu número antes de qualquer paciente real.</div>
+    <label class="check-item"><input type="checkbox"><span>Os 5 workflows importados e as credenciais escolhidas em cada nó (nenhum aviso vermelho).</span></label>
+    <label class="check-item"><input type="checkbox"><span>As 7 ferramentas do Agente Principal apontam para o workflow certo.</span></label>
+    <label class="check-item"><input type="checkbox"><span>Prompt preenchido: sem nenhum [COLCHETE] sobrando.</span></label>
+    <label class="check-item"><input type="checkbox"><span>Tabela de preços igual no prompt e no nó "Calcular Preco".</span></label>
+    <label class="check-item"><input type="checkbox"><span>Tabelas criadas no Supabase com RLS ligado, e base de conhecimento alimentada.</span></label>
+    <label class="check-item"><input type="checkbox"><span>Webhook da Evolution apontando para a Production URL (não a URL de teste).</span></label>
+    <label class="check-item"><input type="checkbox"><span>Asaas no sandbox: cobrança gerada, pagamento confirmado, paciente avisado.</span></label>
+    <label class="check-item"><input type="checkbox"><span>Cal.com: horários livres aparecem e a reserva é criada só depois do pagamento.</span></label>
+    <label class="check-item"><input type="checkbox"><span>Teste do humano: peça "quero falar com uma pessoa" e confirme que a equipe é avisada e a IA para.</span></label>
+    <label class="check-item"><input type="checkbox"><span>Chaves guardadas só em .env e nas credenciais do n8n. Nenhuma em chat, print ou página.</span></label>
+    <div class="progress"><i id="bar"></i></div>
+    <div class="progress-label"><span id="plabel">0 de 10</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="video-block">
+    <h2 class="video-headline">Quer o método completo de como eu gero demanda pelo LinkedIn?</h2>
+    <div class="video-embed">
+      <iframe src="https://www.youtube.com/embed/dQiAdW0Dguc" title="Como gerar demanda pelo LinkedIn" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="cta-final">
+    <img class="avatar" src="igor-miguel.png" alt="Igor Miguel">
+    <div class="eyebrow">Fala direto comigo</div>
+    <div class="t">Quer um agente assim rodando na sua empresa, sem montar nada sozinho?</div>
+    <div class="s">20 minutos, sem compromisso, pra ver se faz sentido pro seu negócio.</div>
+    <a class="btn-cta" href="https://cal.com/admin-grupo-nexusmind-hxbhcy/bate-papo-nexusmind" target="_blank" rel="noopener">📅 Marcar meu bate-papo agora</a>
+  </div>
+
+  <footer>
+    <span class="mono">Método Demanda Infinita®</span><br>
+    Material gratuito, montado a partir dos próprios workflows. Nomes de menu e telas das ferramentas de terceiros mudam com o tempo: na dúvida, use os pedidos da Parte 04 para o Claude te guiar com a versão atual. Atualizado em 04/10/2026.
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.closest('.prompt-box').querySelector('pre');
+      var text = pre.innerText;
+      var done = function(){
+        btn.textContent = 'Copiado!';
+        btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+      } else {
+        fallback(text, done);
+      }
+    });
+  });
+  function fallback(text, done){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  var boxes = document.querySelectorAll('.check-item input');
+  var bar = document.getElementById('bar');
+  var plabel = document.getElementById('plabel');
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      var n = 0;
+      boxes.forEach(function(x){ if (x.checked) n++; });
+      bar.style.width = (n / boxes.length * 100) + '%';
+      plabel.textContent = n + ' de ' + boxes.length;
+    });
+  });
+</script>
+</body>
+</html>
