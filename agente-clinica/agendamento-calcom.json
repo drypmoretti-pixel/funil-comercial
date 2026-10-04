@@ -1,0 +1,962 @@
+{
+ "name": "Clínica · Agendamento Cal.com (template)",
+ "nodes": [
+  {
+   "parameters": {
+    "inputSource": "jsonExample",
+    "jsonExample": "{\n  \"action\": \"CHECK_AVAILABILITY ou BOOK\",\n  \"preferred_date\": \"YYYY-MM-DD\",\n  \"patient_name\": \"Nome completo\",\n  \"patient_email\": \"email do paciente\",\n  \"chosen_start_time\": \"horario ISO escolhido, ex 2026-09-18T09:00:00-03:00 (so pra BOOK)\",\n  \"phone\": \"telefone\"\n}"
+   },
+   "id": "cal-trigger-0001",
+   "name": "Recebe Pedido de Agenda",
+   "type": "n8n-nodes-base.executeWorkflowTrigger",
+   "typeVersion": 1.1,
+   "position": [
+    -2672,
+    192
+   ]
+  },
+  {
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Recebe Pedido de Agenda').item.json.action }}",
+          "rightValue": "CHECK_AVAILABILITY",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "CHECK_AVAILABILITY"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Recebe Pedido de Agenda').item.json.action }}",
+          "rightValue": "BOOK",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "BOOK"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Recebe Pedido de Agenda').item.json.action }}",
+          "rightValue": "RESCHEDULE",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "RESCHEDULE"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Recebe Pedido de Agenda').item.json.action }}",
+          "rightValue": "CANCEL",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "CANCEL"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Recebe Pedido de Agenda').item.json.action }}",
+          "rightValue": "SAVE_SELECTION",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "SAVE_SELECTION"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "cal-switch-0001",
+   "name": "Acao?",
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.2,
+   "position": [
+    -2448,
+    144
+   ]
+  },
+  {
+   "parameters": {
+    "url": "https://api.cal.com/v2/slots",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "eventTypeId",
+       "value": "0000000"
+      },
+      {
+       "name": "start",
+       "value": "={{ $('Recebe Pedido de Agenda').item.json.preferred_date }}"
+      },
+      {
+       "name": "end",
+       "value": "={{ DateTime.fromISO($('Recebe Pedido de Agenda').item.json.preferred_date).plus({days:1}).toFormat('yyyy-MM-dd') }}"
+      },
+      {
+       "name": "timeZone",
+       "value": "America/Sao_Paulo"
+      }
+     ]
+    },
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "cal-api-version",
+       "value": "2024-09-04"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "cal-getslots-0001",
+   "name": "Buscar Horarios",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -2112,
+    16
+   ],
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "",
+     "name": "Cal.com API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "const body = $json.data || {};\nconst dates = Object.keys(body);\nif (dates.length === 0) {\n  return [{ json: { output: 'Nenhum horario disponivel nesse dia.', slots: [] } }];\n}\n\nconst periods = { manha: [], tarde: [], noite: [] };\nconst allSlots = [];\nfor (const date of dates) {\n  for (const slot of body[date]) {\n    const hour = Number(slot.start.slice(11,13));\n    allSlots.push(slot.start);\n    if (hour < 12) periods.manha.push(slot.start);\n    else if (hour < 17) periods.tarde.push(slot.start);\n    else periods.noite.push(slot.start);\n  }\n}\n\nconst fmt = (iso) => iso.slice(11,16);\nlet lines = [];\nif (periods.manha.length) lines.push('Manha: ' + periods.manha.slice(0,3).map(fmt).join(', '));\nif (periods.tarde.length) lines.push('Tarde: ' + periods.tarde.slice(0,3).map(fmt).join(', '));\nif (periods.noite.length) lines.push('Noite: ' + periods.noite.slice(0,3).map(fmt).join(', '));\n\nconst output = lines.join('\\n');\nreturn [{ json: { output, slots: allSlots.slice(0,9) } }];"
+   },
+   "id": "cal-fmtavail-0001",
+   "name": "Formatar Horarios",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -1888,
+    16
+   ]
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.cal.com/v2/bookings",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "cal-api-version",
+       "value": "2024-08-13"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({\n  eventTypeId: 0000000,\n  start: $('Recebe Pedido de Agenda').item.json.chosen_start_time,\n  attendee: {\n    name: $('Recebe Pedido de Agenda').item.json.patient_name,\n    email: $('Recebe Pedido de Agenda').item.json.patient_email,\n    timeZone: 'America/Sao_Paulo',\n    language: 'pt-BR'\n  },\n  metadata: { phone: $('Recebe Pedido de Agenda').item.json.phone }\n}) }}",
+    "options": {}
+   },
+   "id": "cal-book-0001",
+   "name": "Criar Reserva",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -1440,
+    -96
+   ],
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "",
+     "name": "Cal.com API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "tableId": "clinica_agendamentos",
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "phone",
+       "fieldValue": "={{ $('Recebe Pedido de Agenda').item.json.phone }}"
+      },
+      {
+       "fieldId": "cal_booking_uid",
+       "fieldValue": "={{ $json.data.uid }}"
+      },
+      {
+       "fieldId": "patient_name",
+       "fieldValue": "={{ $('Recebe Pedido de Agenda').item.json.patient_name }}"
+      },
+      {
+       "fieldId": "patient_email",
+       "fieldValue": "={{ $('Recebe Pedido de Agenda').item.json.patient_email }}"
+      },
+      {
+       "fieldId": "start_time",
+       "fieldValue": "={{ $('Recebe Pedido de Agenda').item.json.chosen_start_time }}"
+      },
+      {
+       "fieldId": "event_type_id",
+       "fieldValue": "0000000"
+      }
+     ]
+    }
+   },
+   "id": "cal-log-0001",
+   "name": "Registrar Agendamento",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -1216,
+    -96
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "const trigger = $('Recebe Pedido de Agenda').first().json;\nconst dt = trigger.chosen_start_time || '';\nconst output = `Agendamento confirmado para ${dt}. Voce vai receber a confirmacao por email tambem.`;\nreturn [{ json: { output } }];"
+   },
+   "id": "cal-fmtbook-0001",
+   "name": "Formatar Confirmacao",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -992,
+    -96
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "tableId": "clinica_pagamentos",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "keyValue": "={{ $('Recebe Pedido de Agenda').item.json.phone }}"
+      }
+     ]
+    }
+   },
+   "id": "cal-checkpay-0001",
+   "name": "Buscar Pagamento do Cliente",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -2112,
+    208
+   ],
+   "alwaysOutputData": true,
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "leftValue": "={{ $json.status }}",
+       "rightValue": "CONFIRMED",
+       "operator": {
+        "type": "string",
+        "operation": "equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "id": "cal-ifpaid-0001",
+   "name": "Pagamento Confirmado?",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -1888,
+    208
+   ]
+  },
+  {
+   "parameters": {
+    "jsCode": "return [{ json: {\n  output: 'ainda_nao_confirmado',\n  error: 'Pagamento ainda nao confirmado, nao e possivel criar, reagendar ou cancelar o agendamento ainda. Consultar disponibilidade continua liberado.'\n} }];"
+   },
+   "id": "cal-notpaid-0001",
+   "name": "Pagamento Pendente (bloqueia)",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -1664,
+    304
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "tableId": "clinica_agendamentos",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "keyValue": "={{ $('Recebe Pedido de Agenda').item.json.phone }}"
+      }
+     ]
+    }
+   },
+   "id": "cal-getbooking-resched-0001",
+   "name": "Buscar Agendamento Atual (reagendar)",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -1440,
+    96
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "=https://api.cal.com/v2/bookings/{{ $json.cal_booking_uid }}/reschedule",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "cal-api-version",
+       "value": "2024-08-13"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({ start: $('Recebe Pedido de Agenda').item.json.chosen_start_time, reschedulingReason: 'Solicitado pelo paciente via WhatsApp' }) }}",
+    "options": {}
+   },
+   "id": "cal-doresched-0001",
+   "name": "Reagendar no Cal.com",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -1216,
+    96
+   ],
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "",
+     "name": "Cal.com API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "tableId": "clinica_agendamentos",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "condition": "eq",
+       "keyValue": "={{ $('Recebe Pedido de Agenda').item.json.phone }}"
+      }
+     ]
+    },
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "start_time",
+       "fieldValue": "={{ $('Recebe Pedido de Agenda').item.json.chosen_start_time }}"
+      },
+      {
+       "fieldId": "cal_booking_uid",
+       "fieldValue": "={{ $json.data.uid }}"
+      }
+     ]
+    }
+   },
+   "id": "cal-updatebooking-resched-0001",
+   "name": "Atualizar Agendamento no Supabase",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -992,
+    96
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "const dt = $('Recebe Pedido de Agenda').first().json.chosen_start_time || '';\nreturn [{ json: { output: `Prontinho, reagendado para ${dt}.` } }];"
+   },
+   "id": "cal-fmtresched-0001",
+   "name": "Formatar Reagendamento",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -768,
+    96
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "tableId": "clinica_agendamentos",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "keyValue": "={{ $('Recebe Pedido de Agenda').item.json.phone }}"
+      }
+     ]
+    }
+   },
+   "id": "cal-getbooking-cancel-0001",
+   "name": "Buscar Agendamento Atual (cancelar)",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -1440,
+    288
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "=https://api.cal.com/v2/bookings/{{ $json.cal_booking_uid }}/cancel",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendHeaders": true,
+    "headerParameters": {
+     "parameters": [
+      {
+       "name": "cal-api-version",
+       "value": "2024-08-13"
+      }
+     ]
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({ cancellationReason: 'Cancelado pelo paciente via WhatsApp' }) }}",
+    "options": {}
+   },
+   "id": "cal-docancel-0001",
+   "name": "Cancelar no Cal.com",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -1216,
+    288
+   ],
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "",
+     "name": "Cal.com API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "tableId": "clinica_agendamentos",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "condition": "eq",
+       "keyValue": "={{ $('Recebe Pedido de Agenda').item.json.phone }}"
+      }
+     ]
+    },
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "status",
+       "fieldValue": "CANCELLED"
+      }
+     ]
+    }
+   },
+   "id": "cal-updatebooking-cancel-0001",
+   "name": "Marcar Cancelado no Supabase",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -992,
+    288
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "return [{ json: { output: 'Consulta cancelada com sucesso.' } }];"
+   },
+   "id": "cal-fmtcancel-0001",
+   "name": "Formatar Cancelamento",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -768,
+    288
+   ]
+  },
+  {
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Recebe Pedido de Agenda').item.json.action }}",
+          "rightValue": "BOOK",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "BOOK"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Recebe Pedido de Agenda').item.json.action }}",
+          "rightValue": "RESCHEDULE",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "RESCHEDULE"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Recebe Pedido de Agenda').item.json.action }}",
+          "rightValue": "CANCEL",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "CANCEL"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "cal-switch-afterpay-0001",
+   "name": "Acao apos pagamento?",
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.2,
+   "position": [
+    -1664,
+    80
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "set",
+    "key": "={{ 'clinica:selected_slot:' + $('Recebe Pedido de Agenda').item.json.phone }}",
+    "value": "={{ $('Recebe Pedido de Agenda').item.json.chosen_start_time }}",
+    "keyType": "string",
+    "expire": true,
+    "ttl": 604800
+   },
+   "id": "cal-saveslot-0001",
+   "name": "Salvar Horario Escolhido",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -2112,
+    400
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "const dt = $('Recebe Pedido de Agenda').first().json.chosen_start_time || '';\nreturn [{ json: { output: `Horario salvo: ${dt}. Ainda nao e uma reserva. A vaga so e confirmada na agenda depois do pagamento.` } }];"
+   },
+   "id": "cal-fmtsave-0001",
+   "name": "Formatar Horario Salvo",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -1888,
+    400
+   ]
+  }
+ ],
+ "connections": {
+  "Recebe Pedido de Agenda": {
+   "main": [
+    [
+     {
+      "node": "Acao?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Acao?": {
+   "main": [
+    [
+     {
+      "node": "Buscar Horarios",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Buscar Pagamento do Cliente",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Buscar Pagamento do Cliente",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Buscar Pagamento do Cliente",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Salvar Horario Escolhido",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Buscar Horarios": {
+   "main": [
+    [
+     {
+      "node": "Formatar Horarios",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Criar Reserva": {
+   "main": [
+    [
+     {
+      "node": "Registrar Agendamento",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Registrar Agendamento": {
+   "main": [
+    [
+     {
+      "node": "Formatar Confirmacao",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Buscar Pagamento do Cliente": {
+   "main": [
+    [
+     {
+      "node": "Pagamento Confirmado?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Pagamento Confirmado?": {
+   "main": [
+    [
+     {
+      "node": "Acao apos pagamento?",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Pagamento Pendente (bloqueia)",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Buscar Agendamento Atual (reagendar)": {
+   "main": [
+    [
+     {
+      "node": "Reagendar no Cal.com",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Reagendar no Cal.com": {
+   "main": [
+    [
+     {
+      "node": "Atualizar Agendamento no Supabase",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Atualizar Agendamento no Supabase": {
+   "main": [
+    [
+     {
+      "node": "Formatar Reagendamento",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Buscar Agendamento Atual (cancelar)": {
+   "main": [
+    [
+     {
+      "node": "Cancelar no Cal.com",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Cancelar no Cal.com": {
+   "main": [
+    [
+     {
+      "node": "Marcar Cancelado no Supabase",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Marcar Cancelado no Supabase": {
+   "main": [
+    [
+     {
+      "node": "Formatar Cancelamento",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Acao apos pagamento?": {
+   "main": [
+    [
+     {
+      "node": "Criar Reserva",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Buscar Agendamento Atual (reagendar)",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Buscar Agendamento Atual (cancelar)",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Salvar Horario Escolhido": {
+   "main": [
+    [
+     {
+      "node": "Formatar Horario Salvo",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "active": false,
+ "settings": {
+  "executionOrder": "v1",
+  "callerPolicy": "workflowsFromSameOwner",
+  "availableInMCP": false,
+  "timeSavedMode": "fixed",
+  "errorWorkflow": "hnKqKwzntEsQtkTgJ53z2"
+ }
+}
