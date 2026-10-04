@@ -1,0 +1,174 @@
+{
+ "name": "Clínica · Revisão Humana (template)",
+ "nodes": [
+  {
+   "parameters": {
+    "inputSource": "jsonExample",
+    "jsonExample": "{\n  \"lead_name\": \"Name of the customer\",\n  \"phone\":\"phonenumber id\",\n  \"message\": \"message of the customer\"\n}"
+   },
+   "type": "n8n-nodes-base.executeWorkflowTrigger",
+   "typeVersion": 1.1,
+   "position": [
+    160,
+    144
+   ],
+   "id": "3b9a76ed-6dd6-4b05-bf14-c1fa98f3486a",
+   "name": "When Executed by Another Workflow"
+  },
+  {
+   "parameters": {
+    "resource": "messages-api",
+    "instanceName": "Doc. [NOME]",
+    "remoteJid": "={{ $json.number }}",
+    "messageText": "=🔔 *TRANSFERÊNCIA PARA ATENDENTE HUMANO*\n\nO paciente solicitou ou necessita de atendimento presencial.\n\n*Última mensagem do paciente:*\n{{ $json.message }}\n\n*Telefone:* {{ $('When Executed by Another Workflow').item.json.phone.split(\"@\")[0] }}\n*Nome:* {{ $('When Executed by Another Workflow').item.json.lead_name || 'Não identificado' }}\n\n⚠️ O bot ficará pausado por 30 minutos.\nPara liberar o bot antes, envie: `/liberar {{ $('When Executed by Another Workflow').item.json.phone.split(\"@\")[0] }}`",
+    "options_message": {}
+   },
+   "type": "n8n-nodes-evolution-api.evolutionApi",
+   "typeVersion": 1,
+   "position": [
+    528,
+    144
+   ],
+   "id": "783f3d6d-e341-4038-b8c7-9866b86bad43",
+   "name": "Send message to team1",
+   "credentials": {
+    "evolutionApi": {
+     "id": "",
+     "name": "Evolution API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "32496089-1efc-4fd5-af1b-9b5360de9f73",
+       "name": "number",
+       "value": "5500000000000",
+       "type": "string"
+      },
+      {
+       "id": "28ee4925-2030-41df-b64b-d39a7529cca7",
+       "name": "message",
+       "value": "={{ $json.message }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    336,
+    144
+   ],
+   "id": "1a61f9b0-15ca-4f54-9d9b-0059eb6e2c37",
+   "name": "Set Support Team Number1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "f84b8b97-a429-449a-9ebb-5500000000000",
+       "name": "output",
+       "value": "Obrigado pela sua mensagem.  Estou encaminhando seu atendimento para um especialista da nossa equipe.   Em breve você receberá suporte personalizado.",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    864,
+    144
+   ],
+   "id": "eb49e2c9-1b94-47c6-9836-e91cf1b293b8",
+   "name": "Set response1"
+  },
+  {
+   "parameters": {
+    "operation": "set",
+    "key": "={{ $('When Executed by Another Workflow').item.json.phone }}_block",
+    "value": "true",
+    "keyType": "string",
+    "expire": true,
+    "ttl": 1800
+   },
+   "id": "bd927190-76f9-488b-af19-f10c9757ed7e",
+   "name": "CONFIGURE A PAUSA APÓS INTERVENÇÃO (SEGUNDOS)1",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    704,
+    144
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  }
+ ],
+ "connections": {
+  "When Executed by Another Workflow": {
+   "main": [
+    [
+     {
+      "node": "Set Support Team Number1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Send message to team1": {
+   "main": [
+    [
+     {
+      "node": "CONFIGURE A PAUSA APÓS INTERVENÇÃO (SEGUNDOS)1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set Support Team Number1": {
+   "main": [
+    [
+     {
+      "node": "Send message to team1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "CONFIGURE A PAUSA APÓS INTERVENÇÃO (SEGUNDOS)1": {
+   "main": [
+    [
+     {
+      "node": "Set response1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "active": false,
+ "settings": {
+  "executionOrder": "v1",
+  "availableInMCP": false,
+  "timeSavedMode": "fixed",
+  "timezone": "America/Sao_Paulo",
+  "callerPolicy": "any",
+  "errorWorkflow": "hnKqKwzntEsQtkTgJ53z2",
+  "binaryMode": "separate"
+ }
+}
