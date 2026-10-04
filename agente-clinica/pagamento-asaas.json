@@ -1,0 +1,708 @@
+{
+ "name": "Clínica · Pagamento Asaas (template)",
+ "nodes": [
+  {
+   "parameters": {
+    "inputSource": "jsonExample",
+    "jsonExample": "{\n  \"customer_name\": \"Nome completo do paciente\",\n  \"cpf_cnpj\": \"somente numeros, 11 digitos\",\n  \"email\": \"email@paciente.com\",\n  \"billing_type\": \"PIX ou CREDIT_CARD\",\n  \"consulting_city\": \"CIDADE_2, CIDADE_3 ou CIDADE_1\",\n  \"specialty\": \"SPECIALTY_A ou GENERAL_PRACTITIONER\",\n  \"phone\": \"numero de telefone (remoteJid)\"\n}"
+   },
+   "id": "pay-trigger-0001",
+   "name": "Recebe Dados de Pagamento",
+   "type": "n8n-nodes-base.executeWorkflowTrigger",
+   "typeVersion": 1.1,
+   "position": [
+    -2000,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "tableId": "customers",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "keyValue": "={{ $('Recebe Dados de Pagamento').item.json.phone }}"
+      }
+     ]
+    }
+   },
+   "id": "pay-getcust-0001",
+   "name": "Buscar Cliente",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -1808,
+    0
+   ],
+   "alwaysOutputData": true,
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "pay-if-0001",
+       "leftValue": "={{ $json.asaas_customer_id }}",
+       "rightValue": "",
+       "operator": {
+        "type": "string",
+        "operation": "notEmpty",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "id": "pay-if-exists-0001",
+   "name": "Cliente Tem Asaas Id?",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -1600,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "jsCode": "return [{ json: {\n  asaas_customer_id: $json.asaas_customer_id,\n  existing_customer: true\n} }];"
+   },
+   "id": "pay-set-existing-0001",
+   "name": "Marcar Cliente Existente",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -1072,
+    -192
+   ]
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.asaas.com/v3/customers",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendBody": true,
+    "bodyParameters": {
+     "parameters": [
+      {
+       "name": "name",
+       "value": "={{ $('Recebe Dados de Pagamento').item.json.customer_name }}"
+      },
+      {
+       "name": "mobilePhone",
+       "value": "={{ $('Recebe Dados de Pagamento').item.json.phone.split('@')[0] }}"
+      },
+      {
+       "name": "email",
+       "value": "={{ $('Recebe Dados de Pagamento').item.json.email }}"
+      },
+      {
+       "name": "cpfCnpj",
+       "value": "={{ $('Recebe Dados de Pagamento').item.json.cpf_cnpj }}"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "pay-create-asaas-0001",
+   "name": "Criar Cliente na Asaas",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -1456,
+    96
+   ],
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "",
+     "name": "Asaas API Token"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "tableId": "customers",
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "name",
+       "fieldValue": "={{ $('Recebe Dados de Pagamento').item.json.customer_name }}"
+      },
+      {
+       "fieldId": "phone",
+       "fieldValue": "={{ $('Recebe Dados de Pagamento').item.json.phone }}"
+      },
+      {
+       "fieldId": "email",
+       "fieldValue": "={{ $('Recebe Dados de Pagamento').item.json.email }}"
+      },
+      {
+       "fieldId": "cpf_cnpf",
+       "fieldValue": "={{ $('Recebe Dados de Pagamento').item.json.cpf_cnpj }}"
+      },
+      {
+       "fieldId": "asaas_customer_id",
+       "fieldValue": "={{ $json.id }}"
+      }
+     ]
+    }
+   },
+   "id": "pay-create-supacust-0001",
+   "name": "Criar Cliente no Supabase",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -1136,
+    0
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "return [{ json: {\n  asaas_customer_id: $json.asaas_customer_id,\n  existing_customer: false\n} }];"
+   },
+   "id": "pay-set-new-0001",
+   "name": "Marcar Cliente Novo",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -976,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "method": "PUT",
+    "url": "=https://api.asaas.com/v3/customers/{{ $json.asaas_customer_id }}",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendBody": true,
+    "bodyParameters": {
+     "parameters": [
+      {
+       "name": "name",
+       "value": "={{ $('Recebe Dados de Pagamento').item.json.customer_name }}"
+      },
+      {
+       "name": "mobilePhone",
+       "value": "={{ $('Recebe Dados de Pagamento').item.json.phone.split('@')[0] }}"
+      },
+      {
+       "name": "email",
+       "value": "={{ $('Recebe Dados de Pagamento').item.json.email }}"
+      },
+      {
+       "name": "cpfCnpj",
+       "value": "={{ $('Recebe Dados de Pagamento').item.json.cpf_cnpj }}"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "pay-update-asaas-0001",
+   "name": "Atualizar Cliente na Asaas",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    -608,
+    0
+   ],
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "",
+     "name": "Asaas API Token"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "tableId": "customers",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "condition": "eq",
+       "keyValue": "={{ $('Recebe Dados de Pagamento').item.json.phone }}"
+      }
+     ]
+    },
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "name",
+       "fieldValue": "={{ $('Recebe Dados de Pagamento').item.json.customer_name }}"
+      },
+      {
+       "fieldId": "email",
+       "fieldValue": "={{ $('Recebe Dados de Pagamento').item.json.email }}"
+      },
+      {
+       "fieldId": "cpf_cnpf",
+       "fieldValue": "={{ $('Recebe Dados de Pagamento').item.json.cpf_cnpj }}"
+      }
+     ]
+    }
+   },
+   "id": "pay-update-supacust-0001",
+   "name": "Atualizar Cliente no Supabase",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -400,
+    0
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "// EXEMPLO: troque cidades, especialidades e valores pelos da sua clínica.\n// price = valor da consulta · deposit = fração cobrada como sinal (0.2 = 20%)\nconst PRICING = {\n  SPECIALTY_A: {\n    CIDADE_1: { FIRST: { price: 300, deposit: 0.2 }, RETURN: { price: 250, deposit: 0.2 } },\n    CIDADE_2: { FIRST: { price: 350, deposit: 0.5 }, RETURN: { price: 300, deposit: 0.5 } },\n    CIDADE_3: { SINGLE: { price: 250, deposit: 0.5 } }\n  },\n  GP: { ANY: { SINGLE: { price: 200, deposit: 0.2 } } }\n};\nconst trigger = $('Recebe Dados de Pagamento').first().json;\n\nlet clientInfo = null;\nfor (const name of ['Marcar Cliente Existente', 'Marcar Cliente Novo', 'Marcar Cliente Preenchido']) {\n  try {\n    const results = $(name).all();\n    if (results && results.length > 0) { clientInfo = results[0].json; break; }\n  } catch (e) {}\n}\nif (!clientInfo) { throw new Error('Nao foi possivel resolver os dados do cliente (nenhum dos 3 nos de resolucao rodou)'); }\n\nconst city = String(trigger.consulting_city || '').toUpperCase();\nconst specialty = String(trigger.specialty || '').toUpperCase();\nconst existingCustomer = !!clientInfo.existing_customer;\nconst consultationType = existingCustomer ? 'RETURN' : 'FIRST';\n\nlet config;\nif (specialty === 'SPECIALTY_A') {\n  if (city === 'CIDADE_3') config = PRICING.SPECIALTY_A.CIDADE_3.SINGLE;\n  else config = (PRICING.SPECIALTY_A[city] || {})[consultationType];\n} else {\n  config = PRICING.GP.ANY.SINGLE;\n}\n\nif (!config) {\n  throw new Error(`Tabela de preco nao encontrada para specialty=${specialty} city=${city}`);\n}\n\nconst depositAmount = Math.round(config.price * config.deposit * 100) / 100;\n\nreturn [{ json: {\n  asaas_customer_id: clientInfo.asaas_customer_id,\n  city, specialty, consultationType,\n  total_price: config.price,\n  deposit_percentage: config.deposit,\n  deposit_amount: depositAmount,\n  remaining_amount: config.price - depositAmount,\n  billing_type: trigger.billing_type,\n  cpf_cnpj: trigger.cpf_cnpj,\n  phone: trigger.phone\n} }];"
+   },
+   "id": "pay-calc-0001",
+   "name": "Calcular Preco (Tabela B)",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -208,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "https://api.asaas.com/v3/payments",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpHeaderAuth",
+    "sendBody": true,
+    "bodyParameters": {
+     "parameters": [
+      {
+       "name": "customer",
+       "value": "={{ $json.asaas_customer_id }}"
+      },
+      {
+       "name": "billingType",
+       "value": "={{ $json.billing_type }}"
+      },
+      {
+       "name": "value",
+       "value": "={{ $json.deposit_amount }}"
+      },
+      {
+       "name": "dueDate",
+       "value": "={{ $now.plus({ days: 2 }).format('yyyy-MM-dd') }}"
+      },
+      {
+       "name": "cpfCnpj",
+       "value": "={{ $json.cpf_cnpj }}"
+      },
+      {
+       "name": "description",
+       "value": "=Sinal da consulta - Clinica [NOME DA CLÍNICA] ({{ $json.city }} - {{ $json.specialty }})"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "pay-create-payment-0001",
+   "name": "Criar Cobranca na Asaas",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    0,
+    0
+   ],
+   "credentials": {
+    "httpHeaderAuth": {
+     "id": "",
+     "name": "Asaas API Token"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "tableId": "clinica_pagamentos",
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "phone",
+       "fieldValue": "={{ $('Calcular Preco (Tabela B)').item.json.phone }}"
+      },
+      {
+       "fieldId": "asaas_payment_id",
+       "fieldValue": "={{ $json.id }}"
+      },
+      {
+       "fieldId": "invoice_url",
+       "fieldValue": "={{ $json.invoiceUrl }}"
+      },
+      {
+       "fieldId": "value",
+       "fieldValue": "={{ $json.value }}"
+      },
+      {
+       "fieldId": "billing_type",
+       "fieldValue": "={{ $json.billingType }}"
+      },
+      {
+       "fieldId": "status",
+       "fieldValue": "={{ $json.status }}"
+      },
+      {
+       "fieldId": "consulting_city",
+       "fieldValue": "={{ $('Calcular Preco (Tabela B)').item.json.city }}"
+      },
+      {
+       "fieldId": "specialty",
+       "fieldValue": "={{ $('Calcular Preco (Tabela B)').item.json.specialty }}"
+      },
+      {
+       "fieldId": "consultation_type",
+       "fieldValue": "={{ $('Calcular Preco (Tabela B)').item.json.consultationType }}"
+      }
+     ]
+    }
+   },
+   "id": "pay-log-0001",
+   "name": "Registrar Pagamento",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    208,
+    0
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "const payment = $('Criar Cobranca na Asaas').first().json;\nconst pricing = $('Calcular Preco (Tabela B)').first().json;\n\nconst fmt = (n) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n\nconst message = `Link de pagamento gerado.\\n`\n  + `Sinal: R$ ${fmt(pricing.deposit_amount)}\\n`\n  + `Restante (pago na clinica): R$ ${fmt(pricing.remaining_amount)}\\n`\n  + `Link: ${payment.invoiceUrl}`;\n\nreturn [{ json: { output: message, invoice_url: payment.invoiceUrl, deposit_amount: pricing.deposit_amount, remaining_amount: pricing.remaining_amount } }];"
+   },
+   "id": "pay-format-0001",
+   "name": "Formatar Resposta pro Agente",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    400,
+    0
+   ]
+  },
+  {
+   "parameters": {
+    "content": "## WORKFLOW PAGAMENTO ASAAS\n",
+    "height": 592,
+    "width": 2656,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "position": [
+    -2048,
+    -224
+   ],
+   "typeVersion": 1,
+   "id": "0042735c-89bb-449b-a680-6408ce7ff04e",
+   "name": "Sticky Note"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "pay-if-rowexists-0001",
+       "leftValue": "={{ $('Buscar Cliente').item.json.created_at }}",
+       "rightValue": "",
+       "operator": {
+        "type": "string",
+        "operation": "notEmpty",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "id": "pay-if-rowexists-0001",
+   "name": "Linha Ja Existe no Supabase?",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -1296,
+    96
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "update",
+    "tableId": "customers",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "condition": "eq",
+       "keyValue": "={{ $('Recebe Dados de Pagamento').item.json.phone }}"
+      }
+     ]
+    },
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "asaas_customer_id",
+       "fieldValue": "={{ $json.id }}"
+      }
+     ]
+    }
+   },
+   "id": "pay-backfill-supa-0001",
+   "name": "Preencher Asaas Id no Supabase (backfill)",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -1120,
+    160
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "return [{ json: {\n  asaas_customer_id: $('Criar Cliente na Asaas').item.json.id,\n  existing_customer: true\n} }];"
+   },
+   "id": "pay-set-backfilled-0001",
+   "name": "Marcar Cliente Preenchido",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -944,
+    160
+   ]
+  }
+ ],
+ "connections": {
+  "Recebe Dados de Pagamento": {
+   "main": [
+    [
+     {
+      "node": "Buscar Cliente",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Buscar Cliente": {
+   "main": [
+    [
+     {
+      "node": "Cliente Tem Asaas Id?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Marcar Cliente Existente": {
+   "main": [
+    [
+     {
+      "node": "Atualizar Cliente na Asaas",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Criar Cliente na Asaas": {
+   "main": [
+    [
+     {
+      "node": "Linha Ja Existe no Supabase?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Criar Cliente no Supabase": {
+   "main": [
+    [
+     {
+      "node": "Marcar Cliente Novo",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Marcar Cliente Novo": {
+   "main": [
+    [
+     {
+      "node": "Atualizar Cliente na Asaas",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Atualizar Cliente na Asaas": {
+   "main": [
+    [
+     {
+      "node": "Atualizar Cliente no Supabase",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Atualizar Cliente no Supabase": {
+   "main": [
+    [
+     {
+      "node": "Calcular Preco (Tabela B)",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Calcular Preco (Tabela B)": {
+   "main": [
+    [
+     {
+      "node": "Criar Cobranca na Asaas",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Criar Cobranca na Asaas": {
+   "main": [
+    [
+     {
+      "node": "Registrar Pagamento",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Registrar Pagamento": {
+   "main": [
+    [
+     {
+      "node": "Formatar Resposta pro Agente",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Cliente Tem Asaas Id?": {
+   "main": [
+    [
+     {
+      "node": "Marcar Cliente Existente",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Criar Cliente na Asaas",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Linha Ja Existe no Supabase?": {
+   "main": [
+    [
+     {
+      "node": "Preencher Asaas Id no Supabase (backfill)",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Criar Cliente no Supabase",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Preencher Asaas Id no Supabase (backfill)": {
+   "main": [
+    [
+     {
+      "node": "Marcar Cliente Preenchido",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Marcar Cliente Preenchido": {
+   "main": [
+    [
+     {
+      "node": "Atualizar Cliente na Asaas",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "active": false,
+ "settings": {
+  "executionOrder": "v1",
+  "callerPolicy": "workflowsFromSameOwner",
+  "availableInMCP": false
+ }
+}
