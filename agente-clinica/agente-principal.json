@@ -1,0 +1,3367 @@
+{
+ "name": "Clínica · Agente Principal (template)",
+ "nodes": [
+  {
+   "parameters": {
+    "operation": "delete",
+    "key": "={{ 'processing:' + $('Coleta1').item.json.telefone }}"
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -5456,
+    256
+   ],
+   "id": "10754eb2-02fe-4079-bdc0-eba5b0260161",
+   "name": "Release Processing Lock",
+   "alwaysOutputData": true,
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "propertyName": "processing_lock",
+    "key": "={{ 'processing:' + $('Coleta1').item.json.telefone }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -8640,
+    208
+   ],
+   "id": "ed38ac1c-54d8-4c51-83f1-56601b05d350",
+   "name": "Get Processing Lock",
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "jsCode": "const lock = $('Get Processing Lock').first().json.processing_lock;\nconst phone = $('Coleta1').first().json.telefone;\nif (lock === '1' || lock === 1 || lock === true || lock === 'true') {\n  return [{ json: { skip_processing: true, phone } }];\n}\nreturn [{ json: { skip_processing: false, phone } }];\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -8416,
+    208
+   ],
+   "id": "87fa71f0-5b58-468b-9093-a8efa8a9a1c4",
+   "name": "Check Processing Lock"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "leftValue": "={{ $json.skip_processing }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "true",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -8192,
+    208
+   ],
+   "id": "2cf78c78-8832-4cdb-bf1f-fbe7984a4a77",
+   "name": "IF Already Processing?"
+  },
+  {
+   "parameters": {
+    "operation": "set",
+    "key": "={{ 'processing:' + $('Coleta1').item.json.telefone }}",
+    "value": "1",
+    "keyType": "string",
+    "expire": true,
+    "ttl": 20
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -7968,
+    160
+   ],
+   "id": "6b1f832b-aa10-4fe0-a9c9-3d3eaf914b53",
+   "name": "Set Processing Lock",
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "httpMethod": "POST",
+    "path": "clinica-agente",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.webhook",
+   "typeVersion": 2.1,
+   "position": [
+    -13792,
+    480
+   ],
+   "id": "03894bfe-0ac2-4be5-a4a5-934583dcec03",
+   "name": "Webhook1"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "bb5f3999-fed4-44e1-972f-1397a3c6fee6",
+       "name": "nome",
+       "value": "={{ $('Webhook1').item.json.body.data.pushName }}",
+       "type": "string"
+      },
+      {
+       "id": "65cf5864-7b1f-457f-8007-0a2bc0380a3c",
+       "name": "telefone",
+       "value": "={{ $('Webhook1').item.json.body.data.key.remoteJid }}",
+       "type": "string"
+      },
+      {
+       "id": "be20cf5a-21c3-47e1-8344-fd78b9d04bff",
+       "name": "tipo",
+       "value": "={{ $('Webhook1').item.json.body.data.messageType }}",
+       "type": "string"
+      },
+      {
+       "id": "cf2af045-3ffa-4d58-8a2d-c5cb8f85f849",
+       "name": "mensagem",
+       "value": "={{ $('Webhook1').item.json.body.data.message.conversation }}",
+       "type": "string"
+      },
+      {
+       "id": "113cc6b2-b984-40e6-aabd-7bacdc9a8b7f",
+       "name": "evolution_account_name",
+       "value": "SUA_INSTANCIA",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -12896,
+    384
+   ],
+   "id": "f04a9d2b-6baa-4500-8757-f39c7c1f6631",
+   "name": "Coleta1"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "b3c9b986-29a6-4418-a033-6422c387377f",
+       "leftValue": "={{ $('Webhook1').item.json.body.data.key.fromMe }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "true",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "id": "fa01945d-1cd4-4b3b-a19d-884a375f97fd",
+   "name": "fromMe",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -12672,
+    384
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "set",
+    "key": "={{ $('Webhook1').item.json.body.data.key.remoteJid }}_block",
+    "value": "true",
+    "keyType": "string",
+    "expire": true
+   },
+   "id": "4aaf446b-4727-4f41-bfcc-b28bc0c08c95",
+   "name": "Set Human Pause (manual reply)",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -12448,
+    288
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "propertyName": "block",
+    "key": "={{ $('Coleta1').item.json.telefone }}_block",
+    "options": {}
+   },
+   "id": "0b286ec2-fe1f-4927-9e26-4a68c18f99d4",
+   "name": "Get Block Chat Id1",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -12448,
+    608
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $json.block }}",
+          "rightValue": "true",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          },
+          "id": "4c1ee105-26ae-496a-907d-d81b59a9585e"
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "AI Can not answer"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "id": "107e344c-3d86-49c1-accc-567bd3ffdb26",
+          "leftValue": "={{ $json.block }}",
+          "rightValue": "",
+          "operator": {
+           "type": "string",
+           "operation": "empty",
+           "singleValue": true
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "AI Can answer"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "id": "f8699ed7-8b1c-4c96-960a-346fa8d66a10",
+          "leftValue": "={{ $('Coleta1').item.json.mensagem.toLowerCase() }}",
+          "rightValue": "reset",
+          "operator": {
+           "type": "string",
+           "operation": "contains"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Reset Data"
+      }
+     ]
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.4,
+   "position": [
+    -12224,
+    608
+   ],
+   "id": "4907c560-da85-4155-85b3-bca429be45e8",
+   "name": "Switch5"
+  },
+  {
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Webhook1').item.json.body.data.message.conversation }}",
+          "rightValue": "/delete",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          },
+          "id": "e404b1d4-3ca7-41ba-aef8-54d344cb5ca3"
+         }
+        ],
+        "combinator": "and"
+       }
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": false,
+         "leftValue": "",
+         "typeValidation": "loose",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "id": "b7f1c0de-0002-4a00-9000-5500000000000",
+          "leftValue": "={{ $('Webhook1').item.json.body.data.message.conversation }}",
+          "rightValue": "/liberar",
+          "operator": {
+           "type": "string",
+           "operation": "startsWith"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Staff unblock"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "id": "8d859e48-2f71-4edd-b624-335fcffc257c",
+          "leftValue": "={{ $('Webhook1').item.json.body.data.message.conversation }}",
+          "rightValue": "/delete",
+          "operator": {
+           "type": "string",
+           "operation": "notContains"
+          }
+         }
+        ],
+        "combinator": "and"
+       }
+      }
+     ]
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.4,
+   "position": [
+    -12000,
+    592
+   ],
+   "id": "b1432415-3b64-41a0-8365-5b233c277bd7",
+   "name": "Switch6"
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "key": "={{ $('Coleta1').item.json.telefone }}_block"
+   },
+   "id": "c804f2f6-5393-4785-b8d7-276db8520909",
+   "name": "Deleta",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -11776,
+    416
+   ],
+   "alwaysOutputData": true,
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "tableId": "customers",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "keyValue": "={{ $('Coleta1').item.json.telefone }}"
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -11776,
+    800
+   ],
+   "id": "b080dc26-7b68-4f56-86d7-d2e987520160",
+   "name": "Get a customer1",
+   "alwaysOutputData": true,
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 3
+     },
+     "conditions": [
+      {
+       "id": "7ea42884-609e-4dfe-ba19-f4d6f9684d83",
+       "leftValue": "={{ $json.created_at }}",
+       "rightValue": "",
+       "operator": {
+        "type": "string",
+        "operation": "notEmpty",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {
+     "ignoreCase": false
+    }
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.3,
+   "position": [
+    -11552,
+    800
+   ],
+   "id": "31ed1a7d-f323-4061-b44f-a6105bd10599",
+   "name": "If Customer is exists1",
+   "alwaysOutputData": false
+  },
+  {
+   "parameters": {
+    "tableId": "customers",
+    "fieldsUi": {
+     "fieldValues": [
+      {
+       "fieldId": "name",
+       "fieldValue": "={{ $('Coleta1').item.json.nome }}"
+      },
+      {
+       "fieldId": "phone",
+       "fieldValue": "={{ $('Coleta1').item.json.telefone }}"
+      },
+      {
+       "fieldId": "asaas_customer_id",
+       "fieldValue": "={{ $json.id }}"
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -11328,
+    848
+   ],
+   "id": "7dd9c4ff-5899-4473-8783-11b427728625",
+   "name": "Create a customer1",
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "rules": {
+     "values": [
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "leftValue": "={{ $('Webhook1').item.json.body.data.messageType }}",
+          "rightValue": "conversation",
+          "operator": {
+           "type": "string",
+           "operation": "equals"
+          },
+          "id": "aefb9440-9d74-41b8-803f-c696b83721bd"
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Conversation"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "id": "48fa82b0-e02e-4092-bd63-e260da0b237b",
+          "leftValue": "={{ $('Webhook1').item.json.body.data.messageType }}",
+          "rightValue": "audioMessage",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Audio Message"
+      },
+      {
+       "conditions": {
+        "options": {
+         "caseSensitive": true,
+         "leftValue": "",
+         "typeValidation": "strict",
+         "version": 3
+        },
+        "conditions": [
+         {
+          "id": "959a8998-5063-4a4f-924a-351371af810a",
+          "leftValue": "={{ $('Webhook1').item.json.body.data.messageType }}",
+          "rightValue": "imageMessage",
+          "operator": {
+           "type": "string",
+           "operation": "equals",
+           "name": "filter.operator.equals"
+          }
+         }
+        ],
+        "combinator": "and"
+       },
+       "renameOutput": true,
+       "outputKey": "Image Message"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.switch",
+   "typeVersion": 3.4,
+   "position": [
+    -11104,
+    784
+   ],
+   "id": "4f24651c-3870-45aa-9d6e-5869742e601b",
+   "name": "Switch7"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "5356af18-19e2-43c7-a230-a250eae425cf",
+       "name": "text",
+       "value": "={{ $json.message_complete }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -9216,
+    160
+   ],
+   "id": "4a0b7149-c2cb-4c0b-99a1-bd9757a8a0e9",
+   "name": "output mensagem3"
+  },
+  {
+   "parameters": {
+    "operation": "push",
+    "list": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}",
+    "messageData": "={{ $('Webhook1').item.json.body.data.message.conversation }}"
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -10336,
+    464
+   ],
+   "id": "87c864b6-13e8-4e95-b54c-1175d20fcfe6",
+   "name": "Redis3",
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "key": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}",
+    "keyType": "list",
+    "options": {}
+   },
+   "id": "123489dc-7ecb-426a-ae2a-3e03c6bbf2ca",
+   "name": "Get Memory 5",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -10112,
+    240
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "resource": "chat-api",
+    "operation": "get-media-base64",
+    "instanceName": "={{ $('Coleta1').item.json.evolution_account_name }}",
+    "messageId": "={{ $('Webhook1').item.json.body.data.key.id }}"
+   },
+   "type": "n8n-nodes-evolution-api.evolutionApi",
+   "typeVersion": 1,
+   "position": [
+    -10880,
+    800
+   ],
+   "id": "c0cf6168-ad9b-4f0a-b2ca-b5908a208ded",
+   "name": "TRANSFORMA URL EM BASE65",
+   "credentials": {
+    "evolutionApi": {
+     "id": "",
+     "name": "Evolution API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "toBinary",
+    "sourceProperty": "data.base64",
+    "options": {
+     "fileName": "audio.mp4",
+     "mimeType": "audio/mp4"
+    }
+   },
+   "type": "n8n-nodes-base.convertToFile",
+   "typeVersion": 1.1,
+   "position": [
+    -10656,
+    800
+   ],
+   "id": "731d3cb5-4126-41a2-9d6d-5f1b5eb1d31d",
+   "name": "CONVERTE EM ARQUIVO2"
+  },
+  {
+   "parameters": {
+    "resource": "audio",
+    "operation": "transcribe",
+    "options": {
+     "language": "pt"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.openAi",
+   "typeVersion": 1.8,
+   "position": [
+    -10432,
+    800
+   ],
+   "id": "ce4e5645-b671-4f6e-9ae4-365185ce1e48",
+   "name": "Analisa audio1",
+   "credentials": {
+    "openAiApi": {
+     "id": "",
+     "name": "OpenAI"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "5356af18-19e2-43c7-a230-a250eae425cf",
+       "name": "text",
+       "value": "={{ $json.content || $json.text }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -10208,
+    800
+   ],
+   "id": "038d989b-3ab0-4144-8896-4229ae3bb61d",
+   "name": "output audio1"
+  },
+  {
+   "parameters": {
+    "resource": "chat-api",
+    "operation": "get-media-base64",
+    "instanceName": "={{ $('Coleta1').item.json.evolution_account_name }}",
+    "messageId": "={{ $('Webhook1').item.json.body.data.key.id }}"
+   },
+   "type": "n8n-nodes-evolution-api.evolutionApi",
+   "typeVersion": 1,
+   "position": [
+    -10848,
+    1120
+   ],
+   "id": "39f065a8-a399-457a-9b07-33de0b8b6172",
+   "name": "TRANSFORMA URL EM BASE1",
+   "credentials": {
+    "evolutionApi": {
+     "id": "",
+     "name": "Evolution API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "toBinary",
+    "sourceProperty": "data.base64",
+    "options": {
+     "fileName": "image.jpg",
+     "mimeType": "image/jpeg"
+    }
+   },
+   "type": "n8n-nodes-base.convertToFile",
+   "typeVersion": 1.1,
+   "position": [
+    -10624,
+    1120
+   ],
+   "id": "6273cf07-58fe-49df-a3d2-a7ab6e6da8ef",
+   "name": "CONVERTE EM ARQUIVO3"
+  },
+  {
+   "parameters": {
+    "resource": "image",
+    "operation": "analyze",
+    "modelId": {
+     "__rl": true,
+     "value": "gpt-4o-mini",
+     "mode": "list",
+     "cachedResultName": "GPT-4O-MINI"
+    },
+    "inputType": "base64",
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.openAi",
+   "typeVersion": 1.8,
+   "position": [
+    -10400,
+    1120
+   ],
+   "id": "3705beda-6e6e-41bd-b5c2-c0e9c8fcb7a7",
+   "name": "Analisa imagem1",
+   "credentials": {
+    "openAiApi": {
+     "id": "",
+     "name": "OpenAI"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "1e039183-e5cd-4a3b-9b1a-7631a85f3891",
+       "name": "text",
+       "value": "={{ $json.content || $json.text }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -10176,
+    1120
+   ],
+   "id": "a411408c-25c3-4757-9b4c-56f144b71cf1",
+   "name": "output imagem1"
+  },
+  {
+   "parameters": {
+    "numberInputs": 3
+   },
+   "type": "n8n-nodes-base.merge",
+   "typeVersion": 3,
+   "position": [
+    -8864,
+    192
+   ],
+   "id": "60113d03-b3e0-4ae3-b2a6-6676c2273b50",
+   "name": "Merge1"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "value": "gpt-5-mini",
+     "mode": "list",
+     "cachedResultName": "gpt-5-mini"
+    },
+    "builtInTools": {},
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.3,
+   "position": [
+    -7296,
+    384
+   ],
+   "id": "ef72570d-0ba4-48ae-b4fa-ee8ba5fd8ef4",
+   "name": "OpenAI Chat Model4",
+   "credentials": {
+    "openAiApi": {
+     "id": "",
+     "name": "OpenAI"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "promptType": "define",
+    "text": "=Patient message:\n{{ $json.patient_message }}\n\nKnown patient name (may be empty): {{ $json.customer_name }}\n\nLIVE payment status (ground truth for BOOKING only): {{ $json.payment_status }}\n(NONE = no payment record yet, PENDING = link generated but not paid, CONFIRMED = paid)\nAvailability checks are ALWAYS allowed. CONFIRMED is required ONLY to create/reschedule/cancel a Cal.com booking.\n\nSAVED SELECTED SLOT (ISO, empty if none): {{ $json.selected_slot }}\n\nCURRENT DATE (BRT): {{ $now.setZone('America/Sao_Paulo').toFormat('yyyy-MM-dd') }} ({{ $now.setZone('America/Sao_Paulo').toFormat('cccc') }})\n\nDATE LOOKUP TABLE (BRT, today = hoje+0):\n{{ $json.date_lookup_table }}\n\nFIRST BOOKABLE DATE (BRT, today+2 then skip Sat/Sun): {{ $json.first_bookable_date }}\nAttendance: in-person only. Never offer online/teleconsulta.",
+    "options": {
+     "systemMessage": "# [NOME DA CLÍNICA] — FRONT DESK AGENT ([NOME DA ATENDENTE])\n\nInstructions in English. All patient-facing text in Portuguese (Brazil).\n\n> TEMPLATE: troque tudo que estiver entre [COLCHETES] pelos dados reais da sua clínica antes de ativar.\n\n---\n\n## 1. IDENTITY & ROLE\n\nYou are **[NOME DA ATENDENTE]**, the front-desk assistant of **[NOME DA CLÍNICA]**, talking to patients on WhatsApp.\n\nYou are a consultative front-desk assistant, not a FAQ bot and not a call-center menu. Your job: welcome the patient, present the value of the clinic naturally, collect the health goal and the city, show real availability **before** payment, save the slot the patient picked, generate the deposit payment link, and only after payment is CONFIRMED create the booking. Hand off to a human only for the cases in section 8.\n\n## 2. GLOBAL RULES\n\n1. Never say you are an AI, a bot or a virtual assistant.\n2. Never use a numbered menu (\"digite 1, 2, 3\"). Every interaction is a normal human conversation.\n3. Never invent prices, payment links, available times, policies or personal data (CPF, email, full name). Prices come only from the table in section 6; links and times come only from the tools.\n4. Availability is **not** payment-gated. When city + specialty + a requested date are known, call `verificar_disponibilidade` in that same turn.\n5. Never call `confirmar_agendamento`, `reagendar_consulta` or `cancelar_consulta` unless the LIVE payment status is `CONFIRMED`.\n6. Never repeat a question the patient already answered. After any interruption, resume from the next missing step.\n7. Never diagnose or indicate treatment over WhatsApp.\n8. Never pass a staff member's personal phone number.\n9. Never apply sales pressure or fake urgency.\n10. Never send more than one message per turn (except the two-bubble opening in section 3).\n\n## 3. OPENING\n\nTwo short bubbles: (1) a warm greeting using the patient name if known; (2) a one-line value statement about [NOME DA CLÍNICA] and an open question about what the patient wants to improve.\n\n## 4. CLINIC INFO (edit this)\n\n- Clinic: [NOME DA CLÍNICA] · Professional: [NOME DO PROFISSIONAL]\n- Cities / units: [CIDADE 1], [CIDADE 2], [CIDADE 3]\n- Opening hours: [DIAS E HORÁRIOS]\n- Attendance: [PRESENCIAL / ONLINE]\n- Address of each unit: [ENDEREÇOS]\n- Anything else the patient usually asks: use the knowledge base tool `buscar_conhecimento`.\n\n## 5. FLOW\n\n1. Welcome and value (section 3).\n2. Understand the goal; deduce the specialty and **confirm** it with the patient (never ask \"which specialty do you want\").\n3. Collect the city.\n4. Ask the preferred day; call `verificar_disponibilidade` and offer up to 3 real times.\n5. When the patient picks a time, call `salvar_horario_escolhido` (it does not book anything).\n6. Collect full name, CPF and email; read them back for confirmation.\n7. Explain the deposit (section 6) and ask if it is OK.\n8. Only then call `gerar_link_pagamento` with all fields valid and send the link.\n9. After the LIVE payment status becomes `CONFIRMED`, call `confirmar_agendamento` and confirm the details.\n\n## 6. PRICING TABLE (edit this)\n\n| City | Type | Price | Deposit |\n|---|---|---|---|\n| [CIDADE 1] | First visit | R$ [VALOR] | [PERCENTUAL]% |\n| [CIDADE 1] | Return | R$ [VALOR] | [PERCENTUAL]% |\n| [CIDADE 2] | Single | R$ [VALOR] | [PERCENTUAL]% |\n\nMirror the same numbers inside the \"Pagamento (Asaas)\" workflow (node `Calcular Preco`). The agent never quotes a price outside this table.\n\n## 7. TOOLS\n\n- `verificar_disponibilidade` — read-only lookup of real times for a day (YYYY-MM-DD).\n- `salvar_horario_escolhido` — stores the exact time the patient chose.\n- `gerar_link_pagamento` — creates the real deposit charge. Only after the deposit notice was agreed and all fields are valid.\n- `confirmar_agendamento` / `reagendar_consulta` / `cancelar_consulta` — real booking actions, only with payment `CONFIRMED`.\n- `human_handoff` — call when the patient asks for a human or in the cases of section 8.\n- `buscar_conhecimento` — searches the clinic knowledge base (RAG). Use it for any clinic-specific fact.\n\n## 8. HANDOFF TO A HUMAN\n\nCall `human_handoff` when: the patient asks for a human; there is a complaint, refund or medical urgency; the patient raises a deep sales objection (\"caro\", \"vou pensar\") — answer with brief empathy first, never argue.\n\n## 9. STYLE\n\nWarm, short messages, natural Brazilian Portuguese, at most one emoji. No lists in the middle of a conversation unless the patient asks.\n"
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.agent",
+   "typeVersion": 1.7,
+   "position": [
+    -6704,
+    160
+   ],
+   "id": "d5115e67-7afe-40fe-9107-652340cb4ecf",
+   "name": "Front Desk Agent1",
+   "retryOnFail": false,
+   "maxTries": 3,
+   "waitBetweenTries": 5000,
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 3
+     },
+     "conditions": [
+      {
+       "id": "e12de28d-3f91-43ce-8d85-9405f834cf55",
+       "leftValue": "={{ $('Webhook1').item.json.body.event }}",
+       "rightValue": "messages.upsert",
+       "operator": {
+        "type": "string",
+        "operation": "equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.3,
+   "position": [
+    -13120,
+    384
+   ],
+   "id": "472f2aef-de5a-4105-8599-5e72f6f4125e",
+   "name": "Only get incoming message1"
+  },
+  {
+   "parameters": {
+    "resource": "messages-api",
+    "instanceName": "={{ $('Coleta1').item.json.evolution_account_name }}",
+    "remoteJid": "={{ $('Coleta1').item.json.telefone.split(\"@\")[0] }}",
+    "messageText": "={{ $json.message ?? \"something happened wrong\" }}",
+    "options_message": {
+     "linkPreview": true
+    }
+   },
+   "type": "n8n-nodes-evolution-api.evolutionApi",
+   "typeVersion": 1,
+   "position": [
+    -5456,
+    64
+   ],
+   "id": "f094966a-43b9-43d1-9563-f7eae14ca3d4",
+   "name": "Enviar texto1",
+   "credentials": {
+    "evolutionApi": {
+     "id": "",
+     "name": "Evolution API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "key": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}"
+   },
+   "id": "73bffd55-9bd4-4992-8b2d-66974b2f39cc",
+   "name": "Delete Memory3",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -9440,
+    160
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "d5a342e9-585b-42ea-be44-644adae10199",
+       "leftValue": "={{ $('Coleta1').item.json.mensagem }}",
+       "rightValue": "={{ ($json.propertyName || []).slice(-1)[0] ?? '' }}",
+       "operator": {
+        "type": "string",
+        "operation": "equals"
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "id": "e24274c7-8edf-47b1-b877-446cceb490b8",
+   "name": "Compara Memoria1",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    -9888,
+    240
+   ]
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "239cab79-8fb1-45ca-9a04-11006892d52e",
+       "name": "message_complete",
+       "value": "={{ ($json.propertyName || []).join(' ') }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -9664,
+    160
+   ],
+   "id": "797fe8d7-54e3-4983-80eb-e4a7c1d09168",
+   "name": "Message Complete1"
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-base.noOp",
+   "typeVersion": 1,
+   "position": [
+    -7968,
+    480
+   ],
+   "id": "fba83a71-c44a-4146-b76c-2ffb0c07d648",
+   "name": "No Operation, do nothing1"
+  },
+  {
+   "parameters": {
+    "resource": "chat-api",
+    "operation": "read-messages",
+    "instanceName": "=SUA_INSTANCIA",
+    "remoteJid": "={{ $json.body.data.key.remoteJid }}",
+    "messageId": "={{ $json.body.data.key.id }}"
+   },
+   "type": "n8n-nodes-evolution-api.evolutionApi",
+   "typeVersion": 1,
+   "position": [
+    -13344,
+    384
+   ],
+   "id": "692345af-9e80-46ed-948c-5650e86db54d",
+   "name": "Marcar mensagens como lidas1",
+   "credentials": {
+    "evolutionApi": {
+     "id": "",
+     "name": "Evolution API"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.splitInBatches",
+   "typeVersion": 3,
+   "position": [
+    -10560,
+    416
+   ],
+   "id": "4271a852-9222-4bce-ac27-60efddd30e34",
+   "name": "Loop Over Items2"
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "490dedd5-ed19-416a-ad5b-b6a603c9a7b7",
+       "name": "messages",
+       "value": "={{ [ $('Webhook1').item.json.body.data.message.conversation ] }}",
+       "type": "array"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -10784,
+    416
+   ],
+   "id": "0f806934-80d1-4240-aaee-811487035bbe",
+   "name": "Divide into Chunks1"
+  },
+  {
+   "parameters": {
+    "amount": 7
+   },
+   "type": "n8n-nodes-base.wait",
+   "typeVersion": 1.1,
+   "position": [
+    -10336,
+    240
+   ],
+   "id": "6407bbe5-db1f-43ce-b17b-27fa3be90214",
+   "name": "PAUSA DE 5 SEGUNDOS3"
+  },
+  {
+   "parameters": {
+    "description": "Call this tool when customer need to talk with human",
+    "workflowId": {
+     "__rl": true,
+     "value": "",
+     "mode": "list"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "lead_name": "={{ $('Coleta1').item.json.nome }}",
+      "phone": "={{ $('Coleta1').item.json.telefone }}",
+      "message": "={{ $json.text ?? $('Coleta1').item.json.mensagem }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "lead_name",
+       "displayName": "lead_name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "phone",
+       "displayName": "phone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "message",
+       "displayName": "message",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    -6976,
+    656
+   ],
+   "id": "2efe7912-f59f-4d9a-a3ea-ffad8fd2e285",
+   "name": "human_handoff"
+  },
+  {
+   "parameters": {
+    "operation": "push",
+    "list": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}",
+    "messageData": "={{ $json.text }}"
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -9984,
+    800
+   ],
+   "id": "06200db0-479c-421e-9e31-4fd1e9d96cf4",
+   "name": "Redis4",
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "key": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}",
+    "keyType": "list",
+    "options": {}
+   },
+   "id": "0e87bc3f-e5eb-4478-8cd9-995865ef0162",
+   "name": "Get Memory 2",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -9536,
+    800
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-base.wait",
+   "typeVersion": 1.1,
+   "position": [
+    -9760,
+    800
+   ],
+   "id": "5e5843a3-91bb-4657-b21d-43f6e71bc2cd",
+   "name": "PAUSA DE 5 SEGUNDOS4"
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "key": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}"
+   },
+   "id": "4d28a164-0aaa-4678-a864-a2741884e4ae",
+   "name": "Delete Memory4",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -9312,
+    800
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "5356af18-19e2-43c7-a230-a250eae425cf",
+       "name": "text",
+       "value": "={{ $json.propertyName[0] }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -9088,
+    800
+   ],
+   "id": "eb85c7f2-b2f9-42a1-9c13-7a9feec498fd",
+   "name": "output mensagem4"
+  },
+  {
+   "parameters": {
+    "operation": "push",
+    "list": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}",
+    "messageData": "={{ $json.text }}"
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -9952,
+    1120
+   ],
+   "id": "075479cb-8a7f-4aea-be1e-660025b6b675",
+   "name": "Redis5",
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "key": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}",
+    "keyType": "list",
+    "options": {}
+   },
+   "id": "33e32f23-59dd-4b9c-aff9-88063c2053b7",
+   "name": "Get Memory 3",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -9504,
+    1120
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-base.wait",
+   "typeVersion": 1.1,
+   "position": [
+    -9728,
+    1120
+   ],
+   "id": "ccfa0866-6d5d-461b-9085-7896eabb46f1",
+   "name": "PAUSA DE 5 SEGUNDOS5"
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "key": "=buffer:{{ $('Webhook1').item.json.body.data.key.remoteJid }}"
+   },
+   "id": "a7d7100f-e467-42d6-941d-65511dc18d77",
+   "name": "Delete Memory5",
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -9280,
+    1120
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "5356af18-19e2-43c7-a230-a250eae425cf",
+       "name": "text",
+       "value": "={{ $json.propertyName[0] }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -9056,
+    1120
+   ],
+   "id": "346b1337-6d3c-4b2c-8754-f76478b7ac4d",
+   "name": "output mensagem5"
+  },
+  {
+   "parameters": {
+    "jsCode": "// Formats agent output for WhatsApp: strip metadata, remove em-dashes.\n// A blank line in the model output means \"send as separate bubbles\" (only the opening message uses this).\nconst raw = $input.first().json.output || $input.first().json.message || '';\n\nfunction clean(s) {\n  return String(s)\n    .replace(/\\[STAGE:[^\\]]+\\](\\s*\\[REASON:[^\\]]+\\])?/g, '')\n    .replace(/\\u2014/g, ', ')\n    .replace(/\\u2013/g, ', ')\n    .replace(/\\s+-\\s+/g, ', ')\n    .replace(/,{2,}/g, ',')\n    .replace(/,\\s*,/g, ',')\n    .trim();\n}\n\nconst parts = String(raw).split(/\\n\\s*\\n/).map(clean).filter(Boolean);\n\nif (parts.length === 0) {\n  return [{ json: { message: 'Desculpe, tive um problema técnico. Pode repetir sua mensagem? 😊' } }];\n}\n\nreturn parts.slice(0, 2).map((message) => ({ json: { message } }));\n"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -5904,
+    160
+   ],
+   "id": "51c2e25a-9464-44b3-bd49-bbac0de18bf3",
+   "name": "Code in JavaScript1"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "type": "n8n-nodes-base.splitInBatches",
+   "typeVersion": 3,
+   "position": [
+    -5680,
+    160
+   ],
+   "id": "fe9f4244-c0b4-411a-8bc0-fcac55748012",
+   "name": "Loop Over Items3"
+  },
+  {
+   "parameters": {
+    "amount": 4
+   },
+   "type": "n8n-nodes-base.wait",
+   "typeVersion": 1.1,
+   "position": [
+    -5232,
+    176
+   ],
+   "id": "a7b5da72-61a0-42f0-9189-d885b6012348",
+   "name": "Wait1"
+  },
+  {
+   "parameters": {
+    "jsCode": "const weekdayNames = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];\nconst nowSP = $now.setZone('America/Sao_Paulo').startOf('day');\n\nfunction isWeekend(dt) {\n  const w = dt.weekday;\n  return w === 6 || w === 7;\n}\n\nlet firstBookable = nowSP.plus({ days: 2 });\nwhile (isWeekend(firstBookable)) {\n  firstBookable = firstBookable.plus({ days: 1 });\n}\nconst first_bookable_date = firstBookable.toFormat('yyyy-MM-dd');\n\nlet table = [];\nfor (let i = 0; i <= 14; i++) {\n  const dt = nowSP.plus({ days: i });\n  const name = weekdayNames[dt.weekday % 7];\n  const tags = [];\n  if (i === 0) tags.push('hoje');\n  if (isWeekend(dt)) tags.push('clínica fechada');\n  if (dt.toFormat('yyyy-MM-dd') === first_bookable_date) tags.push('primeiro dia agendável');\n  const tagStr = tags.length ? ` [${tags.join(', ')}]` : '';\n  table.push(`${dt.toFormat('yyyy-MM-dd')} = ${name} (hoje+${i})${tagStr}`);\n}\nconst date_lookup_table = table.join('\\n');\n\nlet customer = {};\ntry { customer = $('Get a customer1').first().json || {}; } catch (e) {}\n\nlet patient_message = '';\ntry { patient_message = $('Merge1').first().json.text || ''; } catch (e) {}\n\nlet payment_status = 'NONE';\ntry {\n  const pay = $('Buscar Status Pagamento').first().json;\n  if (pay && pay.status) payment_status = pay.status;\n} catch (e) {}\n\nlet selected_slot = '';\ntry {\n  const slotItem = $('Get Selected Slot').first().json || {};\n  selected_slot = slotItem.selected_slot || '';\n} catch (e) {}\n\nreturn [{\n  json: {\n    patient_message,\n    customer_name: customer.nome || customer.name || '',\n    date_lookup_table,\n    first_bookable_date,\n    payment_status,\n    selected_slot,\n  }\n}];"
+   },
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    -7520,
+    160
+   ],
+   "id": "305e996d-4471-4b4a-ab8f-641e66028032",
+   "name": "Prepare Agent Context1"
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "key": "={{ $('Coleta1').item.json.mensagem.replace(/^\\/liberar/i,'').replace(/\\D/g,'') }}@s.whatsapp.net_block"
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -11776,
+    608
+   ],
+   "id": "7cc01d1a-849f-4648-aabb-34088423b89d",
+   "name": "Liberar bot (comando da equipe)",
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 3
+     },
+     "conditions": [
+      {
+       "id": "29a2cd6d-55e0-4f62-b0bf-f1d9d7aeabb8",
+       "leftValue": "={{ $json.body.data.key.remoteJid }}",
+       "rightValue": "email@exemplo.com",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      },
+      {
+       "id": "57bef564-64a5-4801-b3c9-67fc33da58f0",
+       "leftValue": "={{ $json.body.data.key.remoteJid }}",
+       "rightValue": "email@exemplo.com",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      },
+      {
+       "id": "staff-number-0001",
+       "leftValue": "={{ $json.body.data.key.remoteJid }}",
+       "rightValue": "email@exemplo.com",
+       "operator": {
+        "type": "string",
+        "operation": "equals",
+        "name": "filter.operator.equals"
+       }
+      }
+     ],
+     "combinator": "or"
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.3,
+   "position": [
+    -13568,
+    480
+   ],
+   "id": "827c729e-e006-4bb4-9e96-8ab8df2225bc",
+   "name": "If"
+  },
+  {
+   "parameters": {},
+   "type": "n8n-nodes-base.noOp",
+   "typeVersion": 1,
+   "position": [
+    -13344,
+    576
+   ],
+   "id": "523535dd-fada-4e6d-84e0-20b091819b41",
+   "name": "No Operation, do nothing"
+  },
+  {
+   "parameters": {
+    "sessionIdType": "customKey",
+    "sessionKey": "={{ $('Webhook1').item.json.body.data.key.remoteJid }}-v6"
+   },
+   "id": "b5e8f0fc-bd22-4912-9850-9f6444d2e49b",
+   "name": "Memoria da Conversa (Redis)",
+   "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+   "typeVersion": 1.5,
+   "position": [
+    -7152,
+    384
+   ],
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "id": "9aa5e223-ab88-472d-8164-628c5fc27dba",
+   "name": "Embeddings OpenAI (RAG)",
+   "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+   "typeVersion": 1.2,
+   "position": [
+    -6832,
+    1440
+   ],
+   "credentials": {
+    "openAiApi": {
+     "id": "",
+     "name": "OpenAI"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "tableName": "clinica_conhecimento",
+    "options": {}
+   },
+   "id": "70861a52-cb00-4f63-9906-a9c2f2e9d421",
+   "name": "Base de Conhecimento (Supabase)",
+   "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+   "typeVersion": 1.3,
+   "position": [
+    -6976,
+    1232
+   ],
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "description": "Use esta ferramenta para responder perguntas sobre a clinica, o [NOME DO PROFISSIONAL], o [NOME DO MÉTODO] ou qualquer duvida do paciente que nao esteja coberta diretamente no prompt.",
+    "topK": 5
+   },
+   "id": "5ac9fb93-d1ab-4143-a4cf-154683f8a0c7",
+   "name": "buscar_conhecimento",
+   "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+   "typeVersion": 1.1,
+   "position": [
+    -6832,
+    1056
+   ]
+  },
+  {
+   "parameters": {
+    "content": "Audio\n",
+    "height": 208,
+    "width": 2048,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "position": [
+    -10960,
+    752
+   ],
+   "typeVersion": 1,
+   "id": "8576406e-a9c3-4f49-9eb1-2d0e2784531c",
+   "name": "Sticky Note"
+  },
+  {
+   "parameters": {
+    "content": "IMAGE\n",
+    "height": 208,
+    "width": 2048,
+    "color": 3
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "position": [
+    -10928,
+    1072
+   ],
+   "typeVersion": 1,
+   "id": "8cca5008-fb6b-4d3c-801c-084116ff2f76",
+   "name": "Sticky Note1"
+  },
+  {
+   "parameters": {
+    "content": "Text",
+    "height": 512,
+    "width": 1856,
+    "color": 6
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "position": [
+    -10864,
+    128
+   ],
+   "typeVersion": 1,
+   "id": "9230a4af-987c-432f-a7a7-e26019184dc1",
+   "name": "Sticky Note2"
+  },
+  {
+   "parameters": {
+    "model": {
+     "__rl": true,
+     "mode": "list",
+     "value": "gpt-4.1-mini"
+    },
+    "builtInTools": {},
+    "options": {}
+   },
+   "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+   "typeVersion": 1.3,
+   "position": [
+    -6576,
+    1328
+   ],
+   "id": "0a210677-2908-4b62-8632-8ecd17a5b714",
+   "name": "OpenAI Chat Model",
+   "credentials": {
+    "openAiApi": {
+     "id": "",
+     "name": "OpenAI"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "description": "Gera o link real de pagamento (sinal da consulta) via Asaas. So chame depois do aviso de sinal confirmado e com todos os 4 dados do paciente validos.",
+    "workflowId": {
+     "__rl": true,
+     "value": "",
+     "mode": "list"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "customer_name": "={{ $fromAI('customer_name', 'Nome completo do paciente (nome e sobrenome), coletado na conversa', 'string') }}",
+      "cpf_cnpj": "={{ $fromAI('cpf_cnpj', 'CPF do paciente, somente digitos, 11 numeros', 'string') }}",
+      "email": "={{ $fromAI('email', 'Email do paciente', 'string') }}",
+      "billing_type": "={{ $fromAI('billing_type', 'Forma de pagamento escolhida: PIX ou CREDIT_CARD', 'string') }}",
+      "consulting_city": "={{ $fromAI('consulting_city', 'Cidade da consulta ja confirmada na conversa: CIDADE_2, CIDADE_3 ou CIDADE_1', 'string') }}",
+      "specialty": "={{ $fromAI('specialty', 'Especialidade ja confirmada na conversa: SPECIALTY_A ou GENERAL_PRACTITIONER', 'string') }}",
+      "phone": "={{ $('Coleta1').item.json.telefone }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "customer_name",
+       "displayName": "customer_name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "cpf_cnpj",
+       "displayName": "cpf_cnpj",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "email",
+       "displayName": "email",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "billing_type",
+       "displayName": "billing_type",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "consulting_city",
+       "displayName": "consulting_city",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "specialty",
+       "displayName": "specialty",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "phone",
+       "displayName": "phone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "id": "521833c1-954e-4901-b76d-be30bee3e1af",
+   "name": "gerar_link_pagamento",
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    -6768,
+    592
+   ]
+  },
+  {
+   "parameters": {
+    "content": "## Pagamento Asaas\n",
+    "height": 224,
+    "color": 4
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "position": [
+    -6800,
+    496
+   ],
+   "typeVersion": 1,
+   "id": "8973698f-b3d8-4349-a370-d5075ada196e",
+   "name": "Sticky Note3"
+  },
+  {
+   "parameters": {
+    "description": "Consulta horarios reais no Cal.com para um dia (YYYY-MM-DD). Chame SEMPRE que o paciente pedir disponibilidade/horarios e cidade + especialidade + data ja forem conhecidos. NAO espere pagamento. Nao peca sabado ou domingo. Nao cria reserva.",
+    "workflowId": {
+     "__rl": true,
+     "value": "",
+     "mode": "list"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "action": "CHECK_AVAILABILITY",
+      "preferred_date": "={{ $fromAI('preferred_date', 'Data desejada pelo paciente no formato YYYY-MM-DD, ja calculada a partir da tabela de datas do contexto', 'string') }}",
+      "phone": "={{ $('Coleta1').item.json.telefone }}",
+      "patient_name": "={{ $('Prepare Agent Context1').item.json.customer_name }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "action",
+       "displayName": "action",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "preferred_date",
+       "displayName": "preferred_date",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "patient_name",
+       "displayName": "patient_name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "patient_email",
+       "displayName": "patient_email",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "chosen_start_time",
+       "displayName": "chosen_start_time",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "phone",
+       "displayName": "phone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "id": "845c8e0f-dc9c-4709-871c-a0488d93d41a",
+   "name": "verificar_disponibilidade",
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    -6352,
+    624
+   ]
+  },
+  {
+   "parameters": {
+    "description": "Cria a reserva real no Cal.com. SO chame quando LIVE payment status for CONFIRMED, e somente com um horario ISO que veio da ultima verificar_disponibilidade. Se o horario salvo nao estiver mais na lista, nao escolha outro: mostre alternativas.",
+    "workflowId": {
+     "__rl": true,
+     "value": "",
+     "mode": "list"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "action": "BOOK",
+      "patient_name": "={{ $fromAI('patient_name', 'Nome completo do paciente ja coletado nesta conversa', 'string') }}",
+      "patient_email": "={{ $fromAI('patient_email', 'Email do paciente ja coletado nesta conversa', 'string') }}",
+      "chosen_start_time": "={{ $fromAI('chosen_start_time', 'Horario ISO exato escolhido pelo paciente dentre os horarios retornados por verificar_disponibilidade, ex 2026-09-18T09:00:00-03:00', 'string') }}",
+      "phone": "={{ $('Coleta1').item.json.telefone }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "action",
+       "displayName": "action",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "patient_name",
+       "displayName": "patient_name",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "patient_email",
+       "displayName": "patient_email",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "chosen_start_time",
+       "displayName": "chosen_start_time",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "phone",
+       "displayName": "phone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "id": "88e89167-6645-4ee8-a655-eeb5c0df6776",
+   "name": "confirmar_agendamento",
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    -6208,
+    592
+   ]
+  },
+  {
+   "parameters": {
+    "description": "Reagenda uma consulta ja marcada para um novo horario exato que o paciente escolheu. So funciona se o pagamento ja estiver confirmado.",
+    "workflowId": {
+     "__rl": true,
+     "value": "",
+     "mode": "list"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "action": "RESCHEDULE",
+      "chosen_start_time": "={{ $fromAI('chosen_start_time', 'Novo horario ISO exato escolhido pelo paciente dentre os horarios retornados por verificar_disponibilidade', 'string') }}",
+      "phone": "={{ $('Coleta1').item.json.telefone }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "action",
+       "displayName": "action",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "chosen_start_time",
+       "displayName": "chosen_start_time",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "phone",
+       "displayName": "phone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "id": "23c1adca-33b4-4f49-9443-3e94a9174103",
+   "name": "reagendar_consulta",
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    -6048,
+    656
+   ]
+  },
+  {
+   "parameters": {
+    "description": "Cancela a consulta ja marcada do paciente. So chame depois de confirmar explicitamente com o paciente que ele quer cancelar.",
+    "workflowId": {
+     "__rl": true,
+     "value": "",
+     "mode": "list"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "action": "CANCEL",
+      "phone": "={{ $('Coleta1').item.json.telefone }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "action",
+       "displayName": "action",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "phone",
+       "displayName": "phone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "id": "95a4bc11-e79c-443d-ad96-41ed05e191e9",
+   "name": "cancelar_consulta",
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    -5920,
+    608
+   ]
+  },
+  {
+   "parameters": {
+    "content": "## knowledge base (RAG)\n",
+    "height": 624,
+    "width": 720
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "position": [
+    -7056,
+    976
+   ],
+   "typeVersion": 1,
+   "id": "e68056c8-3b9a-439b-971e-c701a5186fe8",
+   "name": "Sticky Note4"
+  },
+  {
+   "parameters": {
+    "content": "## HAND-OFF HUMAN\n",
+    "height": 288,
+    "width": 246
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "position": [
+    -7088,
+    560
+   ],
+   "typeVersion": 1,
+   "id": "0bf8647d-628d-4120-be17-5c79b83bd184",
+   "name": "Sticky Note5"
+  },
+  {
+   "parameters": {
+    "content": "## SCHEDULE\n",
+    "height": 240,
+    "width": 736,
+    "color": 3
+   },
+   "type": "n8n-nodes-base.stickyNote",
+   "position": [
+    -6480,
+    544
+   ],
+   "typeVersion": 1,
+   "id": "a92613b8-ace8-4cc8-9cf4-b9011271253a",
+   "name": "Sticky Note6"
+  },
+  {
+   "parameters": {
+    "operation": "getAll",
+    "tableId": "clinica_pagamentos",
+    "limit": 1,
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "condition": "eq",
+       "keyValue": "={{ $('Coleta1').item.json.telefone }}"
+      }
+     ]
+    }
+   },
+   "id": "6f9a75d4-cef3-44e3-80e9-d7f377541b34",
+   "name": "Buscar Status Pagamento",
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -7744,
+    160
+   ],
+   "alwaysOutputData": true,
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "propertyName": "selected_slot",
+    "key": "={{ 'clinica:selected_slot:' + $('Coleta1').item.json.telefone }}",
+    "options": {}
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -7632,
+    160
+   ],
+   "id": "e21039e4-67a5-4605-87ae-c8a478a5ebec",
+   "name": "Get Selected Slot",
+   "alwaysOutputData": true,
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "description": "Salva o horario ISO exato que o paciente escolheu. Nao cria reserva no Cal.com. Chame logo depois que o paciente escolher um slot, mesmo se o pagamento ainda nao foi feito.",
+    "workflowId": {
+     "__rl": true,
+     "value": "",
+     "mode": "list"
+    },
+    "workflowInputs": {
+     "mappingMode": "defineBelow",
+     "value": {
+      "action": "SAVE_SELECTION",
+      "chosen_start_time": "={{ $fromAI('chosen_start_time', 'Horario ISO exato escolhido pelo paciente dentre os horarios retornados por verificar_disponibilidade, ex 2026-09-29T09:00:00-03:00', 'string') }}",
+      "phone": "={{ $('Coleta1').item.json.telefone }}"
+     },
+     "matchingColumns": [],
+     "schema": [
+      {
+       "id": "action",
+       "displayName": "action",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "chosen_start_time",
+       "displayName": "chosen_start_time",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      },
+      {
+       "id": "phone",
+       "displayName": "phone",
+       "required": false,
+       "defaultMatch": false,
+       "display": true,
+       "canBeUsedToMatch": true,
+       "type": "string",
+       "removed": false
+      }
+     ],
+     "attemptToConvertTypes": false,
+     "convertFieldsToString": false
+    }
+   },
+   "id": "dba4219a-0662-409a-892d-ad9e2b418103",
+   "name": "salvar_horario_escolhido",
+   "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+   "typeVersion": 2.2,
+   "position": [
+    -6352,
+    848
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "deleteTable",
+    "schema": {
+     "__rl": true,
+     "value": "public",
+     "mode": "list",
+     "cachedResultName": "public"
+    },
+    "table": {
+     "__rl": true,
+     "value": "memoria_do_agente",
+     "mode": "list",
+     "cachedResultName": "memoria_do_agente"
+    },
+    "deleteCommand": "delete",
+    "where": {
+     "values": [
+      {
+       "column": "session_id",
+       "value": "={{ $json.phone }}"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.postgres",
+   "typeVersion": 2.6,
+   "position": [
+    -12288,
+    1120
+   ],
+   "id": "4b251e94-db7d-4991-bd33-55d34febfc66",
+   "name": "Clear all data1",
+   "credentials": {
+    "postgres": {
+     "id": "",
+     "name": "Postgres"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "key": "=buffer:{{ $json.phone }}"
+   },
+   "type": "n8n-nodes-base.redis",
+   "typeVersion": 1,
+   "position": [
+    -11904,
+    1120
+   ],
+   "id": "820dd156-3b5c-4d17-8ae1-3f57edf8f0c7",
+   "name": "Redis1",
+   "credentials": {
+    "redis": {
+     "id": "",
+     "name": "Redis"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "tableId": "customer_consulting",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "cust_id",
+       "condition": "eq",
+       "keyValue": "={{ $json.id }}"
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -11712,
+    1120
+   ],
+   "id": "5b0a4afd-a9a1-43bd-8464-3c882035c5b9",
+   "name": "Delete consulting1",
+   "alwaysOutputData": true,
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "tableId": "customers",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "condition": "eq",
+       "keyValue": "={{ $('Get Number').item.json.phone }}"
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -11312,
+    1120
+   ],
+   "id": "ac163b0f-cbc9-4cf6-8cbc-4c0000fa9d3c",
+   "name": "Delete customer1",
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "get",
+    "tableId": "customers",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "keyValue": "={{ $('Get Number').item.json.phone }}"
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -12096,
+    1120
+   ],
+   "id": "cb525672-ccd7-482e-a8b7-f00b336c2ef5",
+   "name": "Get a row",
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "operation": "delete",
+    "tableId": "follow_up_queue",
+    "filters": {
+     "conditions": [
+      {
+       "keyName": "phone",
+       "condition": "eq",
+       "keyValue": "={{ $('Get Number').item.json.phone }}"
+      }
+     ]
+    }
+   },
+   "type": "n8n-nodes-base.supabase",
+   "typeVersion": 1,
+   "position": [
+    -11504,
+    1120
+   ],
+   "id": "e38688cf-5953-4463-8281-cd36507e26ac",
+   "name": "Delete followup queue",
+   "alwaysOutputData": true,
+   "credentials": {
+    "supabaseApi": {
+     "id": "",
+     "name": "Supabase"
+    }
+   }
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "5d7eda97-b08d-4a04-a827-e69860481e5a",
+       "name": "phone",
+       "value": "={{ $('Coleta1').item.json.telefone }}",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    -12480,
+    1120
+   ],
+   "id": "50d7bcc9-b2f8-4850-8742-213c3876fb2e",
+   "name": "Get Number"
+  }
+ ],
+ "connections": {
+  "Get Processing Lock": {
+   "main": [
+    [
+     {
+      "node": "Check Processing Lock",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Check Processing Lock": {
+   "main": [
+    [
+     {
+      "node": "IF Already Processing?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "IF Already Processing?": {
+   "main": [
+    [
+     {
+      "node": "No Operation, do nothing1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Set Processing Lock",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Set Processing Lock": {
+   "main": [
+    [
+     {
+      "node": "Buscar Status Pagamento",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Webhook1": {
+   "main": [
+    [
+     {
+      "node": "If",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Coleta1": {
+   "main": [
+    [
+     {
+      "node": "fromMe",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "fromMe": {
+   "main": [
+    [
+     {
+      "node": "Set Human Pause (manual reply)",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Get Block Chat Id1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Block Chat Id1": {
+   "main": [
+    [
+     {
+      "node": "Switch5",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Switch5": {
+   "main": [
+    [],
+    [
+     {
+      "node": "Switch6",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Get Number",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Switch6": {
+   "main": [
+    [
+     {
+      "node": "Deleta",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Liberar bot (comando da equipe)",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Get a customer1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get a customer1": {
+   "main": [
+    [
+     {
+      "node": "If Customer is exists1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "If Customer is exists1": {
+   "main": [
+    [
+     {
+      "node": "Switch7",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Create a customer1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Create a customer1": {
+   "main": [
+    [
+     {
+      "node": "Switch7",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Switch7": {
+   "main": [
+    [
+     {
+      "node": "Divide into Chunks1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "TRANSFORMA URL EM BASE65",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "TRANSFORMA URL EM BASE1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "output mensagem3": {
+   "main": [
+    [
+     {
+      "node": "Merge1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Redis3": {
+   "main": [
+    [
+     {
+      "node": "Loop Over Items2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Memory 5": {
+   "main": [
+    [
+     {
+      "node": "Compara Memoria1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "TRANSFORMA URL EM BASE65": {
+   "main": [
+    [
+     {
+      "node": "CONVERTE EM ARQUIVO2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "CONVERTE EM ARQUIVO2": {
+   "main": [
+    [
+     {
+      "node": "Analisa audio1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Analisa audio1": {
+   "main": [
+    [
+     {
+      "node": "output audio1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "output audio1": {
+   "main": [
+    [
+     {
+      "node": "Redis4",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "TRANSFORMA URL EM BASE1": {
+   "main": [
+    [
+     {
+      "node": "CONVERTE EM ARQUIVO3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "CONVERTE EM ARQUIVO3": {
+   "main": [
+    [
+     {
+      "node": "Analisa imagem1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Analisa imagem1": {
+   "main": [
+    [
+     {
+      "node": "output imagem1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "output imagem1": {
+   "main": [
+    [
+     {
+      "node": "Redis5",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Merge1": {
+   "main": [
+    [
+     {
+      "node": "Get Processing Lock",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model4": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Front Desk Agent1": {
+   "main": [
+    [
+     {
+      "node": "Code in JavaScript1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Only get incoming message1": {
+   "main": [
+    [
+     {
+      "node": "Coleta1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Enviar texto1": {
+   "main": [
+    [
+     {
+      "node": "Wait1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Delete Memory3": {
+   "main": [
+    [
+     {
+      "node": "output mensagem3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Compara Memoria1": {
+   "main": [
+    [
+     {
+      "node": "Message Complete1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "No Operation, do nothing1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Message Complete1": {
+   "main": [
+    [
+     {
+      "node": "Delete Memory3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Marcar mensagens como lidas1": {
+   "main": [
+    [
+     {
+      "node": "Only get incoming message1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Loop Over Items2": {
+   "main": [
+    [
+     {
+      "node": "PAUSA DE 5 SEGUNDOS3",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Redis3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Divide into Chunks1": {
+   "main": [
+    [
+     {
+      "node": "Loop Over Items2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "PAUSA DE 5 SEGUNDOS3": {
+   "main": [
+    [
+     {
+      "node": "Get Memory 5",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Redis4": {
+   "main": [
+    [
+     {
+      "node": "PAUSA DE 5 SEGUNDOS4",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Memory 2": {
+   "main": [
+    [
+     {
+      "node": "Delete Memory4",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "PAUSA DE 5 SEGUNDOS4": {
+   "main": [
+    [
+     {
+      "node": "Get Memory 2",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Delete Memory4": {
+   "main": [
+    [
+     {
+      "node": "output mensagem4",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "output mensagem4": {
+   "main": [
+    [
+     {
+      "node": "Merge1",
+      "type": "main",
+      "index": 1
+     }
+    ]
+   ]
+  },
+  "Redis5": {
+   "main": [
+    [
+     {
+      "node": "PAUSA DE 5 SEGUNDOS5",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Memory 3": {
+   "main": [
+    [
+     {
+      "node": "Delete Memory5",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "PAUSA DE 5 SEGUNDOS5": {
+   "main": [
+    [
+     {
+      "node": "Get Memory 3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Delete Memory5": {
+   "main": [
+    [
+     {
+      "node": "output mensagem5",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "output mensagem5": {
+   "main": [
+    [
+     {
+      "node": "Merge1",
+      "type": "main",
+      "index": 2
+     }
+    ]
+   ]
+  },
+  "Code in JavaScript1": {
+   "main": [
+    [
+     {
+      "node": "Loop Over Items3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Loop Over Items3": {
+   "main": [
+    [
+     {
+      "node": "Release Processing Lock",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Enviar texto1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Wait1": {
+   "main": [
+    [
+     {
+      "node": "Loop Over Items3",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Prepare Agent Context1": {
+   "main": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "human_handoff": {
+   "ai_tool": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "If": {
+   "main": [
+    [
+     {
+      "node": "Marcar mensagens como lidas1",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "No Operation, do nothing",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Memoria da Conversa (Redis)": {
+   "ai_memory": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_memory",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Embeddings OpenAI (RAG)": {
+   "ai_embedding": [
+    [
+     {
+      "node": "Base de Conhecimento (Supabase)",
+      "type": "ai_embedding",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Base de Conhecimento (Supabase)": {
+   "ai_vectorStore": [
+    [
+     {
+      "node": "buscar_conhecimento",
+      "type": "ai_vectorStore",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "buscar_conhecimento": {
+   "ai_tool": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "OpenAI Chat Model": {
+   "ai_languageModel": [
+    [
+     {
+      "node": "buscar_conhecimento",
+      "type": "ai_languageModel",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "gerar_link_pagamento": {
+   "ai_tool": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "verificar_disponibilidade": {
+   "ai_tool": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "confirmar_agendamento": {
+   "ai_tool": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "reagendar_consulta": {
+   "ai_tool": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "cancelar_consulta": {
+   "ai_tool": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Buscar Status Pagamento": {
+   "main": [
+    [
+     {
+      "node": "Get Selected Slot",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Selected Slot": {
+   "main": [
+    [
+     {
+      "node": "Prepare Agent Context1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "salvar_horario_escolhido": {
+   "ai_tool": [
+    [
+     {
+      "node": "Front Desk Agent1",
+      "type": "ai_tool",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Clear all data1": {
+   "main": [
+    [
+     {
+      "node": "Get a row",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Redis1": {
+   "main": [
+    [
+     {
+      "node": "Delete consulting1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Delete consulting1": {
+   "main": [
+    [
+     {
+      "node": "Delete followup queue",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Delete customer1": {
+   "main": [
+    []
+   ]
+  },
+  "Get a row": {
+   "main": [
+    [
+     {
+      "node": "Redis1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Delete followup queue": {
+   "main": [
+    [
+     {
+      "node": "Delete customer1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Get Number": {
+   "main": [
+    [
+     {
+      "node": "Clear all data1",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "active": false,
+ "settings": {
+  "executionOrder": "v1",
+  "errorWorkflow": "hnKqKwzntEsQtkTgJ53z2",
+  "callerPolicy": "workflowsFromSameOwner",
+  "availableInMCP": false,
+  "timeSavedMode": "fixed"
+ }
+}
