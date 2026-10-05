@@ -1422,47 +1422,70 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
 .rel-linha .rel-nome { font-weight: 600; min-width: 0; }
 .rel-linha .pill { margin-left: auto; }
 
-/* ---- Arquivos: biblioteca de PDFs/guias ---- */
-.arq-doc { max-width: 980px; margin: 0 auto; }
-.arq-head { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
-.arq-head h2 { margin:0; flex:1 1 auto; }
-.arq-busca { flex:1 1 200px; max-width:280px; padding:9px 12px; border:1px solid var(--border); border-radius:10px; background:var(--field-bg); color:var(--text-primary); font-size:.88rem; }
-.arq-crumbs { display:flex; align-items:center; gap:4px; flex-wrap:wrap; margin-bottom:14px; font-size:1.05rem; font-weight:700; }
-.arq-crumb { border:0; background:none; color:var(--text-secondary); font:inherit; padding:6px 10px; border-radius:8px; cursor:pointer; }
+/* ---- Arquivos: biblioteca estilo Google Drive ---- */
+.arq-doc { max-width: 1040px; margin: 0 auto; position: relative; min-height: 60vh; }
+.arq-topo { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+.arq-novo { display:inline-flex; align-items:center; gap:10px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); padding:12px 22px 12px 16px; border-radius:16px; font-size:.95rem; font-weight:700; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.14); transition:box-shadow .15s, background .15s; }
+.arq-novo:hover { background:var(--field-bg); box-shadow:0 2px 8px rgba(0,0,0,.2); }
+.arq-novo svg { width:24px; height:24px; color:var(--accent); }
+.arq-busca { flex:1 1 240px; max-width:520px; padding:12px 16px 12px 42px; border:0; border-radius:999px; background:var(--field-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='16.5' y1='16.5' x2='21' y2='21'/%3E%3C/svg%3E") no-repeat 15px center; color:var(--text-primary); font-size:.92rem; }
+.arq-busca:focus { outline:2px solid var(--accent); }
+.arq-crumbs { display:flex; align-items:center; gap:2px; flex-wrap:wrap; margin:4px 0 14px; font-size:1.15rem; }
+.arq-crumb { border:0; background:none; color:var(--text-secondary); font:inherit; padding:6px 12px; border-radius:999px; cursor:pointer; }
 .arq-crumb:hover { background:var(--field-bg); color:var(--text-primary); }
-.arq-crumb.atual { color:var(--text-primary); cursor:default; }
+.arq-crumb.atual { color:var(--text-primary); font-weight:600; cursor:default; }
 .arq-crumb.atual:hover { background:none; }
-.arq-sep { color:var(--muted); font-weight:400; }
-.arq-nova { border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); padding:9px 14px; border-radius:10px; font-size:.88rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:7px; }
-.arq-nova:hover { background:var(--field-bg); }
-.arq-sub { font-size:.72rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:4px 2px 10px; }
-.arq-pastas { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px; margin-bottom:22px; }
-.arq-pasta { position:relative; display:flex; align-items:center; gap:14px; text-align:left; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); padding:16px 16px; border-radius:14px; cursor:pointer; transition:background .15s, border-color .15s, transform .15s; }
-.arq-pasta:hover { background:var(--accent-wash); border-color:var(--accent); transform:translateY(-1px); }
-.arq-pasta svg { flex:0 0 44px; width:44px; height:44px; color:var(--accent); }
-.arq-pasta-nome { font-size:1.02rem; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.arq-pasta-qtd { font-size:.76rem; color:var(--muted); margin-top:2px; font-weight:500; }
-.arq-pasta-info { min-width:0; flex:1 1 auto; }
-.arq-pasta-ren { position:absolute; top:8px; right:8px; border:0; background:none; color:var(--muted); font-size:.7rem; font-weight:700; padding:3px 7px; border-radius:6px; cursor:pointer; opacity:0; }
-.arq-pasta:hover .arq-pasta-ren { opacity:1; }
-.arq-pasta-ren:hover { background:var(--surface-1); color:var(--text-primary); }
-.arq-drop { border:2px dashed var(--border); border-radius:var(--card-radius); padding:26px 16px; text-align:center; color:var(--text-secondary); cursor:pointer; background:var(--field-bg); margin-bottom:16px; transition:border-color .15s, background .15s; }
-.arq-drop strong { color:var(--text-primary); }
-.arq-drop.over { border-color:var(--accent); background:var(--accent-wash); }
-.arq-drop small { display:block; margin-top:4px; color:var(--muted); }
-.arq-lista { display:flex; flex-direction:column; border:1px solid var(--border); border-radius:var(--card-radius); overflow:hidden; background:var(--surface-1); }
-.arq-item { display:flex; align-items:center; gap:12px; padding:11px 14px; border-bottom:1px solid var(--border); }
-.arq-item:last-child { border-bottom:none; }
-.arq-ico { flex:0 0 38px; height:38px; border-radius:9px; background:var(--accent-wash); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:.62rem; font-weight:800; letter-spacing:.02em; }
-.arq-info { flex:1 1 auto; min-width:0; }
-.arq-nome { font-weight:600; font-size:.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.arq-meta { font-size:.74rem; color:var(--muted); margin-top:2px; }
-.arq-acoes { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
-.arq-acoes button, .arq-acoes a { border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); padding:5px 10px; border-radius:8px; font-size:.76rem; font-weight:600; cursor:pointer; text-decoration:none; }
-.arq-acoes button:hover, .arq-acoes a:hover { background:var(--field-bg); }
-.arq-acoes .perigo { color:var(--critical); }
-.arq-vazio { padding:30px 16px; text-align:center; color:var(--muted); font-size:.88rem; }
-.arq-prog { font-size:.8rem; color:var(--text-secondary); margin:-6px 0 12px; min-height:1em; }
+.arq-sep { color:var(--muted); }
+.arq-sub { font-size:.82rem; font-weight:600; color:var(--text-secondary); margin:14px 2px 10px; }
+.arq-pastas { display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:12px; }
+.arq-pasta { position:relative; display:flex; align-items:center; gap:12px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); padding:14px 8px 14px 14px; border-radius:14px; cursor:pointer; user-select:none; transition:background .12s, border-color .12s; }
+.arq-pasta:hover { background:var(--field-bg); }
+.arq-pasta.sel { background:var(--accent-wash); border-color:var(--accent); }
+.arq-pasta.alvo { background:var(--accent-wash); border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+.arq-pasta > svg { flex:0 0 34px; width:34px; height:34px; color:var(--text-secondary); }
+.arq-pasta.sel > svg { color:var(--accent); }
+.arq-pasta-nome { flex:1 1 auto; min-width:0; font-size:.95rem; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.arq-mais { flex:0 0 auto; width:34px; height:34px; border:0; border-radius:50%; background:none; color:var(--text-secondary); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+.arq-mais:hover { background:rgba(128,128,128,.2); color:var(--text-primary); }
+.arq-mais svg { width:20px; height:20px; }
+.arq-tabela { border:1px solid var(--border); border-radius:var(--card-radius); background:var(--surface-1); overflow:hidden; }
+.arq-linha { display:grid; grid-template-columns:minmax(0,1fr) 130px 90px 44px; align-items:center; gap:10px; padding:0 8px 0 14px; min-height:54px; border-bottom:1px solid var(--border); cursor:default; user-select:none; }
+.arq-linha:last-child { border-bottom:none; }
+.arq-linha.cab { min-height:40px; font-size:.78rem; font-weight:700; color:var(--text-secondary); background:var(--field-bg); }
+.arq-linha:not(.cab):hover { background:var(--field-bg); }
+.arq-linha.sel { background:var(--accent-wash) !important; }
+.arq-nome-cel { display:flex; align-items:center; gap:12px; min-width:0; }
+.arq-ico { flex:0 0 34px; height:34px; border-radius:8px; background:color-mix(in srgb, var(--c, var(--accent)) 15%, transparent); color:var(--c, var(--accent)); display:flex; align-items:center; justify-content:center; font-size:.6rem; font-weight:800; letter-spacing:.02em; }
+.arq-nome { font-weight:500; font-size:.92rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.arq-nome small { display:block; font-size:.72rem; color:var(--muted); font-weight:400; }
+.arq-cel { font-size:.84rem; color:var(--text-secondary); white-space:nowrap; }
+.arq-vazio { padding:56px 16px; text-align:center; color:var(--muted); font-size:.95rem; line-height:1.6; }
+.arq-vazio b { display:block; color:var(--text-primary); font-size:1.05rem; margin-bottom:4px; }
+.arq-prog { font-size:.82rem; color:var(--text-secondary); margin:0 0 10px; min-height:1em; }
+.arq-soltar { display:none; position:absolute; inset:0; z-index:20; border:3px dashed var(--accent); border-radius:var(--card-radius); background:color-mix(in srgb, var(--accent) 12%, var(--surface-1)); align-items:center; justify-content:center; text-align:center; font-size:1.15rem; font-weight:700; color:var(--text-primary); pointer-events:none; }
+.arq-doc.arrastando .arq-soltar { display:flex; }
+.arq-menu { position:fixed; z-index:500; display:none; min-width:210px; background:var(--surface-1); border:1px solid var(--border); border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,.28); padding:6px 0; }
+.arq-menu.aberto { display:block; }
+.arq-menu button { display:flex; align-items:center; gap:12px; width:100%; text-align:left; border:0; background:none; color:var(--text-primary); padding:10px 18px; font-size:.9rem; cursor:pointer; }
+.arq-menu button:hover { background:var(--field-bg); }
+.arq-menu button.perigo { color:var(--critical); }
+.arq-menu button svg { width:18px; height:18px; flex:0 0 18px; }
+.arq-menu hr { border:0; border-top:1px solid var(--border); margin:6px 0; }
+.arq-modal-fundo { position:fixed; inset:0; z-index:450; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(11,11,11,.5); }
+.arq-modal-fundo.aberto { display:flex; }
+.arq-modal { width:100%; max-width:420px; background:var(--surface-1); border-radius:18px; padding:24px; box-shadow:0 24px 60px rgba(0,0,0,.32); }
+.arq-modal h3 { margin:0 0 16px; font-size:1.3rem; font-weight:500; }
+.arq-modal input[type=text] { width:100%; box-sizing:border-box; padding:13px 14px; border:2px solid var(--accent); border-radius:10px; background:var(--surface-1); color:var(--text-primary); font-size:1rem; }
+.arq-modal-bts { display:flex; justify-content:flex-end; gap:8px; margin-top:20px; }
+.arq-modal-bts button { border:0; background:none; color:var(--accent); font-weight:700; font-size:.92rem; padding:9px 16px; border-radius:999px; cursor:pointer; }
+.arq-modal-bts button:hover { background:var(--accent-wash); }
+.arq-modal-bts button.perigo { color:var(--critical); }
+.arq-arvore { max-height:300px; overflow:auto; border:1px solid var(--border); border-radius:10px; }
+.arq-arvore button { display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:0; background:none; color:var(--text-primary); padding:10px 12px; font-size:.92rem; cursor:pointer; }
+.arq-arvore button:hover { background:var(--field-bg); }
+.arq-arvore button.sel { background:var(--accent-wash); font-weight:700; }
+.arq-arvore button svg { width:20px; height:20px; color:var(--text-secondary); flex:0 0 20px; }
+@media (max-width: 640px) { .arq-linha { grid-template-columns:minmax(0,1fr) 44px; } .arq-linha .arq-cel { display:none; } }
 @media (max-width:600px) { .arq-item { flex-wrap:wrap; } .arq-acoes { width:100%; justify-content:flex-start; } }
 </style>
 </head>
@@ -2117,22 +2140,19 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
     </div>
 
     <div class="tab-panel" id="tab-arquivos">
-      <div class="arq-doc">
-        <div class="arq-head">
-          <h2>Arquivos</h2>
-          <input type="search" id="arq-busca" class="arq-busca" placeholder="Buscar por nome" oninput="arqRender()">
-          <button type="button" class="arq-nova" onclick="arqNovaPasta()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><line x1="12" y1="10.5" x2="12" y2="15.5"/><line x1="9.5" y1="13" x2="14.5" y2="13"/></svg>Nova pasta</button>
+      <div class="arq-doc" id="arq-doc">
+        <div class="arq-topo">
+          <button type="button" class="arq-novo" id="arq-novo-btn" onclick="arqMenuNovo(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Novo</button>
+          <input type="search" id="arq-busca" class="arq-busca" placeholder="Pesquisar nos Arquivos" oninput="arqRender()">
         </div>
         <div class="arq-crumbs" id="arq-crumbs"></div>
-        <div class="arq-pastas" id="arq-pastas"></div>
-        <div class="arq-drop" id="arq-drop" onclick="document.getElementById('arq-input').click()">
-          <strong>Arraste os arquivos aqui</strong> ou clique para escolher
-          <small id="arq-destino">Vai para: Arquivos · até 100 MB por arquivo</small>
-          <input type="file" id="arq-input" multiple style="display:none" onchange="arqEnviar(this.files); this.value='';">
-        </div>
         <div class="arq-prog" id="arq-prog"></div>
-        <div class="arq-lista" id="arq-lista"></div>
+        <div id="arq-conteudo"></div>
+        <input type="file" id="arq-input" multiple style="display:none" onchange="arqEnviar(this.files, arqCaminho); this.value='';">
+        <div class="arq-soltar" id="arq-soltar"><div>Solte os arquivos aqui<br><span id="arq-destino" style="font-weight:500; font-size:.9rem; color:var(--text-secondary);"></span></div></div>
       </div>
+      <div class="arq-menu" id="arq-menu"></div>
+      <div class="arq-modal-fundo" id="arq-modal-fundo"><div class="arq-modal" id="arq-modal"></div></div>
     </div>
 
     <div class="tab-panel" id="tab-whatsapp">
@@ -9725,33 +9745,49 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
   });
 });
 
-// ---------- ARQUIVOS (biblioteca de PDFs/guias) ----------
+// ---------- ARQUIVOS (biblioteca estilo Google Drive) ----------
 // Metadados em com_arquivos, binário no bucket público "di-arquivos". Pasta é só um texto na linha
-// (não é pasta de verdade no Storage) — renomear/mover pasta é um UPDATE, sem copiar arquivo.
-// Link público = URL pública do bucket; o path leva um uuid, então não dá pra adivinhar.
+// (não é pasta de verdade no Storage); subpasta = caminho com "/" ("Vendas/Scripts"). Renomear/mover
+// é um UPDATE, sem copiar arquivo. Link público = URL pública do bucket (o path leva um uuid).
+// Comportamento copiado do Drive: clique seleciona, duplo clique abre, botão direito e ⋮ abrem o menu,
+// arrastar arquivo pra cima de uma pasta move, soltar arquivo do computador em qualquer lugar envia.
 const ARQ_BUCKET = 'di-arquivos';
 const ARQ_MAX = 100 * 1024 * 1024;
 let arqLista = [];
-// Subpasta = caminho com "/" no mesmo texto (ex.: "Vendas/Scripts"), sem mudar o banco.
 let arqCaminho = '';
+let arqSel = null;   // { t: 'p'|'a', v: caminho da pasta | id do arquivo }
 let arqPastasVazias = new Set((() => { try { return JSON.parse(localStorage.getItem('arqPastasVazias') || '[]'); } catch (e) { return []; } })());
 function arqSalvaVazias() { try { localStorage.setItem('arqPastasVazias', JSON.stringify([...arqPastasVazias])); } catch (e) {} }
-const ARQ_ICONE_PASTA = '<svg viewBox="0 0 24 24" fill="currentColor" fill-opacity=".16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>';
 let arqCarregado = false;
+const ARQ_PASTA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h3.9c.5 0 .9.2 1.2.5L12 6h6.5A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5Z"/></svg>';
+const ARQ_MAIS_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg>';
+const ARQ_IC = {
+  pasta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>',
+  up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M5 20h14"/></svg>',
+  abrir: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5H5V6h5"/></svg>',
+  link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+  ren: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16Z"/></svg>',
+  mover: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 13h6"/><path d="M13 10l3 3-3 3"/></svg>',
+  lixo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg>',
+};
+const ARQ_CORES = { PDF:'#d93025', DOC:'#1a73e8', DOCX:'#1a73e8', XLS:'#188038', XLSX:'#188038', CSV:'#188038', PPT:'#e8710a', PPTX:'#e8710a', PNG:'#9334e6', JPG:'#9334e6', JPEG:'#9334e6', GIF:'#9334e6', WEBP:'#9334e6', ZIP:'#5f6368', RAR:'#5f6368', MP4:'#c5221f', MOV:'#c5221f', MP3:'#e37400' };
 
 function arqUrl(a) { return sb.storage.from(ARQ_BUCKET).getPublicUrl(a.path).data.publicUrl; }
 function arqExt(n) { const m = /\.([a-z0-9]{1,5})$/i.exec(n || ''); return m ? m[1].toUpperCase() : 'ARQ'; }
-function arqTam(b) { if (b == null) return ''; if (b < 1024) return b + ' B'; if (b < 1048576) return (b/1024).toFixed(0) + ' KB'; return (b/1048576).toFixed(1) + ' MB'; }
+function arqTam(b) { if (b == null) return '—'; if (b < 1024) return b + ' B'; if (b < 1048576) return (b/1024).toFixed(0) + ' KB'; return (b/1048576).toFixed(1) + ' MB'; }
 function arqEsc(t) { return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function arqSlug(n) {
   const i = n.lastIndexOf('.'); const base = i > 0 ? n.slice(0, i) : n; const ext = i > 0 ? n.slice(i) : '';
   const b = base.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'arquivo';
   return b + ext.normalize('NFD').replace(/[^a-zA-Z0-9.]/g, '').toLowerCase();
 }
+const arqToque = () => window.matchMedia && matchMedia('(pointer: coarse)').matches;
+const arqDentro = (pasta, base) => base === '' ? !!pasta : (pasta === base || pasta.startsWith(base + '/'));
+const arqNomePasta = p => p.split('/').pop();
 
 async function carregarArquivos() {
   const { data, error } = await sb.from('com_arquivos').select('*').order('created_at', { ascending: false });
-  if (error) { document.getElementById('arq-lista').innerHTML = '<div class="arq-vazio">Não consegui carregar os arquivos: ' + arqEsc(error.message) + '</div>'; return; }
+  if (error) { document.getElementById('arq-conteudo').innerHTML = '<div class="arq-vazio">Não consegui carregar os arquivos: ' + arqEsc(error.message) + '</div>'; return; }
   arqLista = data || [];
   arqCarregado = true;
   arqRender();
@@ -9760,17 +9796,19 @@ async function carregarArquivos() {
 function arqPastas() {
   const set = new Set(arqLista.map(a => a.pasta).filter(Boolean));
   arqPastasVazias.forEach(p => set.add(p));
+  // toda pasta aninhada implica as pastas-pai
+  [...set].forEach(p => { const seg = p.split('/'); for (let i = 1; i < seg.length; i++) set.add(seg.slice(0, i).join('/')); });
   return [...set].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 }
-const arqDentro = (pasta, base) => base === '' ? !!pasta : (pasta === base || pasta.startsWith(base + '/'));
+
+function arqIr(caminho) { arqCaminho = caminho; arqSel = null; document.getElementById('arq-busca').value = ''; arqRender(); }
 
 function arqRender() {
   const termo = semAcento(document.getElementById('arq-busca').value || '').toLowerCase();
   const todas = arqPastas();
-  // se a pasta aberta sumiu (ex.: foi renomeada por outra pessoa), volta pra raiz
-  if (arqCaminho && !todas.some(p => arqDentro(p, arqCaminho))) arqCaminho = '';
+  if (arqCaminho && !todas.includes(arqCaminho)) arqCaminho = '';
 
-  // caminho de navegação: Arquivos › Vendas › Scripts
+  // trilha: Arquivos › Vendas › Scripts
   const partes = arqCaminho ? arqCaminho.split('/') : [];
   let h = `<button type="button" class="arq-crumb${partes.length ? '' : ' atual'}" data-c="">Arquivos</button>`;
   partes.forEach((p, i) => {
@@ -9779,69 +9817,173 @@ function arqRender() {
   });
   const elC = document.getElementById('arq-crumbs');
   elC.innerHTML = h;
-  elC.querySelectorAll('.arq-crumb:not(.atual)').forEach(b => b.onclick = () => { arqCaminho = b.dataset.c; document.getElementById('arq-busca').value = ''; arqRender(); });
-  document.getElementById('arq-destino').textContent = 'Vai para: ' + (arqCaminho ? arqCaminho.replace(/\//g, ' › ') : 'Arquivos') + ' · até 100 MB por arquivo';
+  elC.querySelectorAll('.arq-crumb:not(.atual)').forEach(b => { b.onclick = () => arqIr(b.dataset.c); arqAlvoDrop(b, b.dataset.c); });
+  document.getElementById('arq-destino').textContent = 'em ' + (arqCaminho ? arqCaminho.replace(/\//g, ' › ') : 'Arquivos');
 
-  // pastas deste nível (escondidas durante a busca, que olha tudo)
-  const elP = document.getElementById('arq-pastas');
   const prefixo = arqCaminho ? arqCaminho + '/' : '';
-  const filhas = termo ? [] : [...new Set(todas.filter(p => p.startsWith(prefixo) && p.length > prefixo.length).map(p => p.slice(prefixo.length).split('/')[0]))]
+  const filhas = termo ? [] : [...new Set(todas.filter(p => p.startsWith(prefixo) && p.length > prefixo.length).map(p => prefixo + p.slice(prefixo.length).split('/')[0]))]
     .sort((a, b) => a.localeCompare(b, 'pt-BR'));
-  elP.style.display = filhas.length ? '' : 'none';
-  elP.innerHTML = filhas.map(n => {
-    const full = prefixo + n;
-    const qtd = arqLista.filter(a => a.pasta && arqDentro(a.pasta, full)).length;
-    return `<div class="arq-pasta" data-c="${arqEsc(full)}" role="button" tabindex="0">${ARQ_ICONE_PASTA}
-      <div class="arq-pasta-info"><div class="arq-pasta-nome" title="${arqEsc(n)}">${arqEsc(n)}</div><div class="arq-pasta-qtd">${qtd} arquivo${qtd === 1 ? '' : 's'}</div></div>
-      <button type="button" class="arq-pasta-ren" data-ren="${arqEsc(full)}">Renomear</button></div>`;
-  }).join('');
-  elP.querySelectorAll('.arq-pasta').forEach(b => {
-    b.onclick = () => { arqCaminho = b.dataset.c; arqRender(); };
-    b.onkeydown = e => { if (e.key === 'Enter') b.click(); };
-  });
-  elP.querySelectorAll('.arq-pasta-ren').forEach(b => b.onclick = e => { e.stopPropagation(); arqRenomearPasta(b.dataset.ren); });
-
-  // arquivos: deste nível; na busca, de todas as pastas
   const itens = arqLista.filter(a => termo ? semAcento(a.nome).toLowerCase().includes(termo) : (a.pasta || '') === arqCaminho);
-  const el = document.getElementById('arq-lista');
-  if (!itens.length) {
-    el.style.display = filhas.length && !termo ? 'none' : '';
-    el.innerHTML = '<div class="arq-vazio">' + (termo ? 'Nada encontrado.' : 'Nenhum arquivo aqui. Arraste o primeiro aí em cima.') + '</div>';
-    return;
+
+  let out = '';
+  if (filhas.length) {
+    out += '<div class="arq-sub">Pastas</div><div class="arq-pastas">' + filhas.map(f => `
+      <div class="arq-pasta${arqSel && arqSel.t === 'p' && arqSel.v === f ? ' sel' : ''}" data-p="${arqEsc(f)}" tabindex="0">${ARQ_PASTA_SVG}
+        <div class="arq-pasta-nome" title="${arqEsc(arqNomePasta(f))}">${arqEsc(arqNomePasta(f))}</div>
+        <button type="button" class="arq-mais" data-mp="${arqEsc(f)}" title="Mais ações">${ARQ_MAIS_SVG}</button></div>`).join('') + '</div>';
   }
-  el.style.display = '';
-  el.innerHTML = itens.map(a => `
-    <div class="arq-item">
-      <div class="arq-ico">${arqEsc(arqExt(a.nome))}</div>
-      <div class="arq-info">
-        <div class="arq-nome" title="${arqEsc(a.nome)}">${arqEsc(a.nome)}</div>
-        <div class="arq-meta">${termo && a.pasta ? arqEsc(a.pasta.replace(/\//g, ' › ')) + ' · ' : ''}${arqTam(a.tamanho)} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
-      </div>
-      <div class="arq-acoes">
-        <a href="${arqUrl(a)}" target="_blank" rel="noopener">Abrir</a>
-        <button type="button" onclick="arqCopiarLink('${a.id}', this)">Copiar link</button>
-        <button type="button" onclick="arqMover('${a.id}')">Mover</button>
-        <button type="button" onclick="arqRenomear('${a.id}')">Renomear</button>
-        <button type="button" class="perigo" onclick="arqExcluir('${a.id}')">Excluir</button>
-      </div>
-    </div>`).join('');
+  if (itens.length) {
+    out += '<div class="arq-sub">' + (termo ? 'Resultados' : 'Arquivos') + '</div><div class="arq-tabela">' +
+      '<div class="arq-linha cab"><div>Nome</div><div class="arq-cel">Adicionado em</div><div class="arq-cel">Tamanho</div><div></div></div>' +
+      itens.map(a => {
+        const ext = arqExt(a.nome);
+        return `<div class="arq-linha${arqSel && arqSel.t === 'a' && arqSel.v === a.id ? ' sel' : ''}" data-a="${a.id}" draggable="true">
+          <div class="arq-nome-cel"><div class="arq-ico" style="--c:${ARQ_CORES[ext] || 'var(--accent)'}">${arqEsc(ext)}</div>
+            <div class="arq-nome" title="${arqEsc(a.nome)}">${arqEsc(a.nome)}${termo && a.pasta ? `<small>${arqEsc(a.pasta.replace(/\//g, ' › '))}</small>` : ''}</div></div>
+          <div class="arq-cel">${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
+          <div class="arq-cel">${arqTam(a.tamanho)}</div>
+          <button type="button" class="arq-mais" data-ma="${a.id}" title="Mais ações">${ARQ_MAIS_SVG}</button></div>`;
+      }).join('') + '</div>';
+  }
+  if (!filhas.length && !itens.length) {
+    out = termo ? '<div class="arq-vazio"><b>Nada encontrado</b>Tente outro nome.</div>'
+      : '<div class="arq-vazio"><b>Esta pasta está vazia</b>Arraste arquivos pra cá ou clique em <b style="display:inline">+ Novo</b> pra enviar ou criar uma pasta.</div>';
+  }
+  const el = document.getElementById('arq-conteudo');
+  el.innerHTML = out;
+
+  el.querySelectorAll('.arq-pasta').forEach(b => {
+    const f = b.dataset.p;
+    b.onclick = e => { if (e.target.closest('.arq-mais')) return; if (arqToque()) return arqIr(f); arqSel = { t: 'p', v: f }; arqRender(); };
+    b.ondblclick = () => arqIr(f);
+    b.onkeydown = e => { if (e.key === 'Enter') arqIr(f); };
+    b.oncontextmenu = e => { e.preventDefault(); arqSel = { t: 'p', v: f }; arqMarcaSel(); arqMenuPasta(f, e.clientX, e.clientY); };
+    arqAlvoDrop(b, f);
+  });
+  el.querySelectorAll('[data-mp]').forEach(b => b.onclick = e => { e.stopPropagation(); const r = b.getBoundingClientRect(); arqMenuPasta(b.dataset.mp, r.right - 210, r.bottom + 4); });
+  el.querySelectorAll('.arq-linha[data-a]').forEach(l => {
+    const id = l.dataset.a;
+    l.onclick = e => { if (e.target.closest('.arq-mais')) return; if (arqToque()) return arqAbrir(id); arqSel = { t: 'a', v: id }; arqMarcaSel(); };
+    l.ondblclick = () => arqAbrir(id);
+    l.oncontextmenu = e => { e.preventDefault(); arqSel = { t: 'a', v: id }; arqMarcaSel(); arqMenuArq(id, e.clientX, e.clientY); };
+    l.ondragstart = e => { e.dataTransfer.setData('text/arq-id', id); e.dataTransfer.effectAllowed = 'move'; };
+  });
+  el.querySelectorAll('[data-ma]').forEach(b => b.onclick = e => { e.stopPropagation(); const r = b.getBoundingClientRect(); arqMenuArq(b.dataset.ma, r.right - 210, r.bottom + 4); });
 }
 
-// cria a pasta dentro da pasta aberta (isso é o que dá as subpastas)
-function arqNovaPasta() {
-  const n = (prompt(arqCaminho ? 'Nome da nova subpasta em "' + arqCaminho.replace(/\//g, ' › ') + '":' : 'Nome da nova pasta:') || '').replace(/\//g, '-').trim();
+function arqMarcaSel() {
+  document.querySelectorAll('#arq-conteudo .sel').forEach(x => x.classList.remove('sel'));
+  if (!arqSel) return;
+  const q = arqSel.t === 'p' ? `.arq-pasta[data-p="${CSS.escape(arqSel.v)}"]` : `.arq-linha[data-a="${arqSel.v}"]`;
+  document.querySelector('#arq-conteudo ' + q)?.classList.add('sel');
+}
+
+// soltar arquivo do PC OU arrastar um arquivo da lista em cima de uma pasta/trilha
+function arqAlvoDrop(el, destino) {
+  el.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); el.classList.add('alvo'); });
+  el.addEventListener('dragleave', () => el.classList.remove('alvo'));
+  el.addEventListener('drop', e => {
+    e.preventDefault(); e.stopPropagation(); el.classList.remove('alvo');
+    document.getElementById('arq-doc').classList.remove('arrastando');
+    const id = e.dataTransfer.getData('text/arq-id');
+    if (id) return arqMoverPara(id, destino);
+    if (e.dataTransfer.files && e.dataTransfer.files.length) arqEnviar(e.dataTransfer.files, destino);
+  });
+}
+
+// ---- menus (⋮, botão direito, + Novo) ----
+function arqFechaMenu() { document.getElementById('arq-menu').classList.remove('aberto'); }
+function arqMenu(x, y, itens) {
+  const m = document.getElementById('arq-menu');
+  m.innerHTML = itens.map(i => i === '-' ? '<hr>' : `<button type="button" class="${i.perigo ? 'perigo' : ''}">${i.ic || ''}${arqEsc(i.t)}</button>`).join('');
+  const bts = [...m.querySelectorAll('button')]; let k = 0;
+  itens.forEach(i => { if (i !== '-') { const b = bts[k++]; b.onclick = () => { arqFechaMenu(); i.fn(); }; } });
+  m.classList.add('aberto');
+  const w = m.offsetWidth, hgt = m.offsetHeight;
+  m.style.left = Math.max(8, Math.min(x, innerWidth - w - 8)) + 'px';
+  m.style.top = Math.max(8, Math.min(y, innerHeight - hgt - 8)) + 'px';
+}
+document.addEventListener('click', e => { if (!e.target.closest('#arq-menu, .arq-mais, #arq-novo-btn')) arqFechaMenu(); });
+document.addEventListener('scroll', arqFechaMenu, true);
+function arqMenuNovo(btn) {
+  const r = btn.getBoundingClientRect();
+  arqMenu(r.left, r.bottom + 6, [
+    { t: 'Nova pasta', ic: ARQ_IC.pasta, fn: arqNovaPasta },
+    '-',
+    { t: 'Upload de arquivos', ic: ARQ_IC.up, fn: () => document.getElementById('arq-input').click() },
+  ]);
+}
+function arqMenuPasta(f, x, y) {
+  arqMenu(x, y, [
+    { t: 'Abrir', ic: ARQ_IC.abrir, fn: () => arqIr(f) },
+    { t: 'Renomear', ic: ARQ_IC.ren, fn: () => arqRenomearPasta(f) },
+    '-',
+    { t: 'Excluir pasta', ic: ARQ_IC.lixo, perigo: true, fn: () => arqExcluirPasta(f) },
+  ]);
+}
+function arqMenuArq(id, x, y) {
+  arqMenu(x, y, [
+    { t: 'Abrir', ic: ARQ_IC.abrir, fn: () => arqAbrir(id) },
+    { t: 'Copiar link', ic: ARQ_IC.link, fn: () => arqCopiarLink(id) },
+    '-',
+    { t: 'Renomear', ic: ARQ_IC.ren, fn: () => arqRenomear(id) },
+    { t: 'Mover para…', ic: ARQ_IC.mover, fn: () => arqMover(id) },
+    '-',
+    { t: 'Excluir', ic: ARQ_IC.lixo, perigo: true, fn: () => arqExcluir(id) },
+  ]);
+}
+
+// ---- janelas (no lugar de prompt()) ----
+function arqModal(html, ligar) {
+  const fundo = document.getElementById('arq-modal-fundo');
+  document.getElementById('arq-modal').innerHTML = html;
+  fundo.classList.add('aberto');
+  const fecha = () => fundo.classList.remove('aberto');
+  fundo.onclick = e => { if (e.target === fundo) fecha(); };
+  ligar(fecha);
+}
+function arqPergunta(titulo, valor, botao) {
+  return new Promise(res => {
+    arqModal(`<h3>${arqEsc(titulo)}</h3><input type="text" id="arq-campo" value="${arqEsc(valor)}" maxlength="120" autocomplete="off">
+      <div class="arq-modal-bts"><button type="button" id="arq-cancela">Cancelar</button><button type="button" id="arq-ok">${arqEsc(botao)}</button></div>`, fecha => {
+      const c = document.getElementById('arq-campo');
+      setTimeout(() => { c.focus(); c.select(); }, 30);
+      const fim = v => { fecha(); res(v); };
+      document.getElementById('arq-cancela').onclick = () => fim(null);
+      document.getElementById('arq-ok').onclick = () => fim(c.value.replace(/\//g, '-').trim());
+      c.onkeydown = e => { if (e.key === 'Enter') fim(c.value.replace(/\//g, '-').trim()); if (e.key === 'Escape') fim(null); };
+      document.getElementById('arq-modal-fundo').onclick = e => { if (e.target.id === 'arq-modal-fundo') fim(null); };
+    });
+  });
+}
+function arqEscolhePasta(titulo, atual) {
+  return new Promise(res => {
+    let escolhida = atual;
+    const todas = arqPastas();
+    const linha = (p, rotulo, nivel) => `<button type="button" data-p="${arqEsc(p)}" style="padding-left:${12 + nivel * 22}px">${ARQ_IC.pasta}${arqEsc(rotulo)}</button>`;
+    arqModal(`<h3>${arqEsc(titulo)}</h3><div class="arq-arvore">${linha('', 'Arquivos (início)', 0)}${todas.map(p => linha(p, arqNomePasta(p), p.split('/').length)).join('')}</div>
+      <div class="arq-modal-bts"><button type="button" id="arq-cancela">Cancelar</button><button type="button" id="arq-ok">Mover aqui</button></div>`, fecha => {
+      const marca = () => document.querySelectorAll('#arq-modal .arq-arvore button').forEach(b => b.classList.toggle('sel', b.dataset.p === escolhida));
+      marca();
+      document.querySelectorAll('#arq-modal .arq-arvore button').forEach(b => { b.onclick = () => { escolhida = b.dataset.p; marca(); }; });
+      document.getElementById('arq-cancela').onclick = () => { fecha(); res(null); };
+      document.getElementById('arq-ok').onclick = () => { fecha(); res(escolhida); };
+    });
+  });
+}
+
+// ---- ações ----
+async function arqNovaPasta() {
+  const n = await arqPergunta('Nova pasta', 'Pasta sem título', 'Criar');
   if (!n) return;
   const full = (arqCaminho ? arqCaminho + '/' : '') + n;
-  if (arqPastas().includes(full)) { arqCaminho = full; document.getElementById('arq-busca').value = ''; return arqRender(); }
-  arqPastasVazias.add(full); arqSalvaVazias();
-  arqCaminho = full;
-  document.getElementById('arq-busca').value = '';
-  arqRender();
+  if (!arqPastas().includes(full)) { arqPastasVazias.add(full); arqSalvaVazias(); }
+  arqIr(full);
 }
 
 async function arqRenomearPasta(full) {
-  const antigo = full.split('/').pop();
-  const n = (prompt('Novo nome da pasta:', antigo) || '').replace(/\//g, '-').trim();
+  const antigo = arqNomePasta(full);
+  const n = await arqPergunta('Renomear pasta', antigo, 'OK');
   if (!n || n === antigo) return;
   const base = full.split('/').slice(0, -1).join('/');
   const novo = (base ? base + '/' : '') + n;
@@ -9852,14 +9994,33 @@ async function arqRenomearPasta(full) {
   }
   arqPastasVazias = new Set([...arqPastasVazias].map(p => arqDentro(p, full) ? novo + p.slice(full.length) : p)); arqSalvaVazias();
   if (arqCaminho && arqDentro(arqCaminho, full)) arqCaminho = novo + arqCaminho.slice(full.length);
+  arqSel = null;
   await carregarArquivos();
 }
 
-async function arqEnviar(files) {
+async function arqExcluirPasta(full) {
+  const dentro = arqLista.filter(a => a.pasta && arqDentro(a.pasta, full));
+  const msg = dentro.length
+    ? 'Excluir a pasta "' + arqNomePasta(full) + '" e os ' + dentro.length + ' arquivo' + (dentro.length > 1 ? 's' : '') + ' dentro dela?\n\nOs links públicos deixam de funcionar. Não dá pra desfazer.'
+    : 'Excluir a pasta vazia "' + arqNomePasta(full) + '"?';
+  if (!confirm(msg)) return;
+  if (dentro.length) {
+    const rm = await sb.storage.from(ARQ_BUCKET).remove(dentro.map(a => a.path));
+    if (rm.error) return alert('Erro: ' + rm.error.message);
+    const { error } = await sb.from('com_arquivos').delete().in('id', dentro.map(a => a.id));
+    if (error) return alert('Erro: ' + error.message);
+  }
+  arqPastasVazias = new Set([...arqPastasVazias].filter(p => !arqDentro(p, full))); arqSalvaVazias();
+  if (arqCaminho && arqDentro(arqCaminho, full)) arqCaminho = full.split('/').slice(0, -1).join('/');
+  arqSel = null;
+  await carregarArquivos();
+}
+
+async function arqEnviar(files, pasta) {
   const lista = [...files];
   if (!lista.length) return;
+  pasta = pasta || '';
   const prog = document.getElementById('arq-prog');
-  const pasta = arqCaminho;
   let ok = 0;
   for (let i = 0; i < lista.length; i++) {
     const f = lista[i];
@@ -9878,27 +10039,35 @@ async function arqEnviar(files) {
   setTimeout(() => { if (prog.textContent.includes('enviado')) prog.textContent = ''; }, 4000);
 }
 
-async function arqCopiarLink(id, btn) {
+function arqAbrir(id) { const a = arqLista.find(x => x.id === id); if (a) window.open(arqUrl(a), '_blank', 'noopener'); }
+
+async function arqCopiarLink(id) {
   const a = arqLista.find(x => x.id === id); if (!a) return;
   const url = arqUrl(a);
   try { await navigator.clipboard.writeText(url); }
   catch (e) { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
-  const orig = btn.textContent; btn.textContent = 'Copiado!';
-  setTimeout(() => { btn.textContent = orig; }, 1500);
+  const prog = document.getElementById('arq-prog');
+  prog.textContent = 'Link copiado.';
+  setTimeout(() => { if (prog.textContent === 'Link copiado.') prog.textContent = ''; }, 2500);
 }
 
+async function arqMoverPara(id, destino) {
+  const a = arqLista.find(x => x.id === id); if (!a || (a.pasta || '') === destino) return;
+  const { error } = await sb.from('com_arquivos').update({ pasta: destino }).eq('id', id);
+  if (error) return alert('Erro: ' + error.message);
+  if (destino && arqPastasVazias.delete(destino)) arqSalvaVazias();
+  await carregarArquivos();
+}
 async function arqMover(id) {
   const a = arqLista.find(x => x.id === id); if (!a) return;
-  const n = prompt('Mover para qual pasta? Use / para subpasta (ex.: Vendas/Scripts). Deixe vazio para mandar pra raiz.\n\nExistentes: ' + (arqPastas().join(', ') || 'nenhuma'), a.pasta || '');
-  if (n === null) return;
-  const { error } = await sb.from('com_arquivos').update({ pasta: n.split('/').map(x => x.trim()).filter(Boolean).join('/') }).eq('id', id);
-  if (error) return alert('Erro: ' + error.message);
-  await carregarArquivos();
+  const destino = await arqEscolhePasta('Mover "' + a.nome + '"', a.pasta || '');
+  if (destino === null) return;
+  await arqMoverPara(id, destino);
 }
 
 async function arqRenomear(id) {
   const a = arqLista.find(x => x.id === id); if (!a) return;
-  const n = (prompt('Novo nome:', a.nome) || '').trim();
+  const n = await arqPergunta('Renomear arquivo', a.nome, 'OK');
   if (!n || n === a.nome) return;
   const { error } = await sb.from('com_arquivos').update({ nome: n }).eq('id', id);
   if (error) return alert('Erro: ' + error.message);
@@ -9912,14 +10081,21 @@ async function arqExcluir(id) {
   if (rm.error) return alert('Erro: ' + rm.error.message);
   const { error } = await sb.from('com_arquivos').delete().eq('id', id);
   if (error) return alert('Erro: ' + error.message);
+  arqSel = null;
   await carregarArquivos();
 }
 
+// área inteira aceita arquivo do computador (overlay "Solte os arquivos aqui"); só reage a arquivos de fora
 (function arqInitDrop() {
-  const d = document.getElementById('arq-drop'); if (!d) return;
-  ['dragenter','dragover'].forEach(e => d.addEventListener(e, ev => { ev.preventDefault(); d.classList.add('over'); }));
-  ['dragleave','drop'].forEach(e => d.addEventListener(e, ev => { ev.preventDefault(); d.classList.remove('over'); }));
-  d.addEventListener('drop', ev => arqEnviar(ev.dataTransfer.files));
+  const doc = document.getElementById('arq-doc'); if (!doc) return;
+  const dePC = e => e.dataTransfer && [...(e.dataTransfer.types || [])].includes('Files');
+  let n = 0;
+  doc.addEventListener('dragenter', e => { if (!dePC(e)) return; e.preventDefault(); n++; doc.classList.add('arrastando'); });
+  doc.addEventListener('dragover', e => { if (dePC(e)) e.preventDefault(); });
+  doc.addEventListener('dragleave', e => { if (!dePC(e)) return; n = Math.max(0, n - 1); if (!n) doc.classList.remove('arrastando'); });
+  doc.addEventListener('drop', e => { if (!dePC(e)) return; e.preventDefault(); n = 0; doc.classList.remove('arrastando'); arqEnviar(e.dataTransfer.files, arqCaminho); });
+  doc.addEventListener('click', e => { if (!e.target.closest('.arq-pasta, .arq-linha, .arq-mais, .arq-crumb, .arq-novo, input')) { if (arqSel) { arqSel = null; arqMarcaSel(); } } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') arqFechaMenu(); });
 })();
 </script>
 </body>
