@@ -1404,6 +1404,34 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
 .rel-linha .rel-hora { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 42px; }
 .rel-linha .rel-nome { font-weight: 600; min-width: 0; }
 .rel-linha .pill { margin-left: auto; }
+
+/* ---- Arquivos: biblioteca de PDFs/guias ---- */
+.arq-doc { max-width: 980px; margin: 0 auto; }
+.arq-head { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+.arq-head h2 { margin:0; flex:1 1 auto; }
+.arq-busca { flex:1 1 200px; max-width:280px; padding:9px 12px; border:1px solid var(--border); border-radius:10px; background:var(--field-bg); color:var(--text-primary); font-size:.88rem; }
+.arq-pastas { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.arq-pasta { border:1px solid var(--border); background:var(--surface-1); color:var(--text-secondary); padding:6px 12px; border-radius:999px; font-size:.82rem; font-weight:600; cursor:pointer; }
+.arq-pasta.ativa { background:var(--accent); border-color:var(--accent); color:#fff; }
+.arq-pasta.nova { border-style:dashed; color:var(--muted); }
+.arq-drop { border:2px dashed var(--border); border-radius:var(--card-radius); padding:26px 16px; text-align:center; color:var(--text-secondary); cursor:pointer; background:var(--field-bg); margin-bottom:16px; transition:border-color .15s, background .15s; }
+.arq-drop strong { color:var(--text-primary); }
+.arq-drop.over { border-color:var(--accent); background:var(--accent-wash); }
+.arq-drop small { display:block; margin-top:4px; color:var(--muted); }
+.arq-lista { display:flex; flex-direction:column; border:1px solid var(--border); border-radius:var(--card-radius); overflow:hidden; background:var(--surface-1); }
+.arq-item { display:flex; align-items:center; gap:12px; padding:11px 14px; border-bottom:1px solid var(--border); }
+.arq-item:last-child { border-bottom:none; }
+.arq-ico { flex:0 0 38px; height:38px; border-radius:9px; background:var(--accent-wash); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:.62rem; font-weight:800; letter-spacing:.02em; }
+.arq-info { flex:1 1 auto; min-width:0; }
+.arq-nome { font-weight:600; font-size:.9rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.arq-meta { font-size:.74rem; color:var(--muted); margin-top:2px; }
+.arq-acoes { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+.arq-acoes button, .arq-acoes a { border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); padding:5px 10px; border-radius:8px; font-size:.76rem; font-weight:600; cursor:pointer; text-decoration:none; }
+.arq-acoes button:hover, .arq-acoes a:hover { background:var(--field-bg); }
+.arq-acoes .perigo { color:var(--critical); }
+.arq-vazio { padding:30px 16px; text-align:center; color:var(--muted); font-size:.88rem; }
+.arq-prog { font-size:.8rem; color:var(--text-secondary); margin:-6px 0 12px; min-height:1em; }
+@media (max-width:600px) { .arq-item { flex-wrap:wrap; } .arq-acoes { width:100%; justify-content:flex-start; } }
 </style>
 </head>
 <body>
@@ -1436,6 +1464,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
         <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
         <button data-tab="social" title="Playbook de Mensagens"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        <button data-tab="arquivos" title="Arquivos"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg></button>
         <button data-tab="whatsapp" title="WhatsApp" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 11.9a8.6 8.6 0 0 1-12.8 7.5l-4.4 1.2 1.2-4.3A8.6 8.6 0 1 1 20.6 11.9Z"/><g transform="translate(7.1 6.8) scale(.425)" stroke-width="4.24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g></svg><span id="whats-badge" style="display:none; position:absolute; top:6px; right:10px; width:8px; height:8px; border-radius:50%; background:var(--critical);"></span></button>
         <button data-tab="relatorio" title="Relatório do dia" id="nav-relatorio" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="17" x2="9" y2="14"/><line x1="12" y1="17" x2="12" y2="11"/><line x1="15" y1="17" x2="15" y2="13"/></svg></button>
         <button data-tab="admin" title="Admin" id="nav-admin" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M18 8l1.5 1.5L22 7"/></svg></button>
@@ -2052,6 +2081,23 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         </div>
         </div>
 
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-arquivos">
+      <div class="arq-doc">
+        <div class="arq-head">
+          <h2>Arquivos</h2>
+          <input type="search" id="arq-busca" class="arq-busca" placeholder="Buscar por nome" oninput="arqRender()">
+        </div>
+        <div class="arq-pastas" id="arq-pastas"></div>
+        <div class="arq-drop" id="arq-drop" onclick="document.getElementById('arq-input').click()">
+          <strong>Arraste os arquivos aqui</strong> ou clique para escolher
+          <small id="arq-destino">Vai para: Sem pasta · até 100 MB por arquivo</small>
+          <input type="file" id="arq-input" multiple style="display:none" onchange="arqEnviar(this.files); this.value='';">
+        </div>
+        <div class="arq-prog" id="arq-prog"></div>
+        <div class="arq-lista" id="arq-lista"></div>
       </div>
     </div>
 
@@ -9711,9 +9757,164 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
     ajustarIndicadores(btn.dataset.tab);
     if (btn.dataset.tab === 'whatsapp') document.getElementById('whats-badge').style.display = 'none';
+    if (btn.dataset.tab === 'arquivos') carregarArquivos();
     if (btn.dataset.tab === 'relatorio') carregarRelatorio();
   });
 });
+
+// ---------- ARQUIVOS (biblioteca de PDFs/guias) ----------
+// Metadados em com_arquivos, binário no bucket público "di-arquivos". Pasta é só um texto na linha
+// (não é pasta de verdade no Storage) — renomear/mover pasta é um UPDATE, sem copiar arquivo.
+// Link público = URL pública do bucket; o path leva um uuid, então não dá pra adivinhar.
+const ARQ_BUCKET = 'di-arquivos';
+const ARQ_MAX = 100 * 1024 * 1024;
+let arqLista = [];
+let arqPastaAtual = '__todas__';
+let arqPastasVazias = new Set();
+let arqCarregado = false;
+
+function arqUrl(a) { return sb.storage.from(ARQ_BUCKET).getPublicUrl(a.path).data.publicUrl; }
+function arqExt(n) { const m = /\.([a-z0-9]{1,5})$/i.exec(n || ''); return m ? m[1].toUpperCase() : 'ARQ'; }
+function arqTam(b) { if (b == null) return ''; if (b < 1024) return b + ' B'; if (b < 1048576) return (b/1024).toFixed(0) + ' KB'; return (b/1048576).toFixed(1) + ' MB'; }
+function arqEsc(t) { return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function arqSlug(n) {
+  const i = n.lastIndexOf('.'); const base = i > 0 ? n.slice(0, i) : n; const ext = i > 0 ? n.slice(i) : '';
+  const b = base.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'arquivo';
+  return b + ext.normalize('NFD').replace(/[^a-zA-Z0-9.]/g, '').toLowerCase();
+}
+
+async function carregarArquivos() {
+  const { data, error } = await sb.from('com_arquivos').select('*').order('created_at', { ascending: false });
+  if (error) { document.getElementById('arq-lista').innerHTML = '<div class="arq-vazio">Não consegui carregar os arquivos: ' + arqEsc(error.message) + '</div>'; return; }
+  arqLista = data || [];
+  arqCarregado = true;
+  arqRender();
+}
+
+function arqPastas() {
+  const set = new Set(arqLista.map(a => a.pasta).filter(Boolean));
+  arqPastasVazias.forEach(p => set.add(p));
+  return [...set].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+}
+
+function arqRender() {
+  const pastas = arqPastas();
+  if (arqPastaAtual !== '__todas__' && arqPastaAtual !== '' && !pastas.includes(arqPastaAtual)) arqPastaAtual = '__todas__';
+  const semPasta = arqLista.some(a => !a.pasta);
+  const chip = (val, label, n) => `<button type="button" class="arq-pasta${arqPastaAtual === val ? ' ativa' : ''}" data-p="${arqEsc(val)}">${arqEsc(label)}${n != null ? ' · ' + n : ''}</button>`;
+  let h = chip('__todas__', 'Todos', arqLista.length);
+  if (semPasta) h += chip('', 'Sem pasta', arqLista.filter(a => !a.pasta).length);
+  pastas.forEach(p => { h += chip(p, p, arqLista.filter(a => a.pasta === p).length); });
+  h += '<button type="button" class="arq-pasta nova" data-nova="1">+ Nova pasta</button>';
+  const elP = document.getElementById('arq-pastas');
+  elP.innerHTML = h;
+  elP.querySelectorAll('.arq-pasta').forEach(b => b.onclick = () => {
+    if (b.dataset.nova) return arqNovaPasta();
+    arqPastaAtual = b.dataset.p; arqRender();
+  });
+  const dest = arqPastaAtual === '__todas__' || arqPastaAtual === '' ? 'Sem pasta' : arqPastaAtual;
+  document.getElementById('arq-destino').textContent = 'Vai para: ' + dest + ' · até 100 MB por arquivo';
+
+  const termo = semAcento(document.getElementById('arq-busca').value || '').toLowerCase();
+  const itens = arqLista.filter(a =>
+    (arqPastaAtual === '__todas__' || a.pasta === arqPastaAtual) &&
+    (!termo || semAcento(a.nome).toLowerCase().includes(termo)));
+  const el = document.getElementById('arq-lista');
+  if (!itens.length) {
+    el.innerHTML = '<div class="arq-vazio">' + (arqLista.length ? 'Nada encontrado.' : 'Nenhum arquivo ainda. Arraste o primeiro PDF aí em cima.') + '</div>';
+    return;
+  }
+  el.innerHTML = itens.map(a => `
+    <div class="arq-item">
+      <div class="arq-ico">${arqEsc(arqExt(a.nome))}</div>
+      <div class="arq-info">
+        <div class="arq-nome" title="${arqEsc(a.nome)}">${arqEsc(a.nome)}</div>
+        <div class="arq-meta">${a.pasta ? arqEsc(a.pasta) + ' · ' : ''}${arqTam(a.tamanho)} · ${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
+      </div>
+      <div class="arq-acoes">
+        <a href="${arqUrl(a)}" target="_blank" rel="noopener">Abrir</a>
+        <button type="button" onclick="arqCopiarLink('${a.id}', this)">Copiar link</button>
+        <button type="button" onclick="arqMover('${a.id}')">Pasta</button>
+        <button type="button" onclick="arqRenomear('${a.id}')">Renomear</button>
+        <button type="button" class="perigo" onclick="arqExcluir('${a.id}')">Excluir</button>
+      </div>
+    </div>`).join('');
+}
+
+function arqNovaPasta() {
+  const n = (prompt('Nome da nova pasta:') || '').trim();
+  if (!n) return;
+  arqPastasVazias.add(n);
+  arqPastaAtual = n;
+  arqRender();
+}
+
+async function arqEnviar(files) {
+  const lista = [...files];
+  if (!lista.length) return;
+  const prog = document.getElementById('arq-prog');
+  const pasta = (arqPastaAtual === '__todas__') ? '' : arqPastaAtual;
+  let ok = 0;
+  for (let i = 0; i < lista.length; i++) {
+    const f = lista[i];
+    prog.textContent = `Enviando ${i + 1} de ${lista.length}: ${f.name}…`;
+    if (f.size > ARQ_MAX) { alert(f.name + ' passa de 100 MB e não foi enviado.'); continue; }
+    const path = crypto.randomUUID() + '/' + arqSlug(f.name);
+    const up = await sb.storage.from(ARQ_BUCKET).upload(path, f, { contentType: f.type || undefined, upsert: false });
+    if (up.error) { alert('Falha ao enviar ' + f.name + ': ' + up.error.message); continue; }
+    const ins = await sb.from('com_arquivos').insert({ nome: f.name, pasta, path, tamanho: f.size, mime: f.type || null });
+    if (ins.error) { await sb.storage.from(ARQ_BUCKET).remove([path]); alert('Falha ao registrar ' + f.name + ': ' + ins.error.message); continue; }
+    ok++;
+  }
+  if (pasta) arqPastasVazias.delete(pasta);
+  prog.textContent = ok ? `${ok} arquivo${ok > 1 ? 's' : ''} enviado${ok > 1 ? 's' : ''}.` : '';
+  await carregarArquivos();
+  setTimeout(() => { if (prog.textContent.includes('enviado')) prog.textContent = ''; }, 4000);
+}
+
+async function arqCopiarLink(id, btn) {
+  const a = arqLista.find(x => x.id === id); if (!a) return;
+  const url = arqUrl(a);
+  try { await navigator.clipboard.writeText(url); }
+  catch (e) { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  const orig = btn.textContent; btn.textContent = 'Copiado!';
+  setTimeout(() => { btn.textContent = orig; }, 1500);
+}
+
+async function arqMover(id) {
+  const a = arqLista.find(x => x.id === id); if (!a) return;
+  const n = prompt('Mover para qual pasta? (deixe vazio para tirar da pasta)\n\nExistentes: ' + (arqPastas().join(', ') || 'nenhuma'), a.pasta || '');
+  if (n === null) return;
+  const { error } = await sb.from('com_arquivos').update({ pasta: n.trim() }).eq('id', id);
+  if (error) return alert('Erro: ' + error.message);
+  await carregarArquivos();
+}
+
+async function arqRenomear(id) {
+  const a = arqLista.find(x => x.id === id); if (!a) return;
+  const n = (prompt('Novo nome:', a.nome) || '').trim();
+  if (!n || n === a.nome) return;
+  const { error } = await sb.from('com_arquivos').update({ nome: n }).eq('id', id);
+  if (error) return alert('Erro: ' + error.message);
+  await carregarArquivos();
+}
+
+async function arqExcluir(id) {
+  const a = arqLista.find(x => x.id === id); if (!a) return;
+  if (!confirm('Excluir "' + a.nome + '"?\n\nO link público deixa de funcionar.')) return;
+  const rm = await sb.storage.from(ARQ_BUCKET).remove([a.path]);
+  if (rm.error) return alert('Erro: ' + rm.error.message);
+  const { error } = await sb.from('com_arquivos').delete().eq('id', id);
+  if (error) return alert('Erro: ' + error.message);
+  await carregarArquivos();
+}
+
+(function arqInitDrop() {
+  const d = document.getElementById('arq-drop'); if (!d) return;
+  ['dragenter','dragover'].forEach(e => d.addEventListener(e, ev => { ev.preventDefault(); d.classList.add('over'); }));
+  ['dragleave','drop'].forEach(e => d.addEventListener(e, ev => { ev.preventDefault(); d.classList.remove('over'); }));
+  d.addEventListener('drop', ev => arqEnviar(ev.dataTransfer.files));
+})();
 </script>
 </body>
 </html>
