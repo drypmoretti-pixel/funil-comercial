@@ -409,6 +409,23 @@ svg.chart { display: block; }
   .tour-fundo, .tour-card, .tour-passo, .tour-emoji { animation: none; }
   .sidebar nav button.tour-piscando { animation: none; }
 }
+/* ---- lembrete do checklist: destaque máximo, não dá pra passar batido ---- */
+.lembrete-destaque { background: rgba(11,11,11,.78); backdrop-filter: blur(3px); z-index: 400; }
+.lembrete-card {
+  max-width: 440px; text-align: center; padding: 34px 30px 28px;
+  border: 3px solid var(--good); animation: tour-sobe .34s cubic-bezier(.2,.9,.3,1.1), lembrete-pulso 1.6s ease-in-out .4s infinite;
+}
+@keyframes lembrete-pulso { 0%, 100% { box-shadow: 0 0 0 0 rgba(12,163,12,.55), 0 24px 60px rgba(0,0,0,.35); } 50% { box-shadow: 0 0 0 16px rgba(12,163,12,0), 0 24px 60px rgba(0,0,0,.35); } }
+.lembrete-selo {
+  display: inline-block; background: var(--good); color: #fff; font-size: .68rem; font-weight: 800;
+  letter-spacing: .12em; text-transform: uppercase; padding: 5px 13px; border-radius: 999px; margin-bottom: 16px;
+}
+.lembrete-icone { font-size: 3.2rem; line-height: 1; margin-bottom: 12px; animation: lembrete-balanca 1.4s ease-in-out infinite; }
+@keyframes lembrete-balanca { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-9deg); } 40% { transform: rotate(9deg); } 60% { transform: rotate(-5deg); } 80% { transform: rotate(5deg); } }
+.lembrete-titulo { font-size: 1.6rem; }
+.lembrete-texto { font-size: 1.02rem; margin-top: 12px; }
+.lembrete-card .lembrete-botao { width: 100%; margin-top: 26px; padding: 15px 20px; font-size: 1.05rem; font-weight: 800; }
+@media (prefers-reduced-motion: reduce) { .lembrete-card, .lembrete-icone { animation: none; } }
 /* ---- agente de social selling ---- */
 .ss-switch { display: flex; gap: 6px; margin: 0 0 20px; }
 .ss-switch button {
@@ -1462,7 +1479,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         <button data-tab="contrato" title="Contrato"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
         <button data-tab="dicas" title="Dicas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
         <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
-        <button data-tab="checklist" title="Checklist"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
+        <button data-tab="checklist" title="Checklist de análise comercial"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
         <button data-tab="social" title="Playbook de Mensagens"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         <button data-tab="arquivos" title="Arquivos"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg></button>
         <button data-tab="whatsapp" title="WhatsApp" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 11.9a8.6 8.6 0 0 1-12.8 7.5l-4.4 1.2 1.2-4.3A8.6 8.6 0 1 1 20.6 11.9Z"/><g transform="translate(7.1 6.8) scale(.425)" stroke-width="4.24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g></svg><span id="whats-badge" style="display:none; position:absolute; top:6px; right:10px; width:8px; height:8px; border-radius:50%; background:var(--critical);"></span></button>
@@ -1795,7 +1812,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
     <div class="tab-panel" id="tab-checklist">
       <section class="card">
         <div class="section-title">
-          <h2>Checklist de produtividade</h2>
+          <h2>Checklist de análise comercial</h2>
           <select id="checklist-perfil-select" onchange="checklistMudaPerfil()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600;"></select>
         </div>
         <p class="muted">Ações diárias do time que ajudam a bater a meta de R$30k. Lance os números do dia e acompanhe a consistência.</p>
@@ -2551,14 +2568,13 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
   </div>
 </div>
 
-<div id="lembrete-checklist-fundo" class="tour-fundo">
-  <div class="tour-card" style="max-width:380px; text-align:center;">
-    <div class="tour-emoji">📋</div>
-    <div class="tour-titulo">Checklist de Produtividade</div>
-    <div class="tour-texto">Você já preencheu o checklist de produtividade hoje?</div>
-    <div class="tour-rodape" style="justify-content:center; margin-top:22px;">
-      <button type="button" class="btn" onclick="fecharLembreteChecklist()">Ok</button>
-    </div>
+<div id="lembrete-checklist-fundo" class="tour-fundo lembrete-destaque">
+  <div class="tour-card lembrete-card">
+    <div class="lembrete-selo">Atenção · não deixe pra depois</div>
+    <div class="lembrete-icone">📋</div>
+    <div class="tour-titulo lembrete-titulo">Checklist de Análise Comercial</div>
+    <div class="tour-texto lembrete-texto">Você já preencheu o checklist de análise de métricas comerciais <b>hoje</b>?</div>
+    <button type="button" class="btn lembrete-botao" onclick="fecharLembreteChecklist(true)">Ok, preencher agora →</button>
   </div>
 </div>
 
@@ -7076,7 +7092,7 @@ async function initWhatsApp() {
   assinarRealtimeWhats();
 }
 
-// ---------- CHECKLIST DE PRODUTIVIDADE ----------
+// ---------- CHECKLIST DE ANÁLISE COMERCIAL ----------
 let checklistMetricas = [];
 let checklistPerfilAtualId = null;
 let checklistRegistros = [];
@@ -8407,9 +8423,11 @@ async function verificarLembreteChecklist() {
   document.getElementById('lembrete-checklist-fundo').classList.add('aberto');
 }
 
-async function fecharLembreteChecklist() {
+async function fecharLembreteChecklist(irParaChecklist) {
   document.getElementById('lembrete-checklist-fundo').classList.remove('aberto');
   lembreteChecklistAberto = false;
+  // o Ok leva direto pra aba do checklist
+  if (irParaChecklist) document.querySelector('.sidebar nav button[data-tab="checklist"]')?.click();
   if (!currentPerfil || !lembreteChecklistMomentoAtual) return;
   await sb.from('com_checklist_lembretes_vistos').upsert(
     { perfil_id: currentPerfil.id, data: hojeStr(), momento: lembreteChecklistMomentoAtual },
