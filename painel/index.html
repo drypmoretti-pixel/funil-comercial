@@ -1453,6 +1453,47 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
 .arq-pasta.arrastado, .arq-linha.arrastado { opacity:.4; }
 .arq-doc.arrastando-item .arq-pasta > *, .arq-doc.arrastando-item .arq-crumb > * { pointer-events:none; }
 .arq-dica { font-size:.76rem; color:var(--muted); margin:6px 2px 0; }
+.arq-vistas { display:inline-flex; border:1px solid var(--border); border-radius:999px; overflow:hidden; margin-left:auto; }
+.arq-vistas button { border:0; background:none; color:var(--text-secondary); width:46px; height:42px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+.arq-vistas button svg { width:20px; height:20px; }
+.arq-vistas button:hover { background:var(--field-bg); }
+.arq-vistas button.ativa { background:var(--accent-wash); color:var(--accent); }
+.arq-grade { display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:14px; }
+.arq-card { border:1px solid var(--border); background:var(--surface-1); border-radius:14px; overflow:hidden; cursor:default; user-select:none; transition:background .12s, border-color .12s; }
+.arq-card:hover { background:var(--field-bg); }
+.arq-card.sel { background:var(--accent-wash); border-color:var(--accent); }
+.arq-card .arq-thumb { height:150px; background:var(--field-bg); display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--border); }
+.arq-card .arq-thumb img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+.arq-card .arq-thumb .arq-ico { width:64px; height:64px; flex:0 0 64px; font-size:.95rem; border-radius:14px; }
+.arq-card-pe { display:flex; align-items:center; gap:8px; padding:8px 4px 8px 12px; }
+.arq-card-pe .arq-nome { flex:1 1 auto; min-width:0; font-size:.88rem; }
+.arq-mini { flex:0 0 22px; height:22px; border-radius:5px; background:color-mix(in srgb, var(--c, var(--accent)) 16%, transparent); color:var(--c, var(--accent)); display:flex; align-items:center; justify-content:center; font-size:.5rem; font-weight:800; }
+.arq-ico.tem { background:var(--field-bg); overflow:hidden; border:1px solid var(--border); }
+.arq-ico.tem img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+.arq-prev-fundo { position:fixed; inset:0; z-index:460; display:none; flex-direction:column; background:rgba(11,11,11,.88); }
+.arq-prev-fundo.aberto { display:flex; }
+.arq-prev-topo { display:flex; align-items:center; gap:10px; padding:10px 16px; color:#fff; }
+.arq-prev-nome { flex:1 1 auto; min-width:0; font-weight:600; font-size:1rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.arq-prev-topo button, .arq-prev-topo a { border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.08); color:#fff; padding:8px 14px; border-radius:999px; font-size:.84rem; font-weight:600; cursor:pointer; text-decoration:none; white-space:nowrap; }
+.arq-prev-topo button:hover, .arq-prev-topo a:hover { background:rgba(255,255,255,.2); }
+.arq-prev-corpo { flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; padding:0 16px 16px; }
+.arq-prev-corpo iframe { width:100%; height:100%; max-width:1100px; border:0; border-radius:10px; background:#fff; }
+.arq-prev-corpo img, .arq-prev-corpo video { max-width:100%; max-height:100%; border-radius:10px; }
+.arq-envio { position:fixed; right:20px; bottom:20px; z-index:470; width:min(360px, calc(100vw - 40px)); background:var(--surface-1); border:1px solid var(--border); border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,.32); display:none; overflow:hidden; }
+.arq-envio.aberto { display:block; }
+.arq-envio-topo { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:12px 14px; background:var(--field-bg); font-weight:700; font-size:.92rem; }
+.arq-envio-topo button { border:0; background:none; color:var(--text-secondary); cursor:pointer; font-size:1rem; padding:2px 8px; border-radius:6px; }
+.arq-envio-topo button:hover { background:rgba(128,128,128,.2); }
+.arq-envio-lista { max-height:240px; overflow:auto; }
+.arq-env-item { padding:10px 14px; border-top:1px solid var(--border); }
+.arq-env-linha { display:flex; justify-content:space-between; gap:10px; font-size:.84rem; }
+.arq-env-linha span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+.arq-env-linha span:last-child { flex:0 0 auto; color:var(--text-secondary); font-variant-numeric:tabular-nums; font-weight:600; }
+.arq-barra { height:6px; background:var(--field-bg); border-radius:99px; margin-top:7px; overflow:hidden; }
+.arq-barra i { display:block; height:100%; width:0; background:var(--accent); border-radius:99px; transition:width .15s linear; }
+.arq-env-item.ok .arq-barra i { background:var(--good); }
+.arq-env-item.erro .arq-barra i { background:var(--critical); }
+.arq-env-item.erro .arq-env-linha span:last-child { color:var(--critical); }
 .arq-tabela { border:1px solid var(--border); border-radius:var(--card-radius); background:var(--surface-1); overflow:hidden; }
 .arq-linha { display:grid; grid-template-columns:minmax(0,1fr) 130px 90px 44px; align-items:center; gap:10px; padding:0 8px 0 14px; min-height:54px; border-bottom:1px solid var(--border); cursor:default; user-select:none; }
 .arq-linha:last-child { border-bottom:none; }
@@ -2149,6 +2190,10 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <div class="arq-topo">
           <button type="button" class="arq-novo" id="arq-novo-btn" onclick="arqMenuNovo(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Novo</button>
           <input type="search" id="arq-busca" class="arq-busca" placeholder="Pesquisar nos Arquivos" oninput="arqRender()">
+          <div class="arq-vistas" role="group" aria-label="Modo de exibição">
+            <button type="button" id="arq-v-lista" title="Lista" onclick="arqMudaVista('lista')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r=".8"/><circle cx="4" cy="12" r=".8"/><circle cx="4" cy="18" r=".8"/></svg></button>
+            <button type="button" id="arq-v-grade" title="Grade com miniaturas" onclick="arqMudaVista('grade')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></button>
+          </div>
         </div>
         <div class="arq-crumbs" id="arq-crumbs"></div>
         <div class="arq-prog" id="arq-prog"></div>
@@ -2159,6 +2204,8 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </div>
       <div class="arq-menu" id="arq-menu"></div>
       <div class="arq-modal-fundo" id="arq-modal-fundo"><div class="arq-modal" id="arq-modal"></div></div>
+      <div class="arq-prev-fundo" id="arq-prev"></div>
+      <div class="arq-envio" id="arq-envio"></div>
     </div>
 
     <div class="tab-panel" id="tab-whatsapp">
@@ -9764,7 +9811,66 @@ let arqCaminho = '';
 let arqSel = null;   // { t: 'p'|'a', v: caminho da pasta | id do arquivo }
 let arqPastasVazias = new Set((() => { try { return JSON.parse(localStorage.getItem('arqPastasVazias') || '[]'); } catch (e) { return []; } })());
 function arqSalvaVazias() { try { localStorage.setItem('arqPastasVazias', JSON.stringify([...arqPastasVazias])); } catch (e) {} }
-let arqCarregado = false;
+let arqVista = (() => { try { return localStorage.getItem('arqVista') === 'lista' ? 'lista' : 'grade'; } catch (e) { return 'grade'; } })();
+function arqMudaVista(v) { arqVista = v; try { localStorage.setItem('arqVista', v); } catch (e) {} arqRender(); }
+const ARQ_IMG = ['PNG','JPG','JPEG','GIF','WEBP','SVG'];
+const arqEhPdf = a => arqExt(a.nome) === 'PDF';
+const arqEhImg = a => ARQ_IMG.includes(arqExt(a.nome));
+const arqEhVideo = a => ['MP4','MOV','WEBM'].includes(arqExt(a.nome));
+const arqThumbs = new Map();   // path -> dataURL | url | ''  (cache da sessão; '' = não deu)
+let arqPdfJs = null, arqFilaThumb = [], arqThumbAtivos = 0;
+function arqCarregaPdfJs() {
+  if (arqPdfJs) return arqPdfJs;
+  arqPdfJs = new Promise((ok, no) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    sc.onload = () => { pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; ok(pdfjsLib); };
+    sc.onerror = () => no(new Error('pdf.js'));
+    document.head.appendChild(sc);
+  });
+  return arqPdfJs;
+}
+async function arqGeraThumbPdf(a) {
+  const lib = await arqCarregaPdfJs();
+  const doc = await lib.getDocument({ url: arqUrl(a) }).promise;
+  const pg = await doc.getPage(1);
+  const v0 = pg.getViewport({ scale: 1 });
+  const vp = pg.getViewport({ scale: 360 / v0.width });
+  const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height;
+  const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  await pg.render({ canvasContext: ctx, viewport: vp }).promise;
+  doc.destroy();
+  return c.toDataURL('image/jpeg', 0.72);
+}
+function arqPoeThumb(el, src) {
+  if (!src || !el.isConnected) return;
+  if (el.classList.contains('arq-ico')) el.classList.add('tem');
+  el.innerHTML = '<img alt="" loading="lazy" src="' + arqEsc(src) + '">';
+}
+async function arqProcessaFila() {
+  while (arqThumbAtivos < 2 && arqFilaThumb.length) {
+    const { a, el } = arqFilaThumb.shift();
+    arqThumbAtivos++;
+    (async () => {
+      try {
+        const src = arqThumbs.has(a.path) ? arqThumbs.get(a.path) : await arqGeraThumbPdf(a);
+        arqThumbs.set(a.path, src);
+        arqPoeThumb(el, src);
+      } catch (e) { arqThumbs.set(a.path, ''); }
+      arqThumbAtivos--; arqProcessaFila();
+    })();
+  }
+}
+// miniatura só do que está na tela: imagem direto, PDF renderiza a página 1 (com cache)
+const arqObs = ('IntersectionObserver' in window) ? new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return;
+  arqObs.unobserve(en.target);
+  const a = arqLista.find(x => x.id === en.target.dataset.th); if (!a) return;
+  if (arqEhImg(a)) return arqPoeThumb(en.target, arqUrl(a));
+  if (arqThumbs.get(a.path)) return arqPoeThumb(en.target, arqThumbs.get(a.path));
+  if (arqThumbs.get(a.path) === '') return;
+  arqFilaThumb.push({ a, el: en.target }); arqProcessaFila();
+}), { rootMargin: '150px' }) : null;
 const ARQ_PASTA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h3.9c.5 0 .9.2 1.2.5L12 6h6.5A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5Z"/></svg>';
 const ARQ_MAIS_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg>';
 const ARQ_IC = {
@@ -9839,17 +9945,30 @@ function arqRender() {
         <button type="button" class="arq-mais" data-mp="${arqEsc(f)}" title="Mais ações">${ARQ_MAIS_SVG}</button></div>`).join('') + '</div>';
   }
   if (itens.length) {
-    out += '<div class="arq-sub">' + (termo ? 'Resultados' : 'Arquivos') + '</div><div class="arq-tabela">' +
-      '<div class="arq-linha cab"><div>Nome</div><div class="arq-cel">Adicionado em</div><div class="arq-cel">Tamanho</div><div></div></div>' +
-      itens.map(a => {
-        const ext = arqExt(a.nome);
-        return `<div class="arq-linha${arqSel && arqSel.t === 'a' && arqSel.v === a.id ? ' sel' : ''}" data-a="${a.id}" draggable="true">
-          <div class="arq-nome-cel"><div class="arq-ico" style="--c:${ARQ_CORES[ext] || 'var(--accent)'}">${arqEsc(ext)}</div>
-            <div class="arq-nome" title="${arqEsc(a.nome)}">${arqEsc(a.nome)}${termo && a.pasta ? `<small>${arqEsc(a.pasta.replace(/\//g, ' › '))}</small>` : ''}</div></div>
-          <div class="arq-cel">${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
-          <div class="arq-cel">${arqTam(a.tamanho)}</div>
-          <button type="button" class="arq-mais" data-ma="${a.id}" title="Mais ações">${ARQ_MAIS_SVG}</button></div>`;
+    const sub = termo ? 'Resultados' : 'Arquivos';
+    const podeThumb = x => arqEhPdf(x) || arqEhImg(x);
+    if (arqVista === 'grade') {
+      out += '<div class="arq-sub">' + sub + '</div><div class="arq-grade">' + itens.map(x => {
+        const ext = arqExt(x.nome), cor = ARQ_CORES[ext] || 'var(--accent)';
+        return `<div class="arq-card${arqSel && arqSel.t === 'a' && arqSel.v === x.id ? ' sel' : ''}" data-a="${x.id}" draggable="true">
+          <div class="arq-thumb" ${podeThumb(x) ? `data-th="${x.id}"` : ''}><div class="arq-ico" style="--c:${cor}">${arqEsc(ext)}</div></div>
+          <div class="arq-card-pe"><div class="arq-mini" style="--c:${cor}">${arqEsc(ext.slice(0, 4))}</div>
+            <div class="arq-nome" title="${arqEsc(x.nome)}">${arqEsc(x.nome)}${termo && x.pasta ? `<small>${arqEsc(x.pasta.replace(/\//g, ' › '))}</small>` : ''}</div>
+            <button type="button" class="arq-mais" data-ma="${x.id}" title="Mais ações">${ARQ_MAIS_SVG}</button></div></div>`;
       }).join('') + '</div>';
+    } else {
+      out += '<div class="arq-sub">' + sub + '</div><div class="arq-tabela">' +
+        '<div class="arq-linha cab"><div>Nome</div><div class="arq-cel">Adicionado em</div><div class="arq-cel">Tamanho</div><div></div></div>' +
+        itens.map(x => {
+          const ext = arqExt(x.nome);
+          return `<div class="arq-linha${arqSel && arqSel.t === 'a' && arqSel.v === x.id ? ' sel' : ''}" data-a="${x.id}" draggable="true">
+            <div class="arq-nome-cel"><div class="arq-ico" style="--c:${ARQ_CORES[ext] || 'var(--accent)'}" ${podeThumb(x) ? `data-th="${x.id}"` : ''}>${arqEsc(ext)}</div>
+              <div class="arq-nome" title="${arqEsc(x.nome)}">${arqEsc(x.nome)}${termo && x.pasta ? `<small>${arqEsc(x.pasta.replace(/\//g, ' › '))}</small>` : ''}</div></div>
+            <div class="arq-cel">${new Date(x.created_at).toLocaleDateString('pt-BR')}</div>
+            <div class="arq-cel">${arqTam(x.tamanho)}</div>
+            <button type="button" class="arq-mais" data-ma="${x.id}" title="Mais ações">${ARQ_MAIS_SVG}</button></div>`;
+        }).join('') + '</div>';
+    }
   }
   if (!filhas.length && !itens.length) {
     out = termo ? '<div class="arq-vazio"><b>Nada encontrado</b>Tente outro nome.</div>'
@@ -9857,6 +9976,13 @@ function arqRender() {
   }
   const el = document.getElementById('arq-conteudo');
   el.innerHTML = out;
+  document.getElementById('arq-v-lista').classList.toggle('ativa', arqVista === 'lista');
+  document.getElementById('arq-v-grade').classList.toggle('ativa', arqVista === 'grade');
+  el.querySelectorAll('[data-th]').forEach(t => {
+    const x = arqLista.find(y => y.id === t.dataset.th);
+    if (x && arqThumbs.get(x.path)) arqPoeThumb(t, arqThumbs.get(x.path));   // já gerada nesta sessão
+    else if (arqObs) arqObs.observe(t);
+  });
 
   el.querySelectorAll('.arq-pasta').forEach(b => {
     const f = b.dataset.p;
@@ -9869,7 +9995,7 @@ function arqRender() {
     arqAlvoDrop(b, f);
   });
   el.querySelectorAll('[data-mp]').forEach(b => b.onclick = e => { e.stopPropagation(); const r = b.getBoundingClientRect(); arqMenuPasta(b.dataset.mp, r.right - 210, r.bottom + 4); });
-  el.querySelectorAll('.arq-linha[data-a]').forEach(l => {
+  el.querySelectorAll('[data-a]').forEach(l => {
     const id = l.dataset.a;
     l.onclick = e => { if (e.target.closest('.arq-mais')) return; if (arqToque()) return arqAbrir(id); arqSel = { t: 'a', v: id }; arqMarcaSel(); };
     l.ondblclick = () => arqAbrir(id);
@@ -9883,7 +10009,7 @@ function arqRender() {
 function arqMarcaSel() {
   document.querySelectorAll('#arq-conteudo .sel').forEach(x => x.classList.remove('sel'));
   if (!arqSel) return;
-  const q = arqSel.t === 'p' ? `.arq-pasta[data-p="${CSS.escape(arqSel.v)}"]` : `.arq-linha[data-a="${arqSel.v}"]`;
+  const q = arqSel.t === 'p' ? `.arq-pasta[data-p="${CSS.escape(arqSel.v)}"]` : `[data-a="${arqSel.v}"]`;
   document.querySelector('#arq-conteudo ' + q)?.classList.add('sel');
 }
 
@@ -9940,7 +10066,8 @@ function arqMenuPasta(f, x, y) {
 }
 function arqMenuArq(id, x, y) {
   arqMenu(x, y, [
-    { t: 'Abrir', ic: ARQ_IC.abrir, fn: () => arqAbrir(id) },
+    { t: 'Visualizar', ic: ARQ_IC.abrir, fn: () => arqAbrir(id) },
+    { t: 'Abrir em nova aba', ic: ARQ_IC.abrir, fn: () => arqNovaAba(id) },
     { t: 'Copiar link', ic: ARQ_IC.link, fn: () => arqCopiarLink(id) },
     '-',
     { t: 'Renomear', ic: ARQ_IC.ren, fn: () => arqRenomear(id) },
@@ -10033,30 +10160,87 @@ async function arqExcluirPasta(full) {
   await carregarArquivos();
 }
 
+// upload por XMLHttpRequest (o supabase-js não expõe progresso); mesmo endpoint e mesma RLS do storage.upload
+function arqUploadXHR(path, file, token, onProg) {
+  return new Promise(res => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', SUPA_URL + '/storage/v1/object/' + ARQ_BUCKET + '/' + path);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+    xhr.setRequestHeader('apikey', SUPA_KEY);
+    xhr.setRequestHeader('x-upsert', 'false');
+    xhr.upload.onprogress = e => { if (e.lengthComputable) onProg(e.loaded / e.total); };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) return res({ ok: true });
+      let msg = 'erro ' + xhr.status; try { msg = JSON.parse(xhr.responseText).message || msg; } catch (e) {}
+      res({ ok: false, msg });
+    };
+    xhr.onerror = () => res({ ok: false, msg: 'sem conexão' });
+    const fd = new FormData(); fd.append('cacheControl', '3600'); fd.append('', file);
+    xhr.send(fd);
+  });
+}
+let arqEnvioTimer = null;
+function arqEnvioRender(itens, concluido) {
+  const el = document.getElementById('arq-envio');
+  const feitos = itens.filter(i => i.estado === 'ok' || i.estado === 'erro').length;
+  const falhou = itens.filter(i => i.estado === 'erro').length;
+  const titulo = concluido ? (falhou ? `Envio concluído, ${falhou} com erro` : 'Envio concluído') : `Enviando ${Math.min(feitos + 1, itens.length)} de ${itens.length}…`;
+  el.innerHTML = `<div class="arq-envio-topo"><span>${arqEsc(titulo)}</span><button type="button" title="Fechar" onclick="document.getElementById('arq-envio').classList.remove('aberto')">✕</button></div>
+    <div class="arq-envio-lista">${itens.map(i => `<div class="arq-env-item ${i.estado}">
+      <div class="arq-env-linha"><span title="${arqEsc(i.nome)}">${arqEsc(i.nome)}</span><span>${i.estado === 'ok' ? '✓ pronto' : i.estado === 'erro' ? arqEsc(i.msg || 'erro') : Math.round(i.p * 100) + '%'}</span></div>
+      <div class="arq-barra"><i style="width:${i.estado === 'ok' ? 100 : Math.round(i.p * 100)}%"></i></div></div>`).join('')}</div>`;
+  el.classList.add('aberto');
+}
 async function arqEnviar(files, pasta) {
   const lista = [...files];
   if (!lista.length) return;
   pasta = pasta || '';
-  const prog = document.getElementById('arq-prog');
-  let ok = 0;
+  clearTimeout(arqEnvioTimer);
+  const itens = lista.map(f => ({ nome: f.name, p: 0, estado: 'espera', msg: '' }));
+  arqEnvioRender(itens, false);
+  const sess = (await sb.auth.getSession()).data.session;
+  const token = sess ? sess.access_token : SUPA_KEY;
+  let ok = 0, ultimo = 0;
   for (let i = 0; i < lista.length; i++) {
-    const f = lista[i];
-    prog.textContent = `Enviando ${i + 1} de ${lista.length}: ${f.name}…`;
-    if (f.size > ARQ_MAX) { alert(f.name + ' passa de 100 MB e não foi enviado.'); continue; }
+    const f = lista[i], it = itens[i];
+    it.estado = 'enviando';
+    if (f.size > ARQ_MAX) { it.estado = 'erro'; it.msg = 'passa de 100 MB'; arqEnvioRender(itens, false); continue; }
     const path = crypto.randomUUID() + '/' + arqSlug(f.name);
-    const up = await sb.storage.from(ARQ_BUCKET).upload(path, f, { contentType: f.type || undefined, upsert: false });
-    if (up.error) { alert('Falha ao enviar ' + f.name + ': ' + up.error.message); continue; }
+    const r = await arqUploadXHR(path, f, token, p => { it.p = p; const t = Date.now(); if (t - ultimo > 80) { ultimo = t; arqEnvioRender(itens, false); } });
+    if (!r.ok) { it.estado = 'erro'; it.msg = r.msg; arqEnvioRender(itens, false); continue; }
     const ins = await sb.from('com_arquivos').insert({ nome: f.name, pasta, path, tamanho: f.size, mime: f.type || null });
-    if (ins.error) { await sb.storage.from(ARQ_BUCKET).remove([path]); alert('Falha ao registrar ' + f.name + ': ' + ins.error.message); continue; }
-    ok++;
+    if (ins.error) { await sb.storage.from(ARQ_BUCKET).remove([path]); it.estado = 'erro'; it.msg = 'falha ao registrar'; arqEnvioRender(itens, false); continue; }
+    it.p = 1; it.estado = 'ok'; ok++;
+    arqEnvioRender(itens, false);
   }
   if (pasta && arqPastasVazias.delete(pasta)) arqSalvaVazias();
-  prog.textContent = ok ? `${ok} arquivo${ok > 1 ? 's' : ''} enviado${ok > 1 ? 's' : ''}.` : '';
+  arqEnvioRender(itens, true);
   await carregarArquivos();
-  setTimeout(() => { if (prog.textContent.includes('enviado')) prog.textContent = ''; }, 4000);
+  if (!itens.some(i => i.estado === 'erro')) arqEnvioTimer = setTimeout(() => document.getElementById('arq-envio').classList.remove('aberto'), 5000);
 }
 
-function arqAbrir(id) { const a = arqLista.find(x => x.id === id); if (a) window.open(arqUrl(a), '_blank', 'noopener'); }
+function arqNovaAba(id) { const a = arqLista.find(x => x.id === id); if (a) window.open(arqUrl(a), '_blank', 'noopener'); }
+// duplo clique = visualizar aqui mesmo (PDF, imagem, vídeo, áudio); outros tipos abrem em nova aba
+function arqAbrir(id) {
+  const a = arqLista.find(x => x.id === id); if (!a) return;
+  const ext = arqExt(a.nome), url = arqUrl(a);
+  let corpo;
+  if (arqEhPdf(a)) corpo = `<iframe src="${arqEsc(url)}" title="${arqEsc(a.nome)}"></iframe>`;
+  else if (arqEhImg(a)) corpo = `<img src="${arqEsc(url)}" alt="${arqEsc(a.nome)}">`;
+  else if (arqEhVideo(a)) corpo = `<video src="${arqEsc(url)}" controls autoplay></video>`;
+  else if (ext === 'MP3') corpo = `<audio src="${arqEsc(url)}" controls autoplay></audio>`;
+  else return arqNovaAba(id);
+  const pv = document.getElementById('arq-prev');
+  pv.innerHTML = `<div class="arq-prev-topo"><div class="arq-prev-nome">${arqEsc(a.nome)}</div>
+    <button type="button" id="arq-prev-link">Copiar link</button>
+    <a href="${arqEsc(url)}" target="_blank" rel="noopener">Abrir em nova aba</a>
+    <button type="button" id="arq-prev-x">Fechar ✕</button></div><div class="arq-prev-corpo">${corpo}</div>`;
+  pv.classList.add('aberto');
+  document.getElementById('arq-prev-x').onclick = arqFechaPrev;
+  document.getElementById('arq-prev-link').onclick = async e => { await arqCopiarLink(id); e.target.textContent = 'Copiado!'; setTimeout(() => { e.target.textContent = 'Copiar link'; }, 1500); };
+  pv.onclick = e => { if (e.target === pv || e.target.classList.contains('arq-prev-corpo')) arqFechaPrev(); };
+}
+function arqFechaPrev() { const pv = document.getElementById('arq-prev'); pv.classList.remove('aberto'); pv.innerHTML = ''; }
 
 async function arqCopiarLink(id) {
   const a = arqLista.find(x => x.id === id); if (!a) return;
@@ -10127,8 +10311,8 @@ async function arqExcluir(id) {
   doc.addEventListener('dragover', e => { if (dePC(e)) e.preventDefault(); });
   doc.addEventListener('dragleave', e => { if (!dePC(e)) return; n = Math.max(0, n - 1); if (!n) doc.classList.remove('arrastando'); });
   doc.addEventListener('drop', e => { if (!dePC(e)) return; e.preventDefault(); n = 0; doc.classList.remove('arrastando'); arqEnviar(e.dataTransfer.files, arqCaminho); });
-  doc.addEventListener('click', e => { if (!e.target.closest('.arq-pasta, .arq-linha, .arq-mais, .arq-crumb, .arq-novo, input')) { if (arqSel) { arqSel = null; arqMarcaSel(); } } });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') arqFechaMenu(); });
+  doc.addEventListener('click', e => { if (!e.target.closest('.arq-pasta, .arq-linha, .arq-card, .arq-mais, .arq-crumb, .arq-novo, input')) { if (arqSel) { arqSel = null; arqMarcaSel(); } } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { arqFechaMenu(); arqFechaPrev(); } });
 })();
 </script>
 </body>
