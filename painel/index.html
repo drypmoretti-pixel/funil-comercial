@@ -1448,6 +1448,11 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
 .arq-mais { flex:0 0 auto; width:34px; height:34px; border:0; border-radius:50%; background:none; color:var(--text-secondary); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
 .arq-mais:hover { background:rgba(128,128,128,.2); color:var(--text-primary); }
 .arq-mais svg { width:20px; height:20px; }
+.arq-crumb.alvo { background:var(--accent-wash); box-shadow:0 0 0 2px var(--accent); color:var(--text-primary); }
+.arq-pasta[draggable=true], .arq-linha[draggable=true] { cursor:grab; }
+.arq-pasta.arrastado, .arq-linha.arrastado { opacity:.4; }
+.arq-doc.arrastando-item .arq-pasta > *, .arq-doc.arrastando-item .arq-crumb > * { pointer-events:none; }
+.arq-dica { font-size:.76rem; color:var(--muted); margin:6px 2px 0; }
 .arq-tabela { border:1px solid var(--border); border-radius:var(--card-radius); background:var(--surface-1); overflow:hidden; }
 .arq-linha { display:grid; grid-template-columns:minmax(0,1fr) 130px 90px 44px; align-items:center; gap:10px; padding:0 8px 0 14px; min-height:54px; border-bottom:1px solid var(--border); cursor:default; user-select:none; }
 .arq-linha:last-child { border-bottom:none; }
@@ -2148,6 +2153,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <div class="arq-crumbs" id="arq-crumbs"></div>
         <div class="arq-prog" id="arq-prog"></div>
         <div id="arq-conteudo"></div>
+        <div class="arq-dica">Dica: arraste arquivos ou pastas para dentro de outra pasta (ou para o caminho lá em cima) pra organizar.</div>
         <input type="file" id="arq-input" multiple style="display:none" onchange="arqEnviar(this.files, arqCaminho); this.value='';">
         <div class="arq-soltar" id="arq-soltar"><div>Solte os arquivos aqui<br><span id="arq-destino" style="font-weight:500; font-size:.9rem; color:var(--text-secondary);"></span></div></div>
       </div>
@@ -9828,7 +9834,7 @@ function arqRender() {
   let out = '';
   if (filhas.length) {
     out += '<div class="arq-sub">Pastas</div><div class="arq-pastas">' + filhas.map(f => `
-      <div class="arq-pasta${arqSel && arqSel.t === 'p' && arqSel.v === f ? ' sel' : ''}" data-p="${arqEsc(f)}" tabindex="0">${ARQ_PASTA_SVG}
+      <div class="arq-pasta${arqSel && arqSel.t === 'p' && arqSel.v === f ? ' sel' : ''}" data-p="${arqEsc(f)}" tabindex="0" draggable="true">${ARQ_PASTA_SVG}
         <div class="arq-pasta-nome" title="${arqEsc(arqNomePasta(f))}">${arqEsc(arqNomePasta(f))}</div>
         <button type="button" class="arq-mais" data-mp="${arqEsc(f)}" title="Mais ações">${ARQ_MAIS_SVG}</button></div>`).join('') + '</div>';
   }
@@ -9858,6 +9864,8 @@ function arqRender() {
     b.ondblclick = () => arqIr(f);
     b.onkeydown = e => { if (e.key === 'Enter') arqIr(f); };
     b.oncontextmenu = e => { e.preventDefault(); arqSel = { t: 'p', v: f }; arqMarcaSel(); arqMenuPasta(f, e.clientX, e.clientY); };
+    b.ondragstart = e => { e.dataTransfer.setData('text/arq-pasta', f); e.dataTransfer.effectAllowed = 'move'; arqArrastando(true, b); };
+    b.ondragend = () => arqArrastando(false, b);
     arqAlvoDrop(b, f);
   });
   el.querySelectorAll('[data-mp]').forEach(b => b.onclick = e => { e.stopPropagation(); const r = b.getBoundingClientRect(); arqMenuPasta(b.dataset.mp, r.right - 210, r.bottom + 4); });
@@ -9866,7 +9874,8 @@ function arqRender() {
     l.onclick = e => { if (e.target.closest('.arq-mais')) return; if (arqToque()) return arqAbrir(id); arqSel = { t: 'a', v: id }; arqMarcaSel(); };
     l.ondblclick = () => arqAbrir(id);
     l.oncontextmenu = e => { e.preventDefault(); arqSel = { t: 'a', v: id }; arqMarcaSel(); arqMenuArq(id, e.clientX, e.clientY); };
-    l.ondragstart = e => { e.dataTransfer.setData('text/arq-id', id); e.dataTransfer.effectAllowed = 'move'; };
+    l.ondragstart = e => { e.dataTransfer.setData('text/arq-id', id); e.dataTransfer.effectAllowed = 'move'; arqArrastando(true, l); };
+    l.ondragend = () => arqArrastando(false, l);
   });
   el.querySelectorAll('[data-ma]').forEach(b => b.onclick = e => { e.stopPropagation(); const r = b.getBoundingClientRect(); arqMenuArq(b.dataset.ma, r.right - 210, r.bottom + 4); });
 }
@@ -9879,6 +9888,11 @@ function arqMarcaSel() {
 }
 
 // soltar arquivo do PC OU arrastar um arquivo da lista em cima de uma pasta/trilha
+function arqArrastando(on, el) {
+  document.getElementById('arq-doc').classList.toggle('arrastando-item', on);
+  el.classList.toggle('arrastado', on);
+  if (!on) document.querySelectorAll('#arq-doc .alvo').forEach(x => x.classList.remove('alvo'));
+}
 function arqAlvoDrop(el, destino) {
   el.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); el.classList.add('alvo'); });
   el.addEventListener('dragleave', () => el.classList.remove('alvo'));
@@ -9887,6 +9901,8 @@ function arqAlvoDrop(el, destino) {
     document.getElementById('arq-doc').classList.remove('arrastando');
     const id = e.dataTransfer.getData('text/arq-id');
     if (id) return arqMoverPara(id, destino);
+    const pf = e.dataTransfer.getData('text/arq-pasta');
+    if (pf) return arqMoverPasta(pf, destino);
     if (e.dataTransfer.files && e.dataTransfer.files.length) arqEnviar(e.dataTransfer.files, destino);
   });
 }
@@ -9917,6 +9933,7 @@ function arqMenuPasta(f, x, y) {
   arqMenu(x, y, [
     { t: 'Abrir', ic: ARQ_IC.abrir, fn: () => arqIr(f) },
     { t: 'Renomear', ic: ARQ_IC.ren, fn: () => arqRenomearPasta(f) },
+    { t: 'Mover para…', ic: ARQ_IC.mover, fn: async () => { const d = await arqEscolhePasta('Mover "' + arqNomePasta(f) + '"', f.split('/').slice(0, -1).join('/')); if (d !== null) arqMoverPasta(f, d); } },
     '-',
     { t: 'Excluir pasta', ic: ARQ_IC.lixo, perigo: true, fn: () => arqExcluirPasta(f) },
   ]);
@@ -10051,6 +10068,22 @@ async function arqCopiarLink(id) {
   setTimeout(() => { if (prog.textContent === 'Link copiado.') prog.textContent = ''; }, 2500);
 }
 
+async function arqMoverPasta(origem, destino) {
+  const nome = arqNomePasta(origem);
+  const pai = origem.split('/').slice(0, -1).join('/');
+  if (destino === pai || destino === origem || destino.startsWith(origem + '/')) return;   // mesmo lugar ou pra dentro dela mesma
+  const novo = (destino ? destino + '/' : '') + nome;
+  if (arqPastas().includes(novo)) return alert('Já existe uma pasta "' + nome + '" lá.');
+  const afetadas = [...new Set(arqLista.map(a => a.pasta).filter(p => p && arqDentro(p, origem)))];
+  for (const p of afetadas) {
+    const { error } = await sb.from('com_arquivos').update({ pasta: novo + p.slice(origem.length) }).eq('pasta', p);
+    if (error) return alert('Erro: ' + error.message);
+  }
+  arqPastasVazias = new Set([...arqPastasVazias].map(p => arqDentro(p, origem) ? novo + p.slice(origem.length) : p)); arqSalvaVazias();
+  if (arqCaminho && arqDentro(arqCaminho, origem)) arqCaminho = novo + arqCaminho.slice(origem.length);
+  arqSel = null;
+  await carregarArquivos();
+}
 async function arqMoverPara(id, destino) {
   const a = arqLista.find(x => x.id === id); if (!a || (a.pasta || '') === destino) return;
   const { error } = await sb.from('com_arquivos').update({ pasta: destino }).eq('id', id);
