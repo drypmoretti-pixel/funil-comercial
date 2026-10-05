@@ -8205,92 +8205,20 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-09-15',
+  versao: '2026-10-05',
   titulo: 'Chegou coisa nova',
   passos: [
     {
-      emoji: '📝',
-      titulo: 'Cada lead com anotação separada de SDR e closer',
-      texto: 'O card do CRM ganhou dois campos novos, logo abaixo de Observação: <b>Anotações SDR</b> e <b>Anotação Closer</b>. Cada papel registra o que precisa sobre o lead sem misturar com o campo do outro — abre o card, escreve, salva, e fica ali pra quem abrir depois. É o histórico organizado por pessoa que faltava.',
-      aba: 'crm', onde: 'CRM · abra um card, abaixo de Observação',
+      emoji: '📋',
+      titulo: 'Checklist de Análise Comercial — e o lembrete virou impossível de ignorar',
+      texto: 'O antigo checklist de produtividade agora é o <b>Checklist de Análise Comercial</b>: é onde você lança os números do dia pra gente acompanhar as métricas comerciais. Às <b>8h30</b> e às <b>18h30</b> aparece um aviso grande, em destaque, perguntando se você já preencheu. Clicou em <b>"Ok, preencher agora"</b>? Ele já te leva direto pro checklist — é só lançar os números e salvar. Quem já bateu a meta do dia não é incomodado.',
+      aba: 'checklist', onde: 'Aba Checklist · lançar os números do dia',
     },
     {
-      emoji: '📱',
-      titulo: 'Chip caiu? Reconecta você mesmo(a)',
-      texto: 'Se o número desconectar, a bolinha vermelha no topo da aba WhatsApp agora é clicável — aparece um QR code na hora pra escanear com o celular, sem precisar chamar ninguém nem entrar em nenhum painel técnico.',
-      aba: 'whatsapp', onde: 'Aba WhatsApp · bolinha de status no topo',
-    },
-    {
-      emoji: '🛠️',
-      titulo: 'Aba Admin — cadastra gente e número de WhatsApp sozinho',
-      texto: 'Só pra admin. Nova aba pra criar login de SDR/vendedor (nome, e-mail, senha) e conectar número de WhatsApp novo — sem precisar pedir pra alguém mexer direto no banco de dados.',
-      aba: 'admin', onde: 'Aba Admin (visível só pra admin)',
-    },
-    {
-      emoji: '🔗',
-      titulo: '"Ganho" no CRM agora fecha a venda de verdade',
-      texto: 'Marcar um card como Ganho no CRM já atualiza (ou cria) o negócio correspondente no funil comercial como venda fechada — antes eram dois passos separados, e dava pra marcar Ganho sem isso refletir no faturamento.',
-      aba: 'crm', onde: 'CRM · marcar Ganho num card',
-    },
-    {
-      emoji: '🏷️',
-      titulo: 'Cards de negócio agora mostram quem é o dono',
-      texto: 'Cada card em "Negócios em andamento" e "Fechados no mês" ganhou uma tarjinha sutil com o nome da SDR e do vendedor (ex: "Dry → Bruno"), do lado da data — sem precisar abrir o card pra saber de quem é aquele negócio.',
-      aba: 'dashboard', onde: 'Dashboard · Negócios em andamento',
-    },
-    {
-      emoji: '🏅',
-      titulo: 'Desempenho individual — cada um vê o seu número',
-      texto: 'Novo card no Dashboard, logo abaixo do Funil do mês: um tile por SDR (reuniões agendadas, realizadas e % de comparecimento) e um por vendedor (vendas fechadas, valor total e ticket médio) — tudo no mês selecionado no topo. É visível pra todo mundo que loga no painel.',
-      aba: 'dashboard', onde: 'Dashboard · card "Desempenho individual"',
-    },
-    {
-      emoji: '📄',
-      titulo: 'Contrato pronto em 1 clique — e já sai pra assinar',
-      texto: 'Fechou o negócio? Vai na aba <b>Contrato</b>, preenche os dados do cliente e a forma de pagamento combinada. O botão <b>"Gerar contrato"</b> abre pra impressão, pra salvar como PDF e mandar pro cliente na hora. O botão <b>"Enviar pra assinar (Autentique)"</b> vai além: manda o contrato direto pra Autentique, que já dispara um e-mail pro cliente assinar eletronicamente — sem esperar o Igor em nenhum dos dois casos. Fica um histórico dos últimos contratos gerados, com botão de reimprimir se precisar reemitir.',
-      aba: 'contrato', onde: 'Aba Contrato',
-    },
-    {
-      emoji: '🌗',
-      titulo: 'Agora dá pra escolher claro ou escuro',
-      texto: 'No canto de cima à direita tem uma chavinha com sol e lua. A escolha fica salva no seu navegador — cada pessoa do time usa do jeito que preferir. Se você <b>não</b> escolher nada, o painel segue o tema do seu computador e continua acompanhando se você mudar lá.',
-      aba: 'dashboard', onde: 'Topo da página, ao lado do Sair',
-    },
-    {
-      emoji: '📱',
-      titulo: 'Dois números de WhatsApp na mesma tela',
-      texto: 'O número do <b>Bruno</b> entrou. No topo da lista de conversas aparecem dois botões: <b>SDR</b> e <b>Bruno</b>. Trocar fecha a conversa aberta e carrega a caixa do outro número — de propósito, senão você veria mensagem de uma dentro da outra. O painel lembra qual você usou por último, então cada um abre já no seu.',
-      aba: 'whatsapp', onde: 'WhatsApp · topo da lista de conversas',
-    },
-    {
-      emoji: '⚡',
-      titulo: 'A mensagem enviada aparece na hora',
-      texto: 'Antes ela era enviada de verdade, mas só surgia na tela alguns segundos depois — o que dava toda a impressão de não ter funcionado. Agora a bolha aparece no instante do envio.',
-      aba: 'whatsapp', onde: 'WhatsApp · dentro da conversa',
-    },
-    {
-      emoji: '🚨',
-      titulo: 'E se ela NÃO sair, você fica sabendo',
-      texto: 'Esse é o mais importante: o painel gravava "enviado" sempre, mesmo quando o WhatsApp recusava a mensagem. Dava pra achar que falou com um lead que nunca recebeu nada. Agora, quando não sai, aparece um aviso com o motivo e <b>o texto volta pra caixa</b> pra você não perder o que escreveu. O botão de áudio, que tinha quebrado na reforma da aba, voltou a funcionar.',
-      aba: 'whatsapp', onde: 'WhatsApp · caixa de mensagem',
-    },
-    {
-      emoji: '🌡️',
-      titulo: 'O lead score mudou de conta (de novo) — e agora fecha',
-      texto: 'Ontem a nota parou de punir quem não foi perguntado. Só que sobrou um furo: um CEO que respondeu <b>só o cargo</b> tirava a mesma nota de um CEO que respondeu <b>as três perguntas</b>. Agora quanto menos a gente sabe do lead, menos a nota vale — 1 resposta vale 72%, 2 valem 88%, 3 valem 100%. E abrindo o card, <b>o detalhamento soma exatamente o total</b>, que antes não batia e parecia erro. A fila "Atacar hoje" ficou com 273 leads.',
-      aba: 'crm', onde: 'CRM · abra um card e veja o Lead score',
-    },
-    {
-      emoji: '🙋',
-      titulo: 'As conversas voltaram a ter o nome do lead',
-      texto: 'Todo contato do WhatsApp aparecia como <b>Igor Miguel</b>, com o nome real do lead num quadradinho embaixo. Motivo: em mensagem enviada, o WhatsApp grava o nome de quem enviou — o do Igor. Agora o nome sai só de mensagem recebida.',
-      aba: 'whatsapp', onde: 'WhatsApp · lista de conversas',
-    },
-    {
-      emoji: '🧹',
-      titulo: 'A faixa de números só onde ela diz algo',
-      texto: 'Os indicadores do mês apareciam em todas as abas, inclusive no WhatsApp e no Checklist, onde não significam nada. Agora ficam só aqui no <b>Dashboard</b> e no <b>CRM</b> — e a conversa do WhatsApp ganhou a altura que sobrou.',
-      aba: 'dashboard', onde: 'Dashboard · a faixa de números no topo',
+      emoji: '📁',
+      titulo: 'Arquivos: o nosso Drive, com pastas e subpastas',
+      texto: 'A aba <b>Arquivos</b> é a biblioteca do time: PDFs, guias, materiais — tudo num lugar só, sem depender do Google Drive. Arraste os arquivos pra subir, e use <b>"Nova pasta"</b> pra organizar. Dá pra criar <b>subpastas dentro de pastas</b>, navegar pelo caminho lá em cima (Arquivos › Vendas › Scripts), renomear, mover e <b>copiar o link</b> pra mandar pra qualquer pessoa, mesmo quem não tem login.',
+      aba: 'arquivos', onde: 'Aba Arquivos · ícone de pasta no menu',
     },
   ],
 };
