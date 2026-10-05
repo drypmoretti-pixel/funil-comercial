@@ -447,7 +447,10 @@ svg.chart { display: block; }
 .lanc-campo input { display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:2px 0 6px; border:0; border-bottom:2px solid rgba(255,255,255,.18); background:transparent; color:#fff; font-size:2.4rem; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums; outline:none; transition:border-color .2s; -moz-appearance:textfield; }
 .lanc-campo input::-webkit-outer-spin-button, .lanc-campo input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 .lanc-campo input::placeholder { color:rgba(255,255,255,.22); }
-.lanc-campo input:focus { border-bottom-color:#3fcb4a; }
+.lanc .lanc-campo input, .lanc .lanc-campo input:focus, .lanc .lanc-campo input:hover { background:transparent !important; color:#fff !important; box-shadow:none !important; border-top:0; border-left:0; border-right:0; border-radius:0; caret-color:#3fcb4a; }
+.lanc .lanc-campo input:focus { border-bottom-color:#3fcb4a; }
+.lanc .lanc-campo input:-webkit-autofill { -webkit-text-fill-color:#fff; transition:background-color 9999s; }
+.lanc :focus-visible { outline:none; }
 .lanc-barra { height:6px; border-radius:99px; background:rgba(255,255,255,.10); margin-top:12px; overflow:hidden; }
 .lanc-barra i { display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg, #0ca30c, #7be58a); box-shadow:0 0 12px rgba(63,203,74,.6); transition:width .35s cubic-bezier(.2,.9,.3,1); }
 .lanc-check { position:absolute; top:12px; right:12px; width:26px; height:26px; border-radius:50%; background:#3fcb4a; color:#06240a; display:none; align-items:center; justify-content:center; font-size:.85rem; font-weight:900; box-shadow:0 0 16px rgba(63,203,74,.7); animation:tour-pop .4s cubic-bezier(.2,.9,.3,1.4); }
