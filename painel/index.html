@@ -426,6 +426,43 @@ svg.chart { display: block; }
 .lembrete-texto { font-size: 1.02rem; margin-top: 12px; }
 .lembrete-card .lembrete-botao { width: 100%; margin-top: 26px; padding: 15px 20px; font-size: 1.05rem; font-weight: 800; }
 @media (prefers-reduced-motion: reduce) { .lembrete-card, .lembrete-icone { animation: none; } }
+/* ---- Checklist: bloco "Lançar" (painel escuro com brilho verde, igual nos dois temas) ---- */
+.lanc { margin-top:14px; position:relative; overflow:hidden; border-radius:20px; padding:24px; color:#e8f3ea;
+  background: radial-gradient(120% 90% at 0% 0%, rgba(63,203,74,.30) 0%, transparent 55%), radial-gradient(90% 80% at 100% 100%, rgba(12,163,12,.20) 0%, transparent 60%), linear-gradient(150deg, #0e1511 0%, #15221a 55%, #0b110d 100%);
+  border:1px solid rgba(63,203,74,.30); box-shadow:0 20px 55px rgba(12,163,12,.18), inset 0 1px 0 rgba(255,255,255,.07); }
+.lanc::before { content:""; position:absolute; top:-80px; right:-60px; width:240px; height:240px; border-radius:50%; background:radial-gradient(circle, rgba(63,203,74,.22), transparent 70%); pointer-events:none; }
+.lanc-topo { position:relative; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
+.lanc-selo { display:inline-block; font-size:.62rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#7be58a; background:rgba(63,203,74,.14); border:1px solid rgba(63,203,74,.3); padding:4px 11px; border-radius:999px; margin-bottom:8px; }
+.lanc-titulo { margin:0; font-size:1.45rem; font-weight:800; letter-spacing:-.02em; color:#fff; }
+.lanc-nav { display:inline-flex; align-items:center; gap:2px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:4px; backdrop-filter:blur(6px); }
+.lanc-nav button { width:36px; height:36px; border:0; border-radius:50%; background:none; color:#e8f3ea; font-size:1.3rem; line-height:1; cursor:pointer; transition:background .15s; }
+.lanc-nav button:hover { background:rgba(63,203,74,.25); }
+.lanc-nav #checklist-data-label { min-width:120px; text-align:center; font-weight:700; font-size:.9rem; color:#fff; padding:0 6px; }
+.lanc-campos { position:relative; display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; }
+.lanc-campo { position:relative; border-radius:16px; padding:16px 16px 14px; background:linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.10); transition:border-color .25s, box-shadow .25s, transform .2s; }
+.lanc-campo:focus-within { border-color:rgba(63,203,74,.7); box-shadow:0 0 0 3px rgba(63,203,74,.18); transform:translateY(-1px); }
+.lanc-campo.bateu { border-color:rgba(63,203,74,.65); background:linear-gradient(160deg, rgba(63,203,74,.20), rgba(63,203,74,.05)); box-shadow:0 8px 28px rgba(12,163,12,.22); }
+.lanc-campo label { display:block; font-size:.74rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#b6c9bb; margin-bottom:6px; }
+.lanc-meta { display:inline-block; font-size:.7rem; font-weight:700; color:#7be58a; background:rgba(63,203,74,.12); padding:2px 9px; border-radius:999px; }
+.lanc-campo input { display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:2px 0 6px; border:0; border-bottom:2px solid rgba(255,255,255,.18); background:transparent; color:#fff; font-size:2.4rem; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums; outline:none; transition:border-color .2s; -moz-appearance:textfield; }
+.lanc-campo input::-webkit-outer-spin-button, .lanc-campo input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.lanc-campo input::placeholder { color:rgba(255,255,255,.22); }
+.lanc-campo input:focus { border-bottom-color:#3fcb4a; }
+.lanc-barra { height:6px; border-radius:99px; background:rgba(255,255,255,.10); margin-top:12px; overflow:hidden; }
+.lanc-barra i { display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg, #0ca30c, #7be58a); box-shadow:0 0 12px rgba(63,203,74,.6); transition:width .35s cubic-bezier(.2,.9,.3,1); }
+.lanc-check { position:absolute; top:12px; right:12px; width:26px; height:26px; border-radius:50%; background:#3fcb4a; color:#06240a; display:none; align-items:center; justify-content:center; font-size:.85rem; font-weight:900; box-shadow:0 0 16px rgba(63,203,74,.7); animation:tour-pop .4s cubic-bezier(.2,.9,.3,1.4); }
+.lanc-campo.bateu .lanc-check { display:flex; }
+.lanc-rodape { position:relative; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:22px; padding-top:18px; border-top:1px solid rgba(255,255,255,.10); }
+.lanc-resumo { font-size:.9rem; color:#b6c9bb; }
+.lanc-resumo b { color:#7be58a; font-size:1.05rem; }
+.lanc-salvar { position:relative; overflow:hidden; border:0; cursor:pointer; padding:13px 30px; border-radius:999px; font-size:.98rem; font-weight:800; letter-spacing:.01em; color:#05240a; background:linear-gradient(135deg, #7be58a 0%, #3fcb4a 55%, #1fae2e 100%); box-shadow:0 8px 26px rgba(63,203,74,.40), inset 0 1px 0 rgba(255,255,255,.5); transition:transform .15s, box-shadow .15s; }
+.lanc-salvar::after { content:""; position:absolute; top:0; left:-60%; width:40%; height:100%; background:linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); transform:skewX(-20deg); animation:lanc-brilho 3.2s ease-in-out infinite; }
+@keyframes lanc-brilho { 0%, 55% { left:-60%; } 100% { left:140%; } }
+.lanc-salvar:hover { transform:translateY(-2px); box-shadow:0 12px 34px rgba(63,203,74,.55), inset 0 1px 0 rgba(255,255,255,.5); }
+.lanc-salvar:active { transform:translateY(0); }
+.lanc-salvar:disabled { opacity:.7; cursor:default; }
+.lanc-vazio { grid-column:1 / -1; color:#b6c9bb; padding:18px 4px; }
+@media (prefers-reduced-motion: reduce) { .lanc-salvar::after, .lanc-check { animation:none; } }
 /* ---- agente de social selling ---- */
 .ss-switch { display: flex; gap: 6px; margin: 0 0 20px; }
 .ss-switch button {
@@ -1808,9 +1845,9 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         <div class="funil-comparativo">
           <div class="funil-comp-header">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-6 8v6l-4 2v-8z"/></svg>
-            <h3>Funil atual x funil ideal</h3>
+            <h3>Funil atual x funil ideal <span id="funil-comp-mes" class="muted" style="font-weight:600; font-size:.85em;"></span></h3>
           </div>
-          <p class="muted" style="font-size:.72rem; margin:2px 0 16px;">Sempre referente ao mês corrente (independe do mês selecionado no topo). "Leads alto potencial" = cards na coluna MQL do funil de Lead Magnet. A área verde mostra quanto do alvo de cada etapa já foi atingido.</p>
+          <p class="muted" style="font-size:.72rem; margin:2px 0 16px;">Segue o mês selecionado no topo — troque o mês pra ver como foi o funil daquele período. "Leads alto potencial" = cards na coluna MQL do funil de Lead Magnet. A área verde mostra quanto do alvo de cada etapa já foi atingido.</p>
           <div class="funil-shape-wrap">
             <div class="funil-shape-col" id="funil-shape-col"></div>
             <div class="funil-shape-labels" id="funil-shape-labels"></div>
@@ -1901,17 +1938,23 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
         </div>
         <p class="muted">Ações diárias do time que ajudam a bater a meta de R$30k. Lance os números do dia e acompanhe a consistência.</p>
 
-        <div class="card" style="background:var(--field-bg); margin-top:12px; box-shadow:none;">
-          <div class="section-title" style="margin-bottom:8px;">
-            <h3 style="margin:0; font-size:.95rem;">Lançar</h3>
-            <div class="month-nav">
-              <button onclick="mudaDiaChecklist(-1)">‹</button>
+        <div class="lanc">
+          <div class="lanc-topo">
+            <div>
+              <div class="lanc-selo">Lançamento do dia</div>
+              <h3 class="lanc-titulo">Lançar números</h3>
+            </div>
+            <div class="lanc-nav">
+              <button type="button" onclick="mudaDiaChecklist(-1)" aria-label="Dia anterior">‹</button>
               <div id="checklist-data-label"></div>
-              <button onclick="mudaDiaChecklist(1)">›</button>
+              <button type="button" onclick="mudaDiaChecklist(1)" aria-label="Próximo dia">›</button>
             </div>
           </div>
-          <div class="form-grid" id="checklist-form-campos" style="margin-top:0;"></div>
-          <button class="btn" style="margin-top:10px; width:auto; padding:8px 18px;" onclick="salvarRegistrosChecklist()">Salvar dia</button>
+          <div class="lanc-campos" id="checklist-form-campos"></div>
+          <div class="lanc-rodape">
+            <div class="lanc-resumo" id="lanc-resumo"></div>
+            <button type="button" class="lanc-salvar" id="lanc-salvar" onclick="salvarRegistrosChecklist()">Salvar dia</button>
+          </div>
         </div>
 
         <div class="tiles" id="checklist-tiles" style="margin-top:16px;"></div>
@@ -7252,12 +7295,32 @@ function renderFormChecklist() {
   document.getElementById('checklist-form-campos').innerHTML = metricas.map(m => {
     const existente = checklistRegistros.find(r => r.metrica_id === m.id && r.data === checklistDiaAtual);
     return `
-      <div>
-        <label>${m.nome} <span class="muted">(${m.meta_min}${m.meta_max ? '–' + m.meta_max : '+'} ${m.unidade})</span></label>
-        <input type="number" min="0" id="checklist-campo-${m.id}" value="${existente ? existente.valor : ''}">
+      <div class="lanc-campo" data-meta="${m.meta_min}">
+        <div class="lanc-check">✓</div>
+        <label for="checklist-campo-${m.id}">${m.nome}</label>
+        <span class="lanc-meta">Meta: ${m.meta_min}${m.meta_max ? '–' + m.meta_max : '+'} ${m.unidade}</span>
+        <input type="number" inputmode="numeric" min="0" placeholder="0" id="checklist-campo-${m.id}" value="${existente ? existente.valor : ''}" oninput="lancAtualiza()">
+        <div class="lanc-barra"><i></i></div>
       </div>
     `;
-  }).join('') || '<div class="empty">Esse perfil não tem métricas de checklist configuradas.</div>';
+  }).join('') || '<div class="lanc-vazio">Esse perfil não tem métricas de checklist configuradas.</div>';
+  lancAtualiza();
+}
+
+// barra e selo "bateu a meta" acompanham o que a pessoa digita, antes mesmo de salvar
+function lancAtualiza() {
+  const campos = [...document.querySelectorAll('#checklist-form-campos .lanc-campo')];
+  let bateram = 0;
+  campos.forEach(c => {
+    const meta = Number(c.dataset.meta) || 0;
+    const v = parseInt(c.querySelector('input').value) || 0;
+    const ok = meta ? v >= meta : v > 0;
+    if (ok) bateram++;
+    c.classList.toggle('bateu', ok);
+    c.querySelector('.lanc-barra i').style.width = Math.min(100, meta ? (v / meta) * 100 : (v ? 100 : 0)) + '%';
+  });
+  const r = document.getElementById('lanc-resumo');
+  if (r) r.innerHTML = campos.length ? `<b>${bateram}</b> de ${campos.length} meta${campos.length > 1 ? 's batidas' : ' batida'} neste dia` : '';
 }
 
 function salvarRegistrosChecklist() {
@@ -7268,9 +7331,15 @@ function salvarRegistrosChecklist() {
     const valor = parseInt(el.value);
     return { perfil_id: checklistPerfilAtualId, data: checklistDiaAtual, metrica_id: m.id, valor: isNaN(valor) ? 0 : valor, updated_at: new Date().toISOString() };
   });
+  const btn = document.getElementById('lanc-salvar');
   (async () => {
-    await sb.from('com_checklist_registros').upsert(linhas, { onConflict: 'perfil_id,data,metrica_id' });
+    if (btn) { btn.disabled = true; btn.textContent = 'Salvando…'; }
+    const { error } = await sb.from('com_checklist_registros').upsert(linhas, { onConflict: 'perfil_id,data,metrica_id' });
     await carregarRegistrosChecklist();
+    if (btn) {
+      btn.textContent = error ? 'Erro ao salvar — tente de novo' : 'Salvo ✓';
+      setTimeout(() => { btn.disabled = false; btn.textContent = 'Salvar dia'; }, 1800);
+    }
   })();
 }
 
@@ -7643,12 +7712,16 @@ function funilTrapezio(topPct, bottomPct) {
 }
 function funilEscala(v, max) { return Math.max(14, Math.sqrt(Math.max(0, v) / max) * 100); }
 
+let funilCompSeq = 0;
 async function renderFunilComparativo() {
   const colEl = document.getElementById('funil-shape-col');
   const labelsEl = document.getElementById('funil-shape-labels');
   const fatEl = document.getElementById('funil-comp-faturamento');
   if (!colEl || !labelsEl || !fatEl) return;
-  const mesRef = fmtMesRef(new Date()); // sempre o mês corrente de verdade, não o mês navegado no topo
+  const mesRef = fmtMesRef(mesAtual);   // o mês navegado no topo (setas ‹ ›), pra dar pra rever meses passados
+  const seq = ++funilCompSeq;           // cliques rápidos nas setas: só a última resposta pode desenhar
+  const tit = document.getElementById('funil-comp-mes');
+  if (tit) tit.textContent = '· ' + fmtMesLabel(mesAtual).toLowerCase();
 
   // com a aba Formulário carregada, a memória é a fonte mais fresca; antes disso (ou se o Tally
   // falhar) cai pro registro no banco em vez de mentir um zero
@@ -7658,14 +7731,17 @@ async function renderFunilComparativo() {
   }
 
   let mqlAtual = 0;
+  const [anoRef, mesNum] = mesRef.split('-').map(Number);
+  const fimMesIso = new Date(Date.UTC(anoRef, mesNum, 1)).toISOString().slice(0, 19);   // 1º dia do mês seguinte
   try {
     // conta pelo marco "mql_em" (quando o card entrou em MQL pela 1ª vez), não pelo estágio atual —
     // assim o lead continua contando no mês mesmo depois de já ter sido movido pra frente no funil
     const { count } = await sb.from('com_cards').select('id', { count: 'exact', head: true })
-      .not('mql_em', 'is', null).gte('mql_em', `${mesRef}-01T00:00:00`);
+      .not('mql_em', 'is', null).gte('mql_em', `${mesRef}-01T00:00:00`).lt('mql_em', fimMesIso);
     mqlAtual = count || 0;
   } catch (e) { /* segue com 0 se a query falhar */ }
 
+  if (seq !== funilCompSeq) return;   // o usuário já trocou de mês enquanto buscava
   const agendadasAtual = negocios.filter(n => noMes(n.data_agendada, mesRef)).length;
   const realizadasAtual = negocios.filter(n => noMes(n.data_realizacao, mesRef)).length;
   const vendasAtual = negocios.filter(n => noMes(n.data_venda, mesRef)).length;
@@ -7705,7 +7781,7 @@ async function renderFunilComparativo() {
   const pctFat = Math.min(100, Math.round((faturamentoAtual / FUNIL_META_FATURAMENTO) * 100));
   fatEl.innerHTML = `
     <div class="funil-fat-topo">
-      <span class="funil-fat-nome">Faturamento do mês</span>
+      <span class="funil-fat-nome">Faturamento de ${fmtMesLabel(mesAtual).toLowerCase()}</span>
       <span class="funil-fat-valores"><b>${fmtBRL(faturamentoAtual)}</b> <span class="muted">/ ${fmtBRL(FUNIL_META_FATURAMENTO)}</span></span>
     </div>
     <div class="funil-fat-trilho"><div class="funil-fat-barra" style="width:${pctFat}%"></div></div>
