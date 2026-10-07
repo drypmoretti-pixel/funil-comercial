@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Passo a passo gratuito: landing page completa com Claude + ChatGPT, do briefing à página no ar, sem programar e sem designer.">
+<title>Landing page com Claude + ChatGPT | Método Demanda Infinita®</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+  @page{size:A4; margin:16mm 15mm 16mm 15mm;}
+  :root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE;--warn:#C2410C;}
+  *{box-sizing:border-box;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.55;}
+  h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:600;}
+  .pb{break-before:page;}
+  .avoid{break-inside:avoid;}
+
+  /* capa */
+  .cover{min-height:255mm;display:flex;flex-direction:column;justify-content:center;text-align:center;}
+  .cover img.logo{width:84px;height:84px;margin:0 auto 22px;}
+  .kicker{font-size:11px;font-weight:700;letter-spacing:1.6px;color:var(--green);text-transform:uppercase;}
+  .cover h1{font-size:40px;font-weight:800;line-height:1.12;margin:12px 0 14px;}
+  .cover .sub{font-size:15px;color:var(--gray);max-width:420px;margin:0 auto;}
+  .badge{display:inline-block;margin:24px auto 0;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px;}
+
+  h2.sec{font-size:22px;font-weight:800;padding-bottom:8px;border-bottom:2px solid var(--green);margin-bottom:14px;}
+  h2.sec .tag{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+  h3{font-size:15px;font-weight:800;margin:16px 0 6px;}
+  .lead{font-size:13.5px;}
+  .lead strong{color:var(--green);}
+
+  .card{background:var(--card);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+  .white{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  .f{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;break-inside:avoid;}
+  .f .n{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--green);}
+  .f .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13.5px;margin:2px 0;}
+  .f .d{font-size:11.5px;color:var(--gray);line-height:1.4;}
+
+  /* fala x faz */
+  .fz{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;break-inside:avoid;}
+  .fz .b{border-radius:12px;padding:11px 14px;font-size:12px;}
+  .fz .fala{background:#fff;border:1px solid var(--line);}
+  .fz .faz{background:#fff;border:2px solid var(--green);}
+  .fz .h{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:5px;}
+  .fz .fala .h{color:var(--gray);}
+  .fz .faz .h{color:var(--green);}
+  .fz ul,.fz ol{margin:0;padding-left:16px;}
+  .fz li{margin-bottom:3px;}
+
+  /* prompts */
+  .prompt{background:#0A0F0C;border:1px solid rgba(18,184,94,.3);border-radius:12px;padding:11px 14px 10px;margin:10px 0;break-inside:avoid;}
+  .prompt .l{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--green-light);margin-bottom:6px;}
+  .prompt pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:'JetBrains Mono',monospace;font-size:10.8px;line-height:1.55;color:#E8F3EC;}
+
+  .tip,.alert{border-left:4px solid var(--green);background:var(--card);border-radius:8px;padding:9px 13px;margin:11px 0;font-size:12px;break-inside:avoid;}
+  .tip b,.alert b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--green);margin-bottom:2px;font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert b{color:var(--warn);}
+
+  table{border-collapse:collapse;width:100%;font-size:11.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0;}
+  th{background:var(--card);text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid var(--line);}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+  tr:last-child td{border-bottom:0;}
+  td.m{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--green);white-space:nowrap;font-weight:600;}
+  tr{break-inside:avoid;}
+
+  .steps{display:flex;flex-direction:column;gap:9px;margin:10px 0;}
+  .step{display:flex;gap:11px;align-items:flex-start;break-inside:avoid;}
+  .step .n{flex:0 0 24px;height:24px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-top:1px;}
+  .step .t b{font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;}
+  code{font-family:'JetBrains Mono',monospace;background:var(--card);padding:1px 5px;border-radius:4px;font-size:11px;}
+
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;break-inside:avoid;}
+  .vs .c{border-radius:12px;padding:11px 14px;background:#fff;font-size:11.8px;}
+  .vs .bad{border:1px solid var(--line);}
+  .vs .good{border:2px solid var(--green);}
+  .vs .h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+  .vs .bad .h{color:var(--warn);} .vs .good .h{color:var(--green);}
+
+  .chk{background:#fff;border:2px solid var(--green);border-radius:14px;padding:14px 18px;margin:12px 0;break-inside:avoid;}
+  .chk h3{margin-top:0;}
+  .chk .i{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);}
+  .chk .i:last-child{border-bottom:0;}
+  .chk .box{flex:0 0 15px;height:15px;border:2px solid var(--green);border-radius:4px;margin-top:2px;}
+
+  .cta{margin-top:18px;padding:26px 24px;border-radius:18px;text-align:center;background:radial-gradient(circle at 50% 0%,#163825 0%,#0A0F0C 62%);border:1px solid rgba(18,184,94,.35);color:#fff;break-inside:avoid;}
+  .cta img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--green-light);margin:0 auto 12px;display:block;}
+  .cta .e{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--green-light);margin-bottom:8px;}
+  .cta .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;line-height:1.3;max-width:420px;margin:0 auto 6px;}
+  .cta .s{font-size:12px;color:#a9b3ad;}
+  footer{text-align:center;font-size:10px;color:var(--gray);margin-top:16px;line-height:1.5;}
+
+  @media screen{
+    body{font-size:16px;line-height:1.65;padding:0 18px;}
+    section, body>div, body>header, body>main{max-width:860px;margin-left:auto;margin-right:auto;}
+    .cover{min-height:auto;padding:72px 0 48px;}
+    .pb{margin-top:56px;}
+    pre{white-space:pre-wrap;word-break:break-word;}
+    .cta{padding:40px 28px;margin:48px 0 24px;}
+    .cta .t{font-size:24px;max-width:520px;}
+    .cta .s{font-size:15px;margin-bottom:18px;}
+    .cta a.btn{display:inline-block;background:#12B85E;color:#06130b;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:17px;text-decoration:none;padding:15px 30px;border-radius:999px;}
+    .cta a.btn:hover{background:#1fd06f;}
+    footer{padding-bottom:40px;}
+  }
+  @media screen and (max-width:640px){
+    .grid3{grid-template-columns:1fr 1fr !important;}
+    .grid2,.fz,.vs{grid-template-columns:1fr !important;}
+    table{display:block;overflow-x:auto;}
+    .cover h1{font-size:32px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<section class="cover">
+  <img class="logo" src="logo-demanda-infinita.png" alt="">
+  <div class="kicker">Método Demanda Infinita®</div>
+  <h1>Landing page completa com Claude + ChatGPT</h1>
+  <p class="sub">Guia para fazer junto, em tempo real. Do briefing à página no ar, sem programar e sem designer.</p>
+  <div><span class="badge">Aula · Passo a passo</span></div>
+</section>
+
+<!-- MAPA -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Visão geral</span>O que vamos construir e como</h2>
+  <p class="lead">Ao final desta aula você terá uma <strong>landing page completa, com copy que vende e imagens profissionais, publicada num link</strong>. Tudo feito com duas ferramentas, cada uma no que faz melhor.</p>
+
+  <div class="grid3" style="grid-template-columns:repeat(5,1fr)">
+    <div class="f"><div class="n">01</div><div class="t">Planejar</div><div class="d">Briefing + Plan Mode no Claude</div></div>
+    <div class="f"><div class="n">02</div><div class="t">Escrever</div><div class="d">Copy de cada seção</div></div>
+    <div class="f"><div class="n">03</div><div class="t">Imagens</div><div class="d">Claude cria o prompt, ChatGPT gera</div></div>
+    <div class="f"><div class="n">04</div><div class="t">Montar</div><div class="d">Claude constrói a página</div></div>
+    <div class="f"><div class="n">05</div><div class="t">Publicar</div><div class="d">Link no ar + captura de lead</div></div>
+  </div>
+
+  <h3>Antes de começar, deixe pronto</h3>
+  <div class="chk">
+    <div class="i"><div class="box"></div><div>Conta no <strong>Claude</strong> (claude.ai) ou Claude Code aberto numa pasta vazia</div></div>
+    <div class="i"><div class="box"></div><div>Conta no <strong>ChatGPT</strong> com geração de imagens disponível</div></div>
+    <div class="i"><div class="box"></div><div>Uma <strong>pasta nova</strong> no computador chamada <code>minha-landing</code>, com uma subpasta <code>imagens</code></div></div>
+    <div class="i"><div class="box"></div><div>Os dados do negócio à mão: o que vende, para quem, preço (se for mostrar), link de contato ou agenda</div></div>
+    <div class="i"><div class="box"></div><div>Logo e cores da marca (se tiver). Se não tiver, o Claude sugere</div></div>
+  </div>
+
+  <div class="tip"><b>A regra que sustenta tudo</b>Uma landing page tem <strong>um objetivo, um público e um botão</strong>. Se você tentar fazer a página falar de tudo, ela não vende nada.</div>
+</section>
+
+<!-- CONCEITOS -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 01</span>Os conceitos, em linguagem simples</h2>
+  <p>Antes de abrir qualquer ferramenta, quatro ideias. Se a pessoa entender isso, o resto vira execução.</p>
+
+  <div class="grid2">
+    <div class="white"><h3 style="margin-top:0">Claude = o arquiteto e redator</h3><p>Pensa, estrutura, escreve a copy e <strong>constrói a página</strong> (o código). É forte em raciocínio, texto e organização.</p></div>
+    <div class="white"><h3 style="margin-top:0">ChatGPT = o ilustrador</h3><p>Aqui usamos só para <strong>gerar as imagens</strong>. O Claude não gera imagem, então a gente divide o trabalho.</p></div>
+    <div class="white"><h3 style="margin-top:0">Prompt = o briefing</h3><p>É a instrução que você manda. Funciona como contratar um profissional: <strong>quanto melhor o briefing, melhor a entrega</strong>. Briefing vago, página genérica.</p></div>
+    <div class="white"><h3 style="margin-top:0">HTML = a casa pronta</h3><p>É o arquivo que o Claude gera. Abre em <strong>qualquer navegador</strong>, é rápido e você pode publicar de graça. Você não precisa escrever nem entender o código.</p></div>
+  </div>
+
+  <h3>Por que duas ferramentas e não uma só</h3>
+  <p>Porque a página tem duas camadas. O <strong>texto e a estrutura</strong> decidem se a pessoa clica. As <strong>imagens</strong> decidem se ela confia. O Claude escreve o prompt de cada imagem a partir da copy, então o ChatGPT recebe um briefing pronto e as imagens combinam com a mensagem.</p>
+
+  <h3>Contexto: por que a conversa não pode ser picada</h3>
+  <p>O Claude lembra do que foi dito <strong>dentro da mesma conversa</strong>. Faça briefing, copy, prompts de imagem e página no <strong>mesmo chat</strong>. Em conversa nova ele esquece o público, o tom e o estilo visual.</p>
+
+  <div class="vs">
+    <div class="c bad"><div class="h">Pedido fraco</div>"Faz uma landing page para minha empresa de consultoria."<p style="margin-top:6px;color:var(--gray)">Sem público, sem oferta, sem objetivo. Sai uma página igual a todas as outras.</p></div>
+    <div class="c good"><div class="h">Pedido forte</div>"Landing page para donos de clínica que perdem lead no WhatsApp. Objetivo: agendar diagnóstico de 30 min. Tom direto."<p style="margin-top:6px;color:var(--gray)">Público, dor, ação e tom definidos. O Claude acerta de primeira.</p></div>
+  </div>
+</section>
+
+<!-- ESTRUTURA -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 02</span>A estrutura de uma landing page que converte</h2>
+  <p>Toda landing page boa responde, em ordem, às perguntas que passam na cabeça de quem chegou. Esse é o esqueleto que vamos pedir ao Claude.</p>
+
+  <table>
+    <tr><th>#</th><th>Seção</th><th>Pergunta que responde</th><th>O que entra</th></tr>
+    <tr><td class="m">01</td><td><strong>Hero</strong> (topo)</td><td>"É pra mim? O que é isso?"</td><td>Promessa em 1 frase, subtítulo, botão, imagem principal</td></tr>
+    <tr><td class="m">02</td><td><strong>Problema</strong></td><td>"Eles entendem minha dor?"</td><td>A situação do cliente descrita com as palavras dele</td></tr>
+    <tr><td class="m">03</td><td><strong>Solução / Método</strong></td><td>"Como isso resolve?"</td><td>Passo a passo em 3 a 4 etapas, com ícones ou ilustrações</td></tr>
+    <tr><td class="m">04</td><td><strong>O que você recebe</strong></td><td>"O que eu levo?"</td><td>Lista de entregáveis, bônus, resultado esperado</td></tr>
+    <tr><td class="m">05</td><td><strong>Prova</strong></td><td>"Posso confiar?"</td><td>Depoimentos, números, logos, resultado de cliente</td></tr>
+    <tr><td class="m">06</td><td><strong>Quem fala</strong></td><td>"Quem está por trás?"</td><td>Foto, mini bio, credencial</td></tr>
+    <tr><td class="m">07</td><td><strong>Objeções (FAQ)</strong></td><td>"E se der errado? E o preço?"</td><td>4 a 6 perguntas que travam a decisão</td></tr>
+    <tr><td class="m">08</td><td><strong>CTA final</strong></td><td>"O que faço agora?"</td><td>Repete a promessa + botão único</td></tr>
+  </table>
+
+  <div class="tip"><b>Regra do botão</b>O mesmo botão, com o mesmo texto, aparece no hero, no meio e no fim. Nada de dois caminhos concorrendo. Se o objetivo é agendar, <strong>todo botão agenda</strong>.</div>
+
+  <div class="alert"><b>Sem prova inventada</b>Se você não tem depoimento ou número real, <strong>não deixe o Claude inventar</strong>. Peça para ele deixar o espaço marcado como <code>[PROVA A INSERIR]</code> e preencha depois com dado verdadeiro. Prova falsa derruba a confiança e pode gerar problema.</div>
+</section>
+
+<!-- ETAPA 1 -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 03 · Etapa 1</span>Planejar: briefing + Plan Mode</h2>
+
+  <h3 style="margin-top:0">O que é o Plan Mode</h3>
+  <p>É o modo em que o Claude <strong>pensa e propõe um plano, mas ainda não executa nada</strong>. Analogia: é a planta da casa antes de levantar a parede. Você revisa, corrige e só então aprova a obra.</p>
+  <p>Por que usar: o erro mais caro é o Claude construir a página inteira em cima de um entendimento errado. No Plan Mode você corrige a direção <strong>antes</strong>, quando custa 1 minuto e não 20.</p>
+
+  <div class="fz">
+    <div class="b fala"><div class="h">O que explicar</div><ul>
+      <li>Plan Mode = planta antes da obra</li>
+      <li>Ele lê, pergunta e propõe, não cria arquivo</li>
+      <li>Só executa depois do seu "aprovado"</li>
+    </ul></div>
+    <div class="b faz"><div class="h">O que fazer na tela</div><ol>
+      <li><strong>Claude Code:</strong> aperte <code>Shift + Tab</code> até aparecer "plan mode" na parte de baixo da caixa de mensagem</li>
+      <li><strong>No chat comum (claude.ai):</strong> não há botão, então peça no prompt: "não gere nada ainda, só proponha o plano"</li>
+    </ol></div>
+  </div>
+
+  <h3>Prompt 1 · O briefing (cole e preencha os colchetes)</h3>
+  <div class="prompt"><div class="l">Briefing da landing page</div><pre>Quero criar uma landing page. Antes de escrever qualquer coisa, entre em modo de planejamento: me faça perguntas e proponha um plano. Não gere código nem copy final ainda.
+
+CONTEXTO
+- Negócio: [o que você vende]
+- Público: [quem é o cliente ideal e o cargo dele]
+- Dor principal: [o que tira o sono dele, com as palavras dele]
+- Oferta: [o que ele recebe]
+- Objetivo da página: [ex: agendar uma call de 30 min]
+- Link do botão: [Cal.com, WhatsApp, formulário]
+- Tom de voz: [direto, sem enrolação, sem jargão]
+- Cores/marca: [cores e fonte, ou "sugira"]
+
+ENTREGUE
+1. As perguntas que faltam para você acertar de primeira
+2. A estrutura de seções que você recomenda (hero, problema, solução, entregáveis, prova, quem fala, objeções, CTA)
+3. A lista de imagens que a página precisa
+4. Os riscos que você enxerga neste briefing</pre></div>
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div class="t"><b>Leia as perguntas dele em voz alta.</b> É aqui que a aula ensina: quem responde bem o briefing já fez 70% da página.</div></div>
+    <div class="step"><div class="n">2</div><div class="t"><b>Responda e peça o plano final.</b> "Com essas respostas, me entregue o plano completo da página."</div></div>
+    <div class="step"><div class="n">3</div><div class="t"><b>Corrija o plano antes de aprovar.</b> Mude a ordem, corte seção, ajuste o ângulo. Depois diga: "Aprovado, pode seguir."</div></div>
+  </div>
+</section>
+
+<!-- ETAPA 2 -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 04 · Etapa 2</span>Escrever a copy, seção por seção</h2>
+  <p>Com o plano aprovado, o Claude escreve o texto. Pedir <strong>a página inteira de uma vez</strong> costuma gerar texto raso. O melhor caminho é por blocos, começando pelo hero, que decide tudo.</p>
+
+  <div class="fz">
+    <div class="b fala"><div class="h">O que explicar</div><ul>
+      <li>Copy é o texto que convence. O layout só embrulha</li>
+      <li>O hero tem 3 segundos para a pessoa decidir ficar</li>
+      <li>Peça variações e escolha, não aceite a primeira</li>
+    </ul></div>
+    <div class="b faz"><div class="h">O que fazer na tela</div><ol>
+      <li>Cole o Prompt 2 no mesmo chat</li>
+      <li>Escolha 1 das 3 opções de headline</li>
+      <li>Siga para as demais seções</li>
+    </ol></div>
+  </div>
+
+  <h3>Prompt 2 · O hero com variações</h3>
+  <div class="prompt"><div class="l">Copy do topo da página</div><pre>Plano aprovado. Agora escreva só o HERO (topo da página).
+
+Me dê 3 opções de:
+- headline (máx. 12 palavras, com a promessa clara)
+- subtítulo (1 a 2 linhas, explica como)
+- texto do botão (máx. 4 palavras, verbo de ação)
+
+Regras: frases curtas, linguagem do dia a dia do meu cliente, nada de "soluções inovadoras" nem jargão. Não invente número nem depoimento.</pre></div>
+
+  <h3>Prompt 3 · O resto da página</h3>
+  <div class="prompt"><div class="l">Copy das demais seções</div><pre>Usando a opção [número] do hero, escreva agora as seções restantes na ordem do plano: problema, solução em etapas, o que a pessoa recebe, quem fala, objeções (FAQ) e CTA final.
+
+Regras:
+- onde faltar prova real, escreva [PROVA A INSERIR]
+- o botão tem sempre o mesmo texto do hero
+- parágrafos de no máximo 3 linhas
+- no fim, liste o que você assumiu e que eu preciso confirmar</pre></div>
+
+  <div class="tip"><b>Truque que melhora muito</b>Depois de escrever, peça: <em>"Releia como se fosse meu cliente, com pressa, no celular. Onde você perderia o interesse? Reescreva esses trechos."</em> É uma segunda passada de revisão que quase ninguém faz.</div>
+</section>
+
+<!-- ETAPA 3 -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 05 · Etapa 3</span>Imagens: Claude cria o prompt, ChatGPT gera</h2>
+  <p>Este é o pulo do gato. Em vez de você inventar o prompt de imagem, o <strong>Claude escreve cada um já alinhado com a copy e com o estilo da marca</strong>. O ChatGPT só executa.</p>
+
+  <h3>Que imagens uma landing page precisa</h3>
+  <table>
+    <tr><th>Imagem</th><th>Onde entra</th><th>Formato</th></tr>
+    <tr><td><strong>Imagem do hero</strong></td><td>Topo, ao lado da headline</td><td>Horizontal ou quadrada</td></tr>
+    <tr><td><strong>3 a 4 ilustrações de método</strong></td><td>Seção solução, uma por etapa</td><td>Quadradas, mesmo estilo</td></tr>
+    <tr><td><strong>Imagem de fundo ou textura</strong></td><td>Seção CTA final</td><td>Horizontal larga</td></tr>
+    <tr><td><strong>Foto sua</strong></td><td>Seção "quem fala"</td><td>Use foto real, não gerada</td></tr>
+  </table>
+
+  <h3>Prompt 4 · Pedir os prompts de imagem ao Claude</h3>
+  <div class="prompt"><div class="l">No Claude, mesmo chat</div><pre>Agora preciso das imagens. Primeiro defina um GUIA DE ESTILO visual único para todas (estilo, paleta com os hex da minha marca, iluminação, nível de detalhe).
+
+Depois escreva um prompt em inglês para cada imagem da lista (hero, ilustrações das etapas, fundo do CTA), todos usando o mesmo guia de estilo, para o ChatGPT gerar.
+
+Regras para cada prompt:
+- NUNCA pedir texto escrito dentro da imagem (a IA erra letras; o texto fica no HTML)
+- indicar proporção (ex: 16:9, 1:1)
+- fundo limpo, com espaço livre para o texto da página
+- no final de cada prompt, repetir o guia de estilo</pre></div>
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div class="t"><b>Copie um prompt por vez</b> para o ChatGPT e gere a imagem.</div></div>
+    <div class="step"><div class="n">2</div><div class="t"><b>Mantenha tudo no mesmo chat do ChatGPT.</b> É o que segura o estilo parecido entre as imagens.</div></div>
+    <div class="step"><div class="n">3</div><div class="t"><b>Se não gostou, peça ajuste curto:</b> "mais claro", "menos elementos", "mesmo estilo, outro ângulo".</div></div>
+    <div class="step"><div class="n">4</div><div class="t"><b>Baixe e renomeie</b> para <code>hero.png</code>, <code>etapa1.png</code>, <code>etapa2.png</code>, <code>fundo-cta.png</code>, e salve na pasta <code>imagens</code>.</div></div>
+  </div>
+
+  <div class="alert"><b>Erro clássico</b>Pedir a imagem com o texto da headline dentro. A IA troca letra, inventa palavra e você perde tempo refazendo. <strong>Imagem sem texto, texto no HTML.</strong></div>
+</section>
+
+<!-- ETAPA 4 -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 06 · Etapa 4</span>Montar a página</h2>
+  <p>Agora o Claude junta copy + imagens e <strong>constrói o arquivo da página</strong>. Aqui você sente o "uau": a página aparece no navegador a partir de uma frase.</p>
+
+  <div class="fz">
+    <div class="b fala"><div class="h">O que explicar</div><ul>
+      <li>O Claude escreve o código, você só pede e aprova</li>
+      <li>O arquivo gerado é o <code>index.html</code></li>
+      <li>Ajustar é conversar, não programar</li>
+    </ul></div>
+    <div class="b faz"><div class="h">O que fazer na tela</div><ol>
+      <li>Saia do Plan Mode (Shift + Tab) para ele poder criar arquivos</li>
+      <li>Cole o Prompt 5</li>
+      <li>Abra o <code>index.html</code> com duplo clique</li>
+    </ol></div>
+  </div>
+
+  <div class="prompt"><div class="l">Prompt 5 · Construir a página</div><pre>Construa a landing page completa em um único arquivo index.html, usando a copy aprovada e as imagens da pasta imagens/ (hero.png, etapa1.png, etapa2.png, etapa3.png, fundo-cta.png).
+
+Requisitos:
+- visual limpo e profissional, com as cores e a fonte da minha marca
+- funciona perfeitamente no celular (mobile primeiro)
+- botão de ação sempre com o mesmo texto e link: [seu link]
+- seção FAQ que abre e fecha ao clicar
+- carregamento rápido, sem bibliotecas desnecessárias
+- título e descrição para aparecer bem no Google e ao compartilhar no WhatsApp</pre></div>
+
+  <h3>Ajustes por conversa (peça um de cada vez)</h3>
+  <table>
+    <tr><td class="m">Visual</td><td>"Deixe o botão maior e com mais contraste." · "Mais espaço entre as seções." · "Fonte do título mais forte."</td></tr>
+    <tr><td class="m">Estrutura</td><td>"Mova o FAQ para antes do CTA final." · "Adicione uma barra fixa com o botão no celular."</td></tr>
+    <tr><td class="m">Texto</td><td>"Encurte o hero." · "Reescreva a seção problema com mais urgência."</td></tr>
+    <tr><td class="m">Celular</td><td>"Revise como ficou no celular e corrija o que quebrou."</td></tr>
+  </table>
+
+  <div class="tip"><b>Regra de ouro dos ajustes</b>Um pedido por vez, específico. "Deixa mais bonito" não funciona. "Aumente o espaçamento da seção 3 e use fundo claro" funciona.</div>
+</section>
+
+<!-- ETAPA 5 -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 07 · Etapa 5</span>Publicar e ligar a captura de lead</h2>
+  <p>Uma landing page só vale quando está no ar e <strong>quando o clique do botão chega em você</strong>.</p>
+
+  <h3>Passo 1 · Colocar no ar</h3>
+  <p>Você tem opções gratuitas. Escolha uma e siga:</p>
+  <table>
+    <tr><th>Opção</th><th>Como funciona</th><th>Indicado para</th></tr>
+    <tr><td><strong>Netlify Drop</strong></td><td>Arrasta a pasta inteira (<code>index.html</code> + <code>imagens</code>) para o site e ganha um link na hora</td><td>Mais rápido, zero conta técnica</td></tr>
+    <tr><td><strong>GitHub Pages</strong></td><td>Sobe os arquivos num repositório e ativa o Pages</td><td>Quando quer domínio próprio e histórico</td></tr>
+  </table>
+
+  <h3>Passo 2 · Ligar o botão a algo que capture</h3>
+  <p>O botão precisa levar a um destino que registre a pessoa:</p>
+  <ul style="margin:0 0 10px;padding-left:18px">
+    <li><strong>Agenda (Cal.com):</strong> o lead escolhe horário e já cai na sua agenda</li>
+    <li><strong>Formulário (Tally):</strong> o lead preenche e você recebe os dados</li>
+    <li><strong>WhatsApp:</strong> link direto com mensagem pré-pronta</li>
+  </ul>
+
+  <h3>Passo 3 · Testar como cliente</h3>
+  <div class="chk">
+    <div class="i"><div class="box"></div><div>Abri o link <strong>no celular</strong> e li de ponta a ponta</div></div>
+    <div class="i"><div class="box"></div><div>Cliquei em <strong>todos os botões</strong> e todos levam ao mesmo destino</div></div>
+    <div class="i"><div class="box"></div><div>Fiz um <strong>cadastro de teste</strong> e o lead chegou até mim</div></div>
+    <div class="i"><div class="box"></div><div>As imagens carregam rápido e <strong>não há texto cortado</strong></div></div>
+    <div class="i"><div class="box"></div><div>Nenhum <code>[PROVA A INSERIR]</code> ficou visível na página</div></div>
+    <div class="i"><div class="box"></div><div>Compartilhei o link no WhatsApp e <strong>a prévia aparece certa</strong></div></div>
+  </div>
+</section>
+
+<!-- FECHO -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Fechamento</span>Resumo e erros mais comuns</h2>
+
+  <h3 style="margin-top:0">O fluxo inteiro em 5 linhas</h3>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div class="t"><b>Plan Mode:</b> briefing completo, perguntas e plano aprovado antes de criar.</div></div>
+    <div class="step"><div class="n">2</div><div class="t"><b>Copy:</b> hero primeiro, com variações, depois o resto, sempre no mesmo chat.</div></div>
+    <div class="step"><div class="n">3</div><div class="t"><b>Imagens:</b> o Claude escreve os prompts com guia de estilo, o ChatGPT gera, sem texto dentro.</div></div>
+    <div class="step"><div class="n">4</div><div class="t"><b>Página:</b> o Claude monta o <code>index.html</code>, você ajusta uma coisa por vez.</div></div>
+    <div class="step"><div class="n">5</div><div class="t"><b>No ar:</b> publicar, ligar o botão a agenda ou formulário e testar no celular.</div></div>
+  </div>
+
+  <h3>Erros que derrubam a página</h3>
+  <table>
+    <tr><th>Erro</th><th>Como evitar</th></tr>
+    <tr><td>Pular o planejamento e pedir a página direto</td><td>Sempre começar pelo Plan Mode e pelo briefing</td></tr>
+    <tr><td>Trocar de chat no meio do processo</td><td>Tudo no mesmo chat para manter o contexto</td></tr>
+    <tr><td>Vários botões levando a lugares diferentes</td><td>Um objetivo, um botão, um destino</td></tr>
+    <tr><td>Texto dentro da imagem gerada</td><td>Imagem sem texto, copy no HTML</td></tr>
+    <tr><td>Depoimento e número inventados</td><td>Usar só dado real, ou marcar <code>[PROVA A INSERIR]</code></td></tr>
+    <tr><td>Não testar no celular</td><td>A maioria dos acessos é mobile, teste primeiro lá</td></tr>
+  </table>
+
+  <div class="cta">
+    <img src="igor-miguel.png" alt="">
+    <div class="e">Método Demanda Infinita®</div>
+    <div class="t">Quer uma landing page assim, ligada ao seu comercial?</div>
+    <div class="s">Em 30 minutos eu olho o seu caso e te mostro como a landing page entra no seu processo comercial.</div>
+    <a class="btn" href="https://cal.com/admin-grupo-nexusmind-hxbhcy/bate-papo-nexusmind" target="_blank" rel="noopener">Agendar conversa comigo →</a>
+  </div>
+
+  <footer>Ferramentas e menus de terceiros (Claude, ChatGPT, Netlify, GitHub) mudam com frequência. Os nomes de botões e atalhos refletem o uso em outubro de 2026.<br>Demanda Infinita®</footer>
+</section>
+
+</body>
+</html>
