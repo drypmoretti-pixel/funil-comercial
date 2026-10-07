@@ -115,6 +115,13 @@
     table{display:block;overflow-x:auto;}
     .cover h1{font-size:32px;}
   }
+
+  .video{margin:8px auto 40px;max-width:860px;}
+  .video .kv{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);text-align:center;margin-bottom:6px;}
+  .video h2{font-size:24px;text-align:center;margin-bottom:16px;}
+  .video .frame{position:relative;padding-top:56.25%;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 14px 40px rgba(0,0,0,.18);border:1px solid var(--line);}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  @media print{.video{display:none;}}
 </style>
 </head>
 <body>
@@ -127,6 +134,12 @@
   <p class="sub">Guia para fazer junto, em tempo real. Do briefing à página no ar, sem programar e sem designer.</p>
   <div><span class="badge">Aula · Passo a passo</span></div>
 </section>
+<section class="video">
+  <div class="kv">Aula completa</div>
+  <h2>Assista ao passo a passo em vídeo</h2>
+  <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/17b-PSexMw8?rel=0" title="Landing page com IA: Claude + ChatGPT" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+</section>
+
 
 <!-- MAPA -->
 <section class="pb">
