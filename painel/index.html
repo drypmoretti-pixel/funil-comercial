@@ -6209,7 +6209,9 @@ const CRM_ESTAGIO_MQL = 13, CRM_ESTAGIO_NOVO = 12;
 const CARGOS_MQL = ['ceo', 'fundador', 'diretor', 'gerente', 'head'];
 const MAX_IMPORT_POR_CARGA = 25;               // não estoura o banco numa carga só
 
-// formulário do Tally -> isca e etiqueta (mesmas ids do Pipedrive e de com_tags)
+// O mapa formulário -> tag que vale é o do banco (com_iscas_map), o mesmo da importação em tempo
+// real. Esta lista fica só de reserva pra quando o banco não responder: antes eram dois mapas que
+// não se falavam, e isca nova que não estava em nenhum entrava "sem-isca", sem tag (10/2026).
 const TALLY_ORIGEM = {
   '1AKGB1': { isca: 'resgate-ia-imob', tag: 81 },
   '1Alljb': { isca: 'comunidade', tag: 122 },
@@ -6250,6 +6252,37 @@ const TALLY_ORIGEM = {
   'yP6QPd': { isca: 'claude-mcp', tag: 80 },
   'yPyexp': { isca: 'claude-skills', tag: 83 },
 };
+
+// com_iscas_map também diz quais formulários ficam FORA do CRM (ignorar = true, ex.: vaga de
+// emprego): não viram card e não contam como lead. Carregado uma vez por sessão.
+let mapaIscasPromessa = null;
+function carregarMapaIscas() {
+  if (!mapaIscasPromessa) {
+    mapaIscasPromessa = sb.from('com_iscas_map').select('form_id, isca, tag_id, ativo, ignorar')
+      .then(({ data, error }) => {
+        if (error) { mapaIscasPromessa = null; return new Map(); }   // tenta de novo na próxima carga
+        return new Map((data || []).map(m => [m.form_id, m]));
+      });
+  }
+  return mapaIscasPromessa;
+}
+async function formsIgnorados() {
+  const mapa = await carregarMapaIscas();
+  return new Set([...mapa.values()].filter(m => m.ignorar).map(m => m.form_id));
+}
+
+// formulário que ninguém mapeou: o banco cria uma tag com o nome dele e passa a mapear sozinho
+async function origemDoFormulario(s, mapa) {
+  const m = mapa.get(s.formId);
+  if (m) return { isca: m.isca, tag: m.ativo && !m.ignorar ? m.tag_id : null };
+  const { data, error } = await sb.rpc('tag_da_isca', { p_form_id: s.formId, p_form_nome: s.formNome });
+  if (!error && data) {
+    const isca = semAcento(s.formNome || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    mapa.set(s.formId, { form_id: s.formId, isca, tag_id: data, ativo: true, ignorar: false });
+    return { isca, tag: data };
+  }
+  return TALLY_ORIGEM[s.formId] || { isca: 'sem-isca', tag: null };
+}
 
 function extrairLead(submissao, perguntas) {
   const valor = (pergunta) => {
@@ -6302,9 +6335,12 @@ async function registrarLeadsDoMesParaContagem(brutas, jaVistas) {
 async function contarLeadsDoMesNoBanco(mesRef) {
   const [ano, mes] = mesRef.split('-').map(Number);
   const fimMes = new Date(Date.UTC(ano, mes, 1)).toISOString();   // 1º dia do mês seguinte
-  const { count } = await sb.from('com_tally_processados')
+  const ignorados = [...await formsIgnorados()];
+  let q = sb.from('com_tally_processados')
     .select('submission_id', { count: 'exact', head: true })
-    .neq('motivo', 'ignorado-teste')
+    .not('motivo', 'in', '(ignorado-teste,ignorado-form)');
+  if (ignorados.length) q = q.not('form_id', 'in', `(${ignorados.join(',')})`);
+  const { count } = await q
     .gte('submitted_at', `${mesRef}-01T00:00:00Z`).lt('submitted_at', fimMes);
   return count || 0;
 }
@@ -6315,6 +6351,10 @@ async function sincronizarLeadsTally(brutas) {
   const registros = await buscarPaginado('com_tally_processados',
     q => q.select('submission_id, card_id, motivo').order('submission_id'));
   const jaVistas = new Map(registros.map(r => [r.submission_id, r]));
+
+  const mapaIscas = await carregarMapaIscas();
+  const ignorados = await formsIgnorados();
+  brutas = brutas.filter(s => !ignorados.has(s.formId));   // ex.: vaga de emprego não entra no CRM
 
   await registrarLeadsDoMesParaContagem(brutas, jaVistas);
 
@@ -6335,7 +6375,7 @@ async function sincronizarLeadsTally(brutas) {
   let criados = 0;
   for (const s of pendentes) {
     try {
-      const origem = TALLY_ORIGEM[s.formId] || { isca: 'sem-isca', tag: null };
+      const origem = await origemDoFormulario(s, mapaIscas);
 
       if (!jaVistas.has(s.submissionId)) {
         // marca ANTES de criar o card: submission_id é chave primária, então se
@@ -7728,7 +7768,8 @@ async function renderFunilComparativo() {
 
   // com a aba Formulário carregada, a memória é a fonte mais fresca; antes disso (ou se o Tally
   // falhar) cai pro registro no banco em vez de mentir um zero
-  let leadsAtual = tallySubmissions.filter(s => s.data.startsWith(mesRef)).length;
+  const ignorados = await formsIgnorados().catch(() => new Set());
+  let leadsAtual = tallySubmissions.filter(s => s.data.startsWith(mesRef) && !ignorados.has(s.formId)).length;
   if (!leadsAtual) {
     try { leadsAtual = await contarLeadsDoMesNoBanco(mesRef); } catch (e) { /* fica 0 */ }
   }
