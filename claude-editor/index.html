@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O Claude virou meu editor de vídeo | Método Demanda Infinita®</title>
+<meta name="description" content="O passo a passo, os 6 prompts e o Prompt Master que usei pra o Claude editar este vídeo do começo ao fim.">
+<meta property="og:title" content="O Claude virou meu editor de vídeo">
+<meta property="og:description" content="O passo a passo, os 6 prompts e o Prompt Master que usei pra o Claude editar este vídeo do começo ao fim.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://demandainfinita.com/claude-editor/">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+  @page{size:A4; margin:16mm 15mm 16mm 15mm;}
+  :root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE;--warn:#C2410C;}
+  *{box-sizing:border-box;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.55;}
+  h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:600;}
+  .pb{break-before:page;}
+  .avoid{break-inside:avoid;}
+
+  /* capa */
+  .cover{min-height:255mm;display:flex;flex-direction:column;justify-content:center;text-align:center;}
+  .cover img.logo{width:84px;height:84px;margin:0 auto 22px;}
+  .kicker{font-size:11px;font-weight:700;letter-spacing:1.6px;color:var(--green);text-transform:uppercase;}
+  .cover h1{font-size:40px;font-weight:800;line-height:1.12;margin:12px 0 14px;}
+  .cover .sub{font-size:15px;color:var(--gray);max-width:420px;margin:0 auto;}
+  .badge{display:inline-block;margin:24px auto 0;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px;}
+
+  h2.sec{font-size:22px;font-weight:800;padding-bottom:8px;border-bottom:2px solid var(--green);margin-bottom:14px;}
+  h2.sec .tag{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+  h3{font-size:15px;font-weight:800;margin:16px 0 6px;}
+  .lead{font-size:13.5px;}
+  .lead strong{color:var(--green);}
+
+  .card{background:var(--card);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+  .white{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  .f{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;break-inside:avoid;}
+  .f .n{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--green);}
+  .f .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;margin:2px 0;}
+  .f .d{font-size:11.5px;color:var(--gray);line-height:1.4;}
+
+  /* termos / glossário */
+  .term{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 12px;text-align:center;break-inside:avoid;}
+  .term .ic{font-size:26px;line-height:1;margin-bottom:6px;}
+  .term .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13.5px;}
+  .term .d{font-size:11px;color:var(--gray);margin-top:3px;line-height:1.35;}
+
+  /* diagrama */
+  .dg{margin:16px 0;text-align:center;break-inside:avoid;}
+  .dg svg{width:100%;height:auto;max-width:620px;}
+  .dg figcaption{font-size:10.5px;color:var(--gray);margin-top:8px;font-style:italic;}
+
+  .prompt{background:#0A0F0C;border:1px solid rgba(18,184,94,.3);border-radius:12px;padding:11px 14px 10px;margin:10px 0;break-inside:avoid;}
+  .prompt .l{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--green-light);margin-bottom:6px;}
+  .prompt pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:'JetBrains Mono',monospace;font-size:10.8px;line-height:1.55;color:#E8F3EC;}
+  .prompt.master{border:2px solid var(--green-light);box-shadow:0 0 0 4px rgba(18,184,94,.12);}
+  .prompt.master .l{display:inline-block;background:var(--green-light);color:#06130b;padding:3px 10px;border-radius:999px;font-weight:800;}
+
+  .tip,.alert{border-left:4px solid var(--green);background:var(--card);border-radius:8px;padding:9px 13px;margin:11px 0;font-size:12px;break-inside:avoid;}
+  .tip b,.alert b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--green);margin-bottom:2px;font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert b{color:var(--warn);}
+
+  table{border-collapse:collapse;width:100%;font-size:11.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0;}
+  th{background:var(--card);text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid var(--line);}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+  tr:last-child td{border-bottom:0;}
+  tr{break-inside:avoid;}
+
+  .steps{display:flex;flex-direction:column;gap:9px;margin:10px 0;}
+  .step{display:flex;gap:11px;align-items:flex-start;break-inside:avoid;}
+  .step .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px;}
+  .step .t b{font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;}
+  code{font-family:'JetBrains Mono',monospace;background:var(--card);padding:1px 5px;border-radius:4px;font-size:11px;}
+
+  .quest{border:2px solid var(--green);background:#fff;border-radius:16px;padding:20px 24px;margin:16px 0;text-align:center;break-inside:avoid;}
+  .quest .e{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+  .quest .q{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:18px;line-height:1.35;max-width:520px;margin:0 auto;}
+  .quest .s{font-size:11.5px;color:var(--gray);margin-top:10px;}
+
+  .behind{font-size:11px;color:var(--gray);font-style:italic;margin:-4px 0 10px;padding-left:2px;}
+  .behind b{font-style:normal;color:var(--green);font-weight:700;}
+
+  /* comparação visual bad/good */
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+  .cmp .col{border-radius:12px;padding:12px 14px;background:#fff;}
+  .cmp .bad{border:2px solid var(--warn);}
+  .cmp .good{border:2px solid var(--green);}
+  .cmp .h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;text-align:center;margin-bottom:8px;}
+  .cmp .bad .h{color:var(--warn);}
+  .cmp .good .h{color:var(--green);}
+  .cmp .row{display:flex;align-items:center;gap:8px;font-size:11.5px;padding:7px 0;border-top:1px solid var(--line);}
+  .cmp .row:first-of-type{border-top:0;}
+  .cmp .ic{font-size:17px;flex:0 0 auto;}
+
+  /* impacto visual */
+  .impact{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0;text-align:center;}
+  .impact .v{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 10px;}
+  .impact .v.ok{border:2px solid var(--green);}
+  .impact .lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:var(--gray);letter-spacing:1px;}
+  .impact .ico{width:64px;height:auto;margin:8px auto;display:block;}
+  .impact .cap{font-size:10.5px;color:var(--gray);}
+  .impact .v.ok .cap{color:var(--green);font-weight:700;}
+
+  /* conversa de exemplo */
+  .convo{margin:12px 0;}
+  .msg{max-width:82%;padding:9px 13px;border-radius:13px;margin-bottom:8px;font-size:11.3px;line-height:1.5;break-inside:avoid;}
+  .msg .who{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:9px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
+  .msg.you{background:#fff;border:1px solid var(--line);margin-left:auto;border-bottom-right-radius:3px;}
+  .msg.you .who{color:var(--gray);text-align:right;}
+  .msg.ai{background:#0A0F0C;color:#E8F3EC;margin-right:auto;border-bottom-left-radius:3px;font-family:'JetBrains Mono',monospace;font-size:10.6px;}
+  .msg.ai .who{color:var(--green-light);}
+  .msg.save{background:var(--card);border:2px dashed var(--green);margin:0 auto 8px;max-width:92%;text-align:center;font-weight:700;color:var(--green);border-radius:10px;}
+
+  .cta{margin-top:18px;padding:26px 24px;border-radius:18px;text-align:center;background:radial-gradient(circle at 50% 0%,#163825 0%,#0A0F0C 62%);border:1px solid rgba(18,184,94,.35);color:#fff;break-inside:avoid;}
+  .cta img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--green-light);margin:0 auto 12px;display:block;}
+  .cta .e{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--green-light);margin-bottom:8px;}
+  .cta .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;line-height:1.3;max-width:420px;margin:0 auto 6px;}
+  .cta .s{font-size:12px;color:#a9b3ad;}
+  footer{text-align:center;font-size:10px;color:var(--gray);margin-top:16px;line-height:1.5;}
+  .cta a.btn{display:inline-block;margin-top:12px;background:#12B85E;color:#06130b;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;text-decoration:none;padding:10px 22px;border-radius:999px;}
+  @media screen{
+    body{font-size:16px;line-height:1.65;padding:0 18px;}
+    section{max-width:860px;margin-left:auto;margin-right:auto;}
+    .cover{min-height:auto;padding:72px 0 48px;}
+    .pb{margin-top:56px;}
+    pre{white-space:pre-wrap;word-break:break-word;}
+    .cta{padding:40px 28px;margin:48px 0 24px;} .cta .t{font-size:24px;max-width:540px;} .cta .s{font-size:15px;}
+    .cta a.btn{font-size:17px;padding:15px 30px;}
+    .quest .q{font-size:24px;}
+    .dg figcaption{font-size:13px;}
+  }
+  @media screen and (max-width:640px){
+    .grid3,.grid2{grid-template-columns:1fr 1fr !important;}
+    table{display:block;overflow-x:auto;}
+    .cover h1{font-size:32px;}
+  }
+  .prompt{position:relative;}
+  .copy{position:absolute;top:8px;right:10px;background:rgba(18,184,94,.16);color:#7be3a6;border:1px solid rgba(18,184,94,.4);border-radius:999px;font:600 11px 'JetBrains Mono',monospace;padding:4px 12px;cursor:pointer;}
+  .copy:hover{background:rgba(18,184,94,.3);}
+  .prompt.master .copy{top:9px;}
+  @media print{.copy{display:none;}}
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<section class="cover">
+  <img class="logo" src="logo-demanda-infinita.png" alt="">
+  <div class="kicker">Método Demanda Infinita®</div>
+  <h1>O Claude virou meu editor de vídeo</h1>
+  <p class="sub">Como uma IA que só lê texto e imagem decide corte, zoom e sincronia num vídeo real.</p>
+  <div><span class="badge">Aula · Bastidores + prática</span></div>
+</section>
+
+<!-- MAPA -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Visão geral</span>O que vamos ver nessa aula</h2>
+  <p class="lead">O mesmo processo que editou este vídeo e os 2 anteriores do canal, em 7 blocos:</p>
+
+  <div class="grid3" style="grid-template-columns:repeat(4,1fr)">
+    <div class="f"><div class="n">01</div><div class="t">Conceito</div><div class="d">O time por trás do Claude</div></div>
+    <div class="f"><div class="n">02</div><div class="t">A skill</div><div class="d">Por que ele nunca erra 2x</div></div>
+    <div class="f"><div class="n">03</div><div class="t">Funções</div><div class="d">O que ela já edita, por dentro</div></div>
+    <div class="f"><div class="n">04</div><div class="t">O time</div><div class="d">As ferramentas por trás</div></div>
+    <div class="f"><div class="n">05</div><div class="t">Higgsfield</div><div class="d">Real x gerado</div></div>
+    <div class="f"><div class="n">06</div><div class="t">Prática</div><div class="d">Eu pedindo, ao vivo</div></div>
+    <div class="f"><div class="n">07</div><div class="t">Pergunta</div><div class="d">Substitui um editor?</div></div>
+  </div>
+
+  <div class="tip"><b>A regra que sustenta tudo</b>Ele não assiste o vídeo — trabalha em cima do que vira <strong>texto e imagem</strong>.</div>
+</section>
+
+<!-- PARTE 01 CONCEITO -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 01</span>O conceito, em linguagem simples</h2>
+  <p>Três peças básicas antes de qualquer coisa:</p>
+
+  <div class="grid3">
+    <div class="term"><div class="t">Agente</div><div class="d">Decide e age sozinho, dentro do que você permite</div></div>
+    <div class="term"><div class="t">Transcrição</div><div class="d">Sua fala virada em texto — a matéria-prima do corte</div></div>
+    <div class="term"><div class="t">Frame</div><div class="d">Uma foto do vídeo, pra conferir o visual</div></div>
+  </div>
+
+  <h3>O ciclo completo</h3>
+  <figure class="dg">
+    <svg viewBox="0 0 560 230" role="img" aria-label="Fluxo: a gravação bruta vira texto e frames, o Claude decide, o código corta e monta, sai o vídeo pronto, e você pede ajuste, o que volta pro Claude decidir de novo.">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+        <marker id="arrowg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#008E43"/>
+        </marker>
+      </defs>
+      <g font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="currentColor">
+        <rect x="8" y="30" width="108" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="62" y="56">🎥 Gravação</text>
+        <text x="62" y="73" font-weight="500" font-size="9.5">tela+mic+rosto</text>
+
+        <rect x="146" y="30" width="108" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="200" y="56">📝 Dado</text>
+        <text x="200" y="73" font-weight="500" font-size="9.5">texto + frame</text>
+
+        <rect x="284" y="30" width="108" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="338" y="56">🤖 Claude</text>
+        <text x="338" y="73" font-weight="500" font-size="9.5">decide o corte</text>
+
+        <rect x="422" y="30" width="108" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="476" y="56">⚙️ Código</text>
+        <text x="476" y="73" font-weight="500" font-size="9.5">corta e monta</text>
+      </g>
+      <g stroke="currentColor" stroke-width="1.4">
+        <line x1="116" y1="62" x2="144" y2="62" marker-end="url(#arrow)"/>
+        <line x1="254" y1="62" x2="282" y2="62" marker-end="url(#arrow)"/>
+        <line x1="392" y1="62" x2="420" y2="62" marker-end="url(#arrow)"/>
+      </g>
+      <g font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="800" text-anchor="middle" fill="currentColor">
+        <rect x="200" y="150" width="160" height="56" rx="28" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="280" y="183">🎬 Vídeo pronto</text>
+      </g>
+      <path d="M 476 94 L 476 136 L 360 136 L 360 148" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"/>
+      <path d="M 240 150 C 240 115, 270 100, 298 97" fill="none" stroke="#008E43" stroke-width="2" marker-end="url(#arrowg)"/>
+      <text x="300" y="120" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="800" fill="#008E43">🔁 você pede ajuste</text>
+    </svg>
+    <figcaption>Cada pedido de ajuste volta só pro trecho certo — não pro vídeo inteiro.</figcaption>
+  </figure>
+
+  <div class="alert"><b>O que isso NÃO é</b>"Edita sozinho e sai pronto." Ele erra, você revisa, ele ajusta só o pedaço certo.</div>
+
+  <h3>Onde isso quebra, de verdade</h3>
+  <p style="font-size:11.5px;color:var(--gray)">Tem gente usando Claude só pra <strong>instruir</strong> outro app por texto, sem conferir o frame:</p>
+  <div class="cmp">
+    <div class="col bad">
+      <div class="h">SÓ LÊ O TEXTO</div>
+      <div class="row">Zoom em cima de nada</div>
+      <div class="row">Legenda tampa o rosto</div>
+      <div class="row">Ignora comando falado</div>
+    </div>
+    <div class="col good">
+      <div class="h">LÊ + CONFERE O FRAME</div>
+      <div class="row">Zoom segue o cursor</div>
+      <div class="row">OCR confere o blur</div>
+      <div class="row">Corte por timestamp</div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTE 02 A SKILL -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 02</span>A skill: por que ele nunca erra a mesma coisa 2x</h2>
+  <p><strong>Skill</strong> = arquivo de instruções que o Claude lê antes de editar: o seu estilo, em detalhe — e ele mesmo escreve e atualiza esse arquivo.</p>
+
+  <h3>O ciclo que faz ele melhorar sozinho</h3>
+  <figure class="dg">
+    <svg viewBox="0 0 560 230" role="img" aria-label="Ciclo: você dá feedback com timestamp específico, o Claude ajusta aquele trecho, você pede pra ele aprender e salvar a regra na skill, a skill fica mais completa, e o próximo vídeo já nasce aplicando essa regra sem você repetir o pedido." >
+      <defs>
+        <marker id="arrow4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+        <marker id="arrow4g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#008E43"/>
+        </marker>
+      </defs>
+      <g font-family="Plus Jakarta Sans, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" fill="currentColor">
+        <rect x="8" y="30" width="122" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="69" y="56">🗣️ Feedback</text>
+        <text x="69" y="73" font-weight="500" font-size="9">"no 04:12, mais lento"</text>
+
+        <rect x="158" y="30" width="122" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="219" y="56">🎯 Ajusta</text>
+        <text x="219" y="73" font-weight="500" font-size="9">só aquele trecho</text>
+
+        <rect x="308" y="30" width="122" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="369" y="56">📜 Salva</text>
+        <text x="369" y="73" font-weight="500" font-size="9">regra nova na skill</text>
+
+        <rect x="458" y="30" width="94" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="505" y="56">🎬 Próximo</text>
+        <text x="505" y="73" font-weight="500" font-size="9">já nasce certo</text>
+      </g>
+      <g stroke="currentColor" stroke-width="1.4">
+        <line x1="130" y1="62" x2="156" y2="62" marker-end="url(#arrow4)"/>
+        <line x1="280" y1="62" x2="306" y2="62" marker-end="url(#arrow4)"/>
+        <line x1="430" y1="62" x2="456" y2="62" marker-end="url(#arrow4)"/>
+      </g>
+      <path d="M 505 94 L 505 170 L 69 170 L 69 96" fill="none" stroke="#008E43" stroke-width="2" marker-end="url(#arrow4g)"/>
+      <text x="287" y="190" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="800" fill="#008E43">🔁 a skill já vem mais completa no vídeo seguinte</text>
+    </svg>
+    <figcaption>A diferença de um chat comum: o aprendizado não desaparece quando a conversa acaba — fica guardado e vale pro próximo vídeo.</figcaption>
+  </figure>
+
+  <h3>O impacto, em 3 vídeos</h3>
+  <div class="impact">
+    <div class="v">
+      <div class="lbl">VÍDEO 1</div>
+      <svg class="ico" viewBox="0 0 90 26" role="img" aria-label="3 erros repetidos"><circle cx="15" cy="13" r="8" fill="#C2410C"/><circle cx="45" cy="13" r="8" fill="#C2410C"/><circle cx="75" cy="13" r="8" fill="#C2410C"/></svg>
+      <div class="cap">3 erros repetidos</div>
+    </div>
+    <div class="v">
+      <div class="lbl">VÍDEO 2</div>
+      <svg class="ico" viewBox="0 0 90 26" role="img" aria-label="1 erro repetido"><circle cx="45" cy="13" r="8" fill="#C2410C"/></svg>
+      <div class="cap">1 erro repetido</div>
+    </div>
+    <div class="v ok">
+      <div class="lbl">VÍDEO 3</div>
+      <svg class="ico" viewBox="0 0 90 26" role="img" aria-label="já nasce certo"><circle cx="45" cy="13" r="10" fill="none" stroke="#008E43" stroke-width="2.5"/><path d="M40,13 L44,17 L51,9" fill="none" stroke="#008E43" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="cap">já nasce certo</div>
+    </div>
+  </div>
+
+  <div class="tip"><b>Por que isso importa</b>A skill guarda o aprendizado num lugar fixo e aplica sozinha da próxima vez — você para de repetir o mesmo pedido em todo vídeo novo.</div>
+</section>
+
+<!-- PARTE 03 FUNCIONALIDADES -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 03</span>O que ele já edita sozinho hoje</h2>
+
+  <div class="grid3">
+    <div class="f"><div class="t">Sincronia</div><div class="d">Alinha tela, mic e rosto gravados separados</div></div>
+    <div class="f"><div class="t">Corte por fala</div><div class="d">Tira repetição, gagueira e silêncio longo</div></div>
+    <div class="f"><div class="t">Zoom dinâmico</div><div class="d">Segue o cursor do mouse na tela cheia</div></div>
+    <div class="f"><div class="t">PiP do rosto</div><div class="d">Recorte redondo, centralizado sozinho</div></div>
+    <div class="f"><div class="t">Blur de tela</div><div class="d">Esconde o que vazou sem querer</div></div>
+    <div class="f"><div class="t">Cards e avisos</div><div class="d">Textos e tarjas, desenhados por ele</div></div>
+    <div class="f"><div class="t">Áudio limpo</div><div class="d">Reduz chiado e ruído de fundo</div></div>
+    <div class="f"><div class="t">Ajuste cirúrgico</div><div class="d">Refaz só o pedaço pedido</div></div>
+  </div>
+
+  <h3>Por dentro, em uma frase cada</h3>
+  <table>
+    <tr><th>Função</th><th>O mecanismo</th></tr>
+    <tr><td>Sincronia</td><td>Compara o áudio da câmera com o do microfone pra achar o deslocamento exato</td></tr>
+    <tr><td>Corte</td><td><strong>0,65s</strong> de silêncio mínimo pós-palavra</td></tr>
+    <tr><td>Zoom</td><td>~1,5–1,8s de entrada/saída</td></tr>
+    <tr><td>PiP</td><td>Detecção facial, frame a frame</td></tr>
+    <tr><td>Blur</td><td>OCR confere depois de borrar</td></tr>
+    <tr><td>Render pesado</td><td>Quebra em pedaços se travar a memória</td></tr>
+    <tr><td>Ajuste</td><td>Só re-renderiza o trecho pedido</td></tr>
+  </table>
+</section>
+
+<!-- PARTE 04 O TIME DE FERRAMENTAS -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 04</span>O time de ferramentas por trás</h2>
+  <p>O Claude orquestra ferramentas especializadas — como um diretor, não um faz-tudo:</p>
+
+  <table>
+    <tr><th>Papel</th><th>O que eu uso</th><th>O que outros criadores citam por aí</th></tr>
+    <tr><td><strong>Transcrição</strong></td><td>Whisper, local e grátis</td><td>Parakeet (Nvidia, grátis)</td></tr>
+    <tr><td><strong>Corte e montagem</strong></td><td>FFmpeg, direto por código</td><td>FFmpeg também — está por trás de quase todo editor de vídeo que existe, pago ou não</td></tr>
+    <tr><td><strong>Gravação tela + rosto</strong></td><td>Gravação de tela do Mac + celular (rosto), em arquivos separados</td><td>Tella (grava os dois juntos, com integração direta)</td></tr>
+    <tr><td><strong>Som e trilha</strong></td><td>Efeitos sonoros criados pelo próprio Claude + filtro de ruído</td><td>Epidemic Sound (banco pago de música e efeito, com integração)</td></tr>
+    <tr><td><strong>Pesquisa visual</strong></td><td>Ainda não uso</td><td>Navegador: Claude sai atrás de print ou post real pra provar o que foi dito em cena</td></tr>
+  </table>
+
+  <div class="tip"><b>O que isso mostra</b>Não existe "a ferramenta certa" única — a peça troca, o Claude continua decidindo e coordenando.</div>
+</section>
+
+<!-- PARTE 05 HIGGSFIELD -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 05</span>E o Higgsfield, onde entra?</h2>
+  <p>O Claude edita o que <strong>já existe</strong>. O Higgsfield <strong>gera</strong> vídeo novo a partir de texto.</p>
+
+  <figure class="dg">
+    <svg viewBox="0 0 560 230" role="img" aria-label="Comparação: o Claude parte de um vídeo bruto e entrega a mesma cena cortada; o Higgsfield parte de um texto e gera uma cena que nunca existiu.">
+      <defs>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+      <g font-family="Plus Jakarta Sans, sans-serif" font-weight="800" font-size="12" fill="currentColor">
+        <text x="8" y="18">🤖 CLAUDE — edita o que já existe</text>
+        <text x="8" y="128">✨ HIGGSFIELD — gera o que não existia</text>
+      </g>
+      <g font-family="Plus Jakarta Sans, sans-serif" font-size="11.5" font-weight="700" text-anchor="middle" fill="currentColor">
+        <rect x="8" y="28" width="150" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="83" y="54">🎥 Vídeo bruto</text>
+        <text x="83" y="71" font-weight="500" font-size="9.5">o que você filmou</text>
+
+        <rect x="205" y="28" width="150" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="280" y="54">🤖 Claude</text>
+        <text x="280" y="71" font-weight="500" font-size="9.5">corta e organiza</text>
+
+        <rect x="402" y="28" width="150" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="477" y="54">🎬 Editado</text>
+        <text x="477" y="71" font-weight="500" font-size="9.5">mesma cena</text>
+
+        <rect x="8" y="138" width="150" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="83" y="164">✍️ Prompt</text>
+        <text x="83" y="181" font-weight="500" font-size="9.5">o que você descreve</text>
+
+        <rect x="205" y="138" width="150" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="280" y="164">✨ Higgsfield</text>
+        <text x="280" y="181" font-weight="500" font-size="9.5">gera do zero</text>
+
+        <rect x="402" y="138" width="150" height="64" rx="10" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <text x="477" y="164">🎬 Novo</text>
+        <text x="477" y="181" font-weight="500" font-size="9.5">cena inédita</text>
+      </g>
+      <g stroke="currentColor" stroke-width="1.4">
+        <line x1="158" y1="60" x2="203" y2="60" marker-end="url(#arrow2)"/>
+        <line x1="355" y1="60" x2="400" y2="60" marker-end="url(#arrow2)"/>
+        <line x1="158" y1="170" x2="203" y2="170" marker-end="url(#arrow2)"/>
+        <line x1="355" y1="170" x2="400" y2="170" marker-end="url(#arrow2)"/>
+      </g>
+    </svg>
+    <figcaption>Ferramentas de natureza diferente — por isso dá pra somar as duas, sem uma substituir a outra.</figcaption>
+  </figure>
+
+  <table>
+    <tr><th>Onde entra</th><th>Melhora</th><th>Piora</th></tr>
+    <tr><td>Cena que você não filmou</td><td>Recurso visual sem gravar de novo</td><td>Risco de parecer artificial</td></tr>
+    <tr><td>Animação de conceito abstrato</td><td>Prende atenção num trecho só falado</td><td>Mais uma rodada de revisão</td></tr>
+    <tr><td>Vinheta de marca</td><td>Consistência entre vídeos</td><td>Gasta tempo que um corte seco resolveria</td></tr>
+  </table>
+
+  <div class="alert"><b>O limite</b>IA gerada demais ao lado de gravação real entrega a costura. Pontual soma; demais compete com o motivo de alguém assistir.</div>
+</section>
+
+<!-- PARTE 04 PRATICA -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Parte 06</span>Na prática: eu pedindo pro Claude editar</h2>
+
+  <div class="tip"><b>Antes de gravar</b>Viu um corte, zoom ou efeito legal em <strong>qualquer vídeo de qualquer canal</strong>? Manda o link ou o arquivo antes de mandar o seu material bruto — ele estuda o estilo e replica, ou chega bem perto.</div>
+
+  <p style="font-size:12px;color:var(--gray);margin:14px 0 -4px"><em>Exemplo ilustrativo de como a conversa acontece.</em></p>
+  <div class="convo">
+    <div class="msg you"><span class="who">Eu</span>Aqui está a gravação de hoje: tela, mic e rosto. 38 minutos. Antes de cortar, me dá o diagnóstico.</div>
+    <div class="msg ai"><span class="who">Claude</span>Transcrevi os 38 minutos. Achei 6 repetições de frase, 3 silêncios longos (o maior em 12:40) e sugiro abrir em 3 blocos. Posso seguir com o corte?</div>
+    <div class="msg you"><span class="who">Eu</span>Pode. Mas no 04:12 o zoom ficou rápido demais, e no 09:30 você cortou uma piada que eu queria manter — devolve ela.</div>
+    <div class="msg ai"><span class="who">Claude</span>Entendido. Ajustei o zoom pra ~1,8s só nesse trecho e devolvi a piada do 09:30. Quer que eu guarde essas duas preferências pra não errar de novo nos próximos vídeos?</div>
+    <div class="msg you"><span class="who">Eu</span>Guarda sim: zoom sempre em 1,8s, e nunca cortar parte engraçada mesmo que pareça "desnecessária".</div>
+    <div class="msg save">Claude salvou as 2 regras na skill de edição</div>
+    <div class="msg ai"><span class="who">Claude</span>Prontinho. Da próxima vez já aplico direto, sem você precisar pedir de novo.</div>
+  </div>
+
+  <div class="tip"><b>O pulo do gato</b>Não é o corte que compra o tempo — é pedir pra ele <strong>aprender e salvar a regra</strong>. Sem isso, você corrige a mesma coisa pra sempre; com isso, cada vídeo nasce melhor que o anterior.</div>
+
+  <h3>Biblioteca de prompts, pra copiar</h3>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div class="t"><b>Mande referências</b> do estilo que você gosta antes do material bruto.</div></div>
+    <div class="step"><div class="n">2</div><div class="t"><b>Deixe ele "assistir" primeiro</b> — diagnóstico, sem cortar nada.</div></div>
+    <div class="step"><div class="n">3</div><div class="t"><b>Só depois peça corte e efeito,</b> um pedido por vez.</div></div>
+  </div>
+
+  <h3>Prompt 1 · Mandar a referência</h3>
+  <div class="prompt"><div class="l">Antes de qualquer edição</div><pre>Aqui estão 2 vídeos de referência do estilo que eu gosto (ritmo de corte, zoom, PiP do rosto).
+
+Antes de mexer no meu material, assista a transcrição dos dois e me diga, em tópicos, qual é o padrão de edição que você percebeu — sem editar nada ainda, só o diagnóstico.</pre></div>
+  <p class="behind"><b>Por trás:</b> ele lê a transcrição dos 2 vídeos procurando o intervalo de tempo entre um corte e outro — o "ritmo" que você sente assistindo é, pra ele, um padrão numérico que dá pra medir e repetir.</p>
+
+  <h3>Prompt 2 · Diagnóstico do material bruto</h3>
+  <div class="prompt"><div class="l">Antes de cortar</div><pre>Aqui está a gravação bruta: tela, microfone e rosto em arquivos separados.
+
+Antes de cortar qualquer coisa, me entregue:
+1. a transcrição completa
+2. os trechos onde eu repeti a frase ou gaguejei
+3. os silêncios maiores que 2 segundos
+4. uma sugestão de estrutura (abertura, blocos, fechamento)
+
+Não edite nada ainda, só me devolva esse diagnóstico.</pre></div>
+  <p class="behind"><b>Por trás:</b> ele transforma o áudio em texto com o horário exato de cada palavra (não só o que foi dito) e varre essa lista procurando repetição e lacuna de silêncio maior que o normal.</p>
+
+  <h3>Prompt 3 · Sincronia e corte</h3>
+  <div class="prompt"><div class="l">Primeira edição</div><pre>Sincronize tela, microfone e rosto.
+
+Corte as repetições e gagueiras da lista que você levantou. Deixe pelo menos 0,65s de silêncio depois do início da última palavra antes de cortar, pra não comer o fim da fala.</pre></div>
+  <p class="behind"><b>Por trás:</b> ele corta diretamente no arquivo de vídeo original nos tempos que encontrou, aplicando essa folga de 0,65s como margem de segurança antes de cada corte.</p>
+
+  <h3>Prompt 4 · Vídeo dinâmico (zoom + PiP)</h3>
+  <div class="prompt"><div class="l">Deixar com ritmo</div><pre>Adicione zoom que segue o cursor do mouse nos momentos de tela cheia, entrando e saindo devagar (~1,5s).
+
+Coloque meu rosto num círculo no canto inferior direito, sincronizado com o áudio. Se não tiver vídeo do rosto num trecho, tire o círculo da tela — nunca deixe travado ou congelado.</pre></div>
+  <p class="behind"><b>Por trás:</b> ele segue a posição do cursor registrada na gravação pra decidir onde a lente "olha", e roda detecção facial frame a frame pra manter o círculo do rosto sempre centralizado sozinho.</p>
+
+  <h3>Prompt 5 · Revisão cirúrgica</h3>
+  <div class="prompt"><div class="l">Ajuste fino</div><pre>No trecho de [minuto inicial] a [minuto final], o zoom está rápido demais. Deixe mais lento e ajuste só essa parte, sem re-renderizar o vídeo inteiro.</pre></div>
+  <p class="behind"><b>Por trás:</b> ele localiza só o trecho dentro do intervalo pedido e re-renderiza apenas ele, reaproveitando o resto do arquivo que já estava pronto.</p>
+
+  <h3>Prompt 6 · Ensinar a skill (o mais importante)</h3>
+  <div class="prompt"><div class="l">Depois de qualquer ajuste aprovado</div><pre>Aprenda com esse ajuste que acabamos de fazer e salve como regra na minha skill de edição, pra aplicar sozinho nos próximos vídeos sem eu precisar pedir de novo.</pre></div>
+  <p class="behind"><b>Por trás:</b> ele escreve a regra num arquivo de instruções que vai ler antes de começar o próximo vídeo — é esse arquivo que cresce vídeo após vídeo e evita repetir o mesmo pedido pra sempre.</p>
+
+  <h3>O Prompt Master — tudo isso junto, de uma vez</h3>
+  <div><span class="badge" style="margin:0 0 10px">o prompt que aparece no vídeo</span></div>
+  <div class="prompt master"><div class="l">Copiar e mandar com o material bruto</div><pre>Esse é o material bruto do vídeo que acabei de gravar: tela, microfone e rosto em arquivos separados.
+
+Edite nessa ordem:
+1. DIAGNÓSTICO — antes de cortar, transcreva tudo com timestamp e me liste repetições, gagueiras, silêncios maiores que 2s e uma sugestão de estrutura. Se em algum momento eu falar em voz alta "corta essa parte" ou algo assim, trate como instrução de edição, não como frase da transcrição.
+2. SINCRONIA — alinhe tela, microfone e rosto.
+3. CORTE — tire repetição, gagueira e silêncio longo da lista. Deixe pelo menos 0,65s de silêncio depois do início da última palavra antes de cortar.
+4. DINÂMICA — zoom seguindo o cursor nos momentos de tela cheia, entrando e saindo devagar (~1,5-1,8s). Meu rosto num círculo sincronizado com o áudio; sem vídeo de rosto, tire o círculo — nunca trave ou congele.
+5. CONFERÊNCIA — antes de bater o martelo em qualquer zoom ou corte de câmera, olhe o frame de verdade pra conferir a composição.
+6. PRIVACIDADE — borre informação sensível que aparecer na tela e confira com OCR se não dá mais pra ler.
+7. SOM — trilha e efeito discretos, só de fonte livre de direito.
+8. MOTION GRAPHICS — cards e títulos como animação de verdade, não só texto estático.
+
+Quando eu pedir ajuste, aplique só no trecho indicado e pergunte se quero salvar a preferência na minha skill de edição.</pre></div>
+</section>
+
+<!-- FECHAMENTO -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Fechamento</span>A pergunta que eu deixo em aberto</h2>
+
+  <div class="quest">
+    <div class="e">Agora é com você</div>
+    <div class="q">Isso substitui um editor de vídeo de verdade?</div>
+    <div class="s">Eu dei a minha visão no vídeo. Agora quero a sua, nos comentários.</div>
+  </div>
+
+  <div class="cta">
+    <img src="igor-miguel.png" alt="">
+    <div class="e">Método Demanda Infinita®</div>
+    <div class="t">Quer usar IA assim no seu negócio?</div>
+    <div class="s">Em 30 minutos eu olho o seu caso e te mostro por onde começar.</div>
+    <a class="btn" href="https://cal.com/igor-miguel/demanda-infinita?overlayCalendar=true" target="_blank" rel="noopener">Falar comigo →</a>
+  </div>
+
+  <footer>Ferramentas de terceiros (Claude, Higgsfield) mudam com frequência. As funcionalidades descritas refletem o uso em outubro de 2026.<br>Demanda Infinita®</footer>
+</section>
+
+<script>
+document.querySelectorAll('.prompt').forEach(function(p){
+  var pre = p.querySelector('pre'); if(!pre) return;
+  var b = document.createElement('button'); b.className = 'copy'; b.type = 'button'; b.textContent = 'Copiar';
+  b.addEventListener('click', function(){
+    var t = pre.innerText;
+    function ok(){ b.textContent = 'Copiado!'; setTimeout(function(){ b.textContent = 'Copiar'; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, fallback); } else { fallback(); }
+    function fallback(){ var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try{ document.execCommand('copy'); ok(); }catch(e){} document.body.removeChild(a); }
+  });
+  p.appendChild(b);
+});
+</script>
+</body>
+</html>
