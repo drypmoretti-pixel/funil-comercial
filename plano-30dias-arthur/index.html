@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano 30 Dias · Arthur</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root{
+    --green:#008E43; --green-light:#12B85E; --green-soft:#E3F1E8;
+    --bg:#F8F7F4; --card:#ECEAE5; --text:#111111; --gray:#6B6B6B; --line:#D8D5CE;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; background:var(--bg); color:var(--text);}
+  body{font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.55;}
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:700;}
+  .wrap{max-width:860px; margin:0 auto; padding:0 16px;}
+
+  /* capa */
+  .cover{min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover img{width:76px; height:76px; margin-bottom:34px;}
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  .cover h1{font-size:44px; line-height:1.08; font-weight:800; margin:12px 0 14px; letter-spacing:-.5px;}
+  .cover .sub{font-size:17px; color:var(--gray); max-width:560px;}
+  .cover .who{margin-top:46px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:40px; flex-wrap:wrap;}
+  .cover .who div span{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray);}
+  .cover .who div b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px;}
+
+  /* seções */
+  .sec{padding:40px 0 8px;}
+  .part-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  h2.section-title{font-size:25px; font-weight:800; margin:6px 0 6px; letter-spacing:-.3px;}
+  .lead{font-size:14.5px; color:#333; margin-bottom:16px; max-width:720px;}
+  h3{font-size:15px; font-weight:800; margin:0 0 8px;}
+
+  .card{background:var(--card); border-radius:12px; padding:16px 18px; margin-bottom:12px; break-inside:avoid;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .grid2 .card{margin-bottom:0;}
+  ul.clean{margin:0; padding-left:18px;}
+  ul.clean li{margin-bottom:5px;}
+
+  .reframe{border-left:4px solid var(--green); padding:6px 0 6px 16px; margin:18px 0; font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; line-height:1.35; break-inside:avoid;}
+  .tip{background:var(--green-soft); border-radius:12px; padding:14px 18px; margin:12px 0; break-inside:avoid;}
+  .tip b.t{display:block; color:var(--green); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:4px;}
+  .ssi{display:flex; gap:16px; align-items:center; background:var(--text); color:#fff; border-radius:12px; padding:14px 18px; margin-top:12px; break-inside:avoid;}
+  .ssi .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:22px; color:var(--green-light); white-space:nowrap;}
+  .ssi span{font-size:12.5px; color:#d6d6d6;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.8px; break-inside:avoid;}
+  th,td{border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top;}
+  th{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); font-weight:700;}
+  td:first-child{font-weight:700; width:28%;}
+
+  .opt{background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-top:8px; font-weight:600;}
+  .opt small{display:block; font-weight:500; color:var(--gray); font-size:11.5px; margin-top:2px;}
+  .label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray); font-weight:700; margin-bottom:6px; display:block;}
+
+  .banner{background:linear-gradient(120deg,#0d0d0d 0%,#1d1d1d 55%,#0c3d22 100%); color:#fff; border-radius:10px; aspect-ratio:1584/396; display:flex; flex-direction:column; justify-content:center; padding:0 6% 0 34%; margin-top:8px;}
+  .banner b{font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(14px,2.6vw,22px); line-height:1.2;}
+  .banner span{font-size:clamp(10px,1.5vw,12.5px); color:#bfe6cf; margin-top:6px;}
+
+  /* checklist */
+  .check{display:flex; gap:12px; align-items:flex-start; background:var(--card); border-radius:10px; padding:11px 14px; margin-bottom:8px; break-inside:avoid;}
+  .check .box{flex:0 0 17px; height:17px; border:2px solid var(--green); border-radius:4px; margin-top:2px; background:#fff;}
+  .check strong{display:block; font-size:13.5px;}
+  .check span{font-size:12.5px; color:#444;}
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; break-inside:avoid;}
+  .vs div{border-radius:10px; padding:10px 14px; font-size:12.5px;}
+  .vs .bad{background:#fff; border:1px solid var(--line); color:#555;}
+  .vs .good{background:var(--green-soft); border:1px solid #bfdcc9;}
+  .vs b{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px;}
+  .vs .bad b{color:#9a3b3b;} .vs .good b{color:var(--green);}
+
+  .metas{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; break-inside:avoid;}
+  .metas div{background:var(--text); color:#fff; border-radius:10px; padding:12px; }
+  .metas b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; color:var(--green-light);}
+  .metas span{font-size:11.5px; color:#d0d0d0;}
+
+  /* semanas */
+  .week{border:1px solid var(--line); background:#fff; border-radius:12px; padding:14px 18px; margin-bottom:12px; break-inside:avoid;}
+  .week .wh{display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:10px;}
+  .week .wh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:800;}
+  .week .wh span{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--green); font-weight:700; letter-spacing:1px; text-transform:uppercase; white-space:nowrap;}
+  .week ul{list-style:none; margin:0; padding:0;}
+  .week li{position:relative; padding-left:24px; margin-bottom:6px;}
+  .week li:before{content:''; position:absolute; left:0; top:3px; width:13px; height:13px; border:2px solid var(--green); border-radius:3px;}
+
+  /* moldes */
+  .molde{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:14px; background:#fff; break-inside:avoid;}
+  .molde .mh{background:var(--text); color:#fff; padding:11px 18px; display:flex; justify-content:space-between; gap:10px; align-items:baseline;}
+  .molde .mh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px;}
+  .molde .mh span{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--green-light); white-space:nowrap;}
+  .molde .mb{padding:14px 18px;}
+  .skel{font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.65; background:var(--bg); border-radius:8px; padding:12px 14px; white-space:pre-wrap; margin:8px 0;}
+  .ex{font-size:12.8px; border-left:3px solid var(--green); padding:2px 0 2px 12px; color:#333; margin-top:8px;}
+  .ex i{font-style:normal; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); display:block;}
+
+  /* diagrama base */
+  .flow{display:flex; align-items:stretch; gap:8px; margin:14px 0; flex-wrap:wrap; break-inside:avoid;}
+  .flow .node{flex:1 1 120px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px;}
+  .flow .node b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:13.5px; margin-bottom:2px;}
+  .flow .node.hl{background:var(--green); color:#fff; border-color:var(--green);}
+  .flow .arrow{align-self:center; color:var(--green); font-weight:800;}
+
+  .prompt{background:#141414; color:#e9e9e9; border-radius:10px; padding:12px 16px; font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.6; margin:8px 0 12px; white-space:pre-wrap; break-inside:avoid;}
+  .prompt b{color:var(--green-light); font-weight:700; display:block; margin-bottom:4px; font-size:10px; letter-spacing:1px; text-transform:uppercase;}
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0;}
+  ol.steps li{counter-increment:s; position:relative; padding:0 0 10px 40px; break-inside:avoid;}
+  ol.steps li:before{content:counter(s); position:absolute; left:0; top:0; width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-weight:800; font-size:12.5px; display:flex; align-items:center; justify-content:center;}
+
+  .paulo{background:var(--text); color:#eee; border-radius:14px; padding:20px 22px; break-inside:avoid;}
+  .paulo h3{color:#fff; font-size:17px;}
+  .paulo .part-tag{color:var(--green-light);}
+  .paulo ul{margin:8px 0 0; padding-left:18px;} .paulo li{margin-bottom:7px;}
+  .paulo b{color:#fff;}
+  .paulo .opt{background:#222; border-color:#333; color:#fff;}
+
+  .foot{margin-top:36px; padding:16px 0 40px; border-top:1px solid var(--line); font-size:11px; color:var(--gray); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+  /* web: downloads + checklist interativo */
+  .dl{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; background:var(--green); color:#fff; text-decoration:none; font-weight:700; font-size:13.5px; padding:12px 18px; border-radius:10px; border:0; cursor:pointer; font-family:'Inter',sans-serif;}
+  .btn:hover{background:var(--green-light);}
+  .btn.ghost{background:#fff; color:var(--text); border:1px solid var(--line);}
+  .btn.ghost:hover{border-color:var(--green); color:var(--green);}
+  .btn svg{width:16px; height:16px; flex:0 0 16px;}
+  .dlbox{background:var(--text); color:#fff; border-radius:14px; padding:18px 20px; margin:16px 0; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .dlbox b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; display:block;}
+  .dlbox span{font-size:12.5px; color:#cfcfcf;}
+  .check,.week li{cursor:pointer; user-select:none; transition:opacity .15s;}
+  .check:hover .box{background:var(--green-soft);}
+  .check.done .box,.week li.done:before{background:var(--green); border-color:var(--green);}
+  .check .box{position:relative;}
+  .check.done .box:after,.week li.done:after{content:''; position:absolute; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);}
+  .check.done .box:after{left:4px; top:1px;}
+  .week li.done:after{left:5px; top:5px;}
+  .check.done strong,.week li.done{text-decoration:line-through; text-decoration-color:rgba(0,0,0,.35); opacity:.6;}
+  .progress{position:sticky; top:0; z-index:5; background:rgba(248,247,244,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line);}
+  .progress .in{max-width:860px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; gap:12px; font-size:12px;}
+  .progress .bar{flex:1; height:6px; background:var(--card); border-radius:99px; overflow:hidden;}
+  .progress .bar i{display:block; height:100%; width:0; background:var(--green); transition:width .25s;}
+  .progress b{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green); white-space:nowrap;}
+  .progress button{background:none; border:0; color:var(--gray); font-size:11px; cursor:pointer; text-decoration:underline;}
+
+  @media (max-width:640px){
+    .grid2,.vs{grid-template-columns:1fr;}
+    .metas{grid-template-columns:1fr 1fr;}
+    .cover h1{font-size:34px;}
+    td:first-child{width:36%;}
+  }
+
+  @media print{
+    .no-print{display:none !important;}
+    @page{size:A4; margin:13mm 14mm 14mm;}
+    html,body{background:#fff; font-size:12.6px;}
+    .wrap{max-width:none; padding:0;}
+    .cover{min-height:268mm; padding:0;}
+    .sec{padding-top:0; break-before:page;}
+    .sec.cont{break-before:auto; padding-top:22px;}
+    .grid2{grid-template-columns:1fr 1fr;}
+    .vs{grid-template-columns:1fr 1fr;}
+    .metas{grid-template-columns:repeat(4,1fr);}
+    .banner{padding-left:34%;}
+    .banner b{font-size:17px;} .banner span{font-size:11px;}
+    .card,.week,.molde,.check,.tip,.prompt,.paulo{break-inside:avoid;}
+    table{break-inside:auto;} tr{break-inside:avoid;}
+    h2.section-title,h3{break-after:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="progress no-print"><div class="in"><span>Seu progresso</span><div class="bar"><i id="pbar"></i></div><b id="pnum">0/0</b><button id="preset" type="button">zerar</button></div></div>
+<div class="wrap">
+
+  <!-- CAPA -->
+  <section class="cover">
+    <img src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>Plano de ação:<br>30 dias no LinkedIn</h1>
+    <div class="sub">Do conhecimento de chão de fábrica à reunião marcada. O que fazer em cada semana, o que fazer todo dia e como usar IA sem perder a sua voz.</div>
+    <div class="who">
+      <div><span>Preparado para</span><b>Arthur</b></div>
+      <div><span>Com adaptação para</span><b>Paulo</b></div>
+      <div><span>Data</span><b>Outubro de 2026</b></div>
+    </div>
+    <div class="dl no-print">
+      <a class="btn" href="skill-conteudo-linkedin.md" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill de conteúdo</a>
+      <a class="btn ghost" href="plano-30-dias-arthur.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar o plano em PDF</a>
+    </div>
+  </section>
+
+  <!-- 01 DIAGNÓSTICO -->
+  <section class="sec">
+    <div class="part-tag">Parte 01</div>
+    <h2 class="section-title">Onde você está hoje</h2>
+    <p class="lead">Arthur, você tem o que é mais difícil de copiar: décadas dentro de fábrica, vendo de perto por que a peça não sai certa. Falta fazer esse conhecimento chegar a quem tem esse problema hoje.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O que você já tem</h3>
+        <ul class="clean">
+          <li>Engenharia eletrônica e uma carreira que começou na válvula e no semicondutor, com tecnologia aprendida fora e trazida pro Brasil</li>
+          <li>General Motors, no desenvolvimento de fornecedores: estamparia, funilaria, usinagem, forjaria</li>
+          <li>Indústria automotiva e farmacêutica, com especialização em qualidade: ISO, TS, Lean, Six Sigma</li>
+          <li>Consultor desde 2007, com consultoria própria desde 2017</li>
+          <li>Um jeito claro de começar: diagnóstico com visita à fábrica, depois plano e projeto</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>O que travou até aqui</h3>
+        <ul class="clean">
+          <li>As indicações, que enchiam a agenda, foram sumindo com o tempo</li>
+          <li>O curso que você montou na DMS deu muito trabalho e não vendeu</li>
+          <li>Os posts foram poucos, não deram retorno, e veio a dúvida: “isso funciona?”</li>
+          <li>Uma dúvida de valores: “se eu falar a verdade, será que dá certo?”</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="reframe">Não é postar mais.<br>É postar o que você viu na fábrica, pra quem tem esse problema hoje, e dar a essa pessoa um próximo passo.</div>
+
+    <div class="tip"><b class="t">Sobre a sua pergunta da reunião</b>Falar a verdade é exatamente o que funciona. Ninguém copia a história de quem esteve dentro da GM resolvendo problema de fornecedor. Nada neste plano pede pra você inventar resultado, número ou cliente. Se não aconteceu, não vai pro post.</div>
+
+    <div class="ssi"><div class="n">SSI: ?</div><span>Ainda não temos o seu SSI, a nota de 0 a 100 que o LinkedIn dá pro seu uso da rede. É a tarefa do Dia 1: abra <b>linkedin.com/sales/ssi</b>, tire um print e guarde. No Dia 30 a gente compara.</span></div>
+
+    <!-- 02 ICP -->
+    <div class="sec">
+      <div class="part-tag">Parte 02</div>
+      <h2 class="section-title">Pra quem você vai falar</h2>
+      <p class="lead">Este é o retrato que tiramos da conversa. Cada post, comentário e convite deste plano é feito pensando nessa pessoa. Ajuste o que não bater com a sua realidade.</p>
+      <table>
+        <tr><th>O quê</th><th>Quem é</th></tr>
+        <tr><td>Empresa</td><td>Indústria média e grande: fabricante de peças, fornecedor de montadora, quem exporta. Também empresa de serviço com processo que se repete todo dia.</td></tr>
+        <tr><td>Quem decide</td><td>Na média empresa, o dono ou o diretor. Na grande, diretor industrial ou gerente de qualidade, engenharia ou operações.</td></tr>
+        <tr><td>O que ele sente</td><td>“O rejeito não baixa.” “Estou atrasando entrega.” “O custo subiu e não sei onde.” “Meu time não tem braço pra tocar esse projeto.” “A auditoria do cliente está chegando.”</td></tr>
+        <tr><td>Retrato ideal</td><td>A indústria de energia renovável que fornece pras maiores montadoras e exporta, que você mesmo citou como “o cliente típico que me interessa”.</td></tr>
+        <tr><td>Fora do foco agora</td><td>A pequena empresa familiar. Como você disse: precisa mais de ajuda e resiste mais a receber. Ela não sai da lista, mas não é com ela que você começa.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 03 PERFIL -->
+  <section class="sec">
+    <div class="part-tag">Parte 03 · Semana 1</div>
+    <h2 class="section-title">Arrumar a vitrine</h2>
+    <p class="lead">Quem lê um post seu ou recebe seu convite clica no seu perfil antes de qualquer coisa. Em 5 segundos ele precisa entender o que você resolve e pra quem. Isso vem antes do primeiro post.</p>
+
+    <div class="card">
+      <h3>Headline (a frase embaixo do seu nome)</h3>
+      <p>Fórmula: <b>o que você resolve + pra quem | sua prova | sua especialidade</b>. Escolha uma e ajuste com as suas palavras:</p>
+      <div class="opt">Ajudo indústrias a reduzir rejeito, atraso e custo de produção | Ex-General Motors (desenvolvimento de fornecedores) | Qualidade · Lean · Six Sigma<small>A mais direta: o resultado vem primeiro.</small></div>
+      <div class="opt">Eu entro na fábrica e acho o desperdício que a rotina esconde | Consultor de qualidade e processos | Ex-GM<small>A mais pessoal: descreve o que você faz no diagnóstico.</small></div>
+      <div class="opt">Consultoria em qualidade e processos para indústria | Menos rejeito, menos desperdício, entrega no prazo | Engenheiro, ex-GM<small>A mais clássica: pra quem prefere um tom mais sóbrio.</small></div>
+    </div>
+
+    <div class="card">
+      <h3>Capa (a imagem atrás da sua foto)</h3>
+      <p>Tamanho 1584 × 396 px. Deixe o lado esquerdo livre, porque a sua foto cobre essa parte. Uma frase de promessa e uma linha do que você faz. Dá pra montar no Canva, no modelo “Capa do LinkedIn”.</p>
+      <div class="banner"><b>Menos rejeito. Menos desperdício.<br>Entrega no prazo.</b><span>Consultoria em qualidade e processos para indústria</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Sobre (o texto do seu perfil), em 5 blocos</h3>
+      <div class="skel">1. A dor, na língua do cliente
+   "O rejeito caiu no mês passado. Neste mês voltou. E ninguém sabe dizer por quê."
+2. Quem é você, com prova
+   Engenheiro, General Motors, qualidade na indústria automotiva e farmacêutica.
+3. Como você trabalha
+   Diagnóstico com visita à fábrica → plano e cronograma → implantação.
+4. Pra quem é
+   Indústria média e grande que quer reduzir rejeito, atraso e custo.
+5. Como falar com você
+   "Me chama por mensagem aqui no LinkedIn."</div>
+    </div>
+
+    <h3 style="margin-top:18px">Checklist da vitrine</h3>
+    <div class="check"><div class="box"></div><div><strong>Foto</strong><span>Rosto visível, fundo neutro, luz de janela. Pode ser do celular.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Campo “Setor” do perfil</strong><span>Na edição da apresentação, confira se está no seu setor real. Esse erro já apareceu em vários perfis e confunde o LinkedIn sobre quem você é.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Experiência na GM e na sua consultoria</strong><span>2 ou 3 linhas sobre o que você fazia, não só o cargo. Ex.: “ia ao fornecedor descobrir por que a peça não saía certa e ajudava a organizar o processo”.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Destaques</strong><span>Depois do primeiro post, fixe ele lá. Quem visita o perfil já vê quem você é.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Print do SSI no Dia 1</strong><span>linkedin.com/sales/ssi. Guarde a imagem.</span></div></div>
+  </section>
+
+  <!-- 04 ROTINA -->
+  <section class="sec">
+    <div class="part-tag">Parte 04 · Todo dia útil</div>
+    <h2 class="section-title">A rotina diária: 20 a 30 minutos</h2>
+    <p class="lead">Na reunião, o Igor mostrou como um comentário faz o post viajar de rede em rede. A rotina usa o mesmo efeito, só que a seu favor: cada comentário seu em post alheio leva o seu nome pra rede daquela pessoa.</p>
+
+    <div class="check"><div class="box"></div><div><strong>Comentar em 5 a 10 posts do seu público</strong><span>Posts de gerentes de qualidade, diretores industriais, donos de indústria. Comentário de 2 ou 3 linhas com experiência sua, não “parabéns”.</span></div></div>
+    <div class="vs">
+      <div class="bad"><b>Comentário que some</b>“Excelente reflexão, parabéns pelo post!”</div>
+      <div class="good"><b>Comentário que traz visita ao perfil</b>“Vi isso acontecer num fornecedor quando eu estava na GM: [o que você viu] e o que resolveu foi [o que vocês fizeram].” <i style="color:#666">(sempre com um caso real seu)</i></div>
+    </div>
+    <div class="check" style="margin-top:10px"><div class="box"></div><div><strong>Conectar com 5 a 10 pessoas do perfil certo</strong><span>Na busca do LinkedIn, digite o cargo (ex.: “gerente de qualidade”) e filtre por Pessoas e pelo setor. Convite com uma linha de contexto, sem vender nada.</span></div></div>
+    <div class="prompt"><b>Modelo de nota de convite</b>Olá, [nome]. Sou engenheiro de qualidade, passei pela GM no desenvolvimento de fornecedores. Acompanho o setor de [setor] e gostaria de ter você na minha rede.</div>
+    <div class="check"><div class="box"></div><div><strong>Responder todo comentário e mensagem no mesmo dia</strong><span>No dia de post, fique por perto na primeira hora respondendo. Resposta gera conversa, e conversa faz o post andar.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Dia de post: publicar entre 7h e 9h ou entre 17h e 19h</strong><span>Segunda, quarta e sexta. Nos outros dias, só a rotina.</span></div></div>
+
+    <h3 style="margin-top:18px">Metas do mês (de esforço, que dependem só de você)</h3>
+    <div class="metas">
+      <div><b>110 a 220</b><span>pessoas certas novas na rede</span></div>
+      <div><b>110 a 220</b><span>comentários em posts do seu público</span></div>
+      <div><b>10</b><span>posts publicados</span></div>
+      <div><b>1</b><span>material gratuito no ar</span></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--gray);margin-top:8px">Conta: 5 a 10 por dia × ~22 dias úteis. Resultado de reunião vem dessas quatro coisas feitas juntas e com constância.</p>
+  </section>
+
+  <!-- 05 CALENDÁRIO -->
+  <section class="sec">
+    <div class="part-tag">Parte 05</div>
+    <h2 class="section-title">O mês, semana a semana</h2>
+    <p class="lead">Marque cada item quando fizer. A rotina diária da Parte 04 vale em todas as semanas.</p>
+
+    <div class="week">
+      <div class="wh"><b>Semana 1 · Vitrine e matéria-prima</b><span>Dias 1 a 7</span></div>
+      <ul>
+        <li>Dia 1: print do SSI</li>
+        <li>Trocar headline, capa, foto e “Sobre” (Parte 03)</li>
+        <li>Gravar os 5 primeiros áudios da base de conhecimento (Parte 07)</li>
+        <li>Começar a rotina diária: comentar e conectar</li>
+        <li>1 post de apresentação, no Molde 2: a sua história, da oficina do seu pai até a fábrica</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 2 · Ligar a máquina de conteúdo</b><span>Dias 8 a 14</span></div>
+      <ul>
+        <li>Montar o projeto no Claude com a skill e a base de conhecimento (Parte 07)</li>
+        <li>Gravar os outros 5 áudios</li>
+        <li>3 posts: segunda, a dor espelhada (Molde 1); quarta, uma história de chão de fábrica (Molde 2); sexta, uma ferramenta sem jargão (Molde 3)</li>
+        <li>Fixar o post de apresentação nos Destaques</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 3 · O primeiro material gratuito</b><span>Dias 15 a 21</span></div>
+      <ul>
+        <li>Escolher e montar a isca (sugestão na Parte 06). O curso que você fez na DMS pode virar matéria-prima</li>
+        <li>3 posts, sendo 1 de captura (Molde 4) com o pedido de comentário dentro da imagem</li>
+        <li>Mandar o material por mensagem pra quem comentou, junto com uma pergunta sobre a fábrica dele</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 4 · Da conversa à reunião</b><span>Dias 22 a 30</span></div>
+      <ul>
+        <li>3 posts (repita o molde que trouxe mais comentário de gente do seu público)</li>
+        <li>Chamar pra conversa quem baixou o material ou comentou 2 vezes ou mais: uma pergunta sobre o processo dele e um convite pra 20 minutos</li>
+        <li>Dia 30: novo print do SSI e comparação com o Dia 1</li>
+        <li>Listar os 3 posts que trouxeram mais gente do seu público e levar pra revisão com o time Demanda Infinita</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 06 MOLDES -->
+  <section class="sec">
+    <div class="part-tag">Parte 06</div>
+    <h2 class="section-title">Os 4 moldes de post</h2>
+    <p class="lead">Você não precisa começar do zero toda vez. Escolha o molde, preencha os colchetes com uma história sua e ajuste no seu jeito de falar. A skill (Parte 07) já sabe esses 4 moldes.</p>
+
+    <div class="tip"><b class="t">Regras que valem pra todos</b>Começo de no máximo 2 linhas, porque é o que aparece antes do “ver mais”. Parágrafos de 1 a 3 linhas. Uma ideia por post. Toda sigla explicada (Lean, Six Sigma, PPM). Todo fato é seu. Link nunca no texto, só no primeiro comentário. De 1 a 3 hashtags. E nada de “comente”, “curta” ou “compartilhe” no texto: o LinkedIn derruba o alcance de post que pede interação na legenda.</div>
+
+    <div class="molde">
+      <div class="mh"><b>Molde 1 · A dor espelhada</b><span>Atrai · segunda</span></div>
+      <div class="mb">
+        <p>O leitor se reconhece na primeira linha e pensa “isso é comigo”.</p>
+        <div class="skel">[Situação que ele vive, sem julgar]
+[O que ele sente e ainda não deu nome]
+[Por que isso acontece: 2 a 4 linhas, com a sua experiência]
+[O que olhar primeiro: 3 itens]
+[Frase de fecho curta]</div>
+        <div class="ex"><i>Exemplo de começo</i>O rejeito caiu no mês passado. Neste mês voltou. E ninguém na fábrica sabe dizer por quê.</div>
+      </div>
+    </div>
+
+    <div class="molde">
+      <div class="mh"><b>Molde 2 · A história de chão de fábrica</b><span>Autoridade · quarta</span></div>
+      <div class="mb">
+        <p>É o molde mais forte que você tem, porque ninguém mais viveu essas histórias.</p>
+        <div class="skel">Na [empresa ou "num fornecedor de ..."], [o problema].
+Todo mundo achava que era [a causa óbvia].
+Não era. Era [a causa real].
+[O que você fez: 3 a 5 linhas]
+[O que mudou, com número só se for real]
+[A lição pro leitor em 1 linha]</div>
+        <div class="ex"><i>Exemplo de começo</i>Na GM, eu não resolvia problema de fornecedor por e-mail. Eu ia até a fábrica dele.</div>
+        <div class="ex"><i>Exemplo de começo (post de apresentação)</i>Eu era menino quando meu pai trouxe pra casa uma das primeiras televisões do Brasil, pra testar.</div>
+      </div>
+    </div>
+
+    <div class="molde">
+      <div class="mh"><b>Molde 3 · A ferramenta sem jargão</b><span>Ensina · sexta</span></div>
+      <div class="mb">
+        <p>Explica um método como se o leitor nunca tivesse entrado numa fábrica. Quem entende rápido confia em quem explicou.</p>
+        <div class="skel">[A ferramenta em 1 frase simples]
+[Quando usar: o sintoma que aparece na empresa]
+[Passo a passo: 3 a 5 itens]
+[Um exemplo seu]
+[O erro mais comum de quem aplica]</div>
+        <div class="ex"><i>Exemplo de começo</i>Lean, explicado pra quem nunca entrou numa fábrica: é parar de pagar por aquilo que o cliente não paga.</div>
+      </div>
+    </div>
+
+    <div class="molde">
+      <div class="mh"><b>Molde 4 · O post de captura</b><span>Gera contato · 1 a cada 3</span></div>
+      <div class="mb">
+        <p>Entrega um material gratuito em troca de um comentário. O pedido mora <b>na imagem</b>, nunca no texto.</p>
+        <div class="skel">[Começo: a dor em 2 linhas]
+[Pra quem é: 1 linha]
+Estou liberando o material completo de graça 👇
+[Valor de verdade no texto: 3 a 5 itens que já ajudam sozinhos]
+[Fecho curto]
+
+IMAGEM: título do material + "Comente TOUR"</div>
+        <p style="margin-top:8px"><b>Depois de publicar:</b> mande o link por mensagem a cada pessoa que comentou, com uma pergunta sobre a fábrica dela. É aí que começa a conversa.</p>
+        <p><b>Sugestão de isca:</b> <b>TOUR</b>, “O que eu olho nos primeiros 30 minutos dentro de uma fábrica”. É o seu diagnóstico em forma de checklist, coisa que só quem fez centenas de visitas consegue escrever. Outras opções: <b>REJEITO</b> (de onde vem o rejeito que o dono não vê) ou uma parte do curso que você montou na DMS.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:18px">10 temas pra começar</h3>
+    <table>
+      <tr><th>Molde</th><th>Tema</th></tr>
+      <tr><td>2 · História</td><td>O que a oficina do meu pai me ensinou e que eu usei a carreira inteira</td></tr>
+      <tr><td>2 · História</td><td>Por que eu ia até o fornecedor em vez de mandar e-mail</td></tr>
+      <tr><td>1 · Dor</td><td>Rejeito não é problema de inspeção, é problema de processo</td></tr>
+      <tr><td>1 · Dor</td><td>A empresa do filho do dono: quem mais precisa de ajuda é quem mais resiste</td></tr>
+      <tr><td>3 · Ferramenta</td><td>Lean em uma frase, sem sigla</td></tr>
+      <tr><td>3 · Ferramenta</td><td>Os 5 porquês: a pergunta que acha a causa de verdade</td></tr>
+      <tr><td>1 · Dor</td><td>O certificado ISO na parede e o processo no chão de fábrica</td></tr>
+      <tr><td>2 · História</td><td>Quando o Brasil foi aprender semicondutor lá fora: o que isso ensina sobre inovação</td></tr>
+      <tr><td>3 · Ferramenta</td><td>Serviço também tem linha de produção: Lean fora da fábrica</td></tr>
+      <tr><td>4 · Captura</td><td>O que eu olho nos primeiros 30 minutos dentro de uma fábrica (TOUR)</td></tr>
+    </table>
+  </section>
+
+  <!-- 07 BASE + SKILL -->
+  <section class="sec">
+    <div class="part-tag">Parte 07</div>
+    <h2 class="section-title">A base de conhecimento e a skill</h2>
+    <p class="lead">A IA sozinha escreve o que qualquer pessoa escreveria. O que faz o post soar como o Arthur é o que você dá pra ela ler antes.</p>
+
+    <div class="grid2">
+      <div class="card"><h3>A base de conhecimento é a gaveta</h3><p style="margin:0">Uma gaveta com as suas histórias, os seus casos, a sua oferta e o seu jeito de falar. Quando você pede um post sobre rejeito, a IA abre a gaveta e puxa o caso do fornecedor que você contou num áudio, não um texto genérico da internet.</p></div>
+      <div class="card"><h3>A skill é o manual</h3><p style="margin:0">Um arquivo de texto (o botão pra baixar está logo abaixo) que ensina a IA a escrever no método: os moldes, as regras do LinkedIn, o que nunca fazer. É o mesmo tipo de arquivo que a gente usa com os nossos clientes, numa versão genérica pra você preencher.</p></div>
+    </div>
+
+    <div class="dlbox no-print"><div><b>Skill de conteúdo LinkedIn</b><span>Arquivo .md: abra, copie tudo e cole nas instruções do projeto no Claude.</span></div><a class="btn" href="skill-conteudo-linkedin.md" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill</a></div>
+
+    <div class="flow">
+      <div class="node"><b>Base</b>suas histórias, casos e oferta</div>
+      <div class="arrow">+</div>
+      <div class="node"><b>Skill</b>o manual de como escrever</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>Claude</b>escreve o rascunho</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Você</b>revisa e publica</div>
+    </div>
+
+    <h3 style="margin-top:6px">O que colocar na gaveta</h3>
+    <div class="check"><div class="box"></div><div><strong>1. A transcrição da nossa reunião</strong><span>Já está pronta. A gente manda no nosso grupo do WhatsApp.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>2. O seu perfil do LinkedIn em PDF</strong><span>No seu perfil, botão “Mais” (ou “Recursos”) → “Salvar em PDF”.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>3. Dez histórias gravadas em áudio, de 3 a 5 minutos cada</strong><span>Falar é mais fácil que escrever. Use o roteiro de perguntas abaixo.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>4. Seus casos, um por ficha</strong><span>Empresa ou setor (o nome pode ficar de fora), o problema, o que você fez, quanto tempo levou, o resultado. Número só se você tiver.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>5. A sua oferta</strong><span>O que você vende (diagnóstico, projeto de 1 a 2 meses, programa de 6 a 12 meses), como funciona e a faixa de preço. O preço é só pra IA entender o porte; ele não vai pro post.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>6. O material que já existe</strong><span>O curso da DMS, apresentações, propostas antigas, checklists, relatórios de diagnóstico, sempre sem dado confidencial de cliente.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>7. As suas opiniões</strong><span>O que o mercado faz de errado em qualidade e Lean, do que você discorda. Opinião firme é o que faz um post ser lembrado.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>8. O seu jeito de falar</strong><span>3 a 5 textos seus (posts, e-mails) e uma lista de palavras que você nunca usaria.</span></div></div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Roteiro pros 10 áudios</h3>
+      <ol style="margin:0;padding-left:20px">
+        <li>Como a oficina do seu pai virou engenharia na sua vida?</li>
+        <li>O projeto de semicondutores: o que vocês foram aprender fora e trouxeram pro Brasil?</li>
+        <li>Na GM, qual fornecedor mais te marcou? Qual era o problema e o que você achou lá dentro?</li>
+        <li>Qual foi o desperdício mais escondido que você já encontrou numa fábrica?</li>
+        <li>O que você olha nos primeiros 30 minutos de uma visita a uma fábrica?</li>
+        <li>Um projeto de Lean ou Six Sigma do começo ao fim: como era antes, o que você fez, como ficou.</li>
+        <li>O que muda quando você aplica essas ferramentas numa empresa de serviço?</li>
+        <li>A empresa do filho do dono: um caso de resistência e o que destravou (ou não destravou).</li>
+        <li>Quando vale uma empresa grande contratar consultor em vez de aumentar o próprio time?</li>
+        <li>Qual erro de qualidade você vê se repetir desde o começo da sua carreira?</li>
+      </ol>
+      <p style="margin:10px 0 0;font-size:12.5px;color:#444">Pra virar texto: grave direto no app do Claude pelo botão de microfone, que já transcreve, ou mande os áudios no nosso grupo que a gente transcreve e devolve.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="part-tag">Parte 07 · Continuação</div>
+    <h2 class="section-title">Como montar no Claude</h2>
+    <p class="lead">Leva uns 15 minutos e só precisa ser feito uma vez. Os nomes dos botões podem mudar um pouco com as atualizações do Claude.</p>
+    <ol class="steps">
+      <li><b>Entre em claude.ai</b> com o seu e-mail.</li>
+      <li><b>No menu lateral, vá em “Projetos” → “Criar projeto”.</b> Dê o nome “LinkedIn · Arthur”.</li>
+      <li><b>Em “Instruções do projeto”, cole o texto inteiro da skill</b> (o arquivo <i>skill-conteudo-linkedin.md</i>, que você baixa no botão abaixo).</li>
+      <li><b>Em “Arquivos” do projeto, suba a gaveta:</b> a transcrição da reunião, o PDF do perfil, os áudios já em texto, as fichas de caso.</li>
+      <li><b>Primeira conversa: peça pro Claude preencher a ficha da skill</b> com o que está na base (prompt 1 abaixo). Copie a ficha que ele devolver e cole nas instruções, no lugar dos campos [PREENCHER].</li>
+      <li><b>A partir daí, é pedir post</b> (prompts 2 e 3). A IA escreve o rascunho, mas o texto é seu: leia em voz alta e, se não soar como você falaria, mude.</li>
+    </ol>
+
+    <div class="dlbox no-print"><div><b>Passo 3 pede a skill</b><span>Se ainda não baixou, é este arquivo.</span></div><a class="btn" href="skill-conteudo-linkedin.md" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill</a></div>
+
+    <div class="prompt"><b>Prompt 1 · Preencher a ficha</b>Leia todos os arquivos deste projeto e preencha a seção "Ficha do especialista" da skill (todos os campos [PREENCHER]). Use só o que está nos arquivos. O que não estiver lá, deixe como [A CONFIRMAR] e me faça as perguntas no final.</div>
+    <div class="prompt"><b>Prompt 2 · Post da semana</b>Escreva o post de [segunda] no Molde [1 · Dor espelhada] sobre [rejeito que volta todo mês]. Use uma história minha da base. Se não houver história que sirva, me pergunte antes de escrever.</div>
+    <div class="prompt"><b>Prompt 3 · Post de captura + imagem</b>Escreva um post de captura (Molde 4) pra isca TOUR. Depois, me dê o texto da imagem: título do material e a frase "Comente TOUR". Confira o checklist de captura da skill antes de me entregar.</div>
+    <div class="prompt"><b>Prompt 4 · Comentários do dia</b>Vou colar 5 posts de pessoas do meu público. Sugira um comentário de 2 a 3 linhas pra cada um, usando a minha experiência da base. Nada de elogio vazio.</div>
+  </section>
+
+  <!-- 08 PAULO -->
+  <section class="sec">
+    <div class="part-tag">Parte 08</div>
+    <h2 class="section-title">E o Paulo?</h2>
+    <p class="lead">O plano é o mesmo, com quatro ajustes. A vitrine, a rotina diária, os moldes e a base de conhecimento valem igual.</p>
+    <div class="paulo">
+      <div class="part-tag">Adaptação</div>
+      <h3>Paulo: o que muda</h3>
+      <ul>
+        <li><b>Comece pelo perfil pessoal, não pela DMS.</b> Nos 30 dias, quem aparece é o Paulo. A DMS entra depois, puxada pelo seu nome.</li>
+        <li><b>Público:</b> executivos e líderes de média e grande empresa, e quem contrata desenvolvimento pra eles (CEO, diretoria, RH).</li>
+        <li><b>A palavra “mentoria” fica fora do começo do post.</b> Você mesmo disse que ela se desgastou. Fale do problema: a promoção que não vem, o executivo depois dos 50, o líder que enfrenta a dúvida de carreira sozinho.</li>
+        <li><b>A sua prova vai na headline:</b> de trainee a vice-presidente na C&amp;A, diretor de RH, conselho, mentor de presidente de empresa.</li>
+        <li><b>Você já posta 2 vezes por semana em carrossel.</b> Mantenha o carrossel, que é o formato que mais segura leitura hoje. O ajuste é tirar qualquer pedido de comentário do texto (vai pra imagem) e somar a rotina diária de comentários e conexões, que é o que leva o post a gente fora dos grupos.</li>
+      </ul>
+      <div class="opt" style="margin-top:14px">Ajudo executivos a destravar a carreira e liderar melhor | De trainee a vice-presidente na C&amp;A | Ex-diretor de RH | Sócio-fundador da DMS<small style="color:#aaa">Sugestão de headline, pra ajustar com as suas palavras.</small></div>
+    </div>
+
+    <!-- 09 PRÓXIMOS PASSOS -->
+    <div class="sec cont">
+      <div class="part-tag">Parte 09</div>
+      <h2 class="section-title">Próximos passos</h2>
+      <ol class="steps" style="margin-top:12px">
+        <li><b>Mandar no grupo o link do seu perfil e o print do SSI.</b> É com isso que a gente acompanha a evolução do Dia 1 ao Dia 30.</li>
+        <li><b>Começar a Semana 1 já.</b> A vitrine e a rotina diária não dependem de nada.</li>
+        <li><b>Gravar os primeiros áudios</b> do roteiro da Parte 07 e mandar no grupo.</li>
+        <li><b>Na nossa próxima conversa</b>, a gente mostra como pode acompanhar ou executar esse plano junto com vocês.</li>
+      </ol>
+    </div>
+
+    <div class="foot"><span>Plano de Ação · 30 dias no LinkedIn · Arthur e Paulo</span><span>Demanda Infinita® · Outubro de 2026</span></div>
+  </section>
+
+</div>
+<script>
+(function(){
+  var KEY='plano30-arthur-v1', st={};
+  try{ st=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ st={}; }
+  var items=[].slice.call(document.querySelectorAll('.check, .week li'));
+  var bar=document.getElementById('pbar'), num=document.getElementById('pnum');
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+  function render(){
+    var n=0;
+    items.forEach(function(el,i){ var on=!!st[i]; el.classList.toggle('done',on); el.setAttribute('aria-checked',on); if(on) n++; });
+    num.textContent=n+'/'+items.length;
+    bar.style.width=(items.length? n/items.length*100 : 0)+'%';
+  }
+  items.forEach(function(el,i){
+    el.setAttribute('role','checkbox'); el.setAttribute('tabindex','0');
+    function t(){ st[i]=!st[i]; save(); render(); }
+    el.addEventListener('click',t);
+    el.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); t(); } });
+  });
+  document.getElementById('preset').addEventListener('click',function(){ if(confirm('Desmarcar todos os itens?')){ st={}; save(); render(); } });
+  render();
+})();
+</script>
+</body>
+</html>
