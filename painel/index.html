@@ -3167,6 +3167,14 @@ function mudaMes(delta) {
 }
 
 // ---------- MÉTRICAS DO MÊS ----------
+// Valor de uma venda. Descoberto em 2026-10-09: o Rúben Neves (R$8.000) foi fechado pelo "Ganho" do
+// CRM e o negócio nasceu com status='venda' mas valor_venda vazio. Entrava na contagem como R$0 e o
+// ticket médio do mês caía de R$5.000 pra R$2.333. Se valor_venda está em branco, cai pro faturado e
+// depois pro valor da proposta (a mesma ordem que a lista de "Fechados" já usava).
+function valorDaVenda(n) {
+  return Number(n.valor_venda) || Number(n.valor_faturado) || Number(n.valor_proposta) || 0;
+}
+
 function metricasDoMes() {
   const mesRef = fmtMesRef(mesAtual);
   const agendadas = negocios.filter(n => noMes(n.data_agendada, mesRef));
@@ -3176,7 +3184,7 @@ function metricasDoMes() {
   const noShow = negocios.filter(n => n.status === 'no_show' && noMes(n.data_agendada, mesRef));
   const faturamentos = negocios.filter(n => noMes(n.data_faturamento, mesRef));
   const faturamentoTotal = faturamentos.reduce((s,n) => s + Number(n.valor_faturado || 0), 0);
-  const vendaTotal = vendas.reduce((s,n) => s + Number(n.valor_venda || 0), 0);
+  const vendaTotal = vendas.reduce((s,n) => s + valorDaVenda(n), 0);
   const ticketMedio = vendas.length ? vendaTotal / vendas.length : 0;
   const taxaConversaoGeral = realizadas.length ? (vendas.length / realizadas.length) * 100 : null;
   return { mesRef, agendadas, realizadas, propostas, vendas, noShow, faturamentoTotal, vendaTotal, ticketMedio, taxaConversaoGeral };
@@ -3248,7 +3256,7 @@ function renderDesempenhoIndividual() {
 
   const tilesVendedor = vendedores.map(p => {
     const vendas = negocios.filter(n => n.vendedor_id === p.id && noMes(n.data_venda, mesRef));
-    const total = vendas.reduce((s, n) => s + Number(n.valor_venda || 0), 0);
+    const total = vendas.reduce((s, n) => s + valorDaVenda(n), 0);
     const ticket = vendas.length ? total / vendas.length : 0;
     return `
       <div class="tile">
@@ -4632,7 +4640,7 @@ function planoMetricas() {
   const propostas = doMes('data_proposta'), vendas = doMes('data_venda');
   const faturamento = doMes('data_faturamento').reduce((s, n) => s + Number(n.valor_faturado || 0), 0);
   const ticket = vendas.length
-    ? vendas.reduce((s, n) => s + Number(n.valor_venda || 0), 0) / vendas.length
+    ? vendas.reduce((s, n) => s + valorDaVenda(n), 0) / vendas.length
     : PLANO_TICKET_PADRAO;
   return {
     mesRef, agendadas, realizadas, propostas, vendas, faturamento, ticket,
@@ -5357,7 +5365,7 @@ function crmDestinoPerdidos() {
 async function sincronizarNegocioDoCard(card) {
   if (!card) return;
   const { data: existente } = await sb.from('com_negocios').select('*').eq('card_id', card.id).maybeSingle();
-  const valor = card.valor || (existente && existente.valor_venda) || null;
+  const valor = card.valor || (existente && (existente.valor_venda || existente.valor_faturado || existente.valor_proposta)) || null;
   const vendedorId = (existente && existente.vendedor_id) || card.responsavel_id ||
     (currentPerfil && currentPerfil.papel === 'vendedor' ? currentPerfil.id : null);
 
@@ -7502,8 +7510,8 @@ function renderCalendario() {
       pills += `<div class="cal-pill reuniao" title="${titulo.replace(/"/g,'&quot;')}">${iconeDominante(reunioesDia)} ${reunioesDia.length}</div>`;
     }
     if (vendasDia.length) {
-      const totalVenda = vendasDia.reduce((s,n) => s + Number(n.valor_venda || 0), 0);
-      const titulo = vendasDia.map(n => `${n.cliente_nome}: ${fmtBRL(n.valor_venda)}`).join('\n');
+      const totalVenda = vendasDia.reduce((s,n) => s + valorDaVenda(n), 0);
+      const titulo = vendasDia.map(n => `${n.cliente_nome}: ${fmtBRL(valorDaVenda(n))}`).join('\n');
       pills += `<div class="cal-pill venda" title="${titulo.replace(/"/g,'&quot;')}">💰 ${fmtBRL(totalVenda)}</div>`;
     }
 
