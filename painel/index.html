@@ -466,6 +466,37 @@ svg.chart { display: block; }
 .lanc-salvar:disabled { opacity:.7; cursor:default; }
 .lanc-vazio { grid-column:1 / -1; color:#b6c9bb; padding:18px 4px; }
 @media (prefers-reduced-motion: reduce) { .lanc-salvar::after, .lanc-check { animation:none; } }
+
+/* ---- Faixa do funil do mês: mesmo painel escuro com brilho verde do Checklist ---- */
+.lanc.fn-painel { margin:0 0 22px; padding:18px 20px 20px; border-radius:20px; }
+.fn-topo { position:relative; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+.fn-topo .lanc-selo { margin-bottom:0; }
+.fn-mes { font-size:.8rem; font-weight:700; color:#b6c9bb; letter-spacing:.02em; }
+.lanc.fn-painel { container: fn / inline-size; }
+/* 7 colunas quando cabe; senão 4 (faturamento ocupa 2 e fecha a 2ª linha); no celular 2 colunas.
+   Nunca sobra célula sozinha numa linha. */
+.fn-grade { position:relative; display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
+.fn-cel.fn-larga { grid-column:span 2; }
+@container fn (min-width:560px) { .fn-grade { grid-template-columns:repeat(4, 1fr); } }
+@container fn (min-width:980px) {
+  .fn-grade { grid-template-columns:repeat(7, 1fr); gap:10px; }
+  .fn-cel.fn-larga { grid-column:auto; }
+  .fn-cel { padding:13px 12px 12px; }
+  .fn-val { font-size:1.9rem; }
+  .fn-val.moeda { font-size:1.28rem; }
+}
+.fn-cel { display:flex; flex-direction:column; min-height:164px; padding:14px 14px 13px; }
+.fn-cel:hover { border-color:rgba(63,203,74,.45); transform:translateY(-2px); }
+.fn-rot { display:flex; align-items:flex-start; gap:7px; min-height:2.5em; font-size:.66rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:#b6c9bb; line-height:1.25; }
+.fn-cel.bateu .fn-rot { padding-right:30px; }
+.fn-idx { flex:none; font-size:.6rem; font-weight:800; letter-spacing:.04em; color:#7be58a; background:rgba(63,203,74,.14); border-radius:999px; padding:1px 6px; }
+.fn-val { margin-top:10px; font-size:2.1rem; font-weight:800; letter-spacing:-.03em; line-height:1.05; color:#fff; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.fn-val.moeda { font-size:1.5rem; line-height:1.4; }
+.fn-sub { margin-top:5px; font-size:.76rem; color:#b6c9bb; }
+.fn-rodape { margin-top:auto; padding-top:12px; }
+.fn-rodape .lanc-barra { margin-top:9px; }
+.fn-nota { display:inline-block; font-size:.7rem; font-weight:600; color:rgba(232,243,234,.55); padding:2px 0; }
+@media (prefers-reduced-motion: reduce) { .fn-cel:hover { transform:none; } }
 /* ---- agente de social selling ---- */
 .ss-switch { display: flex; gap: 6px; margin: 0 0 20px; }
 .ss-switch button {
@@ -3190,10 +3221,40 @@ function metricasDoMes() {
   return { mesRef, agendadas, realizadas, propostas, vendas, noShow, faturamentoTotal, vendaTotal, ticketMedio, taxaConversaoGeral };
 }
 
-// ---------- TILES ----------
+// ---------- FUNIL DO MÊS (faixa de indicadores do topo) ----------
+// Sete números na ordem do funil: leads → MQL → reuniões → mesa → vendas → ticket → faturamento.
+// Leads e MQL vêm do Tally/banco (assíncrono); o resto sai de `negocios`, que já está em memória.
+// Por isso o painel desenha na hora com o último número conhecido (ou "…") e redesenha quando a
+// contagem chega. Cache de 1 min por mês, pra trocar de aba/mês não bater no banco a cada clique.
+const funilLeadsCache = {};        // mesRef -> { leads, mql, t }
+const funilLeadsBuscando = {};
+const FUNIL_CACHE_MS = 60000;
+
+async function atualizarLeadsDoFunil(mesRef) {
+  if (funilLeadsBuscando[mesRef]) return;
+  funilLeadsBuscando[mesRef] = true;
+  try {
+    const r = await leadsEMqlDoMes(mesRef);
+    funilLeadsCache[mesRef] = { leads: r.leads, mql: r.mql, t: Date.now() };
+  } catch (e) {
+    // falhou: mantém o último número e espera o cache vencer de novo, em vez de martelar o banco
+    funilLeadsCache[mesRef] = { ...(funilLeadsCache[mesRef] || { leads: null, mql: null }), t: Date.now() };
+  } finally {
+    delete funilLeadsBuscando[mesRef];
+  }
+  if (fmtMesRef(mesAtual) === mesRef) renderTiles();
+}
+
+// sem centavos: a faixa tem 7 células estreitas e "R$ 15.000,00" não cabe
+function fnBRL(v) { return 'R$ ' + Math.round(Number(v) || 0).toLocaleString('pt-BR'); }
+function fnBRLCurto(v) {
+  v = Number(v) || 0;
+  return v >= 1000 ? 'R$ ' + (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : fnBRL(v);
+}
+
 function renderTiles() {
   const m = metricasDoMes();
-  const pctMeta = Math.max(0, Math.min(100, (m.faturamentoTotal / META_FATURAMENTO) * 100));
+  const metaDe = chave => (FUNIL_ETAPAS.find(e => e.chave === chave) || {}).meta || 0;
 
   // "na mesa" = valor da proposta preenchido na aba "Editar negócio" (com_negocios.valor_proposta),
   // sempre dali — nunca do CRM. Não trava no status exato "Proposta enviada": já conta assim que o
@@ -3202,29 +3263,61 @@ function renderTiles() {
   const negociosNaMesa = negocios.filter(n => Number(n.valor_proposta) > 0 && n.status !== 'venda' && n.status !== 'perdida');
   const valorNaMesa = negociosNaMesa.reduce((s, n) => s + Number(n.valor_proposta || 0), 0);
 
-  const tiles = [
-    { label: 'Reuniões do mês', value: `${m.realizadas.length}/${m.agendadas.length}`, sub: 'realizadas / agendadas' },
-    { label: 'Negociações na mesa', value: negociosNaMesa.length, sub: fmtBRL(valorNaMesa) },
-    { label: 'Vendas fechadas', value: m.vendas.length, sub: fmtBRL(m.vendaTotal) },
-    { label: 'Ticket médio', value: fmtBRL(m.ticketMedio), sub: `${m.vendas.length} venda(s) no mês` },
-  ];
-  const tilesHtml = tiles.map(t => `
-    <div class="tile">
-      <div class="label">${t.label}</div>
-      <div class="value">${t.value}</div>
-      <div class="sub">${t.sub}</div>
-    </div>
-  `).join('');
+  const cache = funilLeadsCache[m.mesRef];
+  if (!cache || Date.now() - cache.t > FUNIL_CACHE_MS) atualizarLeadsDoFunil(m.mesRef);
+  const leads = cache ? cache.leads : null;
+  const mql = cache ? cache.mql : null;
+  const numOuReticencias = v => (v === null || v === undefined) ? '…' : v;
 
-  const faturamentoHtml = `
-    <div class="tile">
-      <div class="label">Faturamento do mês</div>
-      <div class="value ${m.faturamentoTotal >= META_FATURAMENTO ? 'good' : ''}">${fmtBRL(m.faturamentoTotal)}</div>
-      <div class="sub">Meta: ${fmtBRL(META_FATURAMENTO)}${m.faturamentoTotal < META_FATURAMENTO ? ' — falta ' + fmtBRL(META_FATURAMENTO - m.faturamentoTotal) : ' 🏆'}</div>
-      <div class="progress-bar"><div style="width:${pctMeta}%"></div></div>
-    </div>
-  `;
-  document.getElementById('tiles').innerHTML = tilesHtml + faturamentoHtml;
+  const faltaFat = Math.max(0, META_FATURAMENTO - m.faturamentoTotal);
+  const passos = [
+    { rot: 'Leads geral', val: numOuReticencias(leads), sub: 'preencheram uma isca no mês',
+      atual: leads, meta: metaDe('leads'), metaTxt: String(metaDe('leads')),
+      dica: 'Quem preencheu algum formulário de isca no mês, sem contar os formulários desmarcados em "Formulários".' },
+    { rot: 'Leads MQL', val: numOuReticencias(mql), sub: leads ? `${Math.round((mql || 0) / leads * 100)}% dos leads` : 'cargo de decisão',
+      atual: mql, meta: metaDe('mql'), metaTxt: String(metaDe('mql')),
+      dica: 'Leads que chegaram ao estágio MQL no mês (cargo de CEO, Fundador, Diretor, Gerente ou Head) e também quem marcou reunião direto no Cal.com. Conta no mês da primeira vez que virou MQL.' },
+    { rot: 'Reuniões do mês', val: `${m.realizadas.length}/${m.agendadas.length}`, sub: 'realizadas / agendadas',
+      atual: m.agendadas.length, meta: metaDe('agendadas'), metaTxt: String(metaDe('agendadas')),
+      dica: 'Realizadas / agendadas no mês. A meta e a barra medem as reuniões agendadas.' },
+    { rot: 'Negociação na mesa', val: negociosNaMesa.length, sub: fnBRL(valorNaMesa), nota: 'em aberto agora, qualquer mês',
+      dica: 'Negócios com valor de proposta preenchido que ainda não viraram venda nem perda.' },
+    { rot: 'Vendas fechadas', val: m.vendas.length, sub: fnBRL(m.vendaTotal),
+      atual: m.vendas.length, meta: metaDe('vendas'), metaTxt: String(metaDe('vendas')),
+      dica: 'Vendas com data de venda dentro do mês.' },
+    { rot: 'Ticket médio', val: fnBRL(m.ticketMedio), moeda: true, sub: `${m.vendas.length} venda(s) no mês`, nota: 'valor médio por venda',
+      dica: 'Total vendido no mês dividido pelo número de vendas.' },
+    { rot: 'Faturamento', val: fnBRL(m.faturamentoTotal), moeda: true,
+      sub: faltaFat ? `faltam ${fnBRL(faltaFat)}` : 'meta batida',
+      atual: m.faturamentoTotal, meta: META_FATURAMENTO, metaTxt: fnBRLCurto(META_FATURAMENTO), larga: true,
+      dica: 'Valor faturado com data de faturamento dentro do mês.' },
+  ];
+
+  const celulas = passos.map((p, i) => {
+    const temMeta = p.meta > 0 && p.atual !== null && p.atual !== undefined;
+    const pct = temMeta ? Math.max(0, Math.min(100, (p.atual / p.meta) * 100)) : 0;
+    const bateu = temMeta && p.atual >= p.meta;
+    const rodape = p.meta > 0
+      ? `<span class="lanc-meta">Meta: ${p.metaTxt}</span><div class="lanc-barra"><i style="width:${pct}%"></i></div>`
+      : `<span class="fn-nota">${p.nota || ''}</span>`;
+    return `
+      <div class="lanc-campo fn-cel${bateu ? ' bateu' : ''}${p.larga ? ' fn-larga' : ''}" title="${p.dica.replace(/"/g, '&quot;')}">
+        <div class="lanc-check">✓</div>
+        <div class="fn-rot"><span class="fn-idx">${String(i + 1).padStart(2, '0')}</span>${p.rot}</div>
+        <div class="fn-val${p.moeda ? ' moeda' : ''}">${p.val}</div>
+        <div class="fn-sub">${p.sub}</div>
+        <div class="fn-rodape">${rodape}</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('tiles').innerHTML = `
+    <div class="lanc fn-painel">
+      <div class="fn-topo">
+        <span class="lanc-selo">Funil do mês</span>
+        <span class="fn-mes">${fmtMesLabel(mesAtual).toLowerCase()}</span>
+      </div>
+      <div class="fn-grade">${celulas}</div>
+    </div>`;
 }
 
 // ---------- DESEMPENHO INDIVIDUAL ----------
@@ -7765,6 +7858,29 @@ function funilTrapezio(topPct, bottomPct) {
 }
 function funilEscala(v, max) { return Math.max(14, Math.sqrt(Math.max(0, v) / max) * 100); }
 
+// Leads e MQL do mês — a mesma conta pro comparativo (Dicas) e pra faixa do topo.
+// Com a aba Formulário carregada, a memória é a fonte mais fresca; antes disso (ou se o Tally
+// falhar) cai pro registro no banco em vez de mentir um zero.
+async function leadsEMqlDoMes(mesRef) {
+  const ignorados = await formsIgnorados().catch(() => new Set());
+  let leads = tallySubmissions.filter(s => s.data.startsWith(mesRef) && !ignorados.has(s.formId)).length;
+  if (!leads) {
+    try { leads = await contarLeadsDoMesNoBanco(mesRef); } catch (e) { /* fica 0 */ }
+  }
+
+  let mql = 0;
+  const [ano, mesNum] = mesRef.split('-').map(Number);
+  const fimMesIso = new Date(Date.UTC(ano, mesNum, 1)).toISOString().slice(0, 19);   // 1º dia do mês seguinte
+  try {
+    // conta pelo marco "mql_em" (quando o card entrou em MQL pela 1ª vez), não pelo estágio atual —
+    // assim o lead continua contando no mês mesmo depois de já ter sido movido pra frente no funil
+    const { count } = await sb.from('com_cards').select('id', { count: 'exact', head: true })
+      .not('mql_em', 'is', null).gte('mql_em', `${mesRef}-01T00:00:00`).lt('mql_em', fimMesIso);
+    mql = count || 0;
+  } catch (e) { /* segue com 0 se a query falhar */ }
+  return { leads, mql };
+}
+
 let funilCompSeq = 0;
 async function renderFunilComparativo() {
   const colEl = document.getElementById('funil-shape-col');
@@ -7776,24 +7892,7 @@ async function renderFunilComparativo() {
   const tit = document.getElementById('funil-comp-mes');
   if (tit) tit.textContent = '· ' + fmtMesLabel(mesAtual).toLowerCase();
 
-  // com a aba Formulário carregada, a memória é a fonte mais fresca; antes disso (ou se o Tally
-  // falhar) cai pro registro no banco em vez de mentir um zero
-  const ignorados = await formsIgnorados().catch(() => new Set());
-  let leadsAtual = tallySubmissions.filter(s => s.data.startsWith(mesRef) && !ignorados.has(s.formId)).length;
-  if (!leadsAtual) {
-    try { leadsAtual = await contarLeadsDoMesNoBanco(mesRef); } catch (e) { /* fica 0 */ }
-  }
-
-  let mqlAtual = 0;
-  const [anoRef, mesNum] = mesRef.split('-').map(Number);
-  const fimMesIso = new Date(Date.UTC(anoRef, mesNum, 1)).toISOString().slice(0, 19);   // 1º dia do mês seguinte
-  try {
-    // conta pelo marco "mql_em" (quando o card entrou em MQL pela 1ª vez), não pelo estágio atual —
-    // assim o lead continua contando no mês mesmo depois de já ter sido movido pra frente no funil
-    const { count } = await sb.from('com_cards').select('id', { count: 'exact', head: true })
-      .not('mql_em', 'is', null).gte('mql_em', `${mesRef}-01T00:00:00`).lt('mql_em', fimMesIso);
-    mqlAtual = count || 0;
-  } catch (e) { /* segue com 0 se a query falhar */ }
+  const { leads: leadsAtual, mql: mqlAtual } = await leadsEMqlDoMes(mesRef);
 
   if (seq !== funilCompSeq) return;   // o usuário já trocou de mês enquanto buscava
   const agendadasAtual = negocios.filter(n => noMes(n.data_agendada, mesRef)).length;
@@ -8408,20 +8507,20 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-10-05',
+  versao: '2026-10-10',
   titulo: 'Chegou coisa nova',
   passos: [
     {
-      emoji: '📋',
-      titulo: 'Checklist de Análise Comercial — e o lembrete virou impossível de ignorar',
-      texto: 'O antigo checklist de produtividade agora é o <b>Checklist de Análise Comercial</b>: é onde você lança os números do dia pra gente acompanhar as métricas comerciais. Às <b>8h30</b> e às <b>18h30</b> aparece um aviso grande, em destaque, perguntando se você já preencheu. Clicou em <b>"Ok, preencher agora"</b>? Ele já te leva direto pro checklist — é só lançar os números e salvar. Quem já lançou os números do dia não é incomodado.',
-      aba: 'checklist', onde: 'Aba Checklist · lançar os números do dia',
+      emoji: '🎯',
+      titulo: 'O funil do mês, completo, lá em cima',
+      texto: 'A faixa verde do topo agora mostra o funil inteiro, na ordem em que o dinheiro anda: <b>Leads geral → Leads MQL → Reuniões do mês → Negociação na mesa → Vendas fechadas → Ticket médio → Faturamento</b>. Cada card tem a meta do mês e uma barrinha que vai enchendo; bateu a meta, aparece o ✓ verde. Passa o mouse em qualquer card e ele conta de onde vem o número.',
+      aba: 'dashboard', onde: 'Dashboard e CRM · faixa verde no topo',
     },
     {
-      emoji: '📁',
-      titulo: 'Arquivos: o nosso Drive, com pastas e subpastas',
-      texto: 'A aba <b>Arquivos</b> é a biblioteca do time: PDFs, guias, materiais — tudo num lugar só, sem depender do Google Drive. Arraste os arquivos pra subir, e use <b>"Nova pasta"</b> pra organizar. Dá pra criar <b>subpastas dentro de pastas</b>, navegar pelo caminho lá em cima (Arquivos › Vendas › Scripts), renomear, mover e <b>copiar o link</b> pra mandar pra qualquer pessoa, mesmo quem não tem login.',
-      aba: 'arquivos', onde: 'Aba Arquivos · ícone de pasta no menu',
+      emoji: '🧮',
+      titulo: 'Ticket médio consertado e score mais justo',
+      texto: 'Tinha venda sem valor preenchido sendo contada como <b>R$ 0</b> e derrubando o ticket médio — agora, se o valor da venda está em branco, o painel usa o faturado ou o da proposta. E o lead parado esfria mais devagar: <b>1 ponto por semana</b> (eram 5), depois de 21 dias sem ninguém mexer. Esfria, mas sem desmaiar.',
+      aba: 'dashboard', onde: 'Dashboard · ticket médio · CRM · score do lead',
     },
   ],
 };
