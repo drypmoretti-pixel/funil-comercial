@@ -1659,6 +1659,164 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
 .arq-arvore button svg { width:20px; height:20px; color:var(--text-secondary); flex:0 0 20px; }
 @media (max-width: 640px) { .arq-linha { grid-template-columns:minmax(0,1fr) 44px; } .arq-linha .arq-cel { display:none; } }
 @media (max-width:600px) { .arq-item { flex-wrap:wrap; } .arq-acoes { width:100%; justify-content:flex-start; } }
+
+/* ==========================================================================
+   Polimento visual (10/2026). O escuro já estava bom e só ganha os componentes novos;
+   o claro ganha superfícies com mais separação, sombras em camadas, hierarquia tipográfica
+   e a barra lateral verde-floresta (antes era um verde chapado e saturado).
+   Tudo aqui usa os tokens do tema: nada de cor crua fora do bloco "html:not(dark)".
+   ========================================================================== */
+html:not([data-tema="dark"]) {
+  --plane: #eef2ee;
+  --surface-2: #f7f9f7;
+  --field-bg: #f1f4f1;
+  --border: rgba(18,43,28,.10);
+  --grid: #e1e7e2;
+  --text-primary: #0e1a12;
+  --text-secondary: #47554c;
+  --muted: #75817a;
+  --topbar-bg: rgba(238,242,238,.86);
+  --card-radius: 16px;
+  --sombra-cor: 16, 40, 24;
+  --tint-1: rgba(12,163,12,.05);
+  --tint-2: rgba(42,120,214,.03);
+}
+html:not([data-tema="dark"]) .card,
+html:not([data-tema="dark"]) .tile,
+html:not([data-tema="dark"]) .estagio-card,
+html:not([data-tema="dark"]) .di-card,
+html:not([data-tema="dark"]) .fech-wrap {
+  border-color: rgba(18,43,28,.08);
+  box-shadow: 0 1px 2px rgba(16,40,24,.04), 0 10px 28px -14px rgba(16,40,24,.14);
+}
+
+/* ---- barra lateral (claro): verde-floresta, no mesmo tom do painel do topo ---- */
+html:not([data-tema="dark"]) .sidebar {
+  background: linear-gradient(180deg, #0b2516 0%, #0e3320 55%, #0a2214 100%);
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.04), 6px 0 24px -14px rgba(8,30,16,.5);
+}
+html:not([data-tema="dark"]) .sidebar nav button { color: rgba(226,240,230,.60); border-left-color: transparent; }
+html:not([data-tema="dark"]) .sidebar nav button:hover { background: rgba(255,255,255,.07); color: #fff; }
+html:not([data-tema="dark"]) .sidebar nav button.active {
+  background: rgba(63,203,74,.15); color: #7be58a; border-left-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(63,203,74,.26), 0 6px 18px -8px rgba(63,203,74,.55);
+}
+html:not([data-tema="dark"]) .sidebar nav button.active::after {
+  left: 0; width: 3px; border-radius: 0 3px 3px 0; background: #3fcb4a; box-shadow: 0 0 10px rgba(63,203,74,.85);
+}
+
+/* ---- topbar: identidade e mês à esquerda, ferramentas agrupadas à direita ---- */
+header.topbar { align-items: center; gap: 10px 12px; padding-bottom: 14px; }
+header.topbar .month-nav { margin-left: 22px; }
+header.topbar .tour-abrir { margin-left: auto; }
+
+/* ---- seções do Dashboard ---- */
+#tab-dashboard > section.card { padding: 22px 24px; }
+#tab-dashboard > section.card > h2,
+#tab-dashboard > section.card .section-title h2 { font-size: 1.12rem; font-weight: 800; letter-spacing: -.015em; }
+#tab-dashboard > section.card > h2 + .muted,
+#tab-dashboard > section.card .section-title + .muted { margin-top: 3px; }
+.add-toggle { border-style: solid; background: var(--surface-1); box-shadow: var(--sombra-1);
+  transition: border-color var(--transicao), box-shadow var(--transicao), transform var(--transicao); }
+.add-toggle:hover { border-color: var(--accent); box-shadow: var(--sombra-2); }
+/* a regra form.form-grid (display:grid) ganhava de .form-collapse e deixava o formulário sempre aberto */
+form.form-grid.form-collapse:not(.open) { display: none; }
+
+/* ---- Funil do mês: o mesmo painel escuro com brilho verde da faixa do topo ---- */
+.lanc.fv-painel { margin: 0 0 26px; padding: 22px 24px 24px; border-radius: 20px; container: fv / inline-size; }
+.fv-sub { position: relative; margin: 2px 0 20px; font-size: .84rem; color: #b6c9bb; }
+#funil { position: relative; }
+.fv-funil { position: relative; display: flex; align-items: center; height: 230px; }
+.fv-bloco {
+  position: relative; flex: 0 0 19%; display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  padding: 14px 18px; border-radius: 16px; z-index: 1;
+  background: linear-gradient(165deg, rgba(63,203,74,.30), rgba(12,163,12,.10));
+  border: 1px solid rgba(63,203,74,.40);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 14px 34px -16px rgba(12,163,12,.55);
+  animation: fv-entra .7s cubic-bezier(.16,1,.3,1) both;
+}
+.fv-bloco:nth-of-type(2) { animation-delay: .08s; }
+.fv-bloco:nth-of-type(3) { animation-delay: .16s; }
+.fv-bloco.fim {
+  background: linear-gradient(165deg, rgba(63,203,74,.55), rgba(12,163,12,.22));
+  border-color: rgba(123,229,138,.70);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 0 44px -8px rgba(63,203,74,.6);
+}
+.fv-rot { font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #b6c9bb; }
+.fv-num { font-size: 3rem; font-weight: 800; letter-spacing: -.035em; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+.fv-sub2 { font-size: .76rem; color: #b6c9bb; }
+.fv-liga {
+  flex: 1; align-self: stretch; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(90deg, rgba(63,203,74,.22), rgba(63,203,74,.05));
+  animation: fv-fade .8s ease both .25s;
+}
+.fv-taxa {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 1px; padding: 7px 14px; border-radius: 14px;
+  background: rgba(8,14,10,.72); border: 1px solid rgba(63,203,74,.45); backdrop-filter: blur(4px);
+  box-shadow: 0 6px 18px -6px rgba(0,0,0,.5);
+}
+.fv-taxa b { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; color: #7be58a; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.fv-taxa small { font-size: .62rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #b6c9bb; }
+.fv-chips { position: relative; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.10); }
+.fv-chip {
+  display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: #d5e4d9;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 6px 14px;
+}
+.fv-chip b { color: #fff; font-weight: 800; }
+.fv-chip svg { flex: none; }
+.fv-chip.ruim { background: rgba(240,101,95,.12); border-color: rgba(240,101,95,.38); color: #ffcfcc; }
+.fv-vazio { position: relative; padding: 26px 4px; color: #b6c9bb; font-size: .9rem; }
+@keyframes fv-entra { from { opacity: 0; transform: scale(.9) translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes fv-fade { from { opacity: 0; } to { opacity: 1; } }
+/* estreito (celular / janela pequena): o funil deita e vira uma pilha */
+@container fv (max-width: 700px) {
+  .fv-funil { flex-direction: column; height: auto; gap: 0; align-items: stretch; }
+  .fv-bloco { flex: none; width: max(64%, calc(var(--p) * 1%)); height: auto !important; min-height: 0; margin: 0 auto; flex-direction: row; align-items: baseline; justify-content: space-between; padding: 12px 16px; }
+  .fv-liga { height: 46px !important; flex: none; clip-path: none !important; background: none; }
+  .fv-num { font-size: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) { .fv-bloco, .fv-liga { animation: none; } }
+
+/* ---- Desempenho individual ---- */
+#desempenho-individual { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 16px 0 0; }
+.di-card {
+  position: relative; overflow: hidden; background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 16px; padding: 18px 18px 16px; box-shadow: var(--sombra-1);
+  transition: transform var(--transicao), box-shadow var(--transicao);
+}
+.di-card:hover { transform: translateY(-2px); box-shadow: var(--sombra-2); }
+.di-topo { display: flex; align-items: center; gap: 11px; }
+.di-avatar {
+  width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; flex: none;
+  font-weight: 800; font-size: .82rem; letter-spacing: .02em; color: var(--accent-deep); background: var(--accent-wash);
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+}
+.di-nome { font-weight: 800; font-size: .98rem; letter-spacing: -.01em; line-height: 1.15; }
+.di-papel { font-size: .64rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.di-num { margin-top: 16px; font-size: 2.5rem; font-weight: 800; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.di-num.zero { color: var(--muted); }
+.di-rotulo { margin-top: 4px; font-size: .8rem; color: var(--text-secondary); }
+.di-medidor { height: 6px; border-radius: 99px; background: var(--grid); overflow: hidden; margin-top: 14px; }
+.di-medidor i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
+.di-medidor-rot { margin-top: 6px; font-size: .72rem; color: var(--muted); }
+.di-stats { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--grid); font-size: .78rem; color: var(--text-secondary); }
+.di-stats b { color: var(--text-primary); font-weight: 800; }
+@media (prefers-reduced-motion: reduce) { .di-card:hover { transform: none; } }
+
+/* ---- Negócios em andamento / Fechados ---- */
+.estagio-card { padding: 16px; }
+.estagio-header { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--grid); }
+.estagio-icone {
+  width: 34px; height: 34px; border-radius: 11px;
+  background: color-mix(in srgb, var(--ic) 14%, transparent); color: var(--ic);
+  border: 1px solid color-mix(in srgb, var(--ic) 30%, transparent);
+}
+.estagio-icone svg { width: 18px; height: 18px; display: block; }
+.estagio-contagem { min-width: 28px; text-align: center; padding: 2px 9px; border-radius: 999px; background: var(--field-bg); border: 1px solid var(--border); font-size: .78rem; }
+.negocio-nome { font-weight: 600; }
+.cal-ico { display: inline-flex; vertical-align: -2px; margin-right: 3px; }
+.cal-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.cal-legenda .cal-ico { margin-right: 0; }
 </style>
 </head>
 <body>
@@ -1741,10 +1899,13 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
 
       <div id="ns-bloco" style="display:none;"></div>
 
-      <section class="card">
-        <h2>Funil do mês</h2>
-        <p class="muted">Agendadas → realizadas → propostas → vendas, com a taxa de passagem entre cada etapa.</p>
-        <div class="funil" id="funil" style="margin-top:14px;"></div>
+      <section class="lanc fv-painel">
+        <div class="fn-topo">
+          <span class="lanc-selo">Funil de reuniões</span>
+          <span class="fn-mes" id="funil-mes"></span>
+        </div>
+        <p class="fv-sub">Agendadas → realizadas → vendas, com a taxa de passagem entre cada etapa.</p>
+        <div id="funil"></div>
       </section>
 
       <section class="card">
@@ -1870,13 +2031,7 @@ html[data-tema="dark"] .marca > div > div { opacity: .85; }
           <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
         </div>
         <div class="cal-grid" id="calendario-grid"></div>
-        <div class="cal-legenda">
-          <span>📅 reunião agendada</span>
-          <span>✅ reunião realizada</span>
-          <span>🚫 no-show</span>
-          <span>🔁 remarcada</span>
-          <span>💰 venda fechada</span>
-        </div>
+        <div class="cal-legenda" id="cal-legenda"></div>
       </section>
     </div>
 
@@ -3068,6 +3223,19 @@ const STATUS_META = {
   venda:     { label: 'Venda fechada',   icone: '💰', chip: 'var(--good)' },
   perdida:   { label: 'Perdida',         icone: '❌', chip: 'var(--critical)' },
 };
+// ícones de linha (mesma família da barra lateral) no lugar dos emojis nos blocos de negócios
+const ICONES_STATUS_SVG = {
+  agendada:  '<rect x="3" y="5" width="18" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="3" y1="10" x2="21" y2="10"/>',
+  realizada: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',
+  proposta:  '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/>',
+  no_show:   '<circle cx="12" cy="12" r="9"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/>',
+  remarcada: '<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><polyline points="21 3 21 8 16 8"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><polyline points="3 21 3 16 8 16"/>',
+  venda:     '<line x1="12" y1="2" x2="12" y2="22"/><path d="M17 6.5A4 4 0 0 0 13 5h-2.5a3.5 3.5 0 0 0 0 7h3a3.5 3.5 0 0 1 0 7H10a4 4 0 0 1-4-1.5"/>',
+  perdida:   '<circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>',
+};
+function iconeStatus(status) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONES_STATUS_SVG[status] || ''}</svg>`;
+}
 const ORDEM_ANDAMENTO = ['agendada','realizada','proposta','no_show','remarcada'];
 const ORDEM_FECHADOS = ['venda','perdida'];
 
@@ -3413,88 +3581,92 @@ function renderDesempenhoIndividual() {
   const mesRef = fmtMesRef(mesAtual);
   const sdrs = perfis.filter(p => p.papel === 'sdr');
   const vendedores = perfis.filter(p => p.papel === 'vendedor' || p.papel === 'admin');
+  const vendasDoMes = negocios.filter(n => noMes(n.data_venda, mesRef));
+  const iniciais = nome => {
+    const p = (nome || '?').trim().split(/\s+/);
+    return ((p[0][0] || '?') + (p[1] ? p[1][0] : (p[0][1] || ''))).toUpperCase();
+  };
+  const card = ({ nome, papel, num, rotulo, medidor, stats }) => `
+    <div class="di-card">
+      <div class="di-topo">
+        <div class="di-avatar">${iniciais(nome)}</div>
+        <div><div class="di-nome">${nome}</div><div class="di-papel">${papel}</div></div>
+      </div>
+      <div class="di-num ${num ? '' : 'zero'}">${num}</div>
+      <div class="di-rotulo">${rotulo}</div>
+      ${medidor ? `<div class="di-medidor" title="${medidor.rot}"><i style="width:${Math.min(100, medidor.pct)}%"></i></div><div class="di-medidor-rot">${medidor.rot}</div>` : ''}
+      <div class="di-stats">${stats.join('')}</div>
+    </div>`;
 
-  const tilesSdr = sdrs.map(p => {
+  const cardsSdr = sdrs.map(p => {
     const agendadas = negocios.filter(n => n.sdr_id === p.id && noMes(n.data_agendada, mesRef));
     const realizadas = negocios.filter(n => n.sdr_id === p.id && noMes(n.data_realizacao, mesRef));
     const taxa = agendadas.length ? Math.round((realizadas.length / agendadas.length) * 100) : null;
-    return `
-      <div class="tile">
-        <div class="label">${p.nome} · SDR</div>
-        <div class="value">${agendadas.length}</div>
-        <div class="sub">agendadas · ${realizadas.length} realizadas${taxa === null ? '' : ' · ' + taxa + '% compareceu'}</div>
-      </div>
-    `;
+    return card({
+      nome: p.nome, papel: 'SDR', num: agendadas.length,
+      rotulo: agendadas.length === 1 ? 'reunião agendada' : 'reuniões agendadas',
+      medidor: taxa === null ? null : { pct: taxa, rot: `${taxa}% compareceram` },
+      stats: [`<span><b>${realizadas.length}</b> ${realizadas.length === 1 ? 'realizada' : 'realizadas'}</span>`],
+    });
   });
 
-  const tilesVendedor = vendedores.map(p => {
+  const cardsVendedor = vendedores.map(p => {
     const vendas = negocios.filter(n => n.vendedor_id === p.id && noMes(n.data_venda, mesRef));
     const total = vendas.reduce((s, n) => s + valorDaVenda(n), 0);
     const ticket = vendas.length ? total / vendas.length : 0;
-    return `
-      <div class="tile">
-        <div class="label">${p.nome} · Vendedor</div>
-        <div class="value">${vendas.length}</div>
-        <div class="sub">venda(s) · ${fmtBRL(total)}${vendas.length ? ' · ticket ' + fmtBRL(ticket) : ''}</div>
-      </div>
-    `;
+    const part = vendasDoMes.length ? Math.round((vendas.length / vendasDoMes.length) * 100) : null;
+    return card({
+      nome: p.nome, papel: 'Vendedor', num: vendas.length,
+      rotulo: vendas.length === 1 ? 'venda no mês' : 'vendas no mês',
+      medidor: part === null ? null : { pct: part, rot: `${part}% das vendas do mês` },
+      stats: [`<span><b>${fnBRL(total)}</b> vendido</span>`].concat(vendas.length ? [`<span><b>${fnBRL(ticket)}</b> ticket</span>`] : []),
+    });
   });
 
-  wrap.innerHTML = tilesSdr.join('') + tilesVendedor.join('') ||
+  wrap.innerHTML = cardsSdr.join('') + cardsVendedor.join('') ||
     '<div class="empty">Ainda não tem SDR nem vendedor cadastrado.</div>';
 }
 
 // ---------- FUNIL VISUAL ----------
 function renderFunil() {
   const m = metricasDoMes();
-  const etapas = [
-    { nome: 'Agendadas', count: m.agendadas.length, cor: 'var(--chip-1)' },
-    { nome: 'No show', count: m.noShow.length, cor: 'var(--critical)' },
-    { nome: 'Realizadas', count: m.realizadas.length, cor: 'var(--chip-3)' },
-    { nome: 'Vendas', count: m.vendas.length, cor: 'var(--good)' },
-  ];
-  const base = etapas[0].count || 1;
-  const linhas = etapas.map(e => {
-    const pctBarra = Math.max(4, (e.count / base) * 100);
-    const pctTexto = base ? `${Math.round((e.count / base) * 100)}% dos agendados` : '—';
-    // gradiente sutil (base mais escura -> cor real na ponta) em vez de cor chapada — mesmo tom, só com profundidade
-    const grad = `linear-gradient(90deg, color-mix(in srgb, ${e.cor} 78%, black), ${e.cor})`;
-    return `
-      <div class="funil-row">
-        <div class="funil-nome">${e.nome}</div>
-        <div class="funil-trilho"><div class="funil-barra" data-pct="${pctBarra}" style="width:0%; background:${grad}">${e.count}</div></div>
-        <div class="funil-pct">${pctTexto}</div>
-      </div>
-    `;
-  });
-  // insere a taxa de conversão geral entre Realizadas e Vendas — mesma barra das outras
-  // linhas, só que numa escala própria de 0-100% (não é proporcional à base de agendados)
-  const taxaNula = m.taxaConversaoGeral === null;
-  const taxaPct = taxaNula ? 0 : m.taxaConversaoGeral;
-  const gradTaxa = `linear-gradient(90deg, color-mix(in srgb, var(--good) 78%, black), var(--good))`;
-  linhas.splice(3, 0, `
-    <div class="funil-row">
-      <div class="funil-nome">Tx de conversão</div>
-      <div class="funil-trilho"><div class="funil-barra" data-pct="${taxaNula ? 0 : Math.max(4, taxaPct)}" style="width:0%; background:${gradTaxa}">${taxaNula ? '—' : taxaPct.toFixed(0) + '%'}</div></div>
-      <div class="funil-pct">${taxaNula ? 'sem reunião realizada ainda' : 'vendas / realizadas'}</div>
-    </div>
-  `);
+  const ag = m.agendadas.length, re = m.realizadas.length, ve = m.vendas.length, ns = m.noShow.length;
+  const elMes = document.getElementById('funil-mes');
+  if (elMes) elMes.textContent = fmtMesLabel(mesAtual).toLowerCase();
   const funilEl = document.getElementById('funil');
-  funilEl.innerHTML = linhas.join('');
-  // reforça o replay do brilho (ka-tchau) toda vez que o funil é redesenhado — tirando e
-  // recolocando a classe com um reflow no meio, senão o navegador ignora a "reaplicação"
-  funilEl.classList.remove('funil-brilhar');
-  void funilEl.offsetWidth;
-  funilEl.classList.add('funil-brilhar');
-  // barras nascem em 0% e crescem até o valor real — precisa de dois rAF pra garantir que o
-  // navegador pintou o estado 0% antes de trocar (senão a transição de width não dispara).
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.querySelectorAll('#funil .funil-barra[data-pct]').forEach(el => {
-        el.style.width = el.dataset.pct + '%';
-      });
-    });
-  });
+  if (!ag) {
+    funilEl.innerHTML = '<div class="fv-vazio">Nenhuma reunião agendada neste mês ainda — o funil aparece assim que a primeira entrar.</div>';
+    return;
+  }
+  const pct = (a, b) => b ? Math.round((a / b) * 100) : null;
+  const fmtTaxa = t => t === null ? '—' : t + '%';
+  // altura de cada bloco é proporcional ao volume (linear: área honesta), com piso pra caber o número;
+  // as "bocas" entre os blocos são trapézios que ligam a altura de um à do próximo
+  const H = 230, MIN = 104;
+  const alt = n => Math.max(MIN, Math.round(H * (n / ag)));
+  const hs = [H, alt(re), alt(ve)];
+  const poligono = (a, b) => `polygon(0 ${(H - a) / 2}px, 100% ${(H - b) / 2}px, 100% ${(H + b) / 2}px, 0 ${(H + a) / 2}px)`;
+  const bloco = (cls, rot, n, sub, h, tip) => `
+    <div class="fv-bloco ${cls}" style="height:${h}px; --p:${Math.round(h / H * 100)}" title="${tip}">
+      <span class="fv-rot">${rot}</span><b class="fv-num">${n}</b><span class="fv-sub2">${sub}</span>
+    </div>`;
+  const liga = (a, b, taxa, rot, tip) => `
+    <div class="fv-liga" style="clip-path:${poligono(a, b)}" title="${tip}">
+      <span class="fv-taxa"><b>${fmtTaxa(taxa)}</b><small>${rot}</small></span>
+    </div>`;
+  const iconeNoShow = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/></svg>';
+  funilEl.innerHTML = `
+    <div class="fv-funil">
+      ${bloco('', 'Agendadas', ag, 'reuniões marcadas', hs[0], `${ag} reuniões agendadas no mês`)}
+      ${liga(hs[0], hs[1], pct(re, ag), 'compareceram', 'Realizadas ÷ agendadas')}
+      ${bloco('', 'Realizadas', re, 'aconteceram', hs[1], `${re} reuniões realizadas no mês`)}
+      ${liga(hs[1], hs[2], pct(ve, re), 'conversão', 'Vendas ÷ realizadas (taxa de conversão)')}
+      ${bloco('fim', 'Vendas', ve, 'fechadas no mês', hs[2], `${ve} vendas no mês`)}
+    </div>
+    <div class="fv-chips">
+      <span class="fv-chip ruim" title="Reuniões marcadas em que o lead não apareceu">${iconeNoShow}No-show <b>${ns}</b> · ${fmtTaxa(pct(ns, ag))} das agendadas</span>
+      <span class="fv-chip" title="Vendas ÷ reuniões agendadas">Vendas sobre agendadas <b>${fmtTaxa(pct(ve, ag))}</b></span>
+    </div>`;
 }
 
 // ---------- LISTAS ----------
@@ -3577,7 +3749,7 @@ function renderAndamento() {
     return `
       <div class="estagio-card">
         <div class="estagio-header">
-          <div class="estagio-icone" style="background:${meta.chip}">${meta.icone}</div>
+          <div class="estagio-icone" style="--ic:${meta.chip}">${iconeStatus(status)}</div>
           <div class="estagio-nome">${meta.label}</div>
           <div class="estagio-contagem">${itens.length}</div>
         </div>
@@ -3601,7 +3773,7 @@ function renderFechados() {
     return `
       <div class="estagio-card">
         <div class="estagio-header">
-          <div class="estagio-icone" style="background:${meta.chip}">${meta.icone}</div>
+          <div class="estagio-icone" style="--ic:${meta.chip}">${iconeStatus(g.status)}</div>
           <div class="estagio-nome">${meta.label}</div>
           <div class="estagio-contagem">${g.itens.length}</div>
         </div>
@@ -7659,13 +7831,25 @@ function renderInsightChecklist() {
 }
 
 // ---------- CALENDÁRIO ----------
+// qual status resume o dia (a chave vira o ícone de linha via iconeMini)
 function iconeDominante(reunioesDia) {
-  if (reunioesDia.some(n => n.status === 'no_show')) return '🚫';
-  if (reunioesDia.some(n => ['realizada','proposta','venda','perdida'].includes(n.status))) return '✅';
-  if (reunioesDia.some(n => n.status === 'remarcada')) return '🔁';
-  return '📅';
+  if (reunioesDia.some(n => n.status === 'no_show')) return 'no_show';
+  if (reunioesDia.some(n => ['realizada','proposta','venda','perdida'].includes(n.status))) return 'realizada';
+  if (reunioesDia.some(n => n.status === 'remarcada')) return 'remarcada';
+  return 'agendada';
+}
+function iconeMini(status) {
+  const cor = (STATUS_META[status] || {}).chip || 'currentColor';
+  return `<span class="cal-ico" style="color:${cor}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${ICONES_STATUS_SVG[status] || ''}</svg></span>`;
+}
+function renderLegendaCalendario() {
+  const el = document.getElementById('cal-legenda');
+  if (!el) return;
+  el.innerHTML = [['agendada', 'reunião agendada'], ['realizada', 'reunião realizada'], ['no_show', 'no-show'], ['remarcada', 'remarcada'], ['venda', 'venda fechada']]
+    .map(([k, t]) => `<span>${iconeMini(k)}${t}</span>`).join('');
 }
 function renderCalendario() {
+  renderLegendaCalendario();
   const ano = mesAtual.getFullYear(), mes = mesAtual.getMonth();
   const primeiroDiaSemana = new Date(ano, mes, 1).getDay();
   const totalDias = new Date(ano, mes + 1, 0).getDate();
@@ -7682,12 +7866,12 @@ function renderCalendario() {
     let pills = '';
     if (reunioesDia.length) {
       const titulo = reunioesDia.map(n => `${n.cliente_nome}${n.hora_agendada ? ' ' + n.hora_agendada.slice(0,5) : ''} (${STATUS_META[n.status]?.label || n.status})`).join('\n');
-      pills += `<div class="cal-pill reuniao" title="${titulo.replace(/"/g,'&quot;')}">${iconeDominante(reunioesDia)} ${reunioesDia.length}</div>`;
+      pills += `<div class="cal-pill reuniao" title="${titulo.replace(/"/g,'&quot;')}">${iconeMini(iconeDominante(reunioesDia))} ${reunioesDia.length}</div>`;
     }
     if (vendasDia.length) {
       const totalVenda = vendasDia.reduce((s,n) => s + valorDaVenda(n), 0);
       const titulo = vendasDia.map(n => `${n.cliente_nome}: ${fmtBRL(valorDaVenda(n))}`).join('\n');
-      pills += `<div class="cal-pill venda" title="${titulo.replace(/"/g,'&quot;')}">💰 ${fmtBRL(totalVenda)}</div>`;
+      pills += `<div class="cal-pill venda" title="${titulo.replace(/"/g,'&quot;')}">${iconeMini('venda')} ${fmtBRL(totalVenda)}</div>`;
     }
 
     html += `<div class="cal-dia ${dataStr === hoje ? 'hoje' : ''}">
