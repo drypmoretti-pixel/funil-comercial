@@ -478,8 +478,8 @@ svg.chart { display: block; }
 .fn-grade { position:relative; display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
 .fn-cel.fn-larga { grid-column:span 2; }
 @container fn (min-width:560px) { .fn-grade { grid-template-columns:repeat(4, 1fr); } }
-@container fn (min-width:980px) {
-  .fn-grade { grid-template-columns:repeat(7, 1fr); gap:10px; }
+@container fn (min-width:1020px) {
+  .fn-grade { grid-template-columns:repeat(6, 1fr) 1.3fr; gap:10px; }
   .fn-cel.fn-larga { grid-column:auto; }
   .fn-cel { padding:13px 12px 12px; }
   .fn-val { font-size:1.9rem; }
@@ -497,6 +497,61 @@ svg.chart { display: block; }
 .fn-rodape .lanc-barra { margin-top:9px; }
 .fn-nota { display:inline-block; font-size:.7rem; font-weight:600; color:rgba(232,243,234,.55); padding:2px 0; }
 @media (prefers-reduced-motion: reduce) { .fn-cel:hover { transform:none; } }
+
+/* ---- Card de Faturamento em degraus: vermelho (30k) → azul diamante (50k) → amarelo cristal (80k) ---- */
+@property --fn-ang { syntax:'<angle>'; inherits:false; initial-value:0deg; }
+.fn-nivel { --c1:#ff3b30; --c2:#ffb3a8; --cg:255,59,48;
+  border-color:rgba(var(--cg),.85);
+  background:linear-gradient(160deg, rgba(var(--cg),.26), rgba(var(--cg),.05));
+  animation:fn-pulso 2.6s ease-in-out infinite; }
+.fn-nivel-diamante { --c1:#38bdf8; --c2:#d6f3ff; --cg:56,189,248; }
+.fn-nivel-cristal  { --c1:#fde047; --c2:#fffbd6; --cg:253,224,71; }
+@keyframes fn-pulso {
+  0%, 100% { box-shadow:0 0 0 1px rgba(var(--cg),.25), 0 6px 22px rgba(var(--cg),.30); }
+  50%      { box-shadow:0 0 0 1px rgba(var(--cg),.6), 0 8px 46px rgba(var(--cg),.78); }
+}
+/* anel de luz girando na borda */
+.fn-nivel::after { content:""; position:absolute; inset:-1px; border-radius:inherit; padding:2px; pointer-events:none;
+  background:conic-gradient(from var(--fn-ang), transparent 0 55%, rgba(var(--cg),.15) 68%, var(--c1) 84%, var(--c2) 92%, transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation:fn-gira 3.6s linear infinite; }
+@keyframes fn-gira { to { --fn-ang:360deg; } }
+/* brilho passando por cima (diamante e cristal) */
+.fn-nivel-diamante::before, .fn-nivel-cristal::before { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(110deg, transparent 38%, rgba(255,255,255,.34) 50%, transparent 62%); background-size:260% 100%;
+  mix-blend-mode:screen; animation:fn-varre 3.2s ease-in-out infinite; }
+@keyframes fn-varre { 0% { background-position:130% 0; } 60%, 100% { background-position:-60% 0; } }
+.fn-nivel .lanc-check { display:flex; background:var(--c1); color:#1a1205; box-shadow:0 0 16px rgba(var(--cg),.85); }
+.fn-nivel .lanc-meta { color:var(--c2); background:rgba(var(--cg),.18); }
+.fn-nivel .fn-idx { color:var(--c2); background:rgba(var(--cg),.20); }
+.fn-nivel .fn-val { text-shadow:0 0 20px rgba(var(--cg),.6); }
+.fn-nivel .lanc-barra i { background:linear-gradient(90deg, var(--c1), var(--c2)); box-shadow:0 0 12px rgba(var(--cg),.75); }
+.fn-nivel.fn-larga .fn-rot { padding-right:30px; }
+/* faíscas ao redor do card */
+.fn-fx { position:absolute; left:var(--x); top:var(--y); z-index:2; pointer-events:none; opacity:0; line-height:1;
+  font-style:normal; font-size:calc(var(--s) * 2.1); color:var(--c2); text-shadow:0 0 8px rgba(var(--cg),1), 0 0 14px rgba(var(--cg),.8);
+  animation:fn-brilha 2.6s ease-in-out var(--d, 0s) infinite; }
+@keyframes fn-brilha {
+  0%, 100% { opacity:0; transform:scale(.2) rotate(0deg); }
+  40%      { opacity:1; transform:scale(1.05) rotate(45deg); }
+  70%      { opacity:0; transform:scale(.4) rotate(90deg); }
+}
+/* supermeta: em vez de estrelas, brasas subindo */
+.fn-nivel-super .fn-fx { width:calc(var(--s) * .55); height:calc(var(--s) * .55); border-radius:50%; font-size:0;
+  background:radial-gradient(circle, #fff 0%, var(--c1) 55%, transparent 72%); box-shadow:0 0 10px 2px rgba(var(--cg),.85);
+  animation:fn-brasa 2.8s ease-in var(--d, 0s) infinite; }
+@keyframes fn-brasa {
+  0%   { opacity:0; transform:translateY(10px) scale(.5); }
+  25%  { opacity:1; }
+  100% { opacity:0; transform:translateY(-38px) scale(.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fn-nivel, .fn-nivel::after, .fn-nivel::before, .fn-fx { animation:none; }
+  .fn-fx { opacity:.9; transform:none; }
+  .fn-nivel-super .fn-fx { display:none; }
+  .fn-nivel { box-shadow:0 0 0 1px rgba(var(--cg),.4), 0 8px 30px rgba(var(--cg),.45); }
+}
 /* ---- agente de social selling ---- */
 .ss-switch { display: flex; gap: 6px; margin: 0 0 20px; }
 .ss-switch button {
@@ -3246,10 +3301,30 @@ async function atualizarLeadsDoFunil(mesRef) {
 }
 
 // sem centavos: a faixa tem 7 células estreitas e "R$ 15.000,00" não cabe
-function fnBRL(v) { return 'R$ ' + Math.round(Number(v) || 0).toLocaleString('pt-BR'); }
+function fnBRL(v) { return 'R$\u00a0' + Math.round(Number(v) || 0).toLocaleString('pt-BR'); }
+// Degraus do faturamento do mês — mudam só a cor (e os efeitos) do card de Faturamento:
+//   abaixo de 30k  card normal, barra rumo à meta
+//   30k            VERMELHO · supermeta, o alvo da barra passa a ser 50k
+//   50k            AZUL DIAMANTE · alvo 80k
+//   80k            AMARELO CRISTAL
+const FAT_SUPERMETA = 50000, FAT_CRISTAL = 80000;
+function nivelFaturamento(v) {
+  const falta = x => fnBRL(Math.max(0, x - v));
+  if (v >= FAT_CRISTAL) return { chave: 'cristal', alvo: FAT_CRISTAL, chipTxt: 'Cristal conquistado',
+    sub: `${fnBRL(v - FAT_CRISTAL)} acima de ${fnBRLCurto(FAT_CRISTAL)}` };
+  if (v >= FAT_SUPERMETA) return { chave: 'diamante', alvo: FAT_CRISTAL, chipTxt: `Diamante → ${fnBRLCurto(FAT_CRISTAL)}`,
+    sub: `supermeta batida · faltam ${falta(FAT_CRISTAL)}` };
+  if (v >= META_FATURAMENTO) return { chave: 'super', alvo: FAT_SUPERMETA, chipTxt: `Supermeta: ${fnBRLCurto(FAT_SUPERMETA)}`,
+    sub: `meta batida · faltam ${falta(FAT_SUPERMETA)}` };
+  return { chave: 'normal', alvo: META_FATURAMENTO, chipTxt: `Meta: ${fnBRLCurto(META_FATURAMENTO)}`,
+    sub: `faltam ${falta(META_FATURAMENTO)}` };
+}
+// posições das faíscas ao redor do card (x, y, atraso, tamanho)
+const FN_FAISCAS = [['-3%','16%','0s',9],['100%','28%','.5s',7],['10%','-7px','1.1s',8],['84%','-7px','1.6s',9],
+                    ['-2%','74%','.8s',7],['99%','84%','1.3s',10],['52%','100%','1.9s',8]];
 function fnBRLCurto(v) {
   v = Number(v) || 0;
-  return v >= 1000 ? 'R$ ' + (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : fnBRL(v);
+  return v >= 1000 ? 'R$\u00a0' + (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : fnBRL(v);
 }
 
 function renderTiles() {
@@ -3269,7 +3344,7 @@ function renderTiles() {
   const mql = cache ? cache.mql : null;
   const numOuReticencias = v => (v === null || v === undefined) ? '…' : v;
 
-  const faltaFat = Math.max(0, META_FATURAMENTO - m.faturamentoTotal);
+  const fat = nivelFaturamento(m.faturamentoTotal);
   const passos = [
     { rot: 'Leads geral', val: numOuReticencias(leads), sub: 'preencheram uma isca no mês',
       atual: leads, meta: metaDe('leads'), metaTxt: String(metaDe('leads')),
@@ -3287,10 +3362,10 @@ function renderTiles() {
       dica: 'Vendas com data de venda dentro do mês.' },
     { rot: 'Ticket médio', val: fnBRL(m.ticketMedio), moeda: true, sub: `${m.vendas.length} venda(s) no mês`, nota: 'valor médio por venda',
       dica: 'Total vendido no mês dividido pelo número de vendas.' },
-    { rot: 'Faturamento', val: fnBRL(m.faturamentoTotal), moeda: true,
-      sub: faltaFat ? `faltam ${fnBRL(faltaFat)}` : 'meta batida',
-      atual: m.faturamentoTotal, meta: META_FATURAMENTO, metaTxt: fnBRLCurto(META_FATURAMENTO), larga: true,
-      dica: 'Valor faturado com data de faturamento dentro do mês.' },
+    { rot: 'Faturamento', val: fnBRL(m.faturamentoTotal), moeda: true, sub: fat.sub,
+      atual: m.faturamentoTotal, meta: fat.alvo, chipTxt: fat.chipTxt, larga: true,
+      nivel: fat.chave === 'normal' ? null : fat.chave,
+      dica: 'Valor faturado com data de faturamento dentro do mês. Bateu R$ 30 mil: o card fica vermelho (supermeta de R$ 50 mil). R$ 50 mil: azul diamante. R$ 80 mil: amarelo cristal.' },
   ];
 
   const celulas = passos.map((p, i) => {
@@ -3298,10 +3373,15 @@ function renderTiles() {
     const pct = temMeta ? Math.max(0, Math.min(100, (p.atual / p.meta) * 100)) : 0;
     const bateu = temMeta && p.atual >= p.meta;
     const rodape = p.meta > 0
-      ? `<span class="lanc-meta">Meta: ${p.metaTxt}</span><div class="lanc-barra"><i style="width:${pct}%"></i></div>`
+      ? `<span class="lanc-meta">${p.chipTxt || 'Meta: ' + p.metaTxt}</span><div class="lanc-barra"><i style="width:${pct}%"></i></div>`
       : `<span class="fn-nota">${p.nota || ''}</span>`;
+    // card em degrau (vermelho/diamante/cristal) troca o verde de "bateu" pela própria cor e ganha efeitos
+    const efeitos = p.nivel
+      ? FN_FAISCAS.map(([x, y, d, t]) => `<i class="fn-fx" style="--x:${x};--y:${y};--d:${d};--s:${t}px">${p.nivel === 'super' ? '' : '✦'}</i>`).join('')
+      : '';
     return `
-      <div class="lanc-campo fn-cel${bateu ? ' bateu' : ''}${p.larga ? ' fn-larga' : ''}" title="${p.dica.replace(/"/g, '&quot;')}">
+      <div class="lanc-campo fn-cel${p.nivel ? ' fn-nivel fn-nivel-' + p.nivel : (bateu ? ' bateu' : '')}${p.larga ? ' fn-larga' : ''}" title="${p.dica.replace(/"/g, '&quot;')}">
+        ${efeitos}
         <div class="lanc-check">✓</div>
         <div class="fn-rot"><span class="fn-idx">${String(i + 1).padStart(2, '0')}</span>${p.rot}</div>
         <div class="fn-val${p.moeda ? ' moeda' : ''}">${p.val}</div>
@@ -8507,7 +8587,7 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-10-10',
+  versao: '2026-10-10b',
   titulo: 'Chegou coisa nova',
   passos: [
     {
@@ -8521,6 +8601,12 @@ const NOVIDADES = {
       titulo: 'Ticket médio consertado e score mais justo',
       texto: 'Tinha venda sem valor preenchido sendo contada como <b>R$ 0</b> e derrubando o ticket médio — agora, se o valor da venda está em branco, o painel usa o faturado ou o da proposta. E o lead parado esfria mais devagar: <b>1 ponto por semana</b> (eram 5), depois de 21 dias sem ninguém mexer. Esfria, mas sem desmaiar.',
       aba: 'dashboard', onde: 'Dashboard · ticket médio · CRM · score do lead',
+    },
+    {
+      emoji: '💎',
+      titulo: 'Faturamento com degraus: supermeta, diamante e cristal',
+      texto: 'Bateu <b>R$ 30 mil</b>? O card de Faturamento fica <b>vermelho</b> e a barra passa a perseguir a supermeta de <b>R$ 50 mil</b>. Chegou nos 50? Vira <b>azul diamante</b>, rumo aos <b>R$ 80 mil</b>. Passou dos 80? <b>Amarelo cristal</b>. Cada degrau vem com brilho, faísca e um anel de luz girando em volta do card. Dá vontade de vender só pra ver.',
+      aba: 'dashboard', onde: 'Dashboard e CRM · card de Faturamento',
     },
   ],
 };
