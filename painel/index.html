@@ -4287,7 +4287,9 @@ const SCORE_FORM_TOTAL = 70;
 // respondeu as três SEMPRE pode passar de quem respondeu uma, que era o furo da 1ª versão —
 // um CEO que só informou o cargo tirava a mesma base de um CEO com dor e canal perfeitos.
 const SCORE_CONFIANCA = { 0: 0, 1: 0.72, 2: 0.88, 3: 1 };
-const SCORE_PARADO_DIAS = 21, SCORE_PARADO_SEMANA = 5, SCORE_PARADO_MAX = 20;
+// 2026-10-09: era 5 por semana (esfriava rápido demais); o Igor pediu 1 ponto — continua esfriando, só mais devagar.
+// O mesmo número vive em public.score_montar no banco; mudou num, muda no outro.
+const SCORE_PARADO_DIAS = 21, SCORE_PARADO_SEMANA = 1, SCORE_PARADO_MAX = 20;
 const SCORE_QUENTE = 70, SCORE_MORNO = 45;
 
 // Iscas contadas POR PESSOA, não por card. São 109 pessoas com card duplicado no board (o Igor
