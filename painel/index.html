@@ -8385,6 +8385,7 @@ async function crmAplicarPerda(cardId, motivo, obs) {
   }
   fecharModal('modal-card-crm');
   await carregarCardsDoFunil();
+  await carregarTudo();   // o banco já marcou o negócio vinculado como perdida
   carregarMotivosPerda();
 }
 
@@ -8396,6 +8397,7 @@ async function negocioAplicarPerda(negocioId, motivo, obs) {
   }).eq('id', negocioId);
   fecharModal('modal-overlay');
   await carregarTudo();
+  await carregarCardsDoFunil();   // o banco já moveu o card pra Perdidos
   carregarMotivosPerda();
 }
 
@@ -10173,8 +10175,21 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     if (btn.dataset.tab === 'whatsapp') document.getElementById('whats-badge').style.display = 'none';
     if (btn.dataset.tab === 'arquivos') carregarArquivos();
     if (btn.dataset.tab === 'relatorio') carregarRelatorio();
+    recarregarLadoEspelhado(btn.dataset.tab);
   });
 });
+
+// O painel central (negócios) e o CRM (cards) se espelham no banco: perder, ganhar, mudar de etapa,
+// valor, nome e responsável andam juntos nos dois sentidos (triggers em com_negocios/com_cards).
+// Quem editou de um lado só vê o resultado do outro se a tela for recarregada ao chegar nela.
+// A trava de 2,5s evita carga dupla quando o próprio painel troca de aba por código.
+const ABAS_DO_PAINEL_CENTRAL = ['dashboard', 'calendario', 'historico', 'dicas'];
+let ultimaCargaEspelhada = 0;
+function recarregarLadoEspelhado(aba) {
+  if (Date.now() - ultimaCargaEspelhada < 2500) return;
+  if (aba === 'crm') { ultimaCargaEspelhada = Date.now(); carregarCardsDoFunil(); }
+  else if (ABAS_DO_PAINEL_CENTRAL.includes(aba)) { ultimaCargaEspelhada = Date.now(); carregarTudo(); }
+}
 
 // ---------- ARQUIVOS (biblioteca estilo Google Drive) ----------
 // Metadados em com_arquivos, binário no bucket público "di-arquivos". Pasta é só um texto na linha
