@@ -1817,6 +1817,148 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 .cal-ico { display: inline-flex; vertical-align: -2px; margin-right: 3px; }
 .cal-legenda span { display: inline-flex; align-items: center; gap: 6px; }
 .cal-legenda .cal-ico { margin-right: 0; }
+
+/* ==========================================================================
+   Polimento visual, rodada 2 (10/2026): Geração de demanda (Tally) e Gerar contrato.
+   ========================================================================== */
+.tl-cab, .ct-cab { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; margin: 2px 0 18px; flex-wrap: wrap; }
+.tl-cab h2, .ct-cab h2 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -.025em; }
+.tl-cab .muted, .ct-cab .muted { margin: 4px 0 0; max-width: 62ch; }
+.add-toggle svg { vertical-align: -3px; margin-right: 6px; }
+.tl-cfg-n { margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: var(--accent-wash); color: var(--accent-deep); font-size: .72rem; font-weight: 800; }
+.tl-cfg-n:empty { display: none; }
+
+/* configuração dos formulários */
+.tl-config { padding: 20px 22px; }
+.tl-config h3 { margin: 0; font-size: 1rem; font-weight: 800; letter-spacing: -.01em; }
+.tl-cfg-barra { display: flex; gap: 8px; margin: 12px 0 10px; flex-wrap: wrap; }
+.tl-cfg-barra input { flex: 1 1 220px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); }
+.tl-config .form-lista { max-height: 280px; display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 6px; padding: 8px; border-radius: 12px; }
+.tl-config .form-lista label { padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-1); transition: border-color var(--transicao), background var(--transicao); }
+.tl-config .form-lista label:hover { border-color: var(--accent); }
+.tl-config .form-lista label:has(input:checked) { background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.tl-config .form-lista input { accent-color: var(--accent); }
+
+/* painel de KPIs (mesma linguagem do topo do Dashboard) */
+.lanc.tl-painel { margin: 0 0 22px; padding: 20px 22px 22px; border-radius: 20px; container: tl / inline-size; }
+.tl-painel .lanc-nav { position: relative; }
+.tl-painel .lanc-nav #tally-mes-label { min-width: 130px; text-align: center; font-weight: 700; font-size: .9rem; color: #fff; padding: 0 6px; }
+.tl-kpis { position: relative; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@container tl (min-width: 760px) { .tl-kpis { grid-template-columns: 1.25fr 1fr 1fr 1fr; } }
+.tl-kpi { display: flex; flex-direction: column; gap: 4px; padding: 16px 16px 14px; border-radius: 16px; min-height: 142px;
+  background: linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.10);
+  transition: border-color var(--transicao), transform var(--transicao); }
+.tl-kpi:hover { border-color: rgba(63,203,74,.45); transform: translateY(-2px); }
+.tl-kpi.destaque { border-color: rgba(63,203,74,.5); background: linear-gradient(160deg, rgba(63,203,74,.24), rgba(63,203,74,.05)); box-shadow: 0 10px 30px -12px rgba(12,163,12,.5); }
+.tl-kpi .rot { font-size: .66rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #b6c9bb; }
+.tl-kpi .val { margin-top: 6px; font-size: 2.7rem; font-weight: 800; letter-spacing: -.035em; line-height: 1; color: #fff; }
+.tl-kpi .sub { font-size: .78rem; color: #b6c9bb; margin-top: auto; padding-top: 10px; }
+.tl-delta { align-self: flex-start; display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; padding: 3px 10px; border-radius: 999px; font-size: .72rem; font-weight: 700; }
+.tl-delta.sobe { background: rgba(63,203,74,.16); color: #8ff09c; border: 1px solid rgba(63,203,74,.4); }
+.tl-delta.desce { background: rgba(240,101,95,.14); color: #ffc7c4; border: 1px solid rgba(240,101,95,.4); }
+.tl-delta.igual { background: rgba(255,255,255,.08); color: #d5e4d9; border: 1px solid rgba(255,255,255,.18); }
+@media (prefers-reduced-motion: reduce) { .tl-kpi:hover { transform: none; } }
+
+.tl-grade { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; margin-bottom: 26px; align-items: stretch; }
+.tl-grade > section { margin: 0; }
+@media (max-width: 1000px) { .tl-grade { grid-template-columns: 1fr; } }
+.tl-card-cab { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.tl-card-cab h3 { margin: 0; font-size: 1.05rem; font-weight: 800; letter-spacing: -.015em; }
+.tl-card-cab .muted { font-size: .78rem; }
+
+/* gráfico de leads por dia */
+.lg-wrap { position: relative; display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 10px; container: lg / inline-size; }
+.lg-y { position: relative; height: 250px; }
+.lg-y span { position: absolute; right: 0; transform: translateY(50%); font-size: .68rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lg-plot { position: relative; height: 250px; }
+.lg-grid i { position: absolute; left: 0; right: 0; height: 1px; background: var(--grid); }
+.lg-cols { position: absolute; inset: 0; display: flex; }
+.lg-col { position: relative; flex: 1; min-width: 0; display: flex; align-items: flex-end; justify-content: center; outline: none; }
+.lg-bar { height: var(--h); width: min(24px, 62%); border-radius: 4px 4px 0 0; background: var(--accent); transition: filter .15s ease, height .6s cubic-bezier(.16,1,.3,1); }
+.lg-col.zero .lg-bar { height: 2px; border-radius: 0; background: var(--grid); }
+.lg-col:hover .lg-bar, .lg-col:focus-visible .lg-bar { filter: brightness(1.14); }
+.lg-col:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 6px; }
+.lg-col.hoje .lg-bar { box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent); }
+.lg-val { position: absolute; left: 50%; bottom: calc(var(--h) + 5px); transform: translateX(-50%); font-size: .74rem; font-weight: 800; color: var(--text-primary); pointer-events: none; }
+.lg-media { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid color-mix(in srgb, var(--text-secondary) 50%, transparent); pointer-events: none; z-index: 2; }
+.lg-media span { position: absolute; right: 0; top: -19px; padding: 0 5px; font-size: .68rem; font-weight: 700; color: var(--text-secondary); background: var(--surface-1); border-radius: 4px; }
+.lg-eixo { grid-column: 2; display: flex; margin-top: 7px; }
+.lg-eixo span { flex: 1; min-width: 0; text-align: center; font-size: .66rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lg-eixo span.hoje { color: var(--text-primary); font-weight: 800; }
+@container lg (max-width: 640px) { .lg-eixo span:nth-child(even) { visibility: hidden; } }
+.lg-tip { position: absolute; z-index: 6; pointer-events: none; min-width: 150px; padding: 9px 12px; border-radius: 11px;
+  background: var(--surface-1); border: 1px solid var(--border); box-shadow: var(--sombra-3); font-size: .78rem; opacity: 0; transition: opacity .12s; }
+.lg-tip.on { opacity: 1; }
+.lg-tip b { display: block; font-size: 1.1rem; font-weight: 800; letter-spacing: -.02em; color: var(--text-primary); }
+.lg-tip small { display: block; color: var(--muted); margin-bottom: 2px; }
+.lg-tip .l { display: flex; justify-content: space-between; gap: 14px; margin-top: 3px; color: var(--text-secondary); }
+.lg-tip .l span:last-child { font-weight: 700; color: var(--text-primary); }
+
+/* ranking por formulário */
+.rk-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 12px; padding: 9px 0; }
+.rk-item + .rk-item { border-top: 1px solid var(--grid); }
+.rk-nome { font-size: .84rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rk-n { font-weight: 800; font-variant-numeric: tabular-nums; font-size: .9rem; }
+.rk-n small { margin-left: 6px; font-weight: 600; color: var(--muted); font-size: .72rem; }
+.rk-barra { grid-column: 1 / -1; height: 6px; border-radius: 99px; background: var(--grid); overflow: hidden; }
+.rk-barra i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
+.rk-vazio { color: var(--muted); font-size: .85rem; padding: 10px 0; }
+
+/* últimos leads */
+.tl-tabela-wrap { max-height: 470px; overflow: auto; border: 1px solid var(--border); border-radius: 12px; }
+.tl-tabela { border-collapse: separate; border-spacing: 0; }
+.tl-tabela th { position: sticky; top: 0; z-index: 1; padding: 11px 16px; background: var(--surface-2); border-bottom: 1px solid var(--border); font-size: .66rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.tl-tabela td { padding: 11px 16px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+.tl-tabela tr:last-child td { border-bottom: none; }
+.tl-tabela tbody tr:hover td { background: var(--field-bg); }
+.tl-lead { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.tl-avatar { flex: none; width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; font-size: .7rem; font-weight: 800; color: var(--accent-deep); background: var(--accent-wash); border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent); }
+.tl-lead b { font-weight: 700; }
+.tl-email { color: var(--text-secondary); }
+.tl-chip { display: inline-block; padding: 2px 11px; border-radius: 999px; background: var(--field-bg); border: 1px solid var(--border); font-size: .74rem; font-weight: 600; white-space: nowrap; }
+.tl-data { white-space: nowrap; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.tl-data.hoje { color: var(--accent-deep); font-weight: 800; }
+
+/* ---- Gerar contrato ---- */
+.ct-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 22px; align-items: start; margin-bottom: 26px; }
+@media (max-width: 1000px) { .ct-layout { grid-template-columns: 1fr; } }
+#form-contrato.ct-form { display: flex; flex-direction: column; gap: 16px; margin: 0; }
+.ct-grupo { background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px 22px; box-shadow: var(--sombra-1); }
+.ct-grupo-cab { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.ct-num { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; flex: none; font-weight: 800; font-size: .85rem; color: var(--accent-deep); background: var(--accent-wash); border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent); }
+.ct-tit { display: flex; flex-direction: column; font-weight: 800; font-size: 1rem; letter-spacing: -.01em; line-height: 1.2; }
+.ct-tit small { font-weight: 500; color: var(--muted); font-size: .76rem; letter-spacing: 0; }
+.ct-campos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+.ct-campos .full { grid-column: 1 / -1; }
+@media (max-width: 640px) { .ct-campos { grid-template-columns: 1fr; } }
+.ct-campos label { font-weight: 600; margin-bottom: 5px !important; }
+#form-contrato input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+.ct-resumo.lanc { margin: 0; padding: 22px; border-radius: 20px; position: sticky; top: 16px; }
+.ct-r-cliente { position: relative; margin-top: 16px; font-size: 1.15rem; font-weight: 800; letter-spacing: -.01em; line-height: 1.25; color: #fff; word-break: break-word; }
+.ct-r-cliente.vazio, .ct-r-valor.vazio { color: rgba(255,255,255,.35); }
+.ct-r-doc { position: relative; margin-top: 3px; font-size: .8rem; color: #b6c9bb; }
+.ct-r-valor { position: relative; margin-top: 18px; margin-bottom: 14px; font-size: 2.4rem; font-weight: 800; letter-spacing: -.035em; line-height: 1; color: #fff; }
+.ct-r-linha { position: relative; display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(255,255,255,.10); font-size: .82rem; color: #b6c9bb; }
+.ct-r-linha b { color: #fff; font-weight: 700; text-align: right; min-width: 0; word-break: break-word; }
+.ct-prog { position: relative; margin-top: 8px; }
+.ct-prog .lanc-barra { margin-top: 0; }
+.ct-prog small { display: block; margin-top: 7px; font-size: .74rem; color: #b6c9bb; }
+.ct-acoes { position: relative; display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.ct-resumo .btn { width: 100%; padding: 13px 14px; }
+.ct-resumo .btn.btn-secondary { background: rgba(255,255,255,.07) !important; color: #fff !important; border: 1px solid rgba(255,255,255,.2); box-shadow: none; }
+.ct-resumo .btn.btn-secondary:hover { border-color: #7be58a; color: #7be58a !important; }
+.ct-resumo .btn:focus-visible { outline: 2px solid #7be58a; outline-offset: 2px; }
+
+.ct-hist-cab { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.ct-hist-cab h2 { margin: 0; }
+.ct-hist-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 14px; padding: 13px 4px; border-bottom: 1px solid var(--grid); }
+.ct-hist-item:last-child { border-bottom: none; }
+.ct-hist-nome { display: flex; flex-direction: column; min-width: 0; }
+.ct-hist-nome b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ct-hist-nome span { font-size: .76rem; color: var(--muted); }
+.ct-hist-valor { font-weight: 800; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) { .ct-hist-item { grid-template-columns: auto minmax(0, 1fr) auto; } .ct-hist-valor { grid-column: 2; } }
 </style>
 </head>
 <body>
@@ -1966,9 +2108,9 @@ form.form-grid.form-collapse:not(.open) { display: none; }
         <div class="section-title">
           <h2>CRM</h2>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="add-toggle" onclick="abrirGerenciarFunis()">⚙️ Funis</button>
-            <button class="add-toggle" onclick="abrirGerenciarCampos()">⚙️ Campos personalizados</button>
-            <button class="add-toggle" onclick="abrirGerenciarTags()">⚙️ Tags</button>
+            <button class="add-toggle" onclick="abrirGerenciarFunis()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Funis</button>
+            <button class="add-toggle" onclick="abrirGerenciarCampos()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Campos personalizados</button>
+            <button class="add-toggle" onclick="abrirGerenciarTags()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Tags</button>
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:4px;">
@@ -2036,41 +2178,58 @@ form.form-grid.form-collapse:not(.open) { display: none; }
     </div>
 
     <div class="tab-panel" id="tab-formulario">
-      <section class="card">
-        <div class="section-title">
-          <h2>Geração de demanda (Tally)</h2>
-          <button class="add-toggle" onclick="toggleForm('tally-config')">⚙️ Formulários</button>
+      <div class="tl-cab">
+        <div>
+          <h2>Geração de demanda</h2>
+          <p class="muted">Leads que chegaram pelos formulários do Tally: iscas, eventos e Lead Magnet.</p>
         </div>
-        <div class="form-collapse" id="tally-config">
-          <p class="muted">Quais formulários contam como geração de demanda? Marcar/desmarcar já atualiza o dashboard sozinho.</p>
-          <div id="tally-forms-wrap" style="margin-top:4px;">
-            <div style="display:flex; gap:8px; margin-bottom:8px;">
-              <input type="text" id="tally-filtro" placeholder="filtrar por nome..." oninput="renderListaFormularios()"
-                style="flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary);">
-              <button class="add-toggle" onclick="selecionarTodosFormularios(true)">Marcar todos</button>
-              <button class="add-toggle" onclick="selecionarTodosFormularios(false)">Desmarcar todos</button>
-            </div>
-            <div class="form-lista" id="tally-forms-lista"></div>
+        <button class="add-toggle" onclick="toggleForm('tally-config')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Formulários<span class="tl-cfg-n" id="tally-cfg-n"></span></button>
+      </div>
+
+      <section class="card form-collapse tl-config" id="tally-config">
+        <h3>Quais formulários contam como geração de demanda?</h3>
+        <p class="muted">Marcar ou desmarcar já atualiza o painel sozinho. Formulário novo no Tally entra marcado.</p>
+        <div id="tally-forms-wrap">
+          <div class="tl-cfg-barra">
+            <input type="text" id="tally-filtro" placeholder="Filtrar por nome..." oninput="renderListaFormularios()">
+            <button class="add-toggle" onclick="selecionarTodosFormularios(true)">Marcar todos</button>
+            <button class="add-toggle" onclick="selecionarTodosFormularios(false)">Desmarcar todos</button>
           </div>
-        </div>
-        <div id="tally-vazio" class="empty">Carregando formulários do Tally...</div>
-        <div id="tally-aviso-parcial" style="display:none; margin-top:12px; padding:10px 14px; border-radius:8px; border:1px solid var(--warning); background: color-mix(in srgb, var(--warning) 9%, var(--surface-1)); color: var(--warning); font-size:.85rem;"></div>
-        <div id="tally-dashboard" style="display:none; margin-top:20px;">
-          <div class="section-title">
-            <h3 style="margin:0;">Métricas do formulário</h3>
-            <div class="month-nav">
-              <button onclick="mudaMesTally(-1)">‹</button>
-              <div id="tally-mes-label"></div>
-              <button onclick="mudaMesTally(1)">›</button>
-            </div>
-          </div>
-          <div class="tiles" id="tally-tiles"></div>
-          <h3>Leads por dia</h3>
-          <div class="chart-wrap"><svg id="chart-leads" class="chart"></svg></div>
-          <h3 style="margin-top:22px;">Últimos leads</h3>
-          <div class="tabela-wrap"><table class="tabela-leads" id="tabela-leads"></table></div>
+          <div class="form-lista" id="tally-forms-lista"></div>
         </div>
       </section>
+
+      <div id="tally-vazio" class="empty">Carregando formulários do Tally...</div>
+      <div id="tally-aviso-parcial" style="display:none; margin-top:12px; padding:10px 14px; border-radius:8px; border:1px solid var(--warning); background: color-mix(in srgb, var(--warning) 9%, var(--surface-1)); color: var(--warning); font-size:.85rem;"></div>
+      <div id="tally-dashboard" style="display:none;">
+        <div class="lanc tl-painel">
+          <div class="fn-topo">
+            <span class="lanc-selo">Geração de demanda</span>
+            <div class="lanc-nav">
+              <button onclick="mudaMesTally(-1)" aria-label="Mês anterior">‹</button>
+              <span id="tally-mes-label"></span>
+              <button onclick="mudaMesTally(1)" aria-label="Próximo mês">›</button>
+            </div>
+          </div>
+          <div class="tl-kpis" id="tally-tiles"></div>
+        </div>
+
+        <div class="tl-grade">
+          <section class="card">
+            <div class="tl-card-cab"><h3>Leads por dia</h3><span class="muted" id="lg-resumo"></span></div>
+            <div id="lg-chart"></div>
+          </section>
+          <section class="card">
+            <div class="tl-card-cab"><h3>Por formulário</h3><span class="muted">no mês</span></div>
+            <div id="tl-rank"></div>
+          </section>
+        </div>
+
+        <section class="card">
+          <div class="tl-card-cab"><h3>Últimos leads</h3><span class="muted" id="tl-ultimos-n"></span></div>
+          <div class="tl-tabela-wrap"><table class="tabela-leads tl-tabela" id="tabela-leads"></table></div>
+        </section>
+      </div>
     </div>
 
     <div class="tab-panel" id="tab-dicas">
@@ -2576,90 +2735,128 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
     </div>
 
     <div class="tab-panel" id="tab-contrato">
-      <section class="card">
-        <div class="section-title">
+      <div class="ct-cab">
+        <div>
           <h2>Gerar contrato</h2>
+          <p class="muted">Preencha os dados de quem fechou e a forma de pagamento combinada. Ao gerar, o contrato abre pronto para baixar ou imprimir em PDF e enviar ao cliente na hora.</p>
         </div>
-        <p class="muted">Preenche os dados do cliente que fechou e a forma de pagamento combinada. Ao gerar, o contrato já abre pronto pra baixar/imprimir em PDF e mandar pro cliente na hora.</p>
-        <form class="form-grid" id="form-contrato" onsubmit="return gerarContrato(event)">
-          <div class="full">
-            <label>Razão social</label>
-            <input type="text" id="ctr-razao" required>
+      </div>
+
+      <div class="ct-layout">
+        <form class="form-grid ct-form" id="form-contrato" onsubmit="return gerarContrato(event)">
+        <div class="ct-grupo">
+          <div class="ct-grupo-cab"><span class="ct-num">1</span><span class="ct-tit">Empresa contratante<small>Quem está fechando com a gente</small></span></div>
+          <div class="ct-campos">
+            <div class="full">
+              <label>Razão social</label>
+              <input type="text" id="ctr-razao" placeholder="Nome completo da empresa" required>
+            </div>
+            <div>
+              <label>CNPJ</label>
+              <input type="text" id="ctr-cnpj" placeholder="00.000.000/0000-00" required>
+            </div>
+            <div>
+              <label>E-mail</label>
+              <input type="email" id="ctr-email" placeholder="contato@empresa.com.br" required>
+            </div>
+            <div>
+              <label>Telefone</label>
+              <input type="text" id="ctr-telefone" placeholder="(11) 90000-0000" required>
+            </div>
           </div>
-          <div>
-            <label>CNPJ</label>
-            <input type="text" id="ctr-cnpj" required>
+        </div>
+        <div class="ct-grupo">
+          <div class="ct-grupo-cab"><span class="ct-num">2</span><span class="ct-tit">Endereço<small>Sede da empresa</small></span></div>
+          <div class="ct-campos">
+            <div class="full">
+              <label>Endereço (rua, número)</label>
+              <input type="text" id="ctr-endereco" required>
+            </div>
+            <div>
+              <label>Bairro</label>
+              <input type="text" id="ctr-bairro" required>
+            </div>
+            <div>
+              <label>CEP</label>
+              <input type="text" id="ctr-cep" placeholder="00000-000" required>
+            </div>
+            <div>
+              <label>Cidade</label>
+              <input type="text" id="ctr-cidade" required>
+            </div>
+            <div>
+              <label>Estado (UF)</label>
+              <input type="text" id="ctr-estado" maxlength="2" style="text-transform:uppercase;" placeholder="SP" required>
+            </div>
           </div>
-          <div>
-            <label>E-mail</label>
-            <input type="email" id="ctr-email" required>
+        </div>
+        <div class="ct-grupo">
+          <div class="ct-grupo-cab"><span class="ct-num">3</span><span class="ct-tit">Quem assina<small>Responsável legal e dados para a assinatura</small></span></div>
+          <div class="ct-campos">
+            <div>
+              <label>Nome do responsável (quem assina)</label>
+              <input type="text" id="ctr-responsavel" required>
+            </div>
+            <div>
+              <label>Cargo do responsável</label>
+              <input type="text" id="ctr-cargo" value="Sócio(a)" required>
+            </div>
+            <div>
+              <label>RG do contratante</label>
+              <input type="text" id="ctr-rg" required>
+            </div>
+            <div>
+              <label>CPF do contratante</label>
+              <input type="text" id="ctr-cpf" placeholder="000.000.000-00" required>
+            </div>
+            <div class="full">
+              <label>E-mail do cliente (recebe o convite de assinatura na Autentique)</label>
+              <input type="email" id="ctr-email-assinatura" placeholder="e-mail de quem vai assinar, se for diferente do e-mail da empresa acima">
+            </div>
           </div>
-          <div>
-            <label>Telefone</label>
-            <input type="text" id="ctr-telefone" required>
+        </div>
+        <div class="ct-grupo">
+          <div class="ct-grupo-cab"><span class="ct-num">4</span><span class="ct-tit">Condições comerciais<small>Valor, pagamento e início</small></span></div>
+          <div class="ct-campos">
+            <div>
+              <label>Valor do contrato (R$)</label>
+              <input type="number" id="ctr-valor" step="0.01" placeholder="0,00" required>
+            </div>
+            <div>
+              <label>Forma de pagamento</label>
+              <input type="text" id="ctr-pagamento" value="à vista via Pix" required>
+            </div>
+            <div>
+              <label>Data de início</label>
+              <input type="date" id="ctr-data-inicio" required>
+            </div>
           </div>
-          <div class="full">
-            <label>Endereço (rua, número)</label>
-            <input type="text" id="ctr-endereco" required>
+        </div>
+        </form>
+
+        <aside class="lanc ct-resumo" aria-label="Resumo do contrato">
+          <span class="lanc-selo">Resumo do contrato</span>
+          <div class="ct-r-cliente vazio" id="ctr-r-razao">Nome da empresa</div>
+          <div class="ct-r-doc" id="ctr-r-cnpj">CNPJ não informado</div>
+          <div class="ct-r-valor vazio" id="ctr-r-valor">R$ —</div>
+          <div class="ct-r-linha"><span>Pagamento</span><b id="ctr-r-pag">—</b></div>
+          <div class="ct-r-linha"><span>Início</span><b id="ctr-r-inicio">—</b></div>
+          <div class="ct-r-linha"><span>Assina</span><b id="ctr-r-quem">—</b></div>
+          <div class="ct-prog">
+            <div class="lanc-barra"><i id="ctr-r-barra"></i></div>
+            <small id="ctr-r-prog"></small>
           </div>
-          <div>
-            <label>Bairro</label>
-            <input type="text" id="ctr-bairro" required>
-          </div>
-          <div>
-            <label>CEP</label>
-            <input type="text" id="ctr-cep" required>
-          </div>
-          <div>
-            <label>Cidade</label>
-            <input type="text" id="ctr-cidade" required>
-          </div>
-          <div>
-            <label>Estado (UF)</label>
-            <input type="text" id="ctr-estado" maxlength="2" style="text-transform:uppercase;" required>
-          </div>
-          <div>
-            <label>Nome do responsável (quem assina)</label>
-            <input type="text" id="ctr-responsavel" required>
-          </div>
-          <div>
-            <label>Cargo do responsável</label>
-            <input type="text" id="ctr-cargo" value="Sócio(a)" required>
-          </div>
-          <div class="full">
-            <label>E-mail do cliente (recebe o convite de assinatura na Autentique)</label>
-            <input type="email" id="ctr-email-assinatura" placeholder="e-mail de quem vai assinar, se for diferente do e-mail da empresa acima">
-          </div>
-          <div>
-            <label>RG do contratante</label>
-            <input type="text" id="ctr-rg" required>
-          </div>
-          <div>
-            <label>CPF do contratante</label>
-            <input type="text" id="ctr-cpf" required>
-          </div>
-          <div>
-            <label>Valor do contrato (R$)</label>
-            <input type="number" step="0.01" id="ctr-valor" required>
-          </div>
-          <div>
-            <label>Forma de pagamento</label>
-            <input type="text" id="ctr-pagamento" value="à vista via Pix" required>
-          </div>
-          <div>
-            <label>Data de início</label>
-            <input type="date" id="ctr-data-inicio" required>
-          </div>
-          <div class="full" style="display:flex; gap:8px;">
-            <button class="btn" type="submit">Gerar contrato (baixar/imprimir)</button>
+          <div class="ct-acoes">
+            <button class="btn" type="submit" form="form-contrato">Gerar contrato (baixar/imprimir)</button>
             <button class="btn btn-secondary" type="button" id="ctr-btn-autentique" onclick="enviarAutentique()">Enviar pra assinar (Autentique)</button>
           </div>
-        </form>
-      </section>
+        </aside>
+      </div>
 
       <section class="card">
-        <div class="section-title">
+        <div class="ct-hist-cab">
           <h2>Últimos contratos gerados</h2>
+          <span class="muted" id="ctr-hist-resumo"></span>
         </div>
         <div id="ctr-lista"><div class="empty">Carregando...</div></div>
       </section>
@@ -3397,6 +3594,7 @@ async function carregarTudo() {
   if (checklistMetricas.length) renderChecklist();
   const ctrData = document.getElementById('ctr-data-inicio');
   if (ctrData && !ctrData.value) ctrData.value = dataLocalStr();
+  ctrResumoAtualizar();
   carregarContratos();
 }
 
@@ -6510,6 +6708,8 @@ async function carregarListaFormularios() {
 }
 
 function renderListaFormularios() {
+  const nCfg = document.getElementById('tally-cfg-n');
+  if (nCfg) nCfg.textContent = tallyFormsAll.length ? `${tallySelecionados.length}/${tallyFormsAll.length}` : '';
   const filtro = (document.getElementById('tally-filtro').value || '').toLowerCase();
   const lista = tallyFormsAll.filter(f => f.nome.toLowerCase().includes(filtro));
   document.getElementById('tally-forms-lista').innerHTML = lista.map(f => `
@@ -6885,6 +7085,11 @@ function mudaMesTally(delta) {
   renderFormularioDashboard();
 }
 
+function iniciaisDe(nome) {
+  const p = String(nome || '?').trim().split(/\s+/);
+  return ((p[0][0] || '?') + (p[1] ? p[1][0] : (p[0][1] || ''))).toUpperCase();
+}
+
 function renderFormularioDashboard() {
   if (!tallySubmissions.length && !tallySelecionados.length) return;
   const mesRef = fmtMesRef(tallyMesAtual);
@@ -6892,55 +7097,153 @@ function renderFormularioDashboard() {
   const leadsHoje = tallySubmissions.filter(s => s.data === hoje).length;
   const leadsMes = tallySubmissions.filter(s => s.data.startsWith(mesRef));
   const ehMesAtual = mesRef === fmtMesRef(new Date());
-  const diasBase = ehMesAtual ? new Date().getDate() : new Date(tallyMesAtual.getFullYear(), tallyMesAtual.getMonth()+1, 0).getDate();
+  const diasBase = ehMesAtual ? new Date().getDate() : new Date(tallyMesAtual.getFullYear(), tallyMesAtual.getMonth() + 1, 0).getDate();
   const mediaDia = leadsMes.length / Math.max(1, diasBase);
+  // mês anterior no MESMO período: se o mês ainda está rolando, só até o mesmo dia — comparar mês
+  // cheio com mês pela metade sempre dá "queda" e não diz nada
+  const antRef = fmtMesRef(new Date(tallyMesAtual.getFullYear(), tallyMesAtual.getMonth() - 1, 1));
+  const leadsAnt = tallySubmissions.filter(s => s.data.startsWith(antRef) && Number(s.data.slice(8, 10)) <= diasBase).length;
+
+  let delta = '';
+  if (leadsAnt > 0) {
+    const pct = Math.round(((leadsMes.length - leadsAnt) / leadsAnt) * 100);
+    const cls = pct > 0 ? 'sobe' : pct < 0 ? 'desce' : 'igual';
+    const seta = pct > 0 ? '<path d="M7 17L17 7M9 7h8v8"/>' : pct < 0 ? '<path d="M7 7l10 10M17 9v8H9"/>' : '<path d="M5 12h14"/>';
+    delta = `<span class="tl-delta ${cls}" title="Mês anterior até o mesmo dia: ${leadsAnt} lead(s)"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${seta}</svg>${pct > 0 ? '+' : ''}${pct}% vs mês anterior</span>`;
+  } else if (leadsMes.length) {
+    delta = '<span class="tl-delta igual">sem base no mês anterior</span>';
+  }
 
   document.getElementById('tally-mes-label').textContent = fmtMesLabel(tallyMesAtual).toLowerCase();
   document.getElementById('tally-tiles').innerHTML = `
-    <div class="tile"><div class="label">Leads hoje</div><div class="value">${leadsHoje}</div></div>
-    <div class="tile"><div class="label">Leads no mês</div><div class="value">${leadsMes.length}</div></div>
-    <div class="tile"><div class="label">Média por dia</div><div class="value">${mediaDia.toFixed(1)}</div></div>
-    <div class="tile"><div class="label">Total nos formulários selecionados</div><div class="value">${tallySubmissions.length}</div></div>
+    <div class="tl-kpi destaque"><span class="rot">Leads no mês</span><b class="val">${leadsMes.length}</b>${delta}</div>
+    <div class="tl-kpi"><span class="rot">Leads hoje</span><b class="val">${leadsHoje}</b><span class="sub">chegaram hoje</span></div>
+    <div class="tl-kpi"><span class="rot">Média por dia</span><b class="val">${mediaDia.toFixed(1).replace('.', ',')}</b><span class="sub">em ${diasBase} dia(s)</span></div>
+    <div class="tl-kpi"><span class="rot">Total acumulado</span><b class="val">${tallySubmissions.length}</b><span class="sub">${tallySelecionados.length} formulário(s) ativo(s)</span></div>
   `;
+  const nCfg = document.getElementById('tally-cfg-n');
+  if (nCfg) nCfg.textContent = tallyFormsAll.length ? `${tallySelecionados.length}/${tallyFormsAll.length}` : '';
 
   desenharLeadsPorDia(leadsMes, mesRef);
+  renderRankFormularios(leadsMes);
 
-  const recentes = [...tallySubmissions].sort((a,b) => b.data.localeCompare(a.data)).slice(0, 30);
+  const ontem = dataLocalStr(new Date(Date.now() - 24 * 60 * 60 * 1000));
+  const recentes = [...tallySubmissions]
+    .sort((a, b) => b.data.localeCompare(a.data) || String(b.submittedAt).localeCompare(String(a.submittedAt)))
+    .slice(0, 30);
+  const linhas = recentes.map(s => {
+    const quando = s.data === hoje ? 'Hoje' : s.data === ontem ? 'Ontem' : fmtDataCurta(s.data);
+    return `<tr>
+      <td class="tl-data ${s.data === hoje ? 'hoje' : ''}">${quando}</td>
+      <td><div class="tl-lead"><span class="tl-avatar">${wzEsc(iniciaisDe(s.nome))}</span><b>${wzEsc(s.nome)}</b></div></td>
+      <td class="tl-email">${wzEsc(s.email)}</td>
+      <td><span class="tl-chip">${wzEsc(s.formNome)}</span></td>
+    </tr>`;
+  }).join('');
   document.getElementById('tabela-leads').innerHTML = `
-    <tr><th>Data</th><th>Nome</th><th>E-mail</th><th>Formulário</th></tr>
-    ${recentes.map(s => `<tr><td>${fmtDataCurta(s.data)}</td><td>${s.nome}</td><td>${s.email}</td><td>${s.formNome}</td></tr>`).join('')}
-  ` || '<tr><td class="empty">Nenhum lead ainda.</td></tr>';
+    <thead><tr><th>Data</th><th>Lead</th><th>E-mail</th><th>Formulário</th></tr></thead>
+    <tbody>${linhas || '<tr><td colspan="4" class="empty">Nenhum lead ainda.</td></tr>'}</tbody>`;
+  const nUlt = document.getElementById('tl-ultimos-n');
+  if (nUlt) nUlt.textContent = recentes.length ? `últimos ${recentes.length} de ${tallySubmissions.length}` : '';
 
   renderFunilComparativo();
 }
 
+// Leads por dia: uma série só (o título já diz o que é — sem legenda), colunas finas com topo arredondado,
+// grade discreta, só o pico rotulado, a média como linha de referência e um tooltip por coluna.
 function desenharLeadsPorDia(leadsMes, mesRef) {
-  const svg = document.getElementById('chart-leads');
+  const el = document.getElementById('lg-chart');
+  if (!el) return;
   const [ano, mes] = mesRef.split('-').map(Number);
   const totalDias = new Date(ano, mes, 0).getDate();
-  const porDia = {};
-  leadsMes.forEach(s => { porDia[s.data] = (porDia[s.data] || 0) + 1; });
-  const maxVal = Math.max(1, ...Object.values(porDia));
-  const w = Math.max(600, totalDias * 22);
-  const h = 160;
-  const barW = 14, groupW = 22;
-  const scaleY = v => (h - 24) * (v / maxVal);
-  const corBarra = corTema('--chip-1'), corMuted = corTema('--muted'), corGrid = corTema('--grid');
-
-  let bars = '';
-  for (let dia = 1; dia <= totalDias; dia++) {
-    const dataStr = `${mesRef}-${String(dia).padStart(2,'0')}`;
-    const val = porDia[dataStr] || 0;
-    const x0 = (dia - 1) * groupW + 4;
-    const y = scaleY(val);
-    bars += `<rect x="${x0}" y="${h-24-y}" width="${barW}" height="${Math.max(val?2:0,y)}" rx="2" fill="${corBarra}"><title>${dia}: ${val} lead(s)</title></rect>`;
-    if (dia % 2 === 1 || totalDias < 16) {
-      bars += `<text x="${x0+barW/2}" y="${h-6}" font-size="8" fill="${corMuted}" text-anchor="middle">${dia}</text>`;
-    }
+  const hoje = hojeStr();
+  const porDia = {}, porDiaForm = {};
+  leadsMes.forEach(s => {
+    porDia[s.data] = (porDia[s.data] || 0) + 1;
+    const f = (porDiaForm[s.data] = porDiaForm[s.data] || {});
+    f[s.formNome] = (f[s.formNome] || 0) + 1;
+  });
+  const max = Math.max(1, ...Object.values(porDia));
+  const passo = max <= 4 ? 1 : max <= 10 ? 2 : max <= 20 ? 5 : max <= 50 ? 10 : max <= 100 ? 20 : 50;
+  const topo = Math.ceil(max / passo) * passo;
+  const ticks = [];
+  for (let t = 0; t <= topo; t += passo) ticks.push(t);
+  const pos = v => (v / topo) * 100;
+  const dias = [];
+  for (let d = 1; d <= totalDias; d++) {
+    const ds = `${mesRef}-${String(d).padStart(2, '0')}`;
+    dias.push({ d, ds, n: porDia[ds] || 0 });
   }
-  svg.setAttribute('width', w);
-  svg.setAttribute('height', h);
-  svg.innerHTML = `<line x1="0" y1="${h-24}" x2="${w}" y2="${h-24}" stroke="${corGrid}" stroke-width="1"/>${bars}`;
+  const pico = dias.reduce((a, b) => (b.n > a.n ? b : a), dias[0]);
+  const ehMesAtual = mesRef === fmtMesRef(new Date());
+  const media = leadsMes.length / Math.max(1, ehMesAtual ? new Date().getDate() : totalDias);
+  const resumo = document.getElementById('lg-resumo');
+  if (resumo) resumo.textContent = pico.n ? `pico de ${pico.n} em ${fmtDataCurta(pico.ds)}` : 'sem leads neste mês';
+
+  el.innerHTML = `
+    <div class="lg-wrap" role="img" aria-label="Leads por dia em ${fmtMesLabel(tallyMesAtual)}: ${leadsMes.length} no total, pico de ${pico.n} no dia ${pico.d}">
+      <div class="lg-y">${ticks.map(t => `<span style="bottom:${pos(t)}%">${t}</span>`).join('')}</div>
+      <div class="lg-plot">
+        <div class="lg-grid">${ticks.map(t => `<i style="bottom:${pos(t)}%"></i>`).join('')}</div>
+        <div class="lg-cols">
+          ${dias.map(x => `
+            <div class="lg-col ${x.n ? '' : 'zero'} ${x.ds === hoje ? 'hoje' : ''}" tabindex="0" data-d="${x.d}" style="--h:${pos(x.n)}%">
+              <div class="lg-bar"></div>${x === pico && x.n ? `<span class="lg-val">${x.n}</span>` : ''}
+            </div>`).join('')}
+        </div>
+        ${media > 0 ? `<div class="lg-media" style="bottom:${pos(media)}%"><span>média ${media.toFixed(1).replace('.', ',')}</span></div>` : ''}
+        <div class="lg-tip" id="lg-tip"></div>
+      </div>
+      <div class="lg-eixo">${dias.map(x => `<span class="${x.ds === hoje ? 'hoje' : ''}">${x.d}</span>`).join('')}</div>
+    </div>`;
+
+  const tip = el.querySelector('#lg-tip'), plot = el.querySelector('.lg-plot');
+  const SEMANA = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+  const mostrar = col => {
+    const x = dias[Number(col.dataset.d) - 1];
+    tip.textContent = '';   // nomes de formulário vêm do Tally: só textContent, nunca innerHTML
+    const small = document.createElement('small');
+    small.textContent = `${SEMANA[new Date(ano, mes - 1, x.d).getDay()]}, ${fmtDataCurta(x.ds)}`;
+    const b = document.createElement('b');
+    b.textContent = `${x.n} ${x.n === 1 ? 'lead' : 'leads'}`;
+    tip.append(small, b);
+    Object.entries(porDiaForm[x.ds] || {}).sort((p, q) => q[1] - p[1]).slice(0, 4).forEach(([nome, n]) => {
+      const l = document.createElement('div'); l.className = 'l';
+      const a1 = document.createElement('span'); a1.textContent = nome;
+      const a2 = document.createElement('span'); a2.textContent = n;
+      l.append(a1, a2); tip.append(l);
+    });
+    tip.classList.add('on');
+    const pr = plot.getBoundingClientRect(), cr = col.getBoundingClientRect();
+    const w = tip.offsetWidth;
+    tip.style.left = Math.max(0, Math.min(pr.width - w, cr.left - pr.left + cr.width / 2 - w / 2)) + 'px';
+    tip.style.top = (-tip.offsetHeight - 8) + 'px';
+  };
+  const esconder = () => tip.classList.remove('on');
+  const cols = el.querySelector('.lg-cols');
+  cols.addEventListener('pointerover', ev => { const c = ev.target.closest('.lg-col'); if (c) mostrar(c); });
+  cols.addEventListener('pointerleave', esconder);
+  cols.addEventListener('focusin', ev => { const c = ev.target.closest('.lg-col'); if (c) mostrar(c); });
+  cols.addEventListener('focusout', esconder);
+}
+
+function renderRankFormularios(leadsMes) {
+  const el = document.getElementById('tl-rank');
+  if (!el) return;
+  if (!leadsMes.length) { el.innerHTML = '<div class="rk-vazio">Nenhum lead neste mês ainda.</div>'; return; }
+  const porForm = {};
+  leadsMes.forEach(s => { porForm[s.formNome] = (porForm[s.formNome] || 0) + 1; });
+  const lista = Object.entries(porForm).sort((a, b) => b[1] - a[1]);
+  const topo = lista.slice(0, 6);
+  const resto = lista.slice(6).reduce((t, x) => t + x[1], 0);
+  if (resto) topo.push([`Outros (${lista.length - 6})`, resto]);
+  const max = topo[0][1];
+  el.innerHTML = topo.map(([nome, n]) => `
+    <div class="rk-item">
+      <span class="rk-nome" title="${wzEsc(nome)}">${wzEsc(nome)}</span>
+      <span class="rk-n">${n}<small>${Math.round((n / leadsMes.length) * 100)}%</small></span>
+      <div class="rk-barra"><i style="width:${Math.max(3, (n / max) * 100)}%"></i></div>
+    </div>`).join('');
 }
 
 // ---------- WHATSAPP (Evolution API, via proxy — token não fica no código público) ----------
@@ -10258,12 +10561,47 @@ async function carregarContratos() {
   if (error) { wrap.innerHTML = '<div class="empty">Não consegui carregar o histórico.</div>'; return; }
   contratosCache = data || [];
   if (!contratosCache.length) { wrap.innerHTML = '<div class="empty">Nenhum contrato gerado ainda.</div>'; return; }
-  wrap.innerHTML = '<table class="tabela-leads"><thead><tr><th>Cliente</th><th>Valor</th><th>Gerado em</th><th></th></tr></thead><tbody>' +
-    contratosCache.map(function (c) {
-      return '<tr><td>' + c.razao_social + '</td><td>' + formatarMoeda(c.valor) + '</td><td>' +
-        new Date(c.criado_em).toLocaleDateString('pt-BR') + '</td><td><button class="add-toggle" onclick="reimprimirContrato(\'' + c.id + '\')">reimprimir</button></td></tr>';
-    }).join('') + '</tbody></table>';
+  const total = contratosCache.reduce((t, c) => t + (Number(c.valor) || 0), 0);
+  const resumo = document.getElementById('ctr-hist-resumo');
+  if (resumo) resumo.textContent = `${contratosCache.length} contrato(s) · ${formatarMoeda(total)}`;
+  wrap.innerHTML = contratosCache.map(c => `
+    <div class="ct-hist-item">
+      <div class="tl-avatar">${wzEsc(iniciaisDe(c.razao_social))}</div>
+      <div class="ct-hist-nome"><b title="${wzEsc(c.razao_social)}">${wzEsc(c.razao_social)}</b><span>Gerado em ${new Date(c.criado_em).toLocaleDateString('pt-BR')}</span></div>
+      <div class="ct-hist-valor">${formatarMoeda(c.valor)}</div>
+      <button class="add-toggle" onclick="reimprimirContrato('${c.id}')">Reimprimir</button>
+    </div>`).join('');
 }
+
+// Resumo do contrato ao lado do formulário: confere o que foi digitado antes de gerar.
+function ctrResumoAtualizar() {
+  const form = document.getElementById('form-contrato');
+  if (!form) return;
+  const v = id => (document.getElementById(id).value || '').trim();
+  const obrig = [...form.querySelectorAll('[required]')];
+  const feitos = obrig.filter(el => String(el.value).trim()).length;
+  const set = (id, txt, vazio) => { const el = document.getElementById(id); el.textContent = txt; el.classList.toggle('vazio', !!vazio); };
+  set('ctr-r-razao', v('ctr-razao') || 'Nome da empresa', !v('ctr-razao'));
+  document.getElementById('ctr-r-cnpj').textContent = v('ctr-cnpj') ? 'CNPJ ' + v('ctr-cnpj') : 'CNPJ não informado';
+  const valor = parseFloat(document.getElementById('ctr-valor').value);
+  set('ctr-r-valor', isNaN(valor) ? 'R$ —' : formatarMoeda(valor), isNaN(valor));
+  document.getElementById('ctr-r-pag').textContent = v('ctr-pagamento') || '—';
+  const ini = v('ctr-data-inicio');
+  document.getElementById('ctr-r-inicio').textContent = ini ? ini.split('-').reverse().join('/') : '—';
+  const quem = v('ctr-responsavel');
+  document.getElementById('ctr-r-quem').textContent = quem ? (v('ctr-cargo') ? `${quem} · ${v('ctr-cargo')}` : quem) : '—';
+  document.getElementById('ctr-r-barra').style.width = (obrig.length ? (feitos / obrig.length) * 100 : 0) + '%';
+  document.getElementById('ctr-r-prog').textContent = feitos === obrig.length
+    ? 'Tudo preenchido — pronto para gerar'
+    : `${feitos} de ${obrig.length} campos obrigatórios`;
+}
+(function () {
+  const f = document.getElementById('form-contrato');
+  if (!f) return;
+  f.addEventListener('input', ctrResumoAtualizar);
+  f.addEventListener('reset', () => setTimeout(ctrResumoAtualizar, 0));
+  ctrResumoAtualizar();
+})();
 
 function reimprimirContrato(id) {
   const c = contratosCache.find(function (x) { return x.id === id; });
