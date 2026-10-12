@@ -1,0 +1,2131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Mentorados · Demanda Infinita</title>
+<link rel="icon" href="../logo-demanda-infinita.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root{
+  color-scheme: light;
+  --plane:#f6f8f6; --surface-1:#ffffff; --surface-2:#fbfcfb;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#7a7872;
+  --grid:#e4e6e1; --baseline:#c3c2b7; --border:rgba(11,11,11,.13); --field-bg:#f5f6f4;
+  --accent:#0ca30c; --accent-deep:#0a7d22; --accent-wash:#e7f6e7; --accent-glow:rgba(12,163,12,.16);
+  --good:#0ca30c; --warning:#fab219; --critical:#d03b3b;
+  --st-rascunho-bg:#eceae5; --st-rascunho-tx:#4b4a46;
+  --st-aguardando-bg:#fff1cc; --st-aguardando-tx:#7a5200;
+  --st-ajustes-bg:#fde6da; --st-ajustes-tx:#9a3d17;
+  --st-aprovado-bg:#e1f5e1; --st-aprovado-tx:#0a6a1c;
+  --st-reprovado-bg:#fbe1df; --st-reprovado-tx:#9a2620;
+  --st-publicado-bg:#e1ecfb; --st-publicado-tx:#1a53a3;
+  --radius:14px; --ink:28,34,28;
+  --sombra-1:0 1px 2px rgba(var(--ink),.05),0 1px 3px rgba(var(--ink),.04);
+  --sombra-2:0 2px 4px rgba(var(--ink),.05),0 6px 16px -6px rgba(var(--ink),.10);
+  --sombra-3:0 4px 8px rgba(var(--ink),.06),0 14px 34px -10px rgba(var(--ink),.18);
+  --sidebar-w:212px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text-primary);
+  background:radial-gradient(1100px 520px at 78% -12%,rgba(12,163,12,.055),transparent 62%),var(--plane);
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;line-height:1.45}
+h1,h2,h3,h4{margin:0;letter-spacing:-.02em}
+h1{font-size:1.35rem;font-weight:800}
+h2{font-size:1.02rem;font-weight:800}
+h3{font-size:.92rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent-deep)}
+button,input,select,textarea{font-family:inherit;font-size:.92rem;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.muted{color:var(--muted)} .sec{color:var(--text-secondary)}
+.mono{font-variant-numeric:tabular-nums}
+.kicker{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-deep);font-weight:800}
+
+/* ---------- botões ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--border);background:var(--surface-1);
+  color:var(--text-primary);padding:9px 16px;border-radius:10px;font-weight:700;font-size:.88rem;line-height:1.1;
+  transition:background .16s,border-color .16s,transform .16s,box-shadow .16s;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--field-bg)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible,.nav-item:focus-visible,.tab:focus-visible,.chip-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-primary{background:linear-gradient(140deg,var(--accent),var(--accent-deep));border-color:transparent;color:#fff;box-shadow:0 4px 12px -4px var(--accent-glow)}
+.btn-primary:hover{background:linear-gradient(140deg,#0fb30f,var(--accent-deep))}
+.btn-danger{color:var(--critical);border-color:rgba(208,59,59,.35)}
+.btn-danger:hover{background:#fbe9e8}
+.btn-warn{background:#fff1cc;border-color:#f0d58a;color:var(--st-aguardando-tx)}
+.btn-sm{padding:6px 11px;font-size:.8rem;border-radius:9px}
+.btn[disabled]{opacity:.5;cursor:not-allowed;pointer-events:none}
+.btn-link{border:0;background:none;color:var(--accent-deep);padding:2px 0;font-weight:700;font-size:.82rem;cursor:pointer}
+.btn-link:hover{text-decoration:underline}
+
+/* ---------- campos ---------- */
+label.lbl{display:block;font-size:.74rem;font-weight:700;color:var(--text-secondary);margin:0 0 5px}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=url],input[type=date],select,textarea{
+  width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface-1);font-size:.92rem}
+textarea{resize:vertical;min-height:90px;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.campo{margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hint{font-size:.76rem;color:var(--muted);margin-top:4px}
+
+/* ---------- casca ---------- */
+#carregando{display:flex;align-items:center;justify-content:center;min-height:100vh;color:var(--muted);font-weight:600}
+#tela-login{min-height:100vh;display:none;align-items:center;justify-content:center;padding:20px}
+.login-box{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:34px 30px;width:100%;max-width:380px;box-shadow:var(--sombra-3)}
+.login-box img.logo{width:60px;height:60px;border-radius:50%;display:block;margin:0 0 16px}
+.login-box h1{margin:4px 0 4px}
+.login-box .sub{color:var(--text-secondary);font-size:.88rem;margin-bottom:22px}
+.login-box .btn{width:100%;padding:11px;margin-top:4px}
+.erro{color:var(--critical);font-size:.82rem;margin-top:10px;display:none}
+.app-shell{display:none;min-height:100vh}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--accent);display:flex;flex-direction:column;padding:16px 10px;
+  position:sticky;top:0;height:100vh;align-self:flex-start;overflow-y:auto}
+.sidebar .marca{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;letter-spacing:-.02em;padding:2px 8px 16px}
+.sidebar .marca img{width:32px;height:32px;border-radius:50%;background:#fff}
+.sidebar .marca small{display:block;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.sidebar nav{display:flex;flex-direction:column;gap:3px}
+.nav-item{position:relative;display:flex;align-items:center;gap:11px;border:0;background:none;color:rgba(255,255,255,.88);
+  padding:10px 11px;border-radius:11px;font-weight:700;font-size:.88rem;text-align:left;transition:background .16s,color .16s}
+.nav-item svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-item:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav-item.ativo{background:#fff;color:var(--accent-deep);box-shadow:var(--sombra-2)}
+.nav-item .cont{margin-left:auto;background:var(--critical);color:#fff;border-radius:99px;font-size:.66rem;min-width:19px;height:19px;padding:0 5px;
+  display:none;align-items:center;justify-content:center}
+.nav-item.piscando{animation:pisca 1.15s ease-in-out infinite}
+@keyframes pisca{0%,100%{box-shadow:0 0 0 2px #fff}50%{box-shadow:0 0 0 6px rgba(255,255,255,.28)}}
+.sidebar .rodape{margin-top:auto;padding:14px 8px 0;color:rgba(255,255,255,.75);font-size:.7rem}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 28px;
+  background:rgba(246,248,246,.86);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);
+  border-bottom:1px solid rgba(var(--ink),.07)}
+.topbar .titulo{min-width:0}
+.topbar .titulo .kicker{margin-bottom:1px}
+.topbar .titulo h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .dir{display:flex;align-items:center;gap:10px}
+.userchip{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--surface-1);border-radius:99px;padding:4px 12px 4px 5px;font-weight:700;font-size:.82rem;max-width:200px}
+.userchip .av{width:26px;height:26px;border-radius:50%;background:var(--accent-wash);color:var(--accent-deep);display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:800;flex-shrink:0}
+.userchip span.nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-wrap{position:relative}
+.menu-pop{position:absolute;right:0;top:44px;z-index:50;min-width:190px;background:var(--surface-1);border:1px solid var(--border);border-radius:12px;box-shadow:var(--sombra-3);padding:6px;display:none}
+.menu-pop.aberto{display:block}
+.menu-pop button{display:block;width:100%;text-align:left;border:0;background:none;padding:9px 11px;border-radius:8px;font-weight:600;font-size:.86rem}
+.menu-pop button:hover{background:var(--field-bg)}
+#view{width:100%;max-width:1120px;margin:0 auto;padding:24px 28px 90px}
+.banner-preview{background:#1d2a1f;color:#fff;padding:9px 28px;font-size:.84rem;font-weight:600;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.banner-preview .btn{background:#fff;color:#1d2a1f;border:0}
+
+/* ---------- sino ---------- */
+.notif-wrap{position:relative}
+.notif-bell{position:relative;background:var(--surface-1);border:1px solid var(--border);color:var(--text-secondary);width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.notif-bell svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.notif-badge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:var(--critical);color:#fff;font-size:.64rem;font-weight:800;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--plane)}
+.notif-panel{position:absolute;top:46px;right:0;z-index:60;width:360px;max-width:calc(100vw - 24px);max-height:70vh;background:var(--surface-1);border:1px solid var(--border);border-radius:14px;box-shadow:var(--sombra-3);display:none;flex-direction:column;overflow:hidden}
+.notif-panel.aberto{display:flex}
+.notif-head{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--grid)}
+.notif-lista{overflow-y:auto}
+.notif-sec{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 14px 4px}
+.notif-item{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--grid);background:none;padding:10px 14px}
+.notif-item:hover{background:var(--field-bg)}
+.notif-item.nao-lida{background:var(--accent-wash)}
+.notif-item .t{font-size:.84rem;font-weight:700}
+.notif-item .d{font-size:.78rem;color:var(--text-secondary);margin-top:2px}
+.notif-item .h{font-size:.68rem;color:var(--muted);margin-top:3px}
+
+/* ---------- superfícies ---------- */
+.card{background:var(--surface-1);border:1px solid rgba(var(--ink),.09);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--sombra-1)}
+.card > h2{margin-bottom:3px}
+.card .desc{color:var(--text-secondary);font-size:.84rem;margin-bottom:14px}
+.card.destaque{border-color:rgba(12,163,12,.45);background:linear-gradient(180deg,#fbfffb,var(--surface-1));box-shadow:0 0 0 3px var(--accent-glow),var(--sombra-1)}
+.card.alerta{border-color:#f0d58a;background:#fffbee}
+.row-between{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:14px}
+.stack > .card{margin-bottom:0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.tile{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--surface-1),var(--surface-2));border:1px solid rgba(var(--ink),.09);border-radius:var(--radius);padding:15px 16px;box-shadow:var(--sombra-1)}
+.tile::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,var(--accent),transparent 72%);opacity:.5}
+.tile .v{font-size:1.8rem;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.tile .l{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:4px}
+.vazio{color:var(--muted);font-size:.86rem;padding:18px 0;text-align:center}
+.vazio b{color:var(--text-secondary)}
+.bar{height:8px;border-radius:99px;background:var(--grid);overflow:hidden}
+.bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#38c738);border-radius:99px;transition:width .35s ease}
+.bar.fina{height:5px}
+
+/* ---------- chips e status ---------- */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.72rem;font-weight:800;white-space:nowrap}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.75}
+.chip.rascunho{background:var(--st-rascunho-bg);color:var(--st-rascunho-tx)}
+.chip.aguardando{background:var(--st-aguardando-bg);color:var(--st-aguardando-tx)}
+.chip.ajustes{background:var(--st-ajustes-bg);color:var(--st-ajustes-tx)}
+.chip.aprovado{background:var(--st-aprovado-bg);color:var(--st-aprovado-tx)}
+.chip.reprovado{background:var(--st-reprovado-bg);color:var(--st-reprovado-tx)}
+.chip.publicado{background:var(--st-publicado-bg);color:var(--st-publicado-tx)}
+.chip.ok{background:var(--st-aprovado-bg);color:var(--st-aprovado-tx)}
+.chip.alerta{background:var(--st-aguardando-bg);color:var(--st-aguardando-tx)}
+.chip.critico{background:var(--st-reprovado-bg);color:var(--st-reprovado-tx)}
+.chip.neutro{background:var(--st-rascunho-bg);color:var(--st-rascunho-tx)}
+.chip.sem-dot::before{display:none}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--grid);margin-bottom:18px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:10px 14px;font-weight:700;font-size:.86rem;color:var(--text-secondary);border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+.tab:hover{color:var(--text-primary)}
+.tab.ativo{color:var(--accent-deep);border-bottom-color:var(--accent)}
+.chips-filtro{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip-btn{border:1px solid var(--border);background:var(--surface-1);border-radius:99px;padding:6px 13px;font-size:.8rem;font-weight:700;color:var(--text-secondary)}
+.chip-btn:hover{background:var(--field-bg)}
+.chip-btn.ativo{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* ---------- listas ---------- */
+.item-lista{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--grid)}
+.item-lista:last-child{border-bottom:0}
+.item-lista .txt{min-width:0;font-size:.9rem;font-weight:600}
+.item-lista .txt small{display:block;color:var(--muted);font-size:.76rem;font-weight:500;margin-top:2px}
+.item-lista.clicavel{cursor:pointer}
+.item-lista.clicavel:hover .txt{color:var(--accent-deep)}
+.mrow{display:block;width:100%;text-align:left;background:var(--surface-1);border:1px solid rgba(var(--ink),.09);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sombra-1);transition:box-shadow .16s,border-color .16s}
+.mrow:hover{box-shadow:var(--sombra-2);border-color:rgba(12,163,12,.45)}
+.mrow .nome{font-weight:800;font-size:.96rem}
+.mrow .meta{color:var(--muted);font-size:.78rem;margin-top:2px}
+.mrow .stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.78rem;color:var(--text-secondary)}
+.mrow .stats b{color:var(--text-primary)}
+
+/* ---------- etapas ---------- */
+.stepper{display:flex;gap:6px;margin:0 0 18px;flex-wrap:wrap}
+.step{flex:1;min-width:118px;background:var(--surface-1);border:1px solid var(--grid);border-radius:11px;padding:10px 12px}
+.step.done{background:var(--accent-wash);border-color:rgba(12,163,12,.35)}
+.step.atual{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.step .n{font-size:.66rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.step.done .n{color:var(--accent-deep)}
+.step .t{font-weight:700;font-size:.84rem;margin-top:2px}
+
+/* ---------- checklist de hoje ---------- */
+.hoje-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hoje-item{border:1px solid var(--grid);border-radius:12px;padding:13px 14px;background:var(--surface-2)}
+.hoje-item.feito{background:var(--accent-wash);border-color:rgba(12,163,12,.4)}
+.hoje-item .tt{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary)}
+.hoje-item .meta{font-size:.76rem;color:var(--muted);margin-top:2px}
+.num-ctl{display:flex;align-items:center;gap:8px;margin-top:9px}
+.num-ctl button{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface-1);font-size:1.1rem;font-weight:800;line-height:1}
+.num-ctl button:hover{background:var(--field-bg)}
+.num-ctl input{width:64px;text-align:center;font-weight:800;font-size:1.1rem;padding:6px}
+
+/* ---------- posts ---------- */
+.post-card{display:block;width:100%;text-align:left;background:var(--surface-1);border:1px solid rgba(var(--ink),.09);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sombra-1)}
+.post-card:hover{box-shadow:var(--sombra-2);border-color:rgba(12,163,12,.45)}
+.post-card .tt{font-weight:800;font-size:.94rem;margin-bottom:3px}
+.post-card .pv{color:var(--text-secondary);font-size:.84rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
+.post-card .rod{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:9px;font-size:.76rem;color:var(--muted)}
+.post-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start}
+.post-corpo{background:var(--surface-1);border:1px solid var(--grid);border-radius:12px;padding:16px 18px;white-space:pre-wrap;word-wrap:break-word;font-size:.95rem;line-height:1.55}
+.gancho{border-left:3px solid var(--accent);background:var(--accent-wash);border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:12px;font-size:.88rem;white-space:pre-wrap}
+.gancho small{display:block;font-size:.66rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:3px}
+.contador{font-size:.76rem;color:var(--muted);text-align:right;margin-top:4px}
+.contador.alto{color:var(--critical);font-weight:700}
+.anexos{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.anexo{display:flex;align-items:center;gap:10px;border:1px solid var(--grid);border-radius:10px;padding:8px 10px;background:var(--surface-2);font-size:.84rem}
+.anexo .thumb{width:44px;height:44px;border-radius:8px;background:var(--field-bg);object-fit:cover;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.64rem;font-weight:800;color:var(--muted)}
+.anexo .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.anexo .tam{color:var(--muted);font-size:.74rem}
+.thread{display:flex;flex-direction:column;gap:10px}
+.msg{border-radius:12px;padding:10px 13px;font-size:.88rem;border:1px solid var(--grid);background:var(--surface-2);white-space:pre-wrap;word-wrap:break-word}
+.msg .quem{font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;white-space:normal}
+.msg.admin{background:var(--accent-wash);border-color:rgba(12,163,12,.3)}
+.msg.sistema{background:transparent;border:0;padding:2px 4px;color:var(--text-secondary);font-size:.8rem;text-align:center}
+.msg.ajuste{background:#fff6ef;border-color:#f3c9b3}
+.msg.reprov{background:#fff2f1;border-color:#f1bdb9}
+.decisao{border:2px solid var(--accent);border-radius:14px;padding:16px;background:#fbfffb}
+.decisao .botoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.faixa-status{display:flex;align-items:flex-start;gap:12px;border-radius:12px;padding:13px 15px;margin-bottom:14px;font-size:.9rem}
+.faixa-status b{display:block;font-size:.95rem;margin-bottom:2px}
+.faixa-status.aguardando{background:var(--st-aguardando-bg);color:var(--st-aguardando-tx)}
+.faixa-status.ajustes{background:var(--st-ajustes-bg);color:var(--st-ajustes-tx)}
+.faixa-status.aprovado{background:var(--st-aprovado-bg);color:var(--st-aprovado-tx)}
+.faixa-status.reprovado{background:var(--st-reprovado-bg);color:var(--st-reprovado-tx)}
+.faixa-status.publicado{background:var(--st-publicado-bg);color:var(--st-publicado-tx)}
+
+/* ---------- plano ---------- */
+.plano-topo{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.plano-pct{font-size:2.1rem;font-weight:800;letter-spacing:-.03em;color:var(--accent-deep);line-height:1}
+.fase{border:1px solid var(--grid);border-radius:13px;background:var(--surface-1);margin-bottom:12px;overflow:hidden}
+.fase-cab{display:flex;align-items:center;gap:8px;padding:3px 10px 3px 6px;background:var(--surface-2);border-bottom:1px solid transparent}
+.fase.aberta .fase-cab{border-bottom-color:var(--grid)}
+.fase-tg{flex:1;display:flex;align-items:center;gap:12px;border:0;background:none;text-align:left;padding:10px;min-width:0;border-radius:10px}
+.fase-tg:hover{background:rgba(var(--ink),.04)}
+.fase-tg .fn{font-weight:800;font-size:.95rem;flex:1;min-width:0}
+.fase-tg .fp{font-size:.76rem;color:var(--muted);font-weight:700;white-space:nowrap}
+.fase-tg .seta{display:flex;transition:transform .2s;color:var(--muted)}
+.fase.aberta .seta{transform:rotate(90deg)}
+.fase-corpo{display:none;padding:4px 16px 8px}
+.fase.aberta .fase-corpo{display:block}
+.pi{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--grid)}
+.pi:last-child{border-bottom:0}
+.pi .ck{margin-top:2px;flex-shrink:0}
+.pi .ck input{width:20px;height:20px}
+.pi .tx{flex:1;min-width:0}
+.pi .tt{font-weight:700;font-size:.92rem}
+.pi .ds{font-size:.84rem;color:var(--text-secondary);margin-top:3px;white-space:pre-wrap}
+.pi.feito .tt{text-decoration:line-through;color:var(--muted)}
+.pi .lado{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.pi .acoes-ed{display:flex;gap:2px}
+.ic-btn{border:0;background:none;color:var(--muted);width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center}
+.ic-btn:hover{background:var(--field-bg);color:var(--text-primary)}
+.ic-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- calendário ---------- */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dow{text-align:center;font-size:.68rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding-bottom:2px}
+.cal-dia{position:relative;aspect-ratio:1.15;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.86rem;font-weight:700;border:2px solid transparent;background:var(--field-bg);color:var(--text-primary)}
+.cal-dia.fora{visibility:hidden}
+.cal-dia.completo{background:var(--accent-wash);color:var(--accent-deep)}
+.cal-dia.parcial{background:var(--st-aguardando-bg);color:var(--st-aguardando-tx)}
+.cal-dia.hoje{border-color:var(--accent)}
+.cal-dia .pt{position:absolute;bottom:5px;width:6px;height:6px;border-radius:50%;background:var(--st-publicado-tx)}
+.cal-dia .pt.ap{background:var(--accent-deep)} .cal-dia .pt.ag{background:#c98400}
+.legenda{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:.76rem;color:var(--text-secondary)}
+.legenda i{display:inline-block;width:11px;height:11px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+
+/* ---------- modal / toast ---------- */
+.modal-bg{position:fixed;inset:0;z-index:200;background:rgba(11,11,11,.5);display:none;align-items:flex-start;justify-content:center;padding:5vh 14px;overflow-y:auto}
+.modal-bg.aberto{display:flex}
+.modal{background:var(--plane);border-radius:16px;width:100%;max-width:560px;box-shadow:var(--sombra-3);animation:sobe .25s ease}
+.modal.largo{max-width:760px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--grid);background:var(--surface-1);border-radius:16px 16px 0 0}
+.modal-body{padding:18px 20px 20px}
+@keyframes sobe{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:400;background:#1d2a1f;color:#fff;padding:11px 18px;border-radius:12px;font-weight:700;font-size:.88rem;box-shadow:var(--sombra-3);opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+#toast.on{opacity:1}
+#toast.erro-t{background:var(--critical)}
+
+/* ---------- tour ---------- */
+.tour-fundo{position:fixed;inset:0;background:rgba(11,11,11,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.tour-fundo.aberto{display:flex;animation:fade .25s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.tour-card{background:var(--surface-1);border-radius:18px;width:100%;max-width:470px;padding:26px 26px 20px;box-shadow:0 24px 60px rgba(0,0,0,.28);position:relative;animation:sobe .34s cubic-bezier(.2,.9,.3,1.1)}
+.tour-fechar{position:absolute;top:13px;right:14px;border:0;background:none;color:var(--muted);font-size:1.1rem;padding:4px 8px;border-radius:6px}
+.tour-fechar:hover{background:var(--field-bg);color:var(--text-primary)}
+.tour-emoji{font-size:2rem;line-height:1;margin-bottom:10px}
+.tour-titulo{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+.tour-texto{font-size:.9rem;line-height:1.62;color:var(--text-secondary);margin-top:9px}
+.tour-texto b{color:var(--text-primary)}
+.tour-rodape{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:20px}
+.tour-pontos{display:flex;gap:6px}
+.tour-pontos i{width:6px;height:6px;border-radius:50%;background:var(--grid);transition:all .25s}
+.tour-pontos i.ativo{background:var(--text-primary);width:17px;border-radius:99px}
+.tour-botoes{display:flex;align-items:center;gap:12px}
+.tour-pular{border:0;background:none;color:var(--muted);font-size:.8rem;padding:4px}
+.tour-pular:hover{color:var(--text-primary);text-decoration:underline}
+.lembrete-card{max-width:400px;text-align:center}
+.lembrete-card .tour-titulo{font-size:1.15rem}
+
+/* ---------- drive ---------- */
+.ic-btn{font-size:1.1rem;font-weight:800}
+.dr-doc{position:relative;min-height:50vh;border-radius:14px}
+.dr-alvo{outline:2px dashed var(--accent);outline-offset:-2px;background:var(--accent-wash)!important}
+.dr-topo{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.dr-busca{flex:1 1 220px;max-width:460px;padding:10px 16px;border-radius:99px;border:1px solid var(--border);background:var(--surface-1)}
+.dr-vistas{display:inline-flex;border:1px solid var(--border);border-radius:99px;overflow:hidden;margin-left:auto}
+.dr-vistas button{border:0;background:var(--surface-1);width:42px;height:38px;color:var(--text-secondary);font-size:1rem}
+.dr-vistas button.ativa{background:var(--accent-wash);color:var(--accent-deep)}
+.dr-crumbs{display:flex;align-items:center;flex-wrap:wrap;margin:2px 0 12px;font-size:1.02rem}
+.dr-crumb{border:0;background:none;padding:6px 10px;border-radius:99px;color:var(--text-secondary);font-weight:600}
+.dr-crumb:hover{background:var(--field-bg)}
+.dr-crumb.atual{color:var(--text-primary);font-weight:800}
+.dr-sep{color:var(--muted)}
+.dr-sub{font-size:.72rem;font-weight:800;color:var(--text-secondary);margin:14px 2px 10px;text-transform:uppercase;letter-spacing:.06em}
+.dr-pastas{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.dr-pasta{display:flex;align-items:center;gap:12px;border:1px solid var(--border);background:var(--surface-1);border-radius:12px;padding:12px 8px 12px 14px;cursor:pointer;color:var(--text-secondary)}
+.dr-pasta:hover{background:var(--field-bg)}
+.dr-pn{flex:1;min-width:0}
+.dr-pasta .dr-nome{color:var(--text-primary);font-weight:700}
+.dr-qt{font-size:.74rem;color:var(--muted)}
+.dr-nome{font-weight:600;font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.dr-nome small{display:block;color:var(--muted);font-size:.72rem;font-weight:500}
+.dr-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.dr-card{border:1px solid var(--border);background:var(--surface-1);border-radius:13px;overflow:hidden}
+.dr-card[draggable=true],.dr-linha[draggable=true]{cursor:grab}
+.dr-thumb{display:flex;align-items:center;justify-content:center;width:100%;height:128px;border:0;background:var(--field-bg);overflow:hidden;padding:0}
+.dr-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.dr-ico{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 5px;border-radius:8px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c);font-size:.62rem;font-weight:800;letter-spacing:.02em;flex-shrink:0}
+.dr-thumb .dr-ico{width:58px;height:58px;font-size:.86rem;border-radius:14px}
+.dr-pe{display:flex;align-items:center;gap:6px;padding:8px 4px 8px 12px}
+.dr-pe .dr-nome{flex:1}
+.dr-tabela{border:1px solid var(--border);border-radius:12px;background:var(--surface-1);overflow:hidden}
+.dr-linha{display:grid;grid-template-columns:minmax(0,1fr) 110px 90px 40px;align-items:center;gap:10px;padding:0 6px 0 12px;min-height:50px;border-bottom:1px solid var(--grid)}
+.dr-linha:last-child{border-bottom:0}
+.dr-linha.cab{min-height:36px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--field-bg)}
+.dr-linha:not(.cab):hover{background:var(--field-bg)}
+.dr-nomecel{display:flex;align-items:center;gap:12px;min-width:0;border:0;background:none;text-align:left;padding:6px 0}
+.dr-meta{font-size:.8rem;color:var(--text-secondary)}
+.dr-viewer{position:fixed;inset:0;z-index:460;display:none;flex-direction:column;background:rgba(11,11,11,.9)}
+.dr-viewer.aberto{display:flex}
+.dr-vtopo{display:flex;align-items:center;gap:10px;padding:10px 16px;color:#fff}
+.dr-vnome{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dr-vcorpo{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 16px 16px}
+.dr-vcorpo iframe{width:100%;height:100%;max-width:1100px;border:0;border-radius:10px;background:#fff}
+.dr-vcorpo img,.dr-vcorpo video{max-width:100%;max-height:100%;border-radius:10px}
+.dr-semprev{background:var(--surface-1);border-radius:14px;padding:26px;text-align:center}
+.dr-envio{position:fixed;right:18px;bottom:18px;z-index:470;width:min(340px,calc(100vw - 36px));background:var(--surface-1);border:1px solid var(--border);border-radius:14px;box-shadow:var(--sombra-3);display:none;overflow:hidden}
+.dr-envio.aberto{display:block}
+.dr-envio-topo{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--field-bg)}
+.dr-envio-lista{max-height:220px;overflow:auto}
+.dr-env-item{padding:10px 14px;border-top:1px solid var(--grid)}
+.dr-env-linha{display:flex;justify-content:space-between;gap:10px;font-size:.82rem}
+.dr-env-linha span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.dr-env-item .bar{margin-top:6px}
+.dr-env-item.ok .bar i{background:var(--good)}
+.dr-env-item.erro .bar i{background:var(--critical)}
+.dr-env-item.erro .dr-env-linha span:last-child{color:var(--critical)}
+@media (max-width:780px){.dr-linha{grid-template-columns:minmax(0,1fr) 40px}.dr-linha .dr-meta,.dr-linha.cab span:nth-child(2),.dr-linha.cab span:nth-child(3){display:none}.dr-envio{bottom:100px}}
+
+
+/* ---------- responsivo ---------- */
+@media (max-width:900px){
+  .post-layout{grid-template-columns:1fr}
+  .hoje-grid{grid-template-columns:1fr}
+}
+@media (max-width:780px){
+  .sidebar{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:auto;flex-direction:row;padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:80;
+    box-shadow:0 -4px 20px rgba(0,0,0,.14);overflow-x:auto;align-self:auto}
+  .sidebar .marca,.sidebar .rodape{display:none}
+  .sidebar nav{flex-direction:row;width:100%;gap:2px;justify-content:space-around}
+  .nav-item{flex-direction:column;gap:2px;font-size:.62rem;padding:6px 8px;min-width:58px;text-align:center;flex:1}
+  .nav-item .cont{position:absolute;top:2px;right:8px;margin:0}
+  .topbar{padding:12px 16px}
+  #view{padding:18px 16px 110px}
+  .banner-preview{padding:9px 16px}
+  .userchip span.nm{display:none}.userchip{padding:4px}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .notif-panel{position:fixed;top:64px;right:12px;left:12px;width:auto}
+  #toast{bottom:100px}
+  .modal-bg{padding:2vh 8px}
+  .card{padding:16px}
+  .pi{flex-wrap:wrap}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="carregando">carregando…</div>
+
+<div id="tela-login">
+  <div class="login-box">
+    <img class="logo" src="../logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>Portal dos Mentorados</h1>
+    <p class="sub">Entre com o e-mail e a senha que você recebeu.</p>
+    <form id="form-login">
+      <div class="campo"><label class="lbl" for="login-email">E-mail</label>
+        <input type="email" id="login-email" required autocomplete="username"></div>
+      <div class="campo"><label class="lbl" for="login-senha">Senha</label>
+        <input type="password" id="login-senha" required autocomplete="current-password"></div>
+      <button type="submit" class="btn btn-primary">Entrar</button>
+      <div class="erro" id="login-erro" role="alert"></div>
+    </form>
+  </div>
+</div>
+
+<div class="app-shell" id="app">
+  <aside class="sidebar">
+    <div class="marca"><img src="../logo-demanda-infinita.png" alt=""><div>Demanda Infinita<small>Mentorados</small></div></div>
+    <nav id="nav" aria-label="Navegação principal"></nav>
+    <div class="rodape" id="side-rodape"></div>
+  </aside>
+  <div class="main">
+    <div class="banner-preview" id="banner-preview" hidden></div>
+    <header class="topbar">
+      <div class="titulo"><div class="kicker" id="top-kicker"></div><h1 id="top-titulo"></h1></div>
+      <div class="dir">
+        <div class="notif-wrap">
+          <button class="notif-bell" id="notif-bell" data-act="notif-toggle" aria-label="Notificações" aria-haspopup="true">
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span class="notif-badge" id="notif-badge"></span>
+          </button>
+          <div class="notif-panel" id="notif-panel">
+            <div class="notif-head"><b style="font-size:.9rem">Notificações</b>
+              <button class="btn-link" data-act="notif-todas">marcar todas como lidas</button></div>
+            <div class="notif-lista" id="notif-lista"></div>
+          </div>
+        </div>
+        <div class="user-wrap">
+          <button class="userchip" id="userchip" data-act="user-toggle" aria-haspopup="true"><span class="av" id="user-av"></span><span class="nm" id="user-nome"></span></button>
+          <div class="menu-pop" id="user-menu">
+            <button data-act="tour-abrir" id="menu-tour" hidden>Ver o tour de novo</button>
+            <button data-act="trocar-senha">Trocar minha senha</button>
+            <button data-act="sair">Sair</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main id="view" tabindex="-1"><div class="vazio">carregando…</div></main>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-head"><h2 id="modal-titulo"></h2>
+      <button class="ic-btn" data-act="modal-fechar" aria-label="Fechar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+<div class="tour-fundo" id="tour" role="dialog" aria-modal="true"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   Portal dos Mentorados · Demanda Infinita
+   Arquivo único (mesma convenção do painel). Supabase Auth + RLS.
+   Só a publishable key mora aqui; regras de negócio ficam nas RPCs.
+   ===================================================================== */
+const SUPABASE_URL = 'https://okolawlvmfyxzvnnpvtv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_IsQdhzWIou3tBX9qxak1VQ_m-wEHCFZ';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const BUCKET = 'cli-drive';
+const PORTAL_URL = 'https://demandainfinita.com/mentorados/';
+
+/* ---------- utilitários ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+const pad = n => String(n).padStart(2, '0');
+const isoLocal = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;   // data LOCAL (o toISOString do portal antigo usava UTC e virava o dia às 21h)
+const hojeISO = () => isoLocal(new Date());
+const dataDe = iso => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDias = (iso, n) => { const d = dataDe(iso); d.setDate(d.getDate() + n); return isoLocal(d); };
+const fmtData = iso => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : '';
+const fmtCurta = iso => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}` : '';
+const DIAS_SEM = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+const fmtDiaSem = iso => `${DIAS_SEM[dataDe(iso).getDay()]}, ${fmtCurta(iso)}`;
+const urlSegura = u => /^https?:\/\/[^\s<>"']+$/i.test(u || '') ? u : '';   // nunca javascript:/data: em href
+const fimDeSemana = iso => [0, 6].includes(dataDe(iso).getDay());
+const diaUtilAnterior = iso => { let d = addDias(iso, -1); while (fimDeSemana(d)) d = addDias(d, -1); return d; };
+const primeiroNome = n => (n || '').trim().split(/\s+/)[0] || '';
+const iniciais = n => (n || '?').trim().split(/\s+/).slice(0, 2).map(x => x[0]).join('').toUpperCase();
+const fmtBytes = b => b == null ? '' : b < 1024 ? `${b} B` : b < 1048576 ? `${Math.round(b / 1024)} KB` : `${(b / 1048576).toFixed(1)} MB`;
+function tempoAtras(ts) {
+  const s = Math.max(0, (Date.now() - new Date(ts).getTime()) / 1000);
+  if (s < 90) return 'agora há pouco';
+  if (s < 3600) return `há ${Math.round(s / 60)} min`;
+  if (s < 86400) return `há ${Math.round(s / 3600)} h`;
+  const d = Math.round(s / 86400);
+  return d === 1 ? 'há 1 dia' : `há ${d} dias`;
+}
+const fmtQuando = ts => { const d = new Date(ts); return d.toDateString() === new Date().toDateString() ? d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`; };
+const msgErro = e => (e && (e.message || e.error_description)) || 'Algo deu errado. Tente de novo.';
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* modo privado */ } };
+
+let toastT;
+function toast(msg, erro) {
+  const t = $('#toast');
+  t.textContent = msg; t.className = 'on' + (erro ? ' erro-t' : '');
+  clearTimeout(toastT); toastT = setTimeout(() => { t.className = ''; }, erro ? 4800 : 2600);
+}
+async function q(promessa) { const { data, error } = await promessa; if (error) throw error; return data; }
+// PostgREST corta em 1000 linhas SEM avisar: toda lista que pode crescer passa por aqui (com order estável na query)
+async function paginado(montar, tam = 1000) {
+  let out = [], de = 0;
+  for (;;) {
+    const { data, error } = await montar().range(de, de + tam - 1);
+    if (error) throw error;
+    out = out.concat(data || []);
+    if (!data || data.length < tam) return out;
+    de += tam;
+  }
+}
+
+/* ---------- ícones ---------- */
+const ICO = {
+  inicio: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+  plano: '<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
+  posts: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  calendario: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  drive: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>',
+  dashboard: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+  aprovacoes: '<path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="M22 4 12 14l-3-3"/>',
+  mentorados: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+  modelos: '<rect x="8" y="2" width="13" height="16" rx="2"/><path d="M4 6v14a2 2 0 0 0 2 2h11"/>',
+  seta: '<path d="M9 18l6-6-6-6"/>',
+  cima: '<path d="M18 15l-6-6-6 6"/>',
+  baixo: '<path d="M6 9l6 6 6-6"/>',
+  editar: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  lixo: '<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>',
+  clip: '<path d="M21.4 11.1l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/>',
+  olho: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z"/><circle cx="12" cy="12" r="3"/>',
+  mais: '<path d="M12 5v14M5 12h14"/>',
+  baixar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+  chave: '<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3"/>',
+};
+const svg = (n, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[n] || ''}</svg>`;
+
+/* ---------- estado ---------- */
+const S = { user: null, perfil: null, admin: false, etapas: [], ctx: null, tk: 0, notifs: [], lidas: new Set(),
+            contAguardando: 0, contPosts: 0, canal: null, tourVistoEm: null, clientes: null };
+
+async function clientes(forcar) {
+  if (!S.clientes || forcar) S.clientes = await paginado(() => sb.from('cli_clientes').select('*').order('id'));
+  return S.clientes;
+}
+async function getCliente(id) { return (await clientes()).find(c => c.id === Number(id)) || null; }
+
+/* ---------- eventos delegados (nada de onclick inline com dado do usuário) ---------- */
+const ACT = {}, CHG = {}, SUB = {};
+function erroAcao(e) { console.error(e); toast(msgErro(e), true); }
+document.addEventListener('click', ev => {
+  if (!ev.target.closest('.notif-wrap')) $('#notif-panel').classList.remove('aberto');
+  if (!ev.target.closest('.user-wrap')) $('#user-menu').classList.remove('aberto');
+  if (ev.target.id === 'modal-bg') fecharModal();
+  const el = ev.target.closest('[data-act]');
+  const fn = el && ACT[el.dataset.act];
+  if (fn) Promise.resolve(fn(el, ev)).catch(erroAcao);
+});
+document.addEventListener('change', ev => { const el = ev.target.closest('[data-chg]'); const fn = el && CHG[el.dataset.chg]; if (fn) Promise.resolve(fn(el, ev)).catch(erroAcao); });
+document.addEventListener('submit', ev => { const f = ev.target.closest('[data-sub]'); const fn = f && SUB[f.dataset.sub]; if (fn) { ev.preventDefault(); Promise.resolve(fn(f, ev)).catch(erroAcao); } });
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Escape') { fecharModal(); $('#notif-panel').classList.remove('aberto'); $('#user-menu').classList.remove('aberto'); }
+});
+async function ocupado(el, fn) { if (el) el.disabled = true; try { return await fn(); } finally { if (el && el.isConnected) el.disabled = false; } }
+
+/* ---------- modal ---------- */
+function abrirModal(titulo, html, largo) {
+  $('#modal-titulo').textContent = titulo; $('#modal-body').innerHTML = html;
+  $('#modal').classList.toggle('largo', !!largo); $('#modal-bg').classList.add('aberto');
+}
+function fecharModal() { $('#modal-bg').classList.remove('aberto'); $('#modal-body').innerHTML = ''; }
+ACT['modal-fechar'] = fecharModal;
+
+/* ---------- roteador por hash ---------- */
+const rota = () => location.hash.replace(/^#\/?/, '').split('?')[0].split('/').filter(Boolean).map(decodeURIComponent);
+const ir = caminho => { const alvo = '#/' + caminho; if (location.hash === alvo) render(); else location.hash = alvo; };
+window.addEventListener('hashchange', () => render());
+
+const NAV_CLIENTE = [['inicio', 'Início'], ['plano', 'Plano de ação'], ['posts', 'Posts'], ['calendario', 'Calendário'], ['drive', 'Drive']];
+const NAV_ADMIN = [['dashboard', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['mentorados', 'Mentorados'], ['modelos', 'Modelos de plano']];
+const ADMIN_ATIVA = { post: 'aprovacoes', mentorado: 'mentorados', modelo: 'modelos', lancamento: 'mentorados' };
+
+function resolverCtx(p) {
+  if (S.admin) {
+    if (p[0] === 'ver' && p[1]) return { modo: 'preview', clienteId: Number(p[1]), base: `ver/${p[1]}`, tela: p[2] || 'inicio', args: p.slice(3) };
+    if (p[0] === 'admin') return { modo: 'admin', tela: p[1] || 'dashboard', args: p.slice(2) };
+    return null;
+  }
+  return { modo: 'cliente', clienteId: S.perfil.cliente_id, base: '', tela: p[0] || 'inicio', args: p.slice(1) };
+}
+const lnk = (ctx, x) => '#/' + (ctx.base ? ctx.base + '/' : '') + x;
+const lnkPost = (ctx, id) => ctx.modo === 'admin' ? `#/admin/post/${id}` : lnk(ctx, `posts/${id}`);
+
+function montarNav(ctx) {
+  const itens = ctx.modo === 'admin' ? NAV_ADMIN : NAV_CLIENTE;
+  const ativa = ctx.modo === 'admin' ? (ADMIN_ATIVA[ctx.tela] || ctx.tela) : ctx.tela;
+  $('#nav').innerHTML = itens.map(([id, nome]) => {
+    const cont = id === 'aprovacoes' ? S.contAguardando : (id === 'posts' && ctx.modo === 'cliente') ? S.contPosts : 0;
+    return `<button class="nav-item ${id === ativa ? 'ativo' : ''}" data-act="nav" data-to="${id}" ${id === ativa ? 'aria-current="page"' : ''}>${svg(id)}<span>${esc(nome)}</span><span class="cont" style="${cont ? 'display:inline-flex' : ''}">${cont || ''}</span></button>`;
+  }).join('');
+  $('#side-rodape').textContent = ctx.modo === 'admin' ? 'Painel do Igor' : 'Seu portal de mentoria';
+}
+ACT['nav'] = el => {
+  const c = S.ctx; const to = el.dataset.to;
+  ir(c.modo === 'admin' ? `admin/${to}` : (c.base ? c.base + '/' : '') + to);
+};
+
+// opt.silencioso = refresh disparado por realtime: mantém o conteúdo na tela, preserva a rolagem e nunca mostra erro
+async function render(opt = {}) {
+  if (!S.perfil) return;
+  const silencioso = !!opt.silencioso;
+  const tk = ++S.tk;
+  const ctx = resolverCtx(rota());
+  if (!ctx) { ir(S.admin ? 'admin/dashboard' : 'inicio'); return; }
+  S.ctx = ctx;
+  montarNav(ctx);
+  const faixa = $('#banner-preview');
+  if (ctx.modo === 'preview') {
+    const c = await getCliente(ctx.clienteId);
+    faixa.hidden = false;
+    faixa.innerHTML = `<span>Você está vendo o portal como <b>${esc(c ? c.nome : 'mentorado')}</b>. Modo somente leitura: nada aqui altera os dados dele.</span><a class="btn btn-sm" href="#/admin/mentorado/${ctx.clienteId}">Voltar ao admin</a>`;
+  } else faixa.hidden = true;
+
+  const tabela = ctx.modo === 'admin' ? VIEWS_ADMIN : VIEWS_CLIENTE;
+  const fn = tabela[ctx.tela];
+  if (!fn) { ir(ctx.modo === 'admin' ? 'admin/dashboard' : (ctx.base ? ctx.base + '/' : '') + 'inicio'); return; }
+  const view = $('#view');
+  if (!silencioso) view.innerHTML = '<div class="vazio">carregando…</div>';
+  try {
+    const r = await fn(ctx);
+    if (tk !== S.tk) return;                       // navegou de novo enquanto carregava
+    const y = window.scrollY;
+    $('#top-kicker').textContent = r.kicker || '';
+    $('#top-titulo').textContent = r.titulo || '';
+    view.innerHTML = r.html;
+    S.refrescavel = r.refrescavel !== false;
+    if (r.depois) await r.depois();
+    window.scrollTo(0, silencioso ? y : 0);
+  } catch (e) {
+    if (tk !== S.tk) return;
+    console.error(e);
+    if (silencioso) return;
+    view.innerHTML = `<div class="card"><h2>Não deu pra carregar</h2><p class="desc">${esc(msgErro(e))}</p><button class="btn" data-act="recarregar">Tentar de novo</button></div>`;
+  }
+}
+ACT['recarregar'] = () => render();
+
+/* ---------- login / sessão ---------- */
+$('#form-login').addEventListener('submit', async e => {
+  e.preventDefault();
+  const erroEl = $('#login-erro'); erroEl.style.display = 'none';
+  const { error } = await sb.auth.signInWithPassword({ email: $('#login-email').value.trim(), password: $('#login-senha').value });
+  if (error) { erroEl.textContent = 'E-mail ou senha incorretos.'; erroEl.style.display = 'block'; return; }
+  $('#tela-login').style.display = 'none'; $('#carregando').style.display = 'flex';
+  await iniciar();
+});
+ACT['sair'] = async () => { await sb.auth.signOut(); location.reload(); };
+ACT['user-toggle'] = () => $('#user-menu').classList.toggle('aberto');
+ACT['trocar-senha'] = () => {
+  $('#user-menu').classList.remove('aberto');
+  abrirModal('Trocar minha senha', `<form data-sub="senha"><div class="campo"><label class="lbl" for="sn1">Nova senha</label><input type="password" id="sn1" minlength="8" required autocomplete="new-password"><div class="hint">Pelo menos 8 caracteres.</div></div>
+    <div class="campo"><label class="lbl" for="sn2">Repita a nova senha</label><input type="password" id="sn2" minlength="8" required autocomplete="new-password"></div>
+    <button class="btn btn-primary" type="submit">Salvar nova senha</button></form>`);
+};
+SUB['senha'] = async f => {
+  const a = $('#sn1').value, b = $('#sn2').value;
+  if (a !== b) { toast('As senhas não são iguais.', true); return; }
+  const { error } = await sb.auth.updateUser({ password: a });
+  if (error) throw error;
+  fecharModal(); toast('Senha trocada.');
+};
+
+async function boot() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { $('#carregando').style.display = 'none'; $('#tela-login').style.display = 'flex'; return; }
+  await iniciar();
+}
+sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT' && S.perfil) location.reload(); });
+
+async function iniciar() {
+  const { data: { user } } = await sb.auth.getUser();
+  S.user = user;
+  const { data: perfil } = await sb.from('cli_perfis').select('*').eq('id', user.id).maybeSingle();
+  if (!perfil) {
+    $('#carregando').style.display = 'flex';
+    $('#carregando').innerHTML = 'Seu login não está vinculado a nenhum perfil. Fale com o Igor.<br><button class="btn" style="margin-top:14px" data-act="sair">Sair</button>';
+    return;
+  }
+  S.perfil = perfil; S.admin = perfil.role === 'admin';
+  S.etapas = await q(sb.from('cli_etapas').select('*').order('ordem'));
+  if (!S.admin && !perfil.cliente_id) {
+    $('#carregando').style.display = 'flex';
+    $('#carregando').innerHTML = 'Seu perfil ainda não está vinculado a um mentorado. Fale com o Igor.<br><button class="btn" style="margin-top:14px" data-act="sair">Sair</button>';
+    return;
+  }
+  const nome = perfil.nome || user.email;
+  $('#user-nome').textContent = primeiroNome(nome); $('#user-av').textContent = iniciais(nome);
+  $('#menu-tour').hidden = S.admin;
+  $('#carregando').style.display = 'none'; $('#app').style.display = 'flex';
+  if (!location.hash) history.replaceState(null, '', S.admin ? '#/admin/dashboard' : '#/inicio');   // replaceState não dispara hashchange (evita render duplicado)
+  await carregarNotifs();
+  await render();
+  assinarRealtime();
+  if (!S.admin) { await verificarTour(); await lembreteChecklist(); }
+}
+
+/* ---------- sino (notificações computadas ao vivo; só o "lida" é gravado) ---------- */
+const NOTIF_SECOES = ['Aprovações', 'Posts', 'Checklist', 'Plano', 'Pendências'];
+async function carregarNotifs() {
+  const lista = [];
+  try {
+    if (S.admin) await notifsAdmin(lista); else await notifsCliente(lista, S.perfil.cliente_id);
+  } catch (e) { console.warn('notifs', e); }
+  S.notifs = lista.sort((a, b) => b.quando - a.quando);
+  try {
+    const l = await paginado(() => sb.from('cli_notif_lidas').select('chave').eq('perfil_id', S.user.id).order('chave'));
+    S.lidas = new Set(l.map(x => x.chave));
+  } catch (e) { /* segue sem o estado de lida */ }
+  renderNotifs();
+  if (S.ctx) montarNav(S.ctx);
+}
+async function notifsAdmin(out) {
+  const cls = await clientes();
+  const nome = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
+  const ag = await paginado(() => sb.from('cli_posts').select('id,cliente_id,titulo,versao,enviado_em').eq('status', 'aguardando').order('enviado_em').order('id'));
+  S.contAguardando = ag.length;
+  ag.forEach(p => out.push({ chave: `post-${p.id}-v${p.versao}-aguardando`, sec: 'Aprovações', titulo: `${nome(p.cliente_id)} enviou um post`,
+    desc: `${p.titulo || 'Sem título'}${p.versao > 1 ? ` · versão ${p.versao}` : ''}`, quando: new Date(p.enviado_em), href: `#/admin/post/${p.id}` }));
+  const desde = new Date(Date.now() - 7 * 864e5).toISOString();
+  const ev = await q(sb.from('cli_post_eventos').select('id,post_id,tipo,texto,criado_em').eq('autor_papel', 'cliente').in('tipo', ['comentario', 'publicacao']).gte('criado_em', desde).order('criado_em', { ascending: false }).limit(30));
+  if (ev.length) {
+    const posts = await q(sb.from('cli_posts').select('id,cliente_id,titulo').in('id', [...new Set(ev.map(e => e.post_id))]));
+    ev.forEach(e => {
+      const p = posts.find(x => x.id === e.post_id); if (!p) return;
+      out.push({ chave: `evento-${e.id}`, sec: 'Posts', titulo: e.tipo === 'publicacao' ? `${nome(p.cliente_id)} publicou um post` : `${nome(p.cliente_id)} respondeu num post`,
+        desc: p.titulo || 'Sem título', quando: new Date(e.criado_em), href: `#/admin/post/${p.id}` });
+    });
+  }
+  const ontem = diaUtilAnterior(hojeISO());
+  if (!fimDeSemana(hojeISO())) {
+    // só cobra quem JÁ começou a usar (viu o tour antes de hoje). Quem ainda não recebeu/estreou acesso é ruído.
+    const [perfis, tours] = await Promise.all([q(sb.from('cli_perfis').select('id,cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), q(sb.from('cli_novidades_vistas').select('perfil_id,vista_em'))]);
+    const hoje0 = hojeISO(), estreou = new Set(tours.filter(t => isoLocal(new Date(t.vista_em)) < hoje0).map(t => t.perfil_id));
+    const comLogin = new Set(perfis.filter(p => estreou.has(p.id)).map(p => p.cliente_id));
+    const ativos = cls.filter(c => c.status === 'ativo' && comLogin.has(c.id));
+    const ativ = await paginado(() => sb.from('cli_atividades_diarias').select('*').eq('data', ontem).order('id'));
+    const parados = ativos.filter(c => statusAtividade(ativ.find(a => a.cliente_id === c.id), c) !== 'completo');
+    if (parados.length) out.push({ chave: `parados-${ontem}`, sec: 'Checklist', titulo: `${parados.length} ${parados.length === 1 ? 'mentorado não fechou' : 'mentorados não fecharam'} o checklist de ${ontem === addDias(hojeISO(), -1) ? 'ontem' : 'sexta'}`,
+      desc: parados.slice(0, 3).map(c => primeiroNome(c.nome)).join(', ') + (parados.length > 3 ? '…' : ''), quando: new Date(ontem + 'T23:00:00'), href: '#/admin/dashboard' });
+  }
+}
+async function notifsCliente(out, clienteId) {
+  const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,status').eq('cliente_id', clienteId).order('id'));
+  S.contPosts = posts.filter(p => p.status === 'aprovado' || p.status === 'ajustes').length;
+  if (posts.length) {
+    const desde = new Date(Date.now() - 14 * 864e5).toISOString();
+    const ev = await q(sb.from('cli_post_eventos').select('id,post_id,tipo,texto,criado_em').in('post_id', posts.map(p => p.id)).eq('autor_papel', 'admin').gte('criado_em', desde).order('criado_em', { ascending: false }).limit(30));
+    const T = { aprovacao: ['Seu post foi aprovado', 'Publique e cole o link por aqui'], ajuste: ['Pediram ajustes no seu post', null], reprovacao: ['Seu post não foi aprovado', null], comentario: ['Nova mensagem no seu post', null] };
+    ev.forEach(e => {
+      const p = posts.find(x => x.id === e.post_id), t = T[e.tipo]; if (!p || !t) return;
+      out.push({ chave: `evento-${e.id}`, sec: 'Posts', titulo: t[0], desc: `${p.titulo || 'Sem título'}${t[1] ? ' · ' + t[1] : e.texto ? ' · ' + e.texto.slice(0, 80) : ''}`, quando: new Date(e.criado_em), href: `#/posts/${p.id}` });
+    });
+  }
+  const planos = await q(sb.from('cli_planos').select('id').eq('cliente_id', clienteId).eq('status', 'ativo'));
+  if (planos.length) {
+    const atras = await q(sb.from('cli_plano_itens').select('id').eq('plano_id', planos[0].id).eq('concluido', false).lt('prazo', hojeISO()));
+    if (atras.length) out.push({ chave: `plano-atrasado-${hojeISO()}`, sec: 'Plano', titulo: `${atras.length} ${atras.length === 1 ? 'item do plano está atrasado' : 'itens do plano estão atrasados'}`,
+      desc: 'Abra o plano e marque o que já fez', quando: new Date(), href: '#/plano' });
+  }
+  const pend = await q(sb.from('cli_materiais_pendentes').select('id,item,pedido_em').eq('cliente_id', clienteId).eq('status', 'pendente'));
+  pend.forEach(p => out.push({ chave: `pend-${p.id}`, sec: 'Pendências', titulo: 'Falta você enviar um material', desc: p.item, quando: new Date(p.pedido_em), href: '#/inicio' }));
+}
+function renderNotifs() {
+  const n = S.notifs.filter(x => !S.lidas.has(x.chave)).length;
+  const b = $('#notif-badge');
+  b.style.display = n ? 'flex' : 'none'; b.textContent = n > 9 ? '9+' : n;
+  document.title = `${n ? `(${n}) ` : ''}Mentorados · Demanda Infinita`;
+  const por = {}; S.notifs.forEach(x => (por[x.sec] = por[x.sec] || []).push(x));
+  const html = NOTIF_SECOES.filter(s => por[s]).map(s => `<div class="notif-sec">${esc(s)}</div>` +
+    por[s].slice(0, 10).map(x => `<button class="notif-item ${S.lidas.has(x.chave) ? '' : 'nao-lida'}" data-act="notif-abrir" data-chave="${esc(x.chave)}" data-href="${esc(x.href)}">
+      <div class="t">${esc(x.titulo)}</div>${x.desc ? `<div class="d">${esc(x.desc)}</div>` : ''}<div class="h">${esc(fmtQuando(x.quando))}</div></button>`).join('')).join('');
+  $('#notif-lista').innerHTML = html || '<div class="vazio">Nenhuma notificação por aqui.</div>';
+}
+async function marcarLidas(chaves) {
+  const novas = chaves.filter(c => !S.lidas.has(c)); if (!novas.length) return;
+  novas.forEach(c => S.lidas.add(c)); renderNotifs();
+  await sb.from('cli_notif_lidas').upsert(novas.map(chave => ({ perfil_id: S.user.id, chave })), { onConflict: 'perfil_id,chave' });
+}
+ACT['notif-toggle'] = () => $('#notif-panel').classList.toggle('aberto');
+ACT['notif-abrir'] = async el => {
+  $('#notif-panel').classList.remove('aberto');
+  await marcarLidas([el.dataset.chave]);
+  const h = el.dataset.href; if (h) { if (location.hash === h) render(); else location.hash = h; }
+};
+ACT['notif-todas'] = () => marcarLidas(S.notifs.map(x => x.chave));
+
+function assinarRealtime() {
+  if (S.canal || !sb.channel) return;
+  const atualizar = debounce(async () => {
+    await carregarNotifs();
+    // só atualiza a tela se ninguém estiver digitando nem com texto já escrito (não atropela formulário)
+    const a = document.activeElement, digitando = a && /^(TEXTAREA|INPUT|SELECT)$/.test(a.tagName);
+    const sujo = $$('#view textarea, #view input[type=text], #view input[type=url]').some(e => e.value !== e.defaultValue);
+    if (S.refrescavel && !digitando && !sujo && !$('#modal-bg').classList.contains('aberto')) render({ silencioso: true });
+  }, 900);
+  S.canal = sb.channel('cli-rt')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'cli_posts' }, atualizar)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'cli_post_eventos' }, atualizar)
+    .subscribe();
+}
+
+/* ---------- tour de primeiro acesso (versionado, igual ao painel) ---------- */
+// Para soltar tour novo: mude NOVIDADES.versao e reescreva os passos. Corrigiu só um texto? Não mexa na versão.
+const NOVIDADES = { versao: '2026-10-12', passos: [
+  { emoji: '👋', titulo: 'Bem-vindo ao seu portal', texto: 'Aqui fica **tudo** da sua mentoria: plano de ação, posts, arquivos e o checklist do dia. Chega de material perdido no WhatsApp.' },
+  { emoji: '✅', titulo: 'O checklist de hoje', texto: 'Todo dia, três coisas: **conectar, postar e comentar**. Leva um minuto pra marcar, e é o que mostra pra nós onde você está.', aba: 'inicio' },
+  { emoji: '✍️', titulo: 'Post com aprovação', texto: 'Escreveu um post? Mande em **Posts → Novo post**. O Igor aprova ou pede ajuste e o aviso chega aqui no sino. Aprovado, é só publicar e colar o link: o checklist do dia se preenche sozinho.', aba: 'posts' },
+  { emoji: '🗺️', titulo: 'Seu plano de ação', texto: 'É a sua lista de passos. Marque cada item quando concluir. Quem **vê** o progresso **mantém** o ritmo.', aba: 'plano' },
+  { emoji: '📁', titulo: 'Seu drive', texto: 'Materiais, prints, vídeos: tudo na sua pasta. Só você e o Igor enxergam.', aba: 'drive' },
+] };
+let tourI = 0;
+async function verificarTour() {
+  let vistas = [];
+  try { vistas = await q(sb.from('cli_novidades_vistas').select('versao,vista_em').eq('perfil_id', S.user.id).order('vista_em')); } catch (e) { return; }
+  const primeira = vistas[0];
+  S.tourVistoEm = primeira ? primeira.vista_em : null;
+  if (!vistas.some(v => v.versao === NOVIDADES.versao)) tourAbrir(0);
+}
+function tourAbrir(i) {
+  tourI = i; const p = NOVIDADES.passos[i], ultimo = i === NOVIDADES.passos.length - 1;
+  $$('.nav-item.piscando').forEach(b => b.classList.remove('piscando'));
+  if (p.aba) { const b = $(`.nav-item[data-to="${p.aba}"]`); if (b) b.classList.add('piscando'); }
+  const t = $('#tour'); t.classList.add('aberto');
+  t.innerHTML = `<div class="tour-card"><button class="tour-fechar" data-act="tour-fechar" aria-label="Fechar">✕</button>
+    <div class="tour-passo"><div class="tour-emoji">${p.emoji}</div><div class="tour-titulo">${esc(p.titulo)}</div><div class="tour-texto">${md(p.texto)}</div></div>
+    <div class="tour-rodape"><div class="tour-pontos">${NOVIDADES.passos.map((_, k) => `<i class="${k === i ? 'ativo' : ''}"></i>`).join('')}</div>
+    <div class="tour-botoes">${ultimo ? '' : '<button class="tour-pular" data-act="tour-fechar">pular tour</button>'}
+    ${p.aba && !ultimo ? `<button class="btn btn-sm" data-act="tour-ir" data-aba="${p.aba}">me leva lá</button>` : ''}
+    <button class="btn btn-primary btn-sm" data-act="${ultimo ? 'tour-fechar' : 'tour-prox'}">${ultimo ? 'Começar' : 'Próximo'}</button></div></div></div>`;
+}
+async function tourFechar() {
+  $('#tour').classList.remove('aberto'); $('#tour').innerHTML = '';
+  $$('.nav-item.piscando').forEach(b => b.classList.remove('piscando'));
+  try { await sb.from('cli_novidades_vistas').upsert({ perfil_id: S.user.id, versao: NOVIDADES.versao }, { onConflict: 'perfil_id,versao' }); } catch (e) { /* tudo bem */ }
+}
+ACT['tour-fechar'] = tourFechar;
+ACT['tour-prox'] = () => tourAbrir(Math.min(tourI + 1, NOVIDADES.passos.length - 1));
+ACT['tour-abrir'] = () => { $('#user-menu').classList.remove('aberto'); tourAbrir(0); };
+ACT['tour-ir'] = el => { const aba = el.dataset.aba; tourFechar(); ir(aba); };
+document.addEventListener('keydown', ev => {
+  if (!$('#tour').classList.contains('aberto')) return;
+  if (ev.key === 'ArrowRight') ACT['tour-prox']();
+  if (ev.key === 'ArrowLeft') tourAbrir(Math.max(0, tourI - 1));
+  if (ev.key === 'Escape') tourFechar();
+});
+
+/* ---------- lembrete bloqueante (dentro do sistema, texto curto) ---------- */
+async function lembreteChecklist() {
+  if (S.admin || $('#tour').classList.contains('aberto')) return;
+  const hoje = hojeISO(), ontem = diaUtilAnterior(hoje), quando = ontem === addDias(hoje, -1) ? 'ontem' : 'sexta';
+  if (fimDeSemana(hoje)) return;                                // fim de semana não cobra; segunda cobra a sexta
+  if (lsGet('lembrete-' + hoje)) return;                         // uma vez por dia
+  if (!S.tourVistoEm || isoLocal(new Date(S.tourVistoEm)) >= hoje) return;   // não cobra quem entrou hoje pela 1ª vez
+  const cli = await getCliente(S.perfil.cliente_id);
+  if (!cli || cli.status !== 'ativo') return;
+  const a = await q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).eq('data', ontem).limit(1));
+  if (statusAtividade(a[0], cli) === 'completo') return;
+  lsSet('lembrete-' + hoje, '1');
+  const t = $('#tour'); t.classList.add('aberto');
+  t.innerHTML = `<div class="tour-card lembrete-card"><div class="tour-emoji">⏰</div><div class="tour-titulo">Você fechou o checklist de ${quando}?</div>
+    <div class="tour-texto">${esc(fmtDiaSem(ontem))} ficou em aberto.</div>
+    <div class="tour-rodape" style="justify-content:center"><div class="tour-botoes"><button class="btn" data-act="tour-fechar-simples">Ok</button>
+    <button class="btn btn-primary" data-act="lembrete-preencher" data-dia="${ontem}">Preencher agora</button></div></div></div>`;
+}
+ACT['tour-fechar-simples'] = () => { $('#tour').classList.remove('aberto'); $('#tour').innerHTML = ''; };
+ACT['lembrete-preencher'] = el => { ACT['tour-fechar-simples'](); ir('calendario'); setTimeout(() => ACT['dia-abrir'] && ACT['dia-abrir']({ dataset: { dia: el.dataset.dia } }), 400); };
+
+/* =====================================================================
+   CHECKLIST DIÁRIO (conexões · post · comentários) — usado no Início e no Calendário
+   ===================================================================== */
+function statusAtividade(a, cli) {
+  if (!a) return 'vazio';
+  const okCon = (a.conexoes || 0) >= (cli.meta_conexoes || 5);
+  const okPost = !!a.post_feito;
+  const okCom = (a.comentarios || 0) >= (cli.meta_comentarios_min || 5);
+  if (okCon && okPost && okCom) return 'completo';
+  if ((a.conexoes || 0) > 0 || a.post_feito || (a.comentarios || 0) > 0) return 'parcial';
+  return 'vazio';
+}
+function normalizarLink(l) {
+  l = (l || '').trim(); if (!l) return null;
+  if (/^https?:\/\//i.test(l)) return l;
+  if (/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(l)) return 'https://' + l;
+  throw new Error('O link do post precisa começar com https://');
+}
+async function salvarAtividade(clienteId, dia, v) {
+  const { error } = await sb.from('cli_atividades_diarias').upsert({
+    cliente_id: clienteId, data: dia, conexoes: v.conexoes, post_feito: v.post_feito,
+    post_link: normalizarLink(v.post_link), comentarios: v.comentarios, atualizado_em: new Date().toISOString(),
+  }, { onConflict: 'cliente_id,data' });
+  if (error) throw error;
+}
+function formChecklist(dia, a, cli, opt = {}) {
+  a = a || { conexoes: 0, comentarios: 0, post_feito: false, post_link: '' };
+  const mC = cli.meta_conexoes || 5, mMin = cli.meta_comentarios_min || 5, mMax = cli.meta_comentarios_max || 10;
+  const dis = opt.somenteLeitura ? 'disabled' : '';
+  const numCtl = (campo, valor, rotulo) => `<div class="num-ctl">
+    <button type="button" data-act="ck-num" data-campo="${campo}" data-d="-1" ${dis} aria-label="Menos ${rotulo}">−</button>
+    <input type="number" name="${campo}" min="0" value="${valor || 0}" data-chg="ck" ${dis} aria-label="${rotulo}">
+    <button type="button" data-act="ck-num" data-campo="${campo}" data-d="1" ${dis} aria-label="Mais ${rotulo}">+</button></div>`;
+  return `<div data-ckform="${dia}" data-cli="${cli.id}" data-auto="${opt.auto ? 1 : 0}">
+    <div class="hoje-grid">
+      <div class="hoje-item ${(a.conexoes || 0) >= mC ? 'feito' : ''}" data-box="conexoes"><div class="tt">Conexões</div><div class="meta">meta: ${mC} por dia</div>${numCtl('conexoes', a.conexoes, 'conexões')}</div>
+      <div class="hoje-item ${a.post_feito ? 'feito' : ''}" data-box="post"><div class="tt">Post</div><div class="meta">meta: ${cli.meta_semanal || 4} por semana</div>
+        <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-weight:700;font-size:.88rem"><input type="checkbox" name="post_feito" ${a.post_feito ? 'checked' : ''} data-chg="ck" ${dis}> Postei neste dia</label>
+        <input type="url" name="post_link" value="${esc(a.post_link || '')}" placeholder="Link do post (opcional)" data-chg="ck" ${dis} style="margin-top:8px"></div>
+      <div class="hoje-item ${(a.comentarios || 0) >= mMin ? 'feito' : ''}" data-box="comentarios"><div class="tt">Comentários</div><div class="meta">meta: ${mMin} a ${mMax} em posts do seu público</div>${numCtl('comentarios', a.comentarios, 'comentários')}</div>
+    </div>
+    <div class="row-between" style="margin-top:12px"><span class="hint" data-ckstatus>${opt.auto && !opt.somenteLeitura ? 'Salva sozinho a cada mudança.' : ''}</span>
+    ${opt.auto || opt.somenteLeitura ? '' : '<button type="button" class="btn btn-primary btn-sm" data-act="ck-salvar">Salvar</button>'}</div></div>`;
+}
+function lerForm(f) {
+  const n = nm => f.querySelector(`[name=${nm}]`);
+  return { conexoes: Math.max(0, parseInt(n('conexoes').value) || 0), comentarios: Math.max(0, parseInt(n('comentarios').value) || 0),
+           post_feito: n('post_feito').checked, post_link: n('post_link').value.trim() };
+}
+async function atualizarBoxes(f) {
+  const cli = await getCliente(f.dataset.cli), v = lerForm(f);
+  const set = (box, on) => f.querySelector(`[data-box=${box}]`).classList.toggle('feito', on);
+  set('conexoes', v.conexoes >= (cli.meta_conexoes || 5));
+  set('post', v.post_feito);
+  set('comentarios', v.comentarios >= (cli.meta_comentarios_min || 5));
+}
+const salvarFormDebounced = new WeakMap();
+async function persistirForm(f) {
+  const st = f.querySelector('[data-ckstatus]');
+  try {
+    await salvarAtividade(Number(f.dataset.cli), f.dataset.ckform, lerForm(f));
+    if (st) st.textContent = 'Salvo ✓';
+  } catch (e) { if (st) st.textContent = ''; throw e; }
+}
+function agendarSalvar(f) {
+  const st = f.querySelector('[data-ckstatus]'); if (st) st.textContent = 'Salvando…';
+  if (!salvarFormDebounced.has(f)) salvarFormDebounced.set(f, debounce(() => persistirForm(f).catch(erroAcao), 600));
+  salvarFormDebounced.get(f)();
+}
+CHG['ck'] = async el => {
+  const f = el.closest('[data-ckform]'); await atualizarBoxes(f);
+  if (f.dataset.auto === '1') agendarSalvar(f);
+};
+ACT['ck-num'] = async el => {
+  const f = el.closest('[data-ckform]'), inp = f.querySelector(`[name=${el.dataset.campo}]`);
+  inp.value = Math.max(0, (parseInt(inp.value) || 0) + Number(el.dataset.d));
+  await atualizarBoxes(f);
+  if (f.dataset.auto === '1') agendarSalvar(f);
+};
+ACT['ck-salvar'] = async el => {
+  const f = el.closest('[data-ckform]');
+  await ocupado(el, () => persistirForm(f));
+  const dia = f.dataset.ckform; fecharModal(); toast('Checklist de ' + fmtData(dia) + ' salvo.');
+  await render();
+};
+
+/* =====================================================================
+   INÍCIO (mentorado)
+   ===================================================================== */
+function renderStepper(prog) {
+  const ok = new Set((prog || []).filter(p => p.concluida_em).map(p => p.etapa_id));
+  let achou = false;
+  return `<div class="stepper">${S.etapas.map((et, i) => {
+    const done = ok.has(et.id); let cls = '';
+    if (done) cls = 'done'; else if (!achou) { cls = 'atual'; achou = true; }
+    return `<div class="step ${cls}"><div class="n">Etapa ${i + 1}${done ? ' · concluída' : ''}</div><div class="t">${esc(et.nome)}</div></div>`;
+  }).join('')}</div>`;
+}
+function cardPendencias(pend, podeMarcar) {
+  return `<div class="card"><h2>O que falta você me enviar</h2><p class="desc">Material que preciso pra continuar a produção.</p>
+    ${pend.length ? pend.map(p => `<div class="item-lista"><div class="txt">${esc(p.item)}<small>pedido em ${esc(new Date(p.pedido_em).toLocaleDateString('pt-BR'))}</small></div>
+      ${podeMarcar ? `<button class="btn btn-sm" data-act="pend-enviado" data-id="${p.id}">Marquei como enviado</button>` : ''}</div>`).join('')
+      : '<div class="vazio">Nenhuma pendência agora.</div>'}</div>`;
+}
+ACT['pend-enviado'] = async el => {
+  await ocupado(el, async () => { const { error } = await sb.from('cli_materiais_pendentes').update({ status: 'recebido', recebido_em: new Date().toISOString() }).eq('id', el.dataset.id); if (error) throw error; });
+  toast('Avisei o Igor.'); await carregarNotifs(); await render();
+};
+
+async function vInicio(ctx) {
+  const cli = await getCliente(ctx.clienteId);
+  if (!cli) throw new Error('Mentorado não encontrado.');
+  const ro = ctx.modo === 'preview', hoje = hojeISO();
+  const [prog, ativ, posts, planos, pend] = await Promise.all([
+    q(sb.from('cli_progresso').select('*').eq('cliente_id', cli.id)),
+    q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).eq('data', hoje).limit(1)),
+    q(sb.from('cli_posts').select('id,titulo,status,versao,data_prevista,enviado_em,texto').eq('cliente_id', cli.id).order('id', { ascending: false }).limit(60)),
+    q(sb.from('cli_planos').select('*').eq('cliente_id', cli.id).eq('status', 'ativo')),
+    q(sb.from('cli_materiais_pendentes').select('*').eq('cliente_id', cli.id).eq('status', 'pendente').order('pedido_em')),
+  ]);
+  const plano = planos[0] || null;
+  const itens = plano ? await q(sb.from('cli_plano_itens').select('*').eq('plano_id', plano.id).order('fase_ordem').order('ordem').order('id')) : [];
+
+  // 1) o que exige ação AGORA (é o que traz o mentorado de volta ao portal)
+  const aprovados = posts.filter(p => p.status === 'aprovado'), ajustes = posts.filter(p => p.status === 'ajustes');
+  const atencao = [
+    ...aprovados.map(p => `<div class="card destaque"><div class="row-between"><div><span class="chip aprovado">Aprovado</span><h2 style="margin-top:8px">${esc(p.titulo || 'Post sem título')}</h2>
+      <p class="desc" style="margin:2px 0 0">Está liberado. Publique no LinkedIn e cole o link aqui pra fechar o checklist do dia.</p></div>
+      <a class="btn btn-primary" href="${lnkPost(ctx, p.id)}">Publicar e colar o link</a></div></div>`),
+    ...ajustes.map(p => `<div class="card alerta"><div class="row-between"><div><span class="chip ajustes">Ajustes pedidos</span><h2 style="margin-top:8px">${esc(p.titulo || 'Post sem título')}</h2>
+      <p class="desc" style="margin:2px 0 0">O Igor deixou comentários. Ajuste e envie de novo.</p></div>
+      <a class="btn btn-warn" href="${lnkPost(ctx, p.id)}">Ver o que pediram</a></div></div>`),
+  ].join('');
+
+  // 2) próximo passo do plano
+  const abertos = itens.filter(i => !i.concluido), feitos = itens.length - abertos.length;
+  const prox = abertos[0];
+  const planoCard = plano ? `<div class="card"><div class="row-between"><h2>Seu plano de ação</h2><a class="btn-link" href="${lnk(ctx, 'plano')}">ver plano completo</a></div>
+    <div class="row" style="margin:10px 0 12px;gap:14px"><div class="plano-pct">${itens.length ? Math.round(feitos / itens.length * 100) : 0}%</div>
+      <div style="flex:1;min-width:140px"><div class="bar"><i style="width:${itens.length ? feitos / itens.length * 100 : 0}%"></i></div><div class="hint">${feitos} de ${itens.length} itens concluídos</div></div></div>
+    ${prox ? `<div class="item-lista" style="border-top:1px solid var(--grid)"><div class="txt"><small style="margin:0 0 2px;color:var(--accent-deep);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:.66rem">Próximo passo · ${esc(prox.fase)}</small>${esc(prox.titulo)}${prox.prazo ? `<small>${chipPrazoTxt(prox.prazo)}</small>` : ''}</div>
+      ${ro ? '' : `<button class="btn btn-sm" data-act="item-marcar" data-id="${prox.id}" data-v="1" data-volta="inicio">Marcar como feito</button>`}</div>` : '<div class="vazio" style="padding:8px 0">Tudo concluído. Hora de falar com o Igor sobre o próximo plano.</div>'}</div>`
+    : `<div class="card"><h2>Seu plano de ação</h2><div class="vazio">Seu plano de ação ainda está sendo montado. Assim que ficar pronto, ele aparece aqui.</div></div>`;
+
+  // 3) posts
+  const cont = s => posts.filter(p => p.status === s).length;
+  const postsCard = `<div class="card"><div class="row-between"><h2>Seus posts</h2>${ro ? '' : `<a class="btn btn-primary btn-sm" href="${lnk(ctx, 'posts/novo')}">Novo post</a>`}</div>
+    <div class="row" style="margin:12px 0 4px">${['aguardando', 'aprovado', 'ajustes', 'publicado'].map(s => `<span class="chip ${s}">${cont(s)} ${ST[s].toLowerCase()}</span>`).join('')}</div>
+    ${posts.slice(0, 3).map(p => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="${lnkPost(ctx, p.id)}"><div class="txt">${esc(p.titulo || (p.texto || '').split('\n')[0].slice(0, 70) || 'Sem título')}</div>${chipSt(p.status)}</a>`).join('')
+      || '<div class="vazio">Você ainda não enviou nenhum post. Escreva o primeiro e mande pra aprovação.</div>'}
+    ${posts.length > 3 ? `<div style="margin-top:8px"><a class="btn-link" href="${lnk(ctx, 'posts')}">ver todos os posts</a></div>` : ''}</div>`;
+
+  return {
+    kicker: [cli.empresa, cli.nivel].filter(Boolean).join(' · ') || 'Seu portal',
+    titulo: `Olá, ${primeiroNome(cli.nome)}`,
+    html: `${renderStepper(prog)}${atencao}
+      <div class="card"><div class="row-between"><div><h2>Checklist de hoje</h2><p class="desc" style="margin-bottom:12px">${esc(fmtDiaSem(hoje))} · três coisas por dia: conectar, postar e comentar.</p></div>
+      <a class="btn-link" href="${lnk(ctx, 'calendario')}">ver calendário</a></div>
+      ${formChecklist(hoje, ativ[0], cli, { auto: !ro, somenteLeitura: ro })}</div>
+      ${planoCard}${postsCard}${cardPendencias(pend, !ro)}`,
+  };
+}
+
+/* =====================================================================
+   CALENDÁRIO
+   ===================================================================== */
+let CAL = { ano: new Date().getFullYear(), mes: new Date().getMonth() };
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+ACT['cal-nav'] = el => {
+  let m = CAL.mes + Number(el.dataset.d), a = CAL.ano;
+  if (m < 0) { m = 11; a--; } if (m > 11) { m = 0; a++; }
+  CAL = { ano: a, mes: m }; render();
+};
+async function calendarioHtml(ctx) {
+  const cli = await getCliente(ctx.clienteId);
+  const ini = isoLocal(new Date(CAL.ano, CAL.mes, 1)), fim = isoLocal(new Date(CAL.ano, CAL.mes + 1, 0));
+  const [ativ, posts] = await Promise.all([
+    q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).gte('data', ini).lte('data', fim)),
+    paginado(() => sb.from('cli_posts').select('id,titulo,status,data_prevista,publicado_em').eq('cliente_id', cli.id).order('id')),
+  ]);
+  const mapa = {}; ativ.forEach(a => { mapa[a.data] = a; });
+  const postsDia = {};
+  posts.forEach(p => {
+    const dia = p.status === 'publicado' && p.publicado_em ? isoLocal(new Date(p.publicado_em)) : p.data_prevista;
+    if (dia && dia >= ini && dia <= fim) (postsDia[dia] = postsDia[dia] || []).push(p);
+  });
+  const primeiro = new Date(CAL.ano, CAL.mes, 1), offset = (primeiro.getDay() + 6) % 7, ultimo = new Date(CAL.ano, CAL.mes + 1, 0).getDate();
+  const hoje = hojeISO();
+  let cel = '';
+  for (let i = 0; i < offset; i++) cel += '<div class="cal-dia fora"></div>';
+  for (let d = 1; d <= ultimo; d++) {
+    const iso = `${CAL.ano}-${pad(CAL.mes + 1)}-${pad(d)}`, st = statusAtividade(mapa[iso], cli), ps = postsDia[iso] || [];
+    const pontos = ps.slice(0, 3).map(p => `<span class="pt ${p.status === 'aprovado' ? 'ap' : p.status === 'aguardando' ? 'ag' : ''}" style="left:calc(50% + ${(ps.slice(0, 3).indexOf(p) - (Math.min(ps.length, 3) - 1) / 2) * 10}px - 3px)"></span>`).join('');
+    cel += `<button class="cal-dia ${st !== 'vazio' ? st : ''} ${iso === hoje ? 'hoje' : ''}" data-act="dia-abrir" data-dia="${iso}" aria-label="${esc(fmtDiaSem(iso))}${ps.length ? ', com post' : ''}">${d}${pontos}</button>`;
+  }
+  CAL._posts = postsDia; CAL._ativ = mapa;
+  return `<div class="cal-nav"><button class="btn btn-sm" data-act="cal-nav" data-d="-1" aria-label="Mês anterior">‹</button>
+    <strong style="text-transform:capitalize">${MESES[CAL.mes]} de ${CAL.ano}</strong><button class="btn btn-sm" data-act="cal-nav" data-d="1" aria-label="Próximo mês">›</button></div>
+    <div class="cal-grid">${['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map(x => `<div class="cal-dow">${x}</div>`).join('')}${cel}</div>
+    <div class="legenda"><span><i style="background:var(--accent-wash);border:1px solid rgba(12,163,12,.4)"></i>checklist completo</span><span><i style="background:var(--st-aguardando-bg)"></i>parcial</span>
+    <span><i style="background:var(--field-bg)"></i>vazio</span><span><i style="background:var(--st-publicado-tx);border-radius:50%"></i>post publicado</span><span><i style="background:var(--accent-deep);border-radius:50%"></i>aprovado</span><span><i style="background:#c98400;border-radius:50%"></i>aguardando</span></div>`;
+}
+ACT['dia-abrir'] = async el => {
+  const dia = el.dataset.dia, ctx = S.ctx, cli = await getCliente(ctx.clienteId), ro = ctx.modo === 'preview';
+  const ps = (CAL._posts || {})[dia] || [], futuro = dia > hojeISO();
+  let a = (CAL._ativ || {})[dia];
+  if (a === undefined) { const r = await q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).eq('data', dia).limit(1)); a = r[0]; }
+  abrirModal('Checklist de ' + fmtDiaSem(dia),
+    (futuro ? '<p class="desc">Esse dia ainda não chegou. Dá pra deixar o post planejado, mas o checklist só abre no dia.</p>' : formChecklist(dia, a, cli, { somenteLeitura: ro })) +
+    (ps.length ? `<h3 style="margin:16px 0 8px">Posts neste dia</h3>${ps.map(p => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="${lnkPost(ctx, p.id)}" data-act="modal-fechar"><div class="txt">${esc(p.titulo || 'Sem título')}</div>${chipSt(p.status)}</a>`).join('')}` : ''));
+};
+async function vCalendario(ctx) {
+  const html = await calendarioHtml(ctx);
+  return { kicker: 'Constância', titulo: 'Calendário', html: `<div class="card"><p class="desc">Clique num dia pra ver ou preencher o checklist dele.</p>${html}</div>` };
+}
+
+/* =====================================================================
+   POSTS → APROVAÇÃO
+   Máquina de estados mora nas RPCs (cli_post_*), nunca só aqui.
+   ===================================================================== */
+const ST = { rascunho: 'Rascunho', aguardando: 'Aguardando aprovação', ajustes: 'Ajustes pedidos', aprovado: 'Aprovado', reprovado: 'Não aprovado', publicado: 'Publicado' };
+const chipSt = s => `<span class="chip ${s}">${esc(ST[s] || s)}</span>`;
+const LIMITE_POST = 3000, GANCHO = 210;
+const postTitulo = p => p.titulo || (p.texto || '').split('\n').find(l => l.trim())?.slice(0, 70) || 'Sem título';
+async function rpc(fn, args) { const { data, error } = await sb.rpc(fn, args); if (error) throw error; return data; }
+const carregarPost = async id => (await q(sb.from('cli_posts').select('*').eq('id', id).limit(1)))[0] || null;
+const safeNome = n => n.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w.\-]+/g, '_').slice(-90);
+
+// upload por XHR (o supabase-js não expõe progresso); mesmo endpoint e mesma RLS do storage.upload
+async function uploadXHR(path, file, onProg) {
+  const { data: { session } } = await sb.auth.getSession();
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path.split('/').map(encodeURIComponent).join('/')}`);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + session.access_token);
+    xhr.setRequestHeader('apikey', SUPABASE_KEY);
+    xhr.setRequestHeader('x-upsert', 'false');
+    xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+    xhr.upload.onprogress = e => { if (e.lengthComputable && onProg) onProg(e.loaded / e.total); };
+    xhr.onload = () => { if (xhr.status < 300) return resolve(); let m = 'Falha no envio'; try { m = JSON.parse(xhr.responseText).message || m; } catch (e) { /* ok */ } reject(new Error(m)); };
+    xhr.onerror = () => reject(new Error('Sem conexão durante o envio.'));
+    xhr.send(file);
+  });
+}
+async function urlAssinada(path, seg = 300) { const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(path, seg); if (error) throw error; return data.signedUrl; }
+const ehImagem = a => /^image\//.test(a.mime || '');
+
+/* ---------- lista (mentorado e aba do admin) ---------- */
+let POSTS_FILTRO = 'andamento';
+ACT['posts-filtro'] = el => { POSTS_FILTRO = el.dataset.f; render(); };
+function listaPostsHtml(ctx, posts, opt = {}) {
+  const f = POSTS_FILTRO;
+  const vis = posts.filter(p => f === 'todos' ? true : f === 'publicados' ? p.status === 'publicado' : !['publicado', 'reprovado'].includes(p.status));
+  const chips = [['andamento', 'Em andamento'], ['publicados', 'Publicados'], ['todos', 'Todos']]
+    .map(([id, n]) => `<button class="chip-btn ${f === id ? 'ativo' : ''}" data-act="posts-filtro" data-f="${id}">${n}</button>`).join('');
+  return `<div class="chips-filtro">${chips}</div>` + (vis.length ? vis.map(p => `<a class="post-card" style="text-decoration:none;color:inherit" href="${lnkPost(ctx, p.id)}">
+      <div class="row-between"><div class="tt">${esc(postTitulo(p))}</div>${chipSt(p.status)}</div>
+      <div class="pv">${esc(p.texto || '')}</div>
+      <div class="rod">${p.data_prevista ? `<span>Previsto para ${esc(fmtData(p.data_prevista))}</span>` : ''}${p.versao > 1 ? `<span>versão ${p.versao}</span>` : ''}
+      ${p.status === 'aguardando' && p.enviado_em ? `<span>enviado ${esc(tempoAtras(p.enviado_em))}</span>` : ''}</div></a>`).join('')
+    : `<div class="vazio">${f === 'publicados' ? 'Nenhum post publicado ainda.' : opt.ro ? 'Nenhum post.' : '<b>Nenhum post por aqui.</b><br>Escreva o primeiro e mande pra aprovação.'}</div>`);
+}
+
+async function vPosts(ctx) {
+  const a0 = ctx.args[0];
+  if (a0 === 'novo' && ctx.modo === 'cliente') return editorPost(ctx, null);
+  if (a0 && a0 !== 'novo') {
+    const p = await carregarPost(a0);
+    if (!p) throw new Error('Post não encontrado.');
+    if (ctx.modo === 'cliente' && (p.status === 'rascunho' || p.status === 'ajustes')) return editorPost(ctx, p);
+    return detalhePost(ctx, p);
+  }
+  const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,texto,status,versao,data_prevista,enviado_em').eq('cliente_id', ctx.clienteId).order('id', { ascending: false }));
+  const ro = ctx.modo === 'preview';
+  return { kicker: 'Aprovação', titulo: 'Posts',
+    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">Escreva, mande pra aprovação e acompanhe aqui. Aprovado, você publica e cola o link.</p>
+      ${ro ? '' : `<a class="btn btn-primary" href="${lnk(ctx, 'posts/novo')}">${svg('mais', 16)} Novo post</a>`}</div>${listaPostsHtml(ctx, posts, { ro })}` };
+}
+
+/* ---------- editor (rascunho / ajustes) ---------- */
+function anexosHtml(arquivos, podeRemover) {
+  if (!arquivos.length) return '<div class="hint" style="margin-top:8px">Nenhum anexo. Imagem, PDF de carrossel ou vídeo entram aqui.</div>';
+  return `<div class="anexos">${arquivos.map(a => `<div class="anexo">
+    <div class="thumb" data-thumb="${esc(a.path)}" data-img="${ehImagem(a) ? 1 : 0}">${esc((a.nome.split('.').pop() || 'ARQ').slice(0, 4).toUpperCase())}</div>
+    <div class="nm" title="${esc(a.nome)}">${esc(a.nome)}</div><div class="tam">${esc(fmtBytes(a.tamanho))}</div>
+    <button class="ic-btn" data-act="anexo-abrir" data-path="${esc(a.path)}" title="Abrir" aria-label="Abrir ${esc(a.nome)}">${svg('olho', 16)}</button>
+    ${podeRemover ? `<button class="ic-btn" data-act="anexo-remover" data-id="${a.id}" data-path="${esc(a.path)}" title="Remover" aria-label="Remover ${esc(a.nome)}">${svg('lixo', 16)}</button>` : ''}</div>`).join('')}</div>`;
+}
+async function carregarThumbs() {
+  const imgs = $$('.thumb[data-img="1"]'); if (!imgs.length) return;
+  const { data } = await sb.storage.from(BUCKET).createSignedUrls(imgs.map(i => i.dataset.thumb), 600);
+  (data || []).forEach(r => { const el = imgs.find(i => i.dataset.thumb === r.path); if (el && r.signedUrl) el.innerHTML = `<img src="${esc(r.signedUrl)}" alt="" style="width:44px;height:44px;border-radius:8px;object-fit:cover">`; });
+}
+ACT['anexo-abrir'] = async el => window.open(await urlAssinada(el.dataset.path), '_blank', 'noopener');
+ACT['anexo-remover'] = async el => {
+  if (!confirm('Remover este anexo?')) return;
+  await sb.storage.from(BUCKET).remove([el.dataset.path]);
+  const { error } = await sb.from('cli_arquivos').delete().eq('id', el.dataset.id); if (error) throw error;
+  await refazerAnexos();
+};
+async function refazerAnexos() {
+  const id = Number($('#p-id').value); if (!id) return;
+  const ax = await q(sb.from('cli_arquivos').select('*').eq('post_id', id).order('id'));
+  $('#p-anexos').innerHTML = anexosHtml(ax, true); carregarThumbs();
+}
+const lerEditor = () => ({ id: Number($('#p-id').value) || null, titulo: $('#p-titulo').value.trim(), texto: $('#p-texto').value, data: $('#p-data').value || null });
+async function gravarRascunho() {
+  const v = lerEditor();
+  const id = await rpc('cli_post_salvar', { p_id: v.id, p_titulo: v.titulo, p_texto: v.texto, p_data_prevista: v.data });
+  $('#p-id').value = id;
+  if (!v.id) history.replaceState(null, '', `#/posts/${id}`);
+  return id;
+}
+function atualizarContador() {
+  const t = $('#p-texto'), n = t.value.length, c = $('#p-contador');
+  c.textContent = `${n.toLocaleString('pt-BR')} / ${LIMITE_POST.toLocaleString('pt-BR')} caracteres`; c.classList.toggle('alto', n > LIMITE_POST);
+  const g = t.value.slice(0, GANCHO), gb = $('#p-gancho');
+  gb.textContent = !g ? 'Escreva o texto e as primeiras linhas aparecem aqui.' : t.value.length > GANCHO ? g + '…' : 'O texto inteiro cabe antes do “ver mais”.';
+}
+CHG['post-texto'] = atualizarContador;
+document.addEventListener('input', ev => { if (ev.target.id === 'p-texto') atualizarContador(); });
+
+function threadHtml(eventos, p, ctx, nomeCli) {
+  const souAdmin = ctx.modo === 'admin';
+  if (!eventos.length) return '<div class="vazio">Sem mensagens ainda.</div>';
+  return `<div class="thread">${eventos.map(e => {
+    const quando = esc(new Date(e.criado_em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }));
+    const quem = e.autor_papel === 'admin' ? (souAdmin ? 'Você' : 'Igor') : (souAdmin ? esc(primeiroNome(nomeCli)) : 'Você');
+    if (e.tipo === 'envio') return `<div class="msg sistema">Enviado para aprovação · versão ${e.versao} · ${quando}
+      ${e.versao < p.versao || p.status !== 'aguardando' ? `<details style="text-align:left;margin-top:6px"><summary style="cursor:pointer;font-weight:700">ver o texto desta versão</summary><div class="msg" style="margin-top:6px;font-size:.84rem">${esc(e.texto || '')}</div></details>` : ''}</div>`;
+    if (e.tipo === 'publicacao') return `<div class="msg sistema">Publicado em ${quando}${urlSegura(e.texto) ? ` · <a href="${esc(urlSegura(e.texto))}" target="_blank" rel="noopener noreferrer">ver no LinkedIn</a>` : ''}</div>`;
+    const rot = { aprovacao: 'Aprovou', ajuste: 'Pediu ajustes', reprovacao: 'Não aprovou', comentario: '' }[e.tipo] || '';
+    const cls = e.tipo === 'ajuste' ? 'ajuste' : e.tipo === 'reprovacao' ? 'reprov' : e.autor_papel === 'admin' ? 'admin' : '';
+    return `<div class="msg ${cls}"><div class="quem">${quem}${rot ? ` · ${rot}` : ''} · ${quando}</div>${e.texto ? esc(e.texto) : '<i class="muted">sem comentário</i>'}</div>`;
+  }).join('')}</div>`;
+}
+
+async function editorPost(ctx, p) {
+  const eventos = p ? await q(sb.from('cli_post_eventos').select('*').eq('post_id', p.id).order('id')) : [];
+  const anexos = p ? await q(sb.from('cli_arquivos').select('*').eq('post_id', p.id).order('id')) : [];
+  const ult = [...eventos].reverse().find(e => e.autor_papel === 'admin' && ['ajuste', 'reprovacao', 'comentario'].includes(e.tipo));
+  const faixa = p && p.status === 'ajustes' ? `<div class="faixa-status ajustes"><div><b>O Igor pediu ajustes</b>${ult && ult.texto ? esc(ult.texto) : 'Veja os comentários ao lado, ajuste o texto e envie de novo.'}</div></div>` : '';
+  return {
+    kicker: p ? `Versão ${p.versao}${p.status === 'ajustes' ? ' · ajustes pedidos' : ' · rascunho'}` : 'Novo post', titulo: p ? postTitulo(p) : 'Novo post', refrescavel: false,
+    html: `<div style="margin-bottom:12px"><a class="btn-link" href="${lnk(ctx, 'posts')}">← voltar para os posts</a></div>${faixa}
+      <div class="post-layout"><div class="card" style="margin:0"><input type="hidden" id="p-id" value="${p ? p.id : ''}">
+        <div class="campo"><label class="lbl" for="p-titulo">Título (só pra você se achar; opcional)</label><input type="text" id="p-titulo" maxlength="120" value="${esc(p ? p.titulo || '' : '')}"></div>
+        <div class="campo"><label class="lbl" for="p-texto">Texto do post</label><textarea id="p-texto" rows="14" placeholder="Escreva o post aqui…">${esc(p ? p.texto : '')}</textarea><div class="contador" id="p-contador"></div></div>
+        <div class="gancho"><small>Gancho · o que aparece antes do “ver mais”</small><span id="p-gancho"></span></div>
+        <div class="campo"><label class="lbl" for="p-data">Quando quer publicar? (opcional)</label><input type="date" id="p-data" value="${esc(p ? p.data_prevista || '' : '')}" style="max-width:220px"></div>
+        <div class="campo"><label class="lbl">Anexos</label>
+          <label class="btn btn-sm" style="cursor:pointer">${svg('clip', 16)} Adicionar arquivo<input type="file" id="p-arquivos" multiple hidden data-chg="post-anexar" accept="image/*,application/pdf,video/*"></label>
+          <span class="hint" id="p-envio" style="margin-left:8px"></span><div id="p-anexos">${anexosHtml(anexos, true)}</div></div>
+        <div class="row" style="margin-top:6px"><button class="btn" data-act="post-rascunho">Salvar rascunho</button>
+          <button class="btn btn-primary" data-act="post-enviar">Enviar para aprovação</button>
+          ${p && p.status === 'rascunho' ? '<button class="btn btn-danger btn-sm" data-act="post-excluir" style="margin-left:auto">Excluir rascunho</button>' : ''}</div></div>
+      <div class="stack">${eventos.length ? `<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx)}</div>` : ''}
+        <div class="card" style="margin:0"><h2>Antes de enviar</h2><ul style="margin:8px 0 0;padding-left:18px;color:var(--text-secondary);font-size:.86rem;line-height:1.6">
+          <li>As primeiras ${GANCHO} letras decidem se alguém clica em “ver mais”.</li><li>Carrossel? Anexe o PDF. Imagem? Anexe a imagem.</li><li>Depois de enviar você só edita se o Igor pedir ajustes.</li></ul></div></div></div>`,
+    depois: () => { atualizarContador(); carregarThumbs(); },
+  };
+}
+ACT['post-rascunho'] = async el => { await ocupado(el, gravarRascunho); toast('Rascunho salvo.'); };
+ACT['post-enviar'] = async el => {
+  if (!$('#p-texto').value.trim()) { toast('Escreva o texto do post antes de enviar.', true); $('#p-texto').focus(); return; }
+  if ($('#p-texto').value.length > LIMITE_POST && !confirm('O texto passa de 3.000 caracteres, que é o limite do LinkedIn. Enviar mesmo assim?')) return;
+  if (!confirm('Enviar pra aprovação? Depois de enviar você só edita se o Igor pedir ajustes.')) return;
+  await ocupado(el, async () => { const id = await gravarRascunho(); await rpc('cli_post_enviar', { p_id: id }); ir(`posts/${id}`); });
+  toast('Enviado! O Igor foi avisado.'); carregarNotifs();
+};
+ACT['post-excluir'] = async el => {
+  if (!confirm('Excluir este rascunho?')) return;
+  const ax = await q(sb.from('cli_arquivos').select('path').eq('post_id', Number($('#p-id').value)));
+  if (ax.length) await sb.storage.from(BUCKET).remove(ax.map(a => a.path));
+  await rpc('cli_post_excluir', { p_id: Number($('#p-id').value) });
+  toast('Rascunho excluído.'); ir('posts');
+};
+CHG['post-anexar'] = async el => {
+  const files = [...el.files]; el.value = ''; if (!files.length) return;
+  const cli = S.ctx.clienteId, st = $('#p-envio'); const id = await gravarRascunho();
+  for (const [i, f] of files.entries()) {
+    if (f.size > 50 * 1048576) { toast(`${f.name} passa de 50 MB.`, true); continue; }
+    const path = `${cli}/posts/${id}/${Date.now()}_${safeNome(f.name)}`;
+    st.textContent = `Enviando ${i + 1}/${files.length}: 0%`;
+    await uploadXHR(path, f, pr => { st.textContent = `Enviando ${i + 1}/${files.length}: ${Math.round(pr * 100)}%`; });
+    const { error } = await sb.from('cli_arquivos').insert({ cliente_id: cli, pasta: 'Posts', nome: f.name, path, tamanho: f.size, mime: f.type || null, post_id: id });
+    if (error) { await sb.storage.from(BUCKET).remove([path]); throw error; }
+  }
+  st.textContent = ''; await refazerAnexos(); toast('Anexo adicionado.');
+};
+
+/* ---------- detalhe (mentorado após enviar · admin revisando) ---------- */
+async function detalhePost(ctx, p) {
+  const admin = ctx.modo === 'admin', ro = ctx.modo === 'preview';
+  const [eventos, anexos, cli] = await Promise.all([
+    q(sb.from('cli_post_eventos').select('*').eq('post_id', p.id).order('id')),
+    q(sb.from('cli_arquivos').select('*').eq('post_id', p.id).order('id')),
+    getCliente(p.cliente_id)]);
+  const ult = [...eventos].reverse().find(e => e.autor_papel === 'admin' && ['ajuste', 'reprovacao', 'aprovacao'].includes(e.tipo));
+  const nome = cli ? cli.nome : 'Mentorado';
+  const F = {
+    aguardando: admin ? ['Aguardando sua decisão', `Enviado ${tempoAtras(p.enviado_em)} · versão ${p.versao}`] : ['Aguardando aprovação', 'O Igor vai olhar e responder. Você recebe o aviso aqui no portal.'],
+    ajustes: admin ? ['Aguardando o mentorado ajustar', ult && ult.texto || ''] : ['Ajustes pedidos', ult && ult.texto || ''],
+    aprovado: admin ? ['Aprovado', 'Aguardando o mentorado publicar.'] : ['Aprovado: pode publicar', 'Publique no LinkedIn e cole o link abaixo pra fechar o checklist do dia.'],
+    reprovado: ['Não foi aprovado', ult && ult.texto || ''],
+    publicado: ['Publicado', p.post_link ? '' : 'Sem link registrado.'],
+    rascunho: ['Rascunho', ''],
+  }[p.status];
+  const faixa = `<div class="faixa-status ${p.status}"><div><b>${esc(F[0])}</b>${esc(F[1])}${p.status === 'publicado' && urlSegura(p.post_link) ? `<a href="${esc(urlSegura(p.post_link))}" target="_blank" rel="noopener noreferrer">${esc(p.post_link)}</a>` : ''}</div></div>`;
+
+  const publicar = !admin && p.status === 'aprovado' ? `<div class="card destaque"><h2>Já publicou?</h2><p class="desc">Cole o link do post no LinkedIn. Isso fecha o item “post” do seu checklist de hoje.</p>
+    <form data-sub="post-publicar"><input type="hidden" name="id" value="${p.id}"><div class="row"><input type="url" name="link" placeholder="https://www.linkedin.com/posts/…" style="flex:1;min-width:220px" ${ro ? 'disabled' : ''}>
+    <button class="btn btn-primary" type="submit" ${ro ? 'disabled' : ''}>Marcar como publicado</button></div></form></div>` : '';
+
+  const decidir = admin && p.status === 'aguardando' ? `<div class="decisao"><h2>Sua decisão</h2>
+    <label class="lbl" for="dec-texto" style="margin-top:8px">Comentário pro mentorado (obrigatório se pedir ajustes ou não aprovar)</label>
+    <textarea id="dec-texto" rows="4" placeholder="O que está bom, o que precisa mudar…"></textarea>
+    <div class="botoes"><button class="btn btn-primary" data-act="post-decidir" data-id="${p.id}" data-dec="aprovado">Aprovar</button>
+    <button class="btn btn-warn" data-act="post-decidir" data-id="${p.id}" data-dec="ajustes">Pedir ajustes</button>
+    <button class="btn btn-danger" data-act="post-decidir" data-id="${p.id}" data-dec="reprovado">Não aprovar</button></div></div>` : '';
+
+  const comentar = !ro ? `<form data-sub="post-comentar" style="margin-top:12px"><input type="hidden" name="id" value="${p.id}">
+    <label class="lbl" for="cm-texto">${admin ? 'Mandar uma mensagem' : 'Escrever pro Igor'}</label><textarea id="cm-texto" name="texto" rows="2" placeholder="Escreva aqui…"></textarea>
+    <button class="btn btn-sm" type="submit" style="margin-top:8px">Enviar mensagem</button></form>` : '';
+
+  return {
+    kicker: admin ? `${nome}${p.versao > 1 ? ` · versão ${p.versao}` : ''}` : `Versão ${p.versao}`, titulo: postTitulo(p), refrescavel: true,
+    html: `<div style="margin-bottom:12px"><a class="btn-link" href="${admin ? '#/admin/aprovacoes' : lnk(ctx, 'posts')}">← ${admin ? 'voltar para aprovações' : 'voltar para os posts'}</a>
+      ${admin && cli ? ` · <a class="btn-link" href="#/admin/mentorado/${cli.id}">ver ${esc(primeiroNome(cli.nome))}</a>` : ''}</div>${faixa}
+      <div class="post-layout"><div class="stack">
+        ${p.texto.length > GANCHO ? `<div class="gancho"><small>Gancho · aparece antes do “ver mais”</small>${esc(p.texto.slice(0, GANCHO))}${p.texto.length > GANCHO ? '…' : ''}</div>` : ''}
+        <div class="post-corpo">${esc(p.texto) || '<i class="muted">Sem texto.</i>'}</div>
+        <div class="row" style="font-size:.8rem;color:var(--muted)"><span>${p.texto.length.toLocaleString('pt-BR')} caracteres</span>${p.data_prevista ? `<span>· previsto para ${esc(fmtData(p.data_prevista))}</span>` : ''}</div>
+        ${anexos.length ? `<div><h3 style="margin-bottom:6px">Anexos</h3>${anexosHtml(anexos, false)}</div>` : ''}${publicar}</div>
+      <div class="stack">${decidir}<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx, nome)}${comentar}</div></div></div>`,
+    depois: carregarThumbs,
+  };
+}
+SUB['post-publicar'] = async f => {
+  const id = Number(f.id.value), link = f.link.value.trim();
+  if (link && !/^https?:\/\//i.test(link)) { toast('O link precisa começar com https://', true); return; }
+  await ocupado(f.querySelector('button[type=submit]'), () => rpc('cli_post_publicar', { p_id: id, p_link: link }));
+  toast('Publicado! Seu checklist de hoje foi atualizado.'); await carregarNotifs(); await render();
+};
+SUB['post-comentar'] = async f => {
+  const id = Number(f.id.value), texto = f.texto.value.trim(); if (!texto) return;
+  await ocupado(f.querySelector('button[type=submit]'), () => rpc('cli_post_comentar', { p_id: id, p_texto: texto }));
+  toast('Mensagem enviada.'); await render();
+};
+ACT['post-decidir'] = async el => {
+  const id = Number(el.dataset.id), dec = el.dataset.dec, txt = $('#dec-texto').value.trim();
+  if (dec !== 'aprovado' && !txt) { toast('Explique o motivo pro mentorado.', true); $('#dec-texto').focus(); return; }
+  if (dec === 'reprovado' && !confirm('Marcar como não aprovado? O mentorado vai precisar escrever outro post.')) return;
+  await ocupado(el, () => rpc('cli_post_decidir', { p_id: id, p_decisao: dec, p_comentario: txt }));
+  toast({ aprovado: 'Post aprovado. O mentorado foi avisado.', ajustes: 'Pedido de ajustes enviado.', reprovado: 'Post marcado como não aprovado.' }[dec]);
+  await carregarNotifs();
+  const prox = await q(sb.from('cli_posts').select('id').eq('status', 'aguardando').order('enviado_em').limit(1));
+  ir(prox[0] ? `admin/post/${prox[0].id}` : 'admin/aprovacoes');
+};
+
+/* ---------- admin: Aprovações (fila global) e post em revisão ---------- */
+async function vPostAdmin(ctx) {
+  const p = await carregarPost(ctx.args[0]); if (!p) throw new Error('Post não encontrado.');
+  return detalhePost({ ...ctx, clienteId: p.cliente_id }, p);
+}
+async function vAprovacoes() {
+  const [posts, cls] = await Promise.all([
+    paginado(() => sb.from('cli_posts').select('id,cliente_id,titulo,texto,status,versao,enviado_em,decidido_em,publicado_em').neq('status', 'rascunho').order('id', { ascending: false })), clientes()]);
+  const nome = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
+  const linha = (p, extra) => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/post/${p.id}"><div class="txt">${esc(postTitulo(p))}
+    <small>${esc(nome(p.cliente_id))}${p.versao > 1 ? ` · versão ${p.versao}` : ''} · ${esc(extra)}</small></div>${chipSt(p.status)}</a>`;
+  const ag = posts.filter(p => p.status === 'aguardando').sort((a, b) => new Date(a.enviado_em) - new Date(b.enviado_em));
+  const ap = posts.filter(p => p.status === 'aprovado'), aj = posts.filter(p => p.status === 'ajustes');
+  const pub = posts.filter(p => p.status === 'publicado').slice(0, 10);
+  return { kicker: 'Fila de aprovação', titulo: 'Aprovações',
+    html: `<div class="card ${ag.length ? 'destaque' : ''}"><div class="row-between"><h2>Aguardando sua decisão</h2><span class="chip aguardando">${ag.length}</span></div><p class="desc">Do mais antigo pro mais novo. Quem espera mais, posta menos.</p>
+      ${ag.length ? ag.map(p => linha(p, 'enviado ' + tempoAtras(p.enviado_em))).join('') : '<div class="vazio">Nada esperando por você.</div>'}
+      ${ag.length ? `<div style="margin-top:12px"><a class="btn btn-primary btn-sm" href="#/admin/post/${ag[0].id}">Revisar o primeiro da fila</a></div>` : ''}</div>
+      <div class="card"><div class="row-between"><h2>Aprovados, esperando publicar</h2><span class="chip aprovado">${ap.length}</span></div>
+      ${ap.length ? ap.map(p => linha(p, 'aprovado ' + tempoAtras(p.decidido_em))).join('') : '<div class="vazio">Nenhum.</div>'}</div>
+      <div class="card"><div class="row-between"><h2>Com o mentorado ajustando</h2><span class="chip ajustes">${aj.length}</span></div>
+      ${aj.length ? aj.map(p => linha(p, 'ajustes pedidos ' + tempoAtras(p.decidido_em))).join('') : '<div class="vazio">Nenhum.</div>'}</div>
+      <div class="card"><h2>Publicados recentemente</h2>${pub.length ? pub.map(p => linha(p, 'publicado ' + tempoAtras(p.publicado_em))).join('') : '<div class="vazio">Nenhum ainda.</div>'}</div>` };
+}
+
+/* =====================================================================
+   PLANO DE AÇÃO — o plano E o checklist são o mesmo objeto.
+   Modelo = cli_planos com cliente_id null. Mentorado só marca (RPC); admin edita.
+   ===================================================================== */
+function prazoInfo(prazo, feito) {
+  if (!prazo) return null; const h = hojeISO();
+  if (feito) return { cls: 'neutro sem-dot', txt: `prazo ${fmtCurta(prazo)}` };
+  if (prazo < h) return { cls: 'critico', txt: `atrasado · ${fmtCurta(prazo)}` };
+  if (prazo === h) return { cls: 'alerta', txt: 'para hoje' };
+  return { cls: 'neutro sem-dot', txt: `até ${fmtCurta(prazo)}` };
+}
+const chipPrazoTxt = prazo => { const i = prazoInfo(prazo, false); return i ? esc(i.txt) : ''; };
+const cmpItem = (a, b) => a.fase_ordem - b.fase_ordem || a.ordem - b.ordem || a.id - b.id;
+let PLANO = { plano: null, itens: [] };      // plano em edição/visualização na tela atual
+const FASES_FECHADAS = new Set();
+
+function agruparFases(itens) {
+  const m = new Map();
+  [...itens].sort(cmpItem).forEach(i => {
+    const k = i.fase_ordem + '|' + i.fase;
+    if (!m.has(k)) m.set(k, { nome: i.fase, ordem: i.fase_ordem, itens: [] });
+    m.get(k).itens.push(i);
+  });
+  return [...m.values()];
+}
+function itemHtml(i, o) {
+  const pz = o.modelo ? (i.prazo_dias != null ? { cls: 'neutro sem-dot', txt: `dia ${i.prazo_dias}` } : null) : prazoInfo(i.prazo, i.concluido);
+  return `<div class="pi ${i.concluido ? 'feito' : ''}" data-item="${i.id}">
+    <div class="ck">${o.modelo ? '<span style="display:block;width:8px;height:8px;border-radius:50%;background:var(--grid);margin:7px 6px"></span>'
+      : `<input type="checkbox" ${i.concluido ? 'checked' : ''} data-chg="item-marcar" data-id="${i.id}" ${o.ro ? 'disabled' : ''} aria-label="Concluir: ${esc(i.titulo)}">`}</div>
+    <div class="tx"><div class="tt">${esc(i.titulo)}</div>${i.descricao ? `<div class="ds">${esc(i.descricao)}</div>` : ''}
+      ${i.concluido && i.concluido_em ? `<div class="hint">concluído em ${esc(fmtData(isoLocal(new Date(i.concluido_em))))}</div>` : ''}</div>
+    <div class="lado">${pz ? `<span class="chip ${pz.cls}">${esc(pz.txt)}</span>` : ''}
+      ${o.editavel ? `<div class="acoes-ed"><button class="ic-btn" data-act="item-mover" data-id="${i.id}" data-d="-1" title="Subir" aria-label="Subir item">${svg('cima', 16)}</button>
+      <button class="ic-btn" data-act="item-mover" data-id="${i.id}" data-d="1" title="Descer" aria-label="Descer item">${svg('baixo', 16)}</button>
+      <button class="ic-btn" data-act="item-editar" data-id="${i.id}" title="Editar" aria-label="Editar item">${svg('editar', 16)}</button>
+      <button class="ic-btn" data-act="item-excluir" data-id="${i.id}" title="Excluir" aria-label="Excluir item">${svg('lixo', 16)}</button></div>` : ''}</div></div>`;
+}
+function faseHtml(f, o, aberta) {
+  const feitos = f.itens.filter(i => i.concluido).length;
+  const nf = esc(f.nome);
+  return `<section class="fase ${aberta ? 'aberta' : ''}" data-fase="${nf}">
+    <div class="fase-cab"><button class="fase-tg" data-act="fase-toggle" aria-expanded="${aberta}"><span class="seta">${svg('seta', 16)}</span><span class="fn">${nf}</span>
+      <span class="fp">${o.modelo ? `${f.itens.length} ${f.itens.length === 1 ? 'item' : 'itens'}` : `${feitos}/${f.itens.length}`}</span></button>
+      ${o.editavel ? `<div class="acoes-ed"><button class="ic-btn" data-act="fase-mover" data-fase="${nf}" data-d="-1" title="Subir fase" aria-label="Subir fase">${svg('cima', 16)}</button>
+      <button class="ic-btn" data-act="fase-mover" data-fase="${nf}" data-d="1" title="Descer fase" aria-label="Descer fase">${svg('baixo', 16)}</button>
+      <button class="ic-btn" data-act="fase-renomear" data-fase="${nf}" title="Renomear fase" aria-label="Renomear fase">${svg('editar', 16)}</button>
+      <button class="ic-btn" data-act="fase-excluir" data-fase="${nf}" title="Excluir fase" aria-label="Excluir fase">${svg('lixo', 16)}</button></div>` : ''}</div>
+    <div class="fase-corpo">${f.itens.map(i => itemHtml(i, o)).join('')}
+      ${o.editavel ? `<div style="padding:10px 0 4px"><button class="btn btn-sm" data-act="item-novo" data-fase="${nf}">${svg('mais', 14)} Adicionar item nesta fase</button></div>` : ''}</div></section>`;
+}
+function planoDocHtml(plano, itens, o) {
+  const fases = agruparFases(itens), total = itens.length, feitos = itens.filter(i => i.concluido).length;
+  const pct = total ? Math.round(feitos / total * 100) : 0, hoje = hojeISO();
+  const atras = itens.filter(i => !i.concluido && i.prazo && i.prazo < hoje).length;
+  const primeiraPend = fases.findIndex(f => f.itens.some(i => !i.concluido));
+  const periodo = plano.inicio ? `${fmtData(plano.inicio)}${plano.fim ? ' a ' + fmtData(plano.fim) : ''}` : '';
+  return `<div class="card"><div class="row-between"><div><div class="kicker">${o.modelo ? 'Modelo de plano' : 'Plano de ação'}</div><h2 style="font-size:1.2rem;margin-top:2px">${esc(plano.titulo)}</h2>
+      ${plano.objetivo ? `<p class="sec" style="margin-top:4px;max-width:640px;white-space:pre-wrap">${esc(plano.objetivo)}</p>` : ''}${periodo ? `<p class="hint">${esc(periodo)}</p>` : ''}</div>
+      ${o.editavel ? `<button class="btn btn-sm" data-act="plano-meta">${svg('editar', 15)} Editar dados do plano</button>` : ''}</div>
+    ${o.modelo ? '' : `<div class="plano-topo" style="margin-top:16px"><div class="plano-pct" id="plano-pct">${pct}%</div>
+      <div style="flex:1;min-width:180px"><div class="bar"><i id="plano-bar" style="width:${pct}%"></i></div><div class="hint" id="plano-cont">${feitos} de ${total} itens concluídos</div></div>
+      ${atras ? `<span class="chip critico" id="plano-atras">${atras} ${atras === 1 ? 'atrasado' : 'atrasados'}</span>` : '<span id="plano-atras"></span>'}</div>`}</div>
+    ${fases.length ? fases.map((f, k) => faseHtml(f, o, FASES_FECHADAS.has(f.nome) ? false : (o.modelo || o.editavel ? true : k === Math.max(0, primeiraPend)))).join('')
+      : '<div class="card"><div class="vazio">Plano vazio.</div></div>'}
+    ${o.editavel ? `<div style="margin:6px 0 16px"><button class="btn" data-act="item-novo" data-fase="">${svg('mais', 15)} Adicionar nova fase</button></div>` : ''}`;
+}
+ACT['fase-toggle'] = el => {
+  const s = el.closest('.fase'), nome = s.dataset.fase; s.classList.toggle('aberta');
+  el.setAttribute('aria-expanded', s.classList.contains('aberta'));
+  if (s.classList.contains('aberta')) FASES_FECHADAS.delete(nome); else FASES_FECHADAS.add(nome);
+};
+
+/* ---------- marcar item (mentorado) ---------- */
+function recalcPlanoDOM() {
+  const todos = $$('.pi input[data-chg="item-marcar"]'), feitos = todos.filter(c => c.checked).length, total = todos.length;
+  const pct = total ? Math.round(feitos / total * 100) : 0;
+  const set = (id, fn) => { const e = $('#' + id); if (e) fn(e); };
+  set('plano-pct', e => { e.textContent = pct + '%'; }); set('plano-bar', e => { e.style.width = pct + '%'; });
+  set('plano-cont', e => { e.textContent = `${feitos} de ${total} itens concluídos`; });
+  $$('.fase').forEach(s => { const cs = $$('input[data-chg="item-marcar"]', s); const fp = $('.fp', s); if (fp) fp.textContent = `${cs.filter(c => c.checked).length}/${cs.length}`; });
+}
+CHG['item-marcar'] = async el => {
+  const marcado = el.checked, linha = el.closest('.pi');
+  linha.classList.toggle('feito', marcado); recalcPlanoDOM();
+  try { await rpc('cli_marcar_item', { p_item_id: Number(el.dataset.id), p_concluido: marcado }); }
+  catch (e) { el.checked = !marcado; linha.classList.toggle('feito', !marcado); recalcPlanoDOM(); throw e; }
+  carregarNotifs();
+};
+ACT['item-marcar'] = async el => {
+  await ocupado(el, () => rpc('cli_marcar_item', { p_item_id: Number(el.dataset.id), p_concluido: el.dataset.v === '1' }));
+  toast('Item concluído.'); carregarNotifs(); await render();
+};
+
+/* ---------- conteúdo do plano (mentorado, preview e aba do admin) ---------- */
+async function carregarPlanoAtivo(clienteId) {
+  const planos = await q(sb.from('cli_planos').select('*').eq('cliente_id', clienteId).order('id', { ascending: false }));
+  const plano = planos.find(p => p.status === 'ativo') || null;
+  const itens = plano ? await q(sb.from('cli_plano_itens').select('*').eq('plano_id', plano.id).order('fase_ordem').order('ordem').order('id')) : [];
+  return { plano, itens, arquivados: planos.filter(p => p.status === 'arquivado') };
+}
+async function planoConteudo(ctx) {
+  const admin = ctx.modo === 'admin', ro = ctx.modo === 'preview';
+  const { plano, itens, arquivados } = await carregarPlanoAtivo(ctx.clienteId);
+  PLANO = { plano, itens };
+  if (!plano) {
+    if (!admin) return '<div class="card"><div class="vazio"><b>Seu plano de ação ainda está sendo montado.</b><br>Assim que ficar pronto, ele aparece aqui com o checklist de cada passo.</div></div>';
+    const modelos = await q(sb.from('cli_planos').select('id,titulo').is('cliente_id', null).order('titulo'));
+    return `<div class="card"><h2>Este mentorado ainda não tem plano</h2><p class="desc">Comece de um modelo e ajuste, ou crie um plano em branco.</p>
+      <div class="grid2"><div class="campo"><label class="lbl" for="md-modelo">Modelo</label><select id="md-modelo">${modelos.map(m => `<option value="${m.id}">${esc(m.titulo)}</option>`).join('') || '<option value="">Nenhum modelo criado</option>'}</select></div>
+      <div class="campo"><label class="lbl" for="md-inicio">Começa em</label><input type="date" id="md-inicio" value="${hojeISO()}"></div></div>
+      <div class="row"><button class="btn btn-primary" data-act="plano-aplicar" ${modelos.length ? '' : 'disabled'}>Aplicar modelo</button><button class="btn" data-act="plano-vazio">Criar plano em branco</button></div></div>`
+      + arquivadosHtml(arquivados);
+  }
+  const barra = admin ? `<div class="row" style="margin-bottom:14px"><button class="btn btn-sm" data-act="plano-trocar">Trocar por outro modelo</button>
+    <button class="btn btn-sm" data-act="plano-comomodelo">Salvar como modelo</button><button class="btn btn-sm btn-danger" data-act="plano-arquivar">Arquivar plano</button></div>` : '';
+  return barra + planoDocHtml(plano, itens, { editavel: admin, ro, modelo: false }) + arquivadosHtml(arquivados);
+}
+const arquivadosHtml = arq => arq.length ? `<div class="card"><h3>Planos anteriores</h3>${arq.map(p => `<div class="item-lista"><div class="txt">${esc(p.titulo)}<small>${esc(p.inicio ? fmtData(p.inicio) : '')}${p.fim ? ' a ' + esc(fmtData(p.fim)) : ''} · arquivado</small></div></div>`).join('')}</div>` : '';
+async function vPlano(ctx) {
+  return { kicker: 'Seu caminho', titulo: 'Plano de ação', html: await planoConteudo(ctx) };
+}
+
+/* ---------- admin: aplicar / criar / arquivar ---------- */
+ACT['plano-aplicar'] = async el => {
+  const modelo = Number($('#md-modelo').value), inicio = $('#md-inicio').value || null, cli = S.ctx.clienteId;
+  await ocupado(el, async () => {
+    try { await rpc('cli_aplicar_modelo', { p_modelo_id: modelo, p_cliente_id: cli, p_inicio: inicio, p_substituir: false }); }
+    catch (e) { if (/plano ativo/.test(msgErro(e)) && confirm('Já existe um plano ativo. Arquivar o atual e aplicar este?')) await rpc('cli_aplicar_modelo', { p_modelo_id: modelo, p_cliente_id: cli, p_inicio: inicio, p_substituir: true }); else throw e; }
+  });
+  toast('Plano aplicado.'); await render();
+};
+ACT['plano-vazio'] = async el => {
+  const t = prompt('Nome do plano:', 'Plano de ação'); if (!t) return;
+  const { error } = await sb.from('cli_planos').insert({ cliente_id: S.ctx.clienteId, titulo: t.trim(), inicio: hojeISO() }); if (error) throw error;
+  await render();
+};
+ACT['plano-trocar'] = async () => {
+  const modelos = await q(sb.from('cli_planos').select('id,titulo').is('cliente_id', null).order('titulo'));
+  if (!modelos.length) { toast('Ainda não há modelos. Crie um em “Modelos de plano”.', true); return; }
+  abrirModal('Trocar por outro modelo', `<p class="desc">O plano atual vai para “planos anteriores” (com o progresso guardado) e o novo começa do zero.</p>
+    <div class="campo"><label class="lbl" for="tm-modelo">Modelo</label><select id="tm-modelo">${modelos.map(m => `<option value="${m.id}">${esc(m.titulo)}</option>`).join('')}</select></div>
+    <div class="campo"><label class="lbl" for="tm-inicio">Começa em</label><input type="date" id="tm-inicio" value="${hojeISO()}" style="max-width:220px"></div>
+    <button class="btn btn-primary" data-act="plano-trocar-ok">Aplicar</button>`);
+};
+ACT['plano-trocar-ok'] = async el => {
+  await ocupado(el, () => rpc('cli_aplicar_modelo', { p_modelo_id: Number($('#tm-modelo').value), p_cliente_id: S.ctx.clienteId, p_inicio: $('#tm-inicio').value || null, p_substituir: true }));
+  fecharModal(); toast('Plano trocado.'); await render();
+};
+ACT['plano-comomodelo'] = async () => {
+  const t = prompt('Nome do novo modelo:', PLANO.plano.titulo); if (!t) return;
+  await rpc('cli_plano_como_modelo', { p_plano_id: PLANO.plano.id, p_titulo: t.trim() }); toast('Modelo criado em “Modelos de plano”.');
+};
+ACT['plano-arquivar'] = async () => {
+  if (!confirm('Arquivar este plano? O progresso fica guardado em “planos anteriores”.')) return;
+  const { error } = await sb.from('cli_planos').update({ status: 'arquivado' }).eq('id', PLANO.plano.id); if (error) throw error;
+  await render();
+};
+ACT['plano-meta'] = () => {
+  const p = PLANO.plano, modelo = p.cliente_id == null;
+  abrirModal('Dados do plano', `<form data-sub="plano-meta"><div class="campo"><label class="lbl" for="pm-titulo">Título</label><input type="text" id="pm-titulo" required value="${esc(p.titulo)}"></div>
+    <div class="campo"><label class="lbl" for="pm-obj">Objetivo (aparece no topo do plano)</label><textarea id="pm-obj" rows="3">${esc(p.objetivo || '')}</textarea></div>
+    ${modelo ? '' : `<div class="grid2"><div class="campo"><label class="lbl" for="pm-ini">Início</label><input type="date" id="pm-ini" value="${esc(p.inicio || '')}"></div><div class="campo"><label class="lbl" for="pm-fim">Fim</label><input type="date" id="pm-fim" value="${esc(p.fim || '')}"></div></div>`}
+    <button class="btn btn-primary" type="submit">Salvar</button></form>`);
+};
+SUB['plano-meta'] = async () => {
+  const p = PLANO.plano, patch = { titulo: $('#pm-titulo').value.trim(), objetivo: $('#pm-obj').value.trim() || null };
+  if (p.cliente_id != null) { patch.inicio = $('#pm-ini').value || null; patch.fim = $('#pm-fim').value || null; }
+  const { error } = await sb.from('cli_planos').update(patch).eq('id', p.id); if (error) throw error;
+  fecharModal(); toast('Salvo.'); await render();
+};
+
+/* ---------- admin: editar itens e fases ---------- */
+const itemPorId = id => PLANO.itens.find(i => i.id === Number(id));
+const modeloAtual = () => PLANO.plano && PLANO.plano.cliente_id == null;
+function modalItem(item, fase) {
+  const fases = [...new Set(PLANO.itens.sort(cmpItem).map(i => i.fase))], modelo = modeloAtual();
+  abrirModal(item ? 'Editar item' : 'Novo item', `<form data-sub="item"><input type="hidden" name="id" value="${item ? item.id : ''}">
+    <div class="campo"><label class="lbl" for="it-fase">Fase</label><input type="text" id="it-fase" list="it-fases" required value="${esc(item ? item.fase : fase || '')}" placeholder="Ex: Semana 1 · Posicionamento"><datalist id="it-fases">${fases.map(f => `<option value="${esc(f)}">`).join('')}</datalist></div>
+    <div class="campo"><label class="lbl" for="it-titulo">O que precisa ser feito</label><input type="text" id="it-titulo" required value="${esc(item ? item.titulo : '')}"></div>
+    <div class="campo"><label class="lbl" for="it-desc">Detalhes (opcional)</label><textarea id="it-desc" rows="4">${esc(item ? item.descricao || '' : '')}</textarea></div>
+    ${modelo ? `<div class="campo"><label class="lbl" for="it-dias">Prazo em dias desde o início (opcional)</label><input type="number" id="it-dias" min="0" value="${item && item.prazo_dias != null ? item.prazo_dias : ''}" style="max-width:160px"></div>`
+      : `<div class="campo"><label class="lbl" for="it-prazo">Prazo (opcional)</label><input type="date" id="it-prazo" value="${esc(item ? item.prazo || '' : '')}" style="max-width:220px"></div>`}
+    <button class="btn btn-primary" type="submit">Salvar</button></form>`);
+}
+ACT['item-novo'] = el => modalItem(null, el.dataset.fase);
+ACT['item-editar'] = el => modalItem(itemPorId(el.dataset.id));
+SUB['item'] = async f => {
+  const id = Number(f.id.value) || null, fase = $('#it-fase').value.trim(), modelo = modeloAtual();
+  const itens = PLANO.itens, existente = itens.find(i => i.fase === fase);
+  const campos = { fase, titulo: $('#it-titulo').value.trim(), descricao: $('#it-desc').value.trim() || null };
+  if (modelo) campos.prazo_dias = $('#it-dias').value === '' ? null : Number($('#it-dias').value); else campos.prazo = $('#it-prazo').value || null;
+  campos.fase_ordem = existente ? existente.fase_ordem : (itens.reduce((m, i) => Math.max(m, i.fase_ordem), 0) + 1);
+  if (id) {
+    const antigo = itemPorId(id);
+    if (antigo.fase !== fase) campos.ordem = itens.filter(i => i.fase === fase).reduce((m, i) => Math.max(m, i.ordem), 0) + 1;
+    const { error } = await sb.from('cli_plano_itens').update(campos).eq('id', id); if (error) throw error;
+  } else {
+    campos.plano_id = PLANO.plano.id; campos.ordem = itens.filter(i => i.fase === fase).reduce((m, i) => Math.max(m, i.ordem), 0) + 1;
+    const { error } = await sb.from('cli_plano_itens').insert(campos); if (error) throw error;
+  }
+  fecharModal(); toast('Salvo.'); await render();
+};
+ACT['item-excluir'] = async el => {
+  if (!confirm('Excluir este item?')) return;
+  const { error } = await sb.from('cli_plano_itens').delete().eq('id', el.dataset.id); if (error) throw error; await render();
+};
+async function gravarOrdens(updates) {
+  const res = await Promise.all(updates.map(u => sb.from('cli_plano_itens').update(u.patch).eq('id', u.id)));
+  const e = res.find(r => r.error); if (e) throw e.error;
+}
+ACT['item-mover'] = async el => {
+  const it = itemPorId(el.dataset.id), d = Number(el.dataset.d);
+  const grupo = PLANO.itens.filter(i => i.fase === it.fase).sort(cmpItem), idx = grupo.findIndex(i => i.id === it.id), j = idx + d;
+  if (j < 0 || j >= grupo.length) return;
+  [grupo[idx], grupo[j]] = [grupo[j], grupo[idx]];
+  await gravarOrdens(grupo.map((g, k) => ({ id: g.id, patch: { ordem: k + 1 } })).filter((u, k) => grupo[k].ordem !== k + 1));
+  await render();
+};
+ACT['fase-mover'] = async el => {
+  const fases = agruparFases(PLANO.itens), idx = fases.findIndex(f => f.nome === el.dataset.fase), j = idx + Number(el.dataset.d);
+  if (idx < 0 || j < 0 || j >= fases.length) return;
+  [fases[idx], fases[j]] = [fases[j], fases[idx]];
+  const ups = []; fases.forEach((f, k) => f.itens.forEach(i => { if (i.fase_ordem !== k + 1) ups.push({ id: i.id, patch: { fase_ordem: k + 1 } }); }));
+  await gravarOrdens(ups); await render();
+};
+ACT['fase-renomear'] = async el => {
+  const novo = prompt('Novo nome da fase:', el.dataset.fase); if (!novo || novo.trim() === el.dataset.fase) return;
+  const { error } = await sb.from('cli_plano_itens').update({ fase: novo.trim() }).eq('plano_id', PLANO.plano.id).eq('fase', el.dataset.fase); if (error) throw error; await render();
+};
+ACT['fase-excluir'] = async el => {
+  const n = PLANO.itens.filter(i => i.fase === el.dataset.fase).length;
+  if (!confirm(`Excluir a fase “${el.dataset.fase}” e os ${n} itens dela?`)) return;
+  const { error } = await sb.from('cli_plano_itens').delete().eq('plano_id', PLANO.plano.id).eq('fase', el.dataset.fase); if (error) throw error; await render();
+};
+
+/* ---------- admin: Modelos de plano ---------- */
+async function vModelos() {
+  const [modelos, itens] = await Promise.all([q(sb.from('cli_planos').select('*').is('cliente_id', null).order('titulo')),
+    paginado(() => sb.from('cli_plano_itens').select('id,plano_id').order('id'))]);
+  return { kicker: 'Biblioteca', titulo: 'Modelos de plano',
+    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">Um modelo é o plano padrão que você aplica a um mentorado e depois ajusta pra ele.</p><button class="btn btn-primary" data-act="modelo-novo">${svg('mais', 16)} Novo modelo</button></div>
+      ${modelos.length ? modelos.map(m => { const n = itens.filter(i => i.plano_id === m.id).length;
+        return `<div class="mrow"><div class="row-between"><div><a class="nome" href="#/admin/modelo/${m.id}" style="color:inherit;text-decoration:none">${esc(m.titulo)}</a><div class="meta">${n} ${n === 1 ? 'item' : 'itens'}${m.objetivo ? ' · ' + esc(m.objetivo.slice(0, 90)) : ''}</div></div>
+        <div class="row"><a class="btn btn-sm" href="#/admin/modelo/${m.id}">Abrir e editar</a><button class="btn btn-sm btn-danger" data-act="modelo-excluir" data-id="${m.id}">Excluir</button></div></div></div>`; }).join('')
+        : '<div class="card"><div class="vazio"><b>Nenhum modelo ainda.</b><br>Crie o primeiro, ou abra um plano de um mentorado e use “Salvar como modelo”.</div></div>'}` };
+}
+ACT['modelo-novo'] = async () => {
+  const t = prompt('Nome do modelo:', 'Plano de 30 dias'); if (!t) return;
+  const { data, error } = await sb.from('cli_planos').insert({ cliente_id: null, titulo: t.trim() }).select('id').single(); if (error) throw error;
+  ir(`admin/modelo/${data.id}`);
+};
+ACT['modelo-excluir'] = async el => {
+  if (!confirm('Excluir este modelo? Os planos já aplicados a mentorados não são afetados.')) return;
+  const { error } = await sb.from('cli_planos').delete().eq('id', el.dataset.id).is('cliente_id', null); if (error) throw error; await render();
+};
+async function vModelo(ctx) {
+  const [plano] = await q(sb.from('cli_planos').select('*').eq('id', ctx.args[0]).is('cliente_id', null).limit(1));
+  if (!plano) throw new Error('Modelo não encontrado.');
+  const itens = await q(sb.from('cli_plano_itens').select('*').eq('plano_id', plano.id).order('fase_ordem').order('ordem').order('id'));
+  PLANO = { plano, itens };
+  return { kicker: 'Modelo de plano', titulo: plano.titulo, refrescavel: false,
+    html: `<div style="margin-bottom:12px"><a class="btn-link" href="#/admin/modelos">← voltar para os modelos</a></div>${planoDocHtml(plano, itens, { editavel: true, modelo: true })}` };
+}
+
+/* =====================================================================
+   DRIVE POR MENTORADO — estilo Google Drive (porte do "Arquivos" do painel).
+   Binário no bucket PRIVADO cli-drive ({cliente_id}/...); metadados em cli_arquivos.
+   Pasta é uma coluna de texto (subpasta = "A/B"). Pasta vazia só vive no navegador de quem criou.
+   ===================================================================== */
+const PASTAS_PADRAO = ['Plano de ação', 'Posts', 'Materiais de isca', 'Gravações', 'Outros'];
+let DR = { cli: null, arquivos: [], caminho: '', vista: lsGet('drive-vista') || 'grade', busca: '', ro: false, urls: {}, menu: null };
+
+const semAcento = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const extDe = n => (/\.([a-z0-9]{1,5})$/i.exec(n || '') || [, ''])[1].toLowerCase();
+function corExt(ext, mime) {
+  if (ext === 'pdf') return '#d03b3b';
+  if (/^image\//.test(mime || '') || ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext)) return '#2a78d6';
+  if (/^video\//.test(mime || '') || ['mp4', 'mov', 'webm', 'mkv'].includes(ext)) return '#4a3aa7';
+  if (['xls', 'xlsx', 'csv'].includes(ext)) return '#1a8f4a';
+  if (['doc', 'docx', 'txt', 'md'].includes(ext)) return '#2a6fd6';
+  if (['ppt', 'pptx', 'key'].includes(ext)) return '#eb6834';
+  return '#7a7872';
+}
+const icoArq = a => { const e = extDe(a.nome); return `<span class="dr-ico" style="--c:${corExt(e, a.mime)}">${esc((e || 'arq').slice(0, 4).toUpperCase())}</span>`; };
+const ehImg = a => /^image\//.test(a.mime || '') || ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extDe(a.nome));
+const pastasVazias = () => { try { return new Set(JSON.parse(lsGet('drive-pastas-' + DR.cli) || '[]')); } catch (e) { return new Set(); } };
+const gravarVazias = set => lsSet('drive-pastas-' + DR.cli, JSON.stringify([...set]));
+function addPrefixos(s, caminho) { const p = caminho.split('/'); for (let i = 1; i <= p.length; i++) s.add(p.slice(0, i).join('/')); }
+function todasPastas() {
+  const s = new Set(PASTAS_PADRAO);
+  DR.arquivos.forEach(a => { if (a.pasta) addPrefixos(s, a.pasta); });
+  pastasVazias().forEach(p => addPrefixos(s, p));
+  return s;
+}
+function filhasDe(caminho) {
+  const pref = caminho ? caminho + '/' : '', out = [];
+  todasPastas().forEach(p => { if (p.startsWith(pref) && p !== caminho && !p.slice(pref.length).includes('/')) out.push(p); });
+  return out.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+}
+const dentroDe = (a, p) => a.pasta === p || a.pasta.startsWith(p + '/');
+const contar = p => DR.arquivos.filter(a => dentroDe(a, p)).length;
+const nomePasta = p => p.split('/').pop();
+
+async function carregarDrive() {
+  DR.arquivos = await paginado(() => sb.from('cli_arquivos').select('*').eq('cliente_id', DR.cli).order('id'));
+}
+async function vDrive(ctx) {
+  DR.cli = ctx.clienteId; DR.ro = ctx.modo === 'preview'; DR.caminho = ''; DR.busca = '';
+  await carregarDrive();
+  return { kicker: 'Seus arquivos', titulo: 'Drive', refrescavel: false, html: '<div id="drive-root"></div>', depois: desenharDrive };
+}
+async function driveConteudo(ctx) {   // aba "Drive" do admin
+  DR.cli = ctx.clienteId; DR.ro = false; DR.caminho = ''; DR.busca = '';
+  await carregarDrive(); return '<div id="drive-root"></div>';
+}
+
+function desenharDrive() {
+  const root = $('#drive-root'); if (!root) return;
+  const busca = semAcento(DR.busca.trim());
+  const partes = DR.caminho ? DR.caminho.split('/') : [];
+  const crumbs = `<nav class="dr-crumbs" aria-label="Caminho"><button class="dr-crumb ${partes.length ? '' : 'atual'}" data-act="dr-ir" data-p="" data-drop="">Meu drive</button>` +
+    partes.map((n, i) => { const p = partes.slice(0, i + 1).join('/'); return `<span class="dr-sep">/</span><button class="dr-crumb ${i === partes.length - 1 ? 'atual' : ''}" data-act="dr-ir" data-p="${esc(p)}" data-drop="${esc(p)}">${esc(n)}</button>`; }).join('') + '</nav>';
+
+  let corpo = '';
+  if (busca) {
+    const achados = DR.arquivos.filter(a => semAcento(a.nome).includes(busca));
+    corpo = `<div class="dr-sub">${achados.length} ${achados.length === 1 ? 'resultado' : 'resultados'} para “${esc(DR.busca)}”</div>` + (achados.length ? arquivosHtml(achados, true) : '<div class="vazio">Nada encontrado.</div>');
+  } else {
+    const pastas = filhasDe(DR.caminho), arqs = DR.arquivos.filter(a => a.pasta === DR.caminho).sort((a, b) => b.id - a.id);
+    corpo = (pastas.length ? `<div class="dr-sub">Pastas</div><div class="dr-pastas">${pastas.map(p => `<div class="dr-pasta" data-drop="${esc(p)}" data-act="dr-ir" data-p="${esc(p)}" tabindex="0" role="button">
+      ${svg('drive', 26)}<div class="dr-pn"><div class="dr-nome">${esc(nomePasta(p))}</div><div class="dr-qt">${contar(p)} ${contar(p) === 1 ? 'arquivo' : 'arquivos'}</div></div>
+      ${DR.ro ? '' : `<button class="ic-btn" data-act="dr-menu" data-tipo="pasta" data-p="${esc(p)}" aria-label="Opções da pasta ${esc(nomePasta(p))}">⋮</button>`}</div>`).join('')}</div>` : '')
+      + (arqs.length ? `<div class="dr-sub">Arquivos</div>${arquivosHtml(arqs, false)}` : '')
+      + (!pastas.length && !arqs.length ? `<div class="vazio"><b>Esta pasta está vazia.</b>${DR.ro ? '' : '<br>Arraste arquivos pra cá ou use o botão “Novo”.'}</div>` : '');
+  }
+  root.innerHTML = `<div class="dr-doc" data-drop="${esc(DR.caminho)}">
+    <div class="dr-topo">${DR.ro ? '' : `<button class="btn btn-primary" data-act="dr-novo">${svg('mais', 16)} Novo</button>`}
+      <input type="search" class="dr-busca" id="dr-busca" placeholder="Buscar nos seus arquivos" value="${esc(DR.busca)}" aria-label="Buscar arquivos">
+      <div class="dr-vistas" role="group" aria-label="Modo de exibição"><button class="${DR.vista === 'grade' ? 'ativa' : ''}" data-act="dr-vista" data-v="grade" aria-label="Grade">▦</button><button class="${DR.vista === 'lista' ? 'ativa' : ''}" data-act="dr-vista" data-v="lista" aria-label="Lista">☰</button></div></div>
+    ${crumbs}${corpo}<input type="file" id="dr-file" multiple hidden data-chg="dr-upload"></div>`;
+  const b = $('#dr-busca');
+  b.oninput = () => { DR.busca = b.value; const pos = b.selectionStart; desenharDrive(); const nb = $('#dr-busca'); nb.focus(); nb.setSelectionRange(pos, pos); };
+  carregarMiniaturas();
+}
+function arquivosHtml(arqs, comPasta) {
+  const acoes = a => DR.ro ? '' : `<button class="ic-btn" data-act="dr-menu" data-tipo="arq" data-id="${a.id}" aria-label="Opções de ${esc(a.nome)}">⋮</button>`;
+  const arrasta = a => DR.ro ? '' : `draggable="true" data-fid="${a.id}"`;
+  if (DR.vista === 'lista') return `<div class="dr-tabela"><div class="dr-linha cab"><span>Nome</span><span>Enviado</span><span>Tamanho</span><span></span></div>${arqs.map(a => `<div class="dr-linha" ${arrasta(a)}>
+    <button class="dr-nomecel" data-act="dr-abrir" data-id="${a.id}">${icoArq(a)}<span class="dr-nome">${esc(a.nome)}${comPasta && a.pasta ? `<small>${esc(a.pasta)}</small>` : ''}</span></button>
+    <span class="dr-meta">${esc(fmtData(isoLocal(new Date(a.created_at))))}</span><span class="dr-meta">${esc(fmtBytes(a.tamanho))}</span>${acoes(a)}</div>`).join('')}</div>`;
+  return `<div class="dr-grade">${arqs.map(a => `<div class="dr-card" ${arrasta(a)}>
+    <button class="dr-thumb" data-act="dr-abrir" data-id="${a.id}" data-img="${ehImg(a) ? 1 : 0}" aria-label="Abrir ${esc(a.nome)}">${icoArq(a)}</button>
+    <div class="dr-pe"><div class="dr-nome" title="${esc(a.nome)}">${esc(a.nome)}${comPasta && a.pasta ? `<small>${esc(a.pasta)}</small>` : ''}</div>${acoes(a)}</div></div>`).join('')}</div>`;
+}
+async function carregarMiniaturas() {
+  const alvos = $$('.dr-thumb[data-img="1"]'); if (!alvos.length) return;
+  const arq = id => DR.arquivos.find(a => a.id === Number(id));
+  const faltam = alvos.map(el => arq(el.dataset.id)).filter(a => a && !DR.urls[a.path]);
+  if (faltam.length) {
+    const { data } = await sb.storage.from(BUCKET).createSignedUrls(faltam.map(a => a.path), 900);
+    (data || []).forEach(r => { if (r.signedUrl) DR.urls[r.path] = r.signedUrl; });
+  }
+  alvos.forEach(el => { const a = arq(el.dataset.id); if (a && DR.urls[a.path]) el.innerHTML = `<img src="${esc(DR.urls[a.path])}" alt="" loading="lazy">`; });
+}
+ACT['dr-ir'] = el => { DR.caminho = el.dataset.p; DR.busca = ''; desenharDrive(); };
+ACT['dr-vista'] = el => { DR.vista = el.dataset.v; lsSet('drive-vista', DR.vista); desenharDrive(); };
+const arqPorId = id => DR.arquivos.find(a => a.id === Number(id));
+
+/* ---------- visualizador ---------- */
+ACT['dr-abrir'] = async el => {
+  const a = arqPorId(el.dataset.id); if (!a) return;
+  const url = await urlAssinada(a.path, 900), e = extDe(a.nome);
+  let corpo;
+  if (ehImg(a)) corpo = `<img src="${esc(url)}" alt="${esc(a.nome)}">`;
+  else if (/^video\//.test(a.mime || '') || ['mp4', 'mov', 'webm'].includes(e)) corpo = `<video src="${esc(url)}" controls autoplay></video>`;
+  else if (/^audio\//.test(a.mime || '') || ['mp3', 'wav', 'm4a'].includes(e)) corpo = `<audio src="${esc(url)}" controls autoplay></audio>`;
+  else if (e === 'pdf' || a.mime === 'application/pdf') corpo = `<iframe src="${esc(url)}" title="${esc(a.nome)}"></iframe>`;
+  else corpo = `<div class="dr-semprev"><p>Este tipo de arquivo não abre aqui.</p><a class="btn btn-primary" href="${esc(url)}" download="${esc(a.nome)}">Baixar ${esc(a.nome)}</a></div>`;
+  let v = $('#dr-viewer'); if (!v) { v = document.createElement('div'); v.id = 'dr-viewer'; v.className = 'dr-viewer'; document.body.appendChild(v); }
+  v.innerHTML = `<div class="dr-vtopo"><div class="dr-vnome">${esc(a.nome)}</div><a class="btn btn-sm" href="${esc(url)}" download="${esc(a.nome)}">${svg('baixar', 15)} Baixar</a><button class="btn btn-sm" data-act="dr-fechar-viewer">Fechar</button></div><div class="dr-vcorpo">${corpo}</div>`;
+  v.classList.add('aberto');
+};
+ACT['dr-fechar-viewer'] = () => { const v = $('#dr-viewer'); if (v) { v.classList.remove('aberto'); v.innerHTML = ''; } };
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') ACT['dr-fechar-viewer'](); });
+
+/* ---------- menu ⋮ ---------- */
+function fecharMenuDrive() { const m = $('#dr-menu'); if (m) m.remove(); }
+document.addEventListener('click', ev => { if (!ev.target.closest('#dr-menu') && !ev.target.closest('[data-act="dr-menu"]') && !ev.target.closest('[data-act="dr-novo"]')) fecharMenuDrive(); });
+function abrirMenuDrive(ancora, itens) {
+  fecharMenuDrive();
+  const m = document.createElement('div'); m.id = 'dr-menu'; m.className = 'menu-pop aberto'; m.style.position = 'fixed';
+  m.innerHTML = itens.map(([act, rot, dados]) => `<button data-act="${act}" ${Object.entries(dados || {}).map(([k, v]) => `data-${k}="${esc(v)}"`).join(' ')}>${esc(rot)}</button>`).join('');
+  document.body.appendChild(m);
+  const r = ancora.getBoundingClientRect(); m.style.top = Math.min(r.bottom + 4, innerHeight - m.offsetHeight - 8) + 'px'; m.style.left = Math.max(8, Math.min(r.right - m.offsetWidth, innerWidth - m.offsetWidth - 8)) + 'px'; m.style.zIndex = 500;
+}
+ACT['dr-menu'] = el => {
+  if (el.dataset.tipo === 'pasta') abrirMenuDrive(el, [['dr-pasta-renomear', 'Renomear', { p: el.dataset.p }], ['dr-pasta-excluir', 'Excluir pasta', { p: el.dataset.p }]]);
+  else abrirMenuDrive(el, [['dr-abrir-m', 'Abrir', { id: el.dataset.id }], ['dr-baixar', 'Baixar', { id: el.dataset.id }], ['dr-renomear', 'Renomear', { id: el.dataset.id }], ['dr-mover', 'Mover para…', { id: el.dataset.id }], ['dr-excluir', 'Excluir', { id: el.dataset.id }]]);
+};
+ACT['dr-novo'] = el => abrirMenuDrive(el, [['dr-nova-pasta', 'Nova pasta'], ['dr-enviar', 'Enviar arquivos']]);
+ACT['dr-abrir-m'] = el => { fecharMenuDrive(); return ACT['dr-abrir'](el); };
+ACT['dr-baixar'] = async el => { fecharMenuDrive(); const a = arqPorId(el.dataset.id); const url = await urlAssinada(a.path, 120); const l = document.createElement('a'); l.href = url; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove(); };
+ACT['dr-enviar'] = () => { fecharMenuDrive(); $('#dr-file').click(); };
+ACT['dr-nova-pasta'] = () => {
+  fecharMenuDrive(); const nome = (prompt('Nome da nova pasta:') || '').trim().replace(/\//g, '-'); if (!nome) return;
+  const novo = DR.caminho ? DR.caminho + '/' + nome : nome;
+  if (todasPastas().has(novo)) { toast('Já existe uma pasta com esse nome.', true); return; }
+  const v = pastasVazias(); v.add(novo); gravarVazias(v); DR.caminho = novo; desenharDrive();
+  toast('Pasta criada. (Pasta vazia só aparece neste navegador até receber um arquivo.)');
+};
+ACT['dr-renomear'] = async el => {
+  fecharMenuDrive(); const a = arqPorId(el.dataset.id), novo = (prompt('Novo nome:', a.nome) || '').trim(); if (!novo || novo === a.nome) return;
+  const { error } = await sb.from('cli_arquivos').update({ nome: novo }).eq('id', a.id); if (error) throw error;
+  a.nome = novo; desenharDrive(); toast('Renomeado.');
+};
+ACT['dr-mover'] = el => {
+  fecharMenuDrive(); const a = arqPorId(el.dataset.id), pastas = [...todasPastas()].sort((x, y) => x.localeCompare(y, 'pt-BR'));
+  abrirModal('Mover para…', `<p class="desc">${esc(a.nome)}</p><div class="campo"><label class="lbl" for="mv-p">Pasta de destino</label><select id="mv-p"><option value="">Meu drive (raiz)</option>${pastas.map(p => `<option value="${esc(p)}" ${p === a.pasta ? 'selected' : ''}>${esc(p)}</option>`).join('')}</select></div>
+    <button class="btn btn-primary" data-act="dr-mover-ok" data-id="${a.id}">Mover</button>`);
+};
+async function moverArquivo(id, destino) {
+  const a = arqPorId(id); if (!a || a.pasta === destino) return;
+  const { error } = await sb.from('cli_arquivos').update({ pasta: destino }).eq('id', a.id); if (error) throw error;
+  a.pasta = destino; desenharDrive(); toast(`Movido para ${destino || 'Meu drive'}.`);
+}
+ACT['dr-mover-ok'] = async el => { const dest = $('#mv-p').value; fecharModal(); await moverArquivo(el.dataset.id, dest); };
+ACT['dr-excluir'] = async el => {
+  fecharMenuDrive(); const a = arqPorId(el.dataset.id); if (!confirm(`Excluir “${a.nome}”? Não dá pra desfazer.`)) return;
+  await sb.storage.from(BUCKET).remove([a.path]);
+  const { error } = await sb.from('cli_arquivos').delete().eq('id', a.id); if (error) throw error;
+  DR.arquivos = DR.arquivos.filter(x => x.id !== a.id); desenharDrive(); toast('Excluído.');
+};
+ACT['dr-pasta-renomear'] = async el => {
+  fecharMenuDrive(); const p = el.dataset.p, novoNome = (prompt('Novo nome da pasta:', nomePasta(p)) || '').trim().replace(/\//g, '-'); if (!novoNome || novoNome === nomePasta(p)) return;
+  const pai = p.includes('/') ? p.slice(0, p.lastIndexOf('/') + 1) : '', novo = pai + novoNome;
+  if (todasPastas().has(novo)) { toast('Já existe uma pasta com esse nome.', true); return; }
+  const afetadas = [...new Set(DR.arquivos.filter(a => dentroDe(a, p)).map(a => a.pasta))];
+  for (const antiga of afetadas) { const { error } = await sb.from('cli_arquivos').update({ pasta: novo + antiga.slice(p.length) }).eq('cliente_id', DR.cli).eq('pasta', antiga); if (error) throw error; }
+  const v = pastasVazias(), nv = new Set([...v].map(x => x === p || x.startsWith(p + '/') ? novo + x.slice(p.length) : x)); gravarVazias(nv);
+  await carregarDrive(); desenharDrive(); toast('Pasta renomeada.');
+};
+ACT['dr-pasta-excluir'] = async el => {
+  fecharMenuDrive(); const p = el.dataset.p, dentro = DR.arquivos.filter(a => dentroDe(a, p));
+  if (!confirm(dentro.length ? `Excluir a pasta “${nomePasta(p)}” e os ${dentro.length} arquivos dentro dela? Não dá pra desfazer.` : `Excluir a pasta “${nomePasta(p)}”?`)) return;
+  if (dentro.length) { await sb.storage.from(BUCKET).remove(dentro.map(a => a.path)); const { error } = await sb.from('cli_arquivos').delete().in('id', dentro.map(a => a.id)); if (error) throw error; }
+  const v = pastasVazias(); [...v].forEach(x => { if (x === p || x.startsWith(p + '/')) v.delete(x); }); gravarVazias(v);
+  await carregarDrive(); desenharDrive(); toast('Pasta excluída.');
+};
+
+/* ---------- upload (botão e arrastar do computador) ---------- */
+function painelEnvio() {
+  let p = $('#dr-envio'); if (!p) { p = document.createElement('div'); p.id = 'dr-envio'; p.className = 'dr-envio'; document.body.appendChild(p); } return p;
+}
+async function enviarArquivos(files, pasta) {
+  if (DR.ro) return; const lista = [...files]; if (!lista.length) return;
+  const p = painelEnvio(); p.classList.add('aberto');
+  p.innerHTML = `<div class="dr-envio-topo"><b>Enviando ${lista.length} ${lista.length === 1 ? 'arquivo' : 'arquivos'}</b><button class="ic-btn" data-act="dr-envio-fechar" aria-label="Fechar">✕</button></div><div class="dr-envio-lista">${lista.map((f, i) => `<div class="dr-env-item" id="env-${i}"><div class="dr-env-linha"><span>${esc(f.name)}</span><span>0%</span></div><div class="bar fina"><i style="width:0"></i></div></div>`).join('')}</div>`;
+  for (const [i, f] of lista.entries()) {
+    const item = $('#env-' + i), pct = item.querySelector('.dr-env-linha span:last-child'), barra = item.querySelector('.bar i');
+    if (f.size > 50 * 1048576) { pct.textContent = 'passa de 50 MB'; item.classList.add('erro'); continue; }
+    const path = `${DR.cli}/${(pasta ? safeNome(pasta.replace(/\//g, '_')) : 'raiz')}/${Date.now()}_${safeNome(f.name)}`;
+    try {
+      await uploadXHR(path, f, pr => { pct.textContent = Math.round(pr * 100) + '%'; barra.style.width = pr * 100 + '%'; });
+      const { error } = await sb.from('cli_arquivos').insert({ cliente_id: DR.cli, pasta: pasta || '', nome: f.name, path, tamanho: f.size, mime: f.type || null });
+      if (error) { await sb.storage.from(BUCKET).remove([path]); throw error; }
+      pct.textContent = 'ok ✓'; item.classList.add('ok');
+    } catch (e) { pct.textContent = 'erro'; item.classList.add('erro'); toast(`${f.name}: ${msgErro(e)}`, true); }
+  }
+  await carregarDrive(); desenharDrive(); setTimeout(() => ACT['dr-envio-fechar'](), 2500);
+}
+ACT['dr-envio-fechar'] = () => { const p = $('#dr-envio'); if (p) { p.classList.remove('aberto'); p.innerHTML = ''; } };
+CHG['dr-upload'] = el => { const fs = [...el.files]; el.value = ''; return enviarArquivos(fs, DR.caminho); };
+
+/* ---------- arrastar: arquivo → pasta, e arquivo do computador → drive ---------- */
+let arrastando = null;
+document.addEventListener('dragstart', ev => { const c = ev.target.closest && ev.target.closest('[data-fid]'); if (c) { arrastando = Number(c.dataset.fid); ev.dataTransfer.effectAllowed = 'move'; ev.dataTransfer.setData('text/plain', String(arrastando)); } });
+document.addEventListener('dragend', () => { arrastando = null; $$('.dr-alvo').forEach(e => e.classList.remove('dr-alvo')); });
+document.addEventListener('dragover', ev => {
+  const z = ev.target.closest && ev.target.closest('[data-drop]'); if (!z || !$('#drive-root') || DR.ro) return;
+  ev.preventDefault(); $$('.dr-alvo').forEach(e => e.classList.remove('dr-alvo')); z.classList.add('dr-alvo');
+});
+document.addEventListener('drop', async ev => {
+  const z = ev.target.closest && ev.target.closest('[data-drop]'); if (!z || !$('#drive-root') || DR.ro) return;
+  ev.preventDefault(); $$('.dr-alvo').forEach(e => e.classList.remove('dr-alvo'));
+  const destino = z.dataset.drop;
+  try {
+    if (arrastando != null) { const id = arrastando; arrastando = null; await moverArquivo(id, destino); }
+    else if (ev.dataTransfer.files && ev.dataTransfer.files.length) await enviarArquivos(ev.dataTransfer.files, destino);
+  } catch (e) { erroAcao(e); }
+});
+
+/* =====================================================================
+   ADMIN — dashboard, mentorados, página do mentorado, acesso e lançamento
+   ===================================================================== */
+async function fnAdmin(corpo) {
+  const { data: { session } } = await sb.auth.getSession();
+  const r = await fetch(`${SUPABASE_URL}/functions/v1/mentorado-admin`, { method: 'POST',
+    headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: `Bearer ${session.access_token}` }, body: JSON.stringify(corpo) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || 'A função de acesso não respondeu.');
+  return j;
+}
+async function acessos() { try { return (await fnAdmin({ acao: 'acessos' })).acessos || []; } catch (e) { console.warn('acessos', e); return null; } }
+const etapaAtualDe = (cid, prog) => { const ok = new Set(prog.filter(p => p.cliente_id === cid && p.concluida_em).map(p => p.etapa_id)); return S.etapas.find(e => !ok.has(e.id)) || S.etapas[S.etapas.length - 1]; };
+
+/* ---------- dashboard ---------- */
+async function vDashboard() {
+  const hoje = hojeISO(), ini7 = addDias(hoje, -6);
+  const [cls, prog, ativHoje, ativ7, perfis, aguard, planos, acs] = await Promise.all([
+    clientes(true), q(sb.from('cli_progresso').select('*')),
+    paginado(() => sb.from('cli_atividades_diarias').select('*').eq('data', hoje).order('id')),
+    paginado(() => sb.from('cli_atividades_diarias').select('*').gte('data', ini7).lte('data', hoje).order('id')),
+    q(sb.from('cli_perfis').select('cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)),
+    q(sb.from('cli_posts').select('id,cliente_id,titulo,versao,enviado_em').eq('status', 'aguardando').order('enviado_em').order('id')),
+    q(sb.from('cli_planos').select('id,cliente_id').eq('status', 'ativo').not('cliente_id', 'is', null)),
+    acessos()]);
+  const itensAtras = planos.length ? await paginado(() => sb.from('cli_plano_itens').select('id,plano_id').in('plano_id', planos.map(p => p.id)).eq('concluido', false).lt('prazo', hoje).order('id')) : [];
+  const comLogin = new Set(perfis.map(p => p.cliente_id)), ativos = cls.filter(c => c.status === 'ativo');
+  const ativosLogin = ativos.filter(c => comLogin.has(c.id));
+  let ok = 0, parc = 0, parado = 0; const atencao = [];
+  ativosLogin.forEach(c => { const st = statusAtividade(ativHoje.find(a => a.cliente_id === c.id), c); if (st === 'completo') ok++; else { if (st === 'parcial') parc++; else parado++; atencao.push({ c, st }); } });
+  atencao.sort((a, b) => (a.st === 'vazio' ? 0 : 1) - (b.st === 'vazio' ? 0 : 1));
+  const nunca = acs ? ativos.filter(c => comLogin.has(c.id) && !(acs.find(a => a.cliente_id === c.id) || {}).ultimo_login) : [];
+  const semLogin = ativos.filter(c => !comLogin.has(c.id));
+  const atrasoPor = {}; itensAtras.forEach(i => { const pl = planos.find(p => p.id === i.plano_id); if (pl) atrasoPor[pl.cliente_id] = (atrasoPor[pl.cliente_id] || 0) + 1; });
+  const rankAtraso = Object.entries(atrasoPor).map(([id, n]) => ({ c: cls.find(c => c.id === Number(id)), n })).filter(x => x.c).sort((a, b) => b.n - a.n).slice(0, 6);
+  const dist = S.etapas.map(et => ({ et, n: ativos.filter(c => etapaAtualDe(c.id, prog).id === et.id).length })), maxD = Math.max(1, ...dist.map(d => d.n));
+  const rank = ativosLogin.map(c => ({ c, n: ativ7.filter(a => a.cliente_id === c.id && statusAtividade(a, c) === 'completo').length })).sort((a, b) => b.n - a.n);
+  const nomeDe = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
+  return { kicker: 'Visão geral', titulo: 'Dashboard',
+    html: `<div class="card ${aguard.length ? 'destaque' : ''}"><div class="row-between"><div><h2>Aguardando sua aprovação</h2><p class="desc" style="margin:2px 0 0">Do mais antigo pro mais novo.</p></div>
+        ${aguard.length ? `<a class="btn btn-primary btn-sm" href="#/admin/post/${aguard[0].id}">Revisar o primeiro</a>` : ''}</div>
+      ${aguard.length ? aguard.slice(0, 6).map(p => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/post/${p.id}"><div class="txt">${esc(p.titulo || 'Sem título')}<small>${esc(nomeDe(p.cliente_id))}${p.versao > 1 ? ' · versão ' + p.versao : ''} · enviado ${esc(tempoAtras(p.enviado_em))}</small></div>${chipSt('aguardando')}</a>`).join('') + (aguard.length > 6 ? `<div style="margin-top:8px"><a class="btn-link" href="#/admin/aprovacoes">ver as ${aguard.length} da fila</a></div>` : '')
+        : '<div class="vazio" style="padding:12px 0">Nenhum post esperando você.</div>'}</div>
+      <div class="tiles"><div class="tile"><div class="v">${ativos.length}</div><div class="l">mentorados ativos</div></div>
+      <div class="tile"><div class="v" style="color:var(--accent-deep)">${ok}</div><div class="l">em dia hoje</div></div>
+      <div class="tile"><div class="v" style="color:#a86e00">${parc}</div><div class="l">parcial hoje</div></div>
+      <div class="tile"><div class="v" style="color:var(--critical)">${parado}</div><div class="l">parados hoje</div></div>
+      <div class="tile"><div class="v">${aguard.length}</div><div class="l">posts na fila</div></div></div>
+      ${nunca.length || semLogin.length ? `<div class="card alerta"><h2>Acesso</h2><p class="desc">${nunca.length ? `<b>${nunca.length}</b> com login que nunca entraram` : ''}${nunca.length && semLogin.length ? ' · ' : ''}${semLogin.length ? `<b>${semLogin.length}</b> ativos sem login` : ''}</p>
+        ${[...nunca.map(c => [c, 'nunca entrou']), ...semLogin.map(c => [c, 'sem login'])].map(([c, t]) => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${c.id}/acesso"><div class="txt">${esc(c.nome)}</div><span class="chip alerta">${t}</span></a>`).join('')}
+        <div style="margin-top:10px"><a class="btn btn-sm" href="#/admin/lancamento">Gerar acessos</a></div></div>` : ''}
+      <div class="card"><h2>Precisam de atenção hoje</h2><p class="desc">Ainda não fecharam o checklist de hoje.</p>
+        ${atencao.length ? atencao.map(({ c, st }) => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${c.id}"><div class="txt">${esc(c.nome)}</div><span class="chip ${st === 'vazio' ? 'critico' : 'alerta'}">${st === 'vazio' ? 'parado hoje' : 'parcial hoje'}</span></a>`).join('') : '<div class="vazio">Todo mundo em dia hoje.</div>'}</div>
+      ${rankAtraso.length ? `<div class="card"><h2>Planos com itens atrasados</h2><p class="desc">Quem mais está devendo no plano de ação.</p>${rankAtraso.map(x => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${x.c.id}/plano"><div class="txt">${esc(x.c.nome)}</div><span class="chip critico">${x.n} ${x.n === 1 ? 'atrasado' : 'atrasados'}</span></a>`).join('')}</div>` : ''}
+      <div class="card"><h2>Onde cada mentorado está</h2><p class="desc">Ativos por etapa do onboarding.</p>${dist.map(d => `<div style="margin-bottom:10px"><div class="row-between"><span style="font-size:.86rem">${esc(d.et.nome)}</span><b>${d.n}</b></div><div class="bar fina"><i style="width:${d.n / maxD * 100}%"></i></div></div>`).join('')}</div>
+      <div class="card"><h2>Consistência (últimos 7 dias)</h2><p class="desc">Dias completos: conexões + post + comentários.</p>${rank.length ? rank.map(r => `<div class="item-lista"><div class="txt">${esc(r.c.nome)}</div><b class="mono">${r.n}/7</b></div>`).join('') : '<div class="vazio">Sem mentorados ativos com login.</div>'}</div>` };
+}
+
+/* ---------- lista de mentorados ---------- */
+async function vMentorados() {
+  const hoje = hojeISO();
+  const [cls, prog, ativHoje, pend, perfis, aguard, planos, acs] = await Promise.all([
+    clientes(true), q(sb.from('cli_progresso').select('*')),
+    paginado(() => sb.from('cli_atividades_diarias').select('*').eq('data', hoje).order('id')),
+    q(sb.from('cli_materiais_pendentes').select('cliente_id').eq('status', 'pendente')),
+    q(sb.from('cli_perfis').select('cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)),
+    q(sb.from('cli_posts').select('cliente_id').eq('status', 'aguardando')),
+    q(sb.from('cli_planos').select('id,cliente_id').eq('status', 'ativo').not('cliente_id', 'is', null)),
+    acessos()]);
+  const itens = planos.length ? await paginado(() => sb.from('cli_plano_itens').select('plano_id,concluido').in('plano_id', planos.map(p => p.id)).order('id')) : [];
+  const comLogin = new Set(perfis.map(p => p.cliente_id));
+  const linha = c => {
+    const st = statusAtividade(ativHoje.find(a => a.cliente_id === c.id), c);
+    const badge = !comLogin.has(c.id) ? ['neutro', 'sem login'] : st === 'completo' ? ['ok', 'em dia'] : st === 'parcial' ? ['alerta', 'parcial hoje'] : ['critico', 'parado hoje'];
+    const ac = acs ? acs.find(a => a.cliente_id === c.id) : null, pl = planos.find(p => p.cliente_id === c.id);
+    const its = pl ? itens.filter(i => i.plano_id === pl.id) : [], pct = its.length ? Math.round(its.filter(i => i.concluido).length / its.length * 100) : null;
+    const ag = aguard.filter(p => p.cliente_id === c.id).length, pe = pend.filter(p => p.cliente_id === c.id).length;
+    const a0 = ativHoje.find(a => a.cliente_id === c.id);
+    return `<a class="mrow" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${c.id}"><div class="row-between"><div><div class="nome">${esc(c.nome)}</div>
+      <div class="meta">${esc([c.empresa, c.nivel].filter(Boolean).join(' · ') || 'sem empresa/nível')} · ${esc(c.status)}</div></div>
+      <div class="row">${ag ? `<span class="chip aguardando">${ag} ${ag === 1 ? 'post' : 'posts'} na fila</span>` : ''}${c.status === 'ativo' ? `<span class="chip ${badge[0]}">${badge[1]}</span>` : `<span class="chip neutro">${esc(c.status)}</span>`}</div></div>
+      <div class="stats"><span>Etapa: <b>${esc(etapaAtualDe(c.id, prog).nome)}</b></span><span>Plano: <b>${pct == null ? 'sem plano' : pct + '%'}</b></span>
+      <span>Hoje: <b>${a0 ? a0.conexoes : 0}/${c.meta_conexoes || 5}</b> con · <b>${a0 ? a0.comentarios : 0}/${c.meta_comentarios_min || 5}</b> com</span><span>Pendências: <b>${pe}</b></span>
+      <span>Último acesso: <b>${!comLogin.has(c.id) ? '—' : ac && ac.ultimo_login ? esc(tempoAtras(ac.ultimo_login)) : 'nunca entrou'}</b></span></div></a>`;
+  };
+  const ativos = cls.filter(c => c.status === 'ativo'), outros = cls.filter(c => c.status !== 'ativo');
+  return { kicker: 'Time', titulo: 'Mentorados',
+    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec">${ativos.length} ativos${outros.length ? ` · ${outros.length} fora da mentoria` : ''}</p>
+      <div class="row"><a class="btn" href="#/admin/lancamento">${svg('chave', 16)} Gerar acessos</a><button class="btn btn-primary" data-act="mentorado-novo">${svg('mais', 16)} Novo mentorado</button></div></div>
+      ${ativos.map(linha).join('') || '<div class="vazio">Nenhum mentorado ativo.</div>'}${outros.length ? `<h3 style="margin:18px 0 10px;color:var(--muted)">Pausados e encerrados</h3>${outros.map(linha).join('')}` : ''}` };
+}
+ACT['mentorado-novo'] = () => abrirModal('Novo mentorado', `<form data-sub="mentorado-novo"><div class="grid2">
+  <div class="campo"><label class="lbl" for="nc-nome">Nome</label><input type="text" id="nc-nome" required></div><div class="campo"><label class="lbl" for="nc-empresa">Empresa</label><input type="text" id="nc-empresa"></div>
+  <div class="campo"><label class="lbl" for="nc-nivel">Nível / plano</label><input type="text" id="nc-nivel"></div><div class="campo"><label class="lbl" for="nc-email">E-mail de contato (referência)</label><input type="email" id="nc-email"></div>
+  <div class="campo"><label class="lbl" for="nc-ini">Data de início</label><input type="date" id="nc-ini" value="${hojeISO()}"></div><div class="campo"><label class="lbl" for="nc-meta">Posts por semana</label><input type="number" id="nc-meta" value="4" min="1" max="7"></div></div>
+  <p class="hint" style="margin-bottom:12px">Depois de cadastrar, você gera o login na aba “Acesso”.</p><button class="btn btn-primary" type="submit">Cadastrar</button></form>`);
+SUB['mentorado-novo'] = async () => {
+  const { data, error } = await sb.from('cli_clientes').insert({ nome: $('#nc-nome').value.trim(), empresa: $('#nc-empresa').value.trim() || null, nivel: $('#nc-nivel').value.trim() || null,
+    email: $('#nc-email').value.trim() || null, data_inicio: $('#nc-ini').value || null, meta_semanal: parseInt($('#nc-meta').value) || 4, status: 'ativo' }).select('id').single();
+  if (error) throw error;
+  await clientes(true); fecharModal(); toast('Mentorado cadastrado.'); ir(`admin/mentorado/${data.id}/acesso`);
+};
+
+/* ---------- página do mentorado (abas) ---------- */
+const ABAS_MENTORADO = [['visao', 'Visão geral'], ['plano', 'Plano de ação'], ['posts', 'Posts'], ['calendario', 'Calendário'], ['drive', 'Drive'], ['acesso', 'Acesso']];
+async function vMentorado(ctx) {
+  const id = Number(ctx.args[0]), aba = ctx.args[1] || 'visao'; ctx.clienteId = id; ctx.aba = aba;
+  const cli = await getCliente(id); if (!cli) throw new Error('Mentorado não encontrado.');
+  let corpo = '';
+  if (aba === 'plano') corpo = await planoConteudo(ctx);
+  else if (aba === 'posts') { const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,texto,status,versao,data_prevista,enviado_em').eq('cliente_id', id).order('id', { ascending: false })); corpo = listaPostsHtml(ctx, posts); }
+  else if (aba === 'calendario') corpo = `<div class="card">${await calendarioHtml(ctx)}</div>`;
+  else if (aba === 'drive') corpo = await driveConteudo(ctx);
+  else if (aba === 'acesso') corpo = await acessoConteudo(cli);
+  else corpo = await visaoConteudo(cli);
+  const tabs = `<div class="row-between" style="margin-bottom:6px"><a class="btn-link" href="#/admin/mentorados">← todos os mentorados</a><a class="btn btn-sm" href="#/ver/${id}/inicio">${svg('olho', 15)} Ver como mentorado</a></div>
+    <div class="tabs" role="tablist">${ABAS_MENTORADO.map(([a, n]) => `<a class="tab ${a === aba ? 'ativo' : ''}" role="tab" href="#/admin/mentorado/${id}/${a}" style="text-decoration:none">${n}</a>`).join('')}</div>`;
+  return { kicker: [cli.empresa, cli.nivel].filter(Boolean).join(' · ') || 'Mentorado', titulo: cli.nome, refrescavel: aba === 'visao' || aba === 'posts', html: tabs + corpo, depois: aba === 'drive' ? desenharDrive : null };
+}
+async function visaoConteudo(cli) {
+  const [prog, pend, ativ] = await Promise.all([q(sb.from('cli_progresso').select('*').eq('cliente_id', cli.id)),
+    q(sb.from('cli_materiais_pendentes').select('*').eq('cliente_id', cli.id).eq('status', 'pendente').order('pedido_em')),
+    q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).gte('data', addDias(hojeISO(), -6)).order('data'))]);
+  const ok = new Map(prog.filter(p => p.concluida_em).map(p => [p.etapa_id, p.concluida_em]));
+  const completos = ativ.filter(a => statusAtividade(a, cli) === 'completo').length;
+  return `<div class="card"><h2>Etapas do onboarding</h2><p class="desc">${completos}/7 dias completos na última semana.</p>${renderStepper(prog)}
+    ${S.etapas.map(et => `<div class="item-lista"><div class="txt">${esc(et.nome)}${ok.has(et.id) ? `<small>concluída em ${esc(fmtData(isoLocal(new Date(ok.get(et.id)))))}</small>` : ''}</div>
+      ${ok.has(et.id) ? '<span class="chip ok">concluída</span>' : `<button class="btn btn-sm" data-act="etapa-concluir" data-et="${et.id}">Marcar concluída</button>`}</div>`).join('')}</div>
+    <div class="card"><h2>Dados e metas</h2><form data-sub="mentorado-editar"><div class="grid2">
+      <div class="campo"><label class="lbl" for="ec-nome">Nome</label><input type="text" id="ec-nome" required value="${esc(cli.nome)}"></div><div class="campo"><label class="lbl" for="ec-empresa">Empresa</label><input type="text" id="ec-empresa" value="${esc(cli.empresa || '')}"></div>
+      <div class="campo"><label class="lbl" for="ec-nivel">Nível / plano</label><input type="text" id="ec-nivel" value="${esc(cli.nivel || '')}"></div>
+      <div class="campo"><label class="lbl" for="ec-status">Status</label><select id="ec-status">${['ativo', 'pausado', 'encerrado'].map(s => `<option value="${s}" ${cli.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}</select></div>
+      <div class="campo"><label class="lbl" for="ec-meta">Posts por semana</label><input type="number" id="ec-meta" min="1" max="7" value="${cli.meta_semanal || 4}"></div><div class="campo"><label class="lbl" for="ec-con">Conexões por dia</label><input type="number" id="ec-con" min="0" value="${cli.meta_conexoes || 5}"></div>
+      <div class="campo"><label class="lbl" for="ec-cmin">Comentários por dia (mín)</label><input type="number" id="ec-cmin" min="0" value="${cli.meta_comentarios_min || 5}"></div><div class="campo"><label class="lbl" for="ec-cmax">Comentários por dia (máx)</label><input type="number" id="ec-cmax" min="0" value="${cli.meta_comentarios_max || 10}"></div></div>
+      <button class="btn btn-primary btn-sm" type="submit">Salvar</button></form></div>
+    <div class="card"><h2>Pendências de material</h2><p class="desc">O que o mentorado precisa te enviar.</p>
+      ${pend.length ? pend.map(p => `<div class="item-lista"><div class="txt">${esc(p.item)}<small>pedido em ${esc(new Date(p.pedido_em).toLocaleDateString('pt-BR'))}</small></div><button class="btn btn-sm" data-act="pend-recebido" data-id="${p.id}">Marcar recebido</button></div>`).join('') : '<div class="vazio">Nenhuma pendência aberta.</div>'}
+      <form data-sub="pend-nova" class="row" style="margin-top:12px"><input type="text" id="np-item" placeholder="Ex: print do SSI atualizado" required style="flex:1;min-width:200px"><button class="btn btn-primary btn-sm" type="submit">Adicionar</button></form></div>`;
+}
+SUB['mentorado-editar'] = async () => {
+  const { error } = await sb.from('cli_clientes').update({ nome: $('#ec-nome').value.trim(), empresa: $('#ec-empresa').value.trim() || null, nivel: $('#ec-nivel').value.trim() || null, status: $('#ec-status').value,
+    meta_semanal: parseInt($('#ec-meta').value) || 4, meta_conexoes: parseInt($('#ec-con').value) || 5, meta_comentarios_min: parseInt($('#ec-cmin').value) || 5, meta_comentarios_max: parseInt($('#ec-cmax').value) || 10 }).eq('id', S.ctx.clienteId);
+  if (error) throw error; await clientes(true); toast('Salvo.'); await render();
+};
+ACT['etapa-concluir'] = async el => {
+  const { error } = await sb.from('cli_progresso').upsert({ cliente_id: S.ctx.clienteId, etapa_id: Number(el.dataset.et), concluida_em: new Date().toISOString() }, { onConflict: 'cliente_id,etapa_id' });
+  if (error) throw error; await render();
+};
+SUB['pend-nova'] = async () => {
+  const { error } = await sb.from('cli_materiais_pendentes').insert({ cliente_id: S.ctx.clienteId, item: $('#np-item').value.trim() }); if (error) throw error; await render();
+};
+ACT['pend-recebido'] = async el => {
+  const { error } = await sb.from('cli_materiais_pendentes').update({ status: 'recebido', recebido_em: new Date().toISOString() }).eq('id', el.dataset.id); if (error) throw error; await render();
+};
+
+/* ---------- acesso: criar login / resetar senha ---------- */
+function mensagemBoasVindas(nome, email, senha) {
+  return `Oi, ${primeiroNome(nome)}! Seu acesso ao portal da mentoria Demanda Infinita está pronto.\n\nLink: ${PORTAL_URL}\nE-mail: ${email}\nSenha: ${senha}\n\nLá você acompanha seu plano de ação, manda seus posts pra aprovação e guarda seus arquivos. Quando entrar, pode trocar a senha pelo menu no canto superior direito.`;
+}
+async function acessoConteudo(cli) {
+  const [perfis, acs] = await Promise.all([q(sb.from('cli_perfis').select('id,created_at').eq('cliente_id', cli.id).eq('role', 'cliente')), acessos()]);
+  const ac = acs ? acs.find(a => a.cliente_id === cli.id) : null;
+  if (!perfis.length) return `<div class="card"><h2>Este mentorado ainda não tem login</h2><p class="desc">O login é criado aqui, sem passar pelo Supabase. A senha aparece uma única vez.</p>
+    <div class="campo" style="max-width:420px"><label class="lbl" for="ac-email">E-mail de login (opcional; se vazio, uso nome.sobrenome@mentorados.demandainfinita.com)</label><input type="email" id="ac-email" placeholder="deixe em branco para o padrão"></div>
+    <button class="btn btn-primary" data-act="acesso-criar">Gerar acesso</button></div>`;
+  return `<div class="card"><h2>Acesso ao portal</h2><div class="stack" style="margin-top:8px"><div><span class="muted">E-mail de login:</span> <b>${esc(ac ? ac.email : '—')}</b></div>
+    <div><span class="muted">Último acesso:</span> <b>${ac && ac.ultimo_login ? esc(new Date(ac.ultimo_login).toLocaleString('pt-BR')) + ' (' + esc(tempoAtras(ac.ultimo_login)) + ')' : 'nunca entrou'}</b></div></div>
+    <p class="desc" style="margin-top:14px">Esqueceu ou quer reenviar? Gerar nova senha invalida a anterior.</p><button class="btn" data-act="acesso-resetar">${svg('chave', 16)} Gerar nova senha</button></div>`;
+}
+function modalCredenciais(r) {
+  const msg = mensagemBoasVindas(r.nome, r.email, r.senha);
+  abrirModal('Acesso gerado', `<p class="desc">Copie agora: <b>a senha não fica salva em lugar nenhum</b> e não aparece de novo.</p><textarea id="cred-msg" rows="9" readonly>${esc(msg)}</textarea>
+    <div class="row" style="margin-top:10px"><button class="btn btn-primary" data-act="copiar" data-alvo="cred-msg">Copiar mensagem</button></div>`);
+}
+async function copiarTexto(t) {
+  try { await navigator.clipboard.writeText(t); return true; }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); const ok = document.execCommand && document.execCommand('copy'); ta.remove(); return !!ok; }
+}
+ACT['copiar'] = async el => { const alvo = $('#' + el.dataset.alvo); if (await copiarTexto(alvo.value)) toast('Copiado.'); else { alvo.select(); toast('Selecione e copie (Ctrl/Cmd+C).', true); } };
+ACT['acesso-criar'] = async el => {
+  const email = ($('#ac-email').value || '').trim();
+  const r = await ocupado(el, () => fnAdmin({ acao: 'criar_login', cliente_id: S.ctx.clienteId, email: email || undefined }));
+  modalCredenciais(r); render();
+};
+ACT['acesso-resetar'] = async el => {
+  if (!confirm('Gerar uma nova senha? A senha atual deixa de funcionar.')) return;
+  const r = await ocupado(el, () => fnAdmin({ acao: 'resetar_senha', cliente_id: S.ctx.clienteId }));
+  modalCredenciais(r);
+};
+
+/* ---------- lançamento: gerar acessos em lote ---------- */
+let LANC = null;
+async function vLancamento() {
+  const [cls, perfis, acs] = await Promise.all([clientes(true), q(sb.from('cli_perfis').select('cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), acessos()]);
+  const comLogin = new Set(perfis.map(p => p.cliente_id));
+  const linhas = cls.map(c => { const ac = acs ? acs.find(a => a.cliente_id === c.id) : null;
+    return `<label class="item-lista" style="cursor:pointer"><span class="row" style="gap:12px"><input type="checkbox" class="lanc-ck" value="${c.id}" ${c.status === 'ativo' ? 'checked' : ''}><span class="txt">${esc(c.nome)}<small>${esc(c.empresa || '')}${c.status !== 'ativo' ? ' · ' + esc(c.status) : ''}</small></span></span>
+      <span class="chip ${comLogin.has(c.id) ? (ac && ac.ultimo_login ? 'ok' : 'alerta') : 'neutro'}">${comLogin.has(c.id) ? (ac && ac.ultimo_login ? 'já entrou' : 'nunca entrou') : 'sem login'}</span></label>`; }).join('');
+  return { kicker: 'Lançamento', titulo: 'Gerar acessos', refrescavel: false,
+    html: `<div style="margin-bottom:12px"><a class="btn-link" href="#/admin/mentorados">← voltar aos mentorados</a></div>
+      <div class="card alerta"><h2>Antes de gerar</h2><p class="desc" style="margin:4px 0 0">Quem já tem login ganha <b>senha nova</b> (a antiga para de funcionar). Quem não tem, ganha login. As senhas aparecem <b>uma única vez</b>, nesta tela, com a mensagem pronta pra você copiar e mandar.</p></div>
+      <div class="card"><div class="row-between"><h2>Quem recebe</h2><div class="row"><button class="btn-link" data-act="lanc-todos" data-v="1">marcar todos</button><button class="btn-link" data-act="lanc-todos" data-v="0">desmarcar</button></div></div>${linhas}
+      <div style="margin-top:14px"><button class="btn btn-primary" data-act="lanc-gerar">Gerar acessos dos marcados</button></div></div><div id="lanc-saida"></div>` };
+}
+ACT['lanc-todos'] = el => $$('.lanc-ck').forEach(c => { c.checked = el.dataset.v === '1'; });
+ACT['lanc-gerar'] = async el => {
+  const ids = $$('.lanc-ck:checked').map(c => Number(c.value)); if (!ids.length) { toast('Marque pelo menos um mentorado.', true); return; }
+  if (!confirm(`Gerar acesso para ${ids.length} mentorado${ids.length === 1 ? '' : 's'}? Quem já tem login terá a senha trocada.`)) return;
+  const perfis = await q(sb.from('cli_perfis').select('cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), tem = new Set(perfis.map(p => p.cliente_id));
+  const saida = []; const comSenha = ids.filter(id => tem.has(id)), semLogin = ids.filter(id => !tem.has(id));
+  await ocupado(el, async () => {
+    if (comSenha.length) (await fnAdmin({ acao: 'resetar_todos', cliente_ids: comSenha })).resultados.forEach(r => saida.push(r));
+    for (const id of semLogin) { try { saida.push(await fnAdmin({ acao: 'criar_login', cliente_id: id })); } catch (e) { saida.push({ cliente_id: id, erro: msgErro(e) }); } }
+  });
+  LANC = saida; const cls = await clientes();
+  const nomeDe = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
+  $('#lanc-saida').innerHTML = `<div class="card destaque"><div class="row-between"><div><h2>Acessos gerados</h2><p class="desc" style="margin:2px 0 0"><b>Não feche esta tela antes de copiar.</b> As senhas não ficam salvas em lugar nenhum.</p></div>
+    <button class="btn btn-primary" data-act="lanc-copiar-tudo">Copiar todas as mensagens</button></div>
+    ${saida.map((r, i) => r.erro ? `<div class="item-lista"><div class="txt">${esc(r.nome || nomeDe(r.cliente_id))}<small style="color:var(--critical)">${esc(r.erro)}</small></div></div>`
+      : `<div class="item-lista" style="align-items:flex-start"><div class="txt" style="flex:1"><b>${esc(r.nome || nomeDe(r.cliente_id))}</b><small>${esc(r.email)}</small>
+         <textarea id="lanc-msg-${i}" rows="6" readonly style="margin-top:8px;font-size:.82rem">${esc(mensagemBoasVindas(r.nome || nomeDe(r.cliente_id), r.email, r.senha))}</textarea></div>
+         <button class="btn btn-sm" data-act="copiar" data-alvo="lanc-msg-${i}">Copiar</button></div>`).join('')}</div>`;
+  $('#lanc-saida').scrollIntoView({ behavior: 'smooth' });
+};
+ACT['lanc-copiar-tudo'] = async () => {
+  const txt = (LANC || []).filter(r => !r.erro).map(r => `=== ${r.nome} ===\n${mensagemBoasVindas(r.nome, r.email, r.senha)}`).join('\n\n\n');
+  if (await copiarTexto(txt)) toast('Todas as mensagens copiadas.'); else toast('Não consegui copiar tudo. Use o botão de cada mentorado.', true);
+};
+
+/* =====================================================================
+   REGISTRO DE TELAS + partida
+   ===================================================================== */
+const VIEWS_CLIENTE = { inicio: vInicio, plano: vPlano, posts: vPosts, calendario: vCalendario, drive: vDrive };
+const VIEWS_ADMIN = { dashboard: vDashboard, aprovacoes: vAprovacoes, post: vPostAdmin, mentorados: vMentorados, mentorado: vMentorado, modelos: vModelos, modelo: vModelo, lancamento: vLancamento };
+boot();
+
+</script>
+</body>
+</html>
