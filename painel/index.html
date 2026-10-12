@@ -3021,7 +3021,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
             <div class="full">
               <label>Meta garantida</label>
               <input type="text" id="ctr-meta-garantia" value="4 (quatro) vendas" placeholder="Ex.: 4 (quatro) vendas · 10 (dez) reuniões qualificadas" required>
-              <small class="ct-ajuda">Escreve como vai ler no contrato: “…no alcance da meta de <b>[isso aqui]</b> até o fim dos 90 dias”. Com número por extenso entre parênteses.</small>
+              <small class="ct-ajuda">Escreve como vai ler no contrato: “…no alcance da meta de <b>[isso aqui]</b> até o fim dos 90 dias”. Com número por extenso entre parênteses. Só conta o que veio do funil montado neste contrato, pelos registros do cliente (CRM, planilha ou relatório).</small>
             </div>
             <div class="full ct-regra">
               <b>Condições para acionar a garantia (padrão, entram em todo contrato)</b>
@@ -10527,24 +10527,31 @@ function montarContratoCorpo(d) {
   const terminoExt = dataExtenso(dataTermino);
   const metaMesAno = mesAnoExtenso(dataTermino);
   const metaGarantia = (d.meta_garantia || '').trim() || '4 (quatro) vendas';
-  // Contrato antigo (sem modelo gravado) = só devolução, que era o único texto até então.
-  const garantiaComExtensao = d.modelo_garantia === 'extensao-devolucao';
-  const garantiaCondicoes =
+  // Sem modelo gravado = contrato emitido antes de existir escolha de garantia: imprime o texto
+  // original da 3.5 (4 vendas, devolução direta), idêntico ao que o cliente assinou.
+  const garantiaModelo = (d.modelo_garantia === 'extensao-devolucao' || d.modelo_garantia === 'devolucao') ? d.modelo_garantia : null;
+  const garantiaComExtensao = garantiaModelo === 'extensao-devolucao';
+  const gCond =
     '<p class="al">a) aplicado todas as estratégias, orientações e recomendações repassadas pela CONTRATADA;</p>' +
     '<p class="al">b) participado de todos os encontros de acompanhamento;</p>' +
     '<p class="al">c) reportado todos os feedbacks solicitados, dentro dos prazos acordados;</p>' +
     '<p class="al">d) seguido o Método Demanda Infinita de forma integral e com a máxima dedicação.</p>';
-  const garantiaAfasta = 'o resultado ora pretendido não pode ser assegurado sem o efetivo cumprimento, pela CONTRATANTE, das obrigações que lhe cabem nos termos deste CONTRATO, notadamente as previstas na Cláusula IV.</p>';
-  const garantiaHTML = '<p><strong>3.5. Garantia de Resultado.</strong> A CONTRATADA compromete-se a auxiliar a CONTRATANTE no alcance da meta de ' + wzEsc(metaGarantia) + ' até ' + metaMesAno + '.</p>' +
-    (garantiaComExtensao
-      ? '<p>3.5.1. Caso a referida meta não seja atingida dentro do prazo ora acordado, a CONTRATANTE terá direito a acionar a garantia, desde que tenha, cumulativamente, ao longo de toda a vigência deste CONTRATO:</p>' +
-        garantiaCondicoes +
-        '<p>3.5.2. Acionada a garantia, a CONTRATADA prestará à CONTRATANTE, sem qualquer custo adicional, mais 30 (trinta) dias de mentoria, mantendo o acompanhamento nos mesmos moldes deste CONTRATO, ainda que isso ultrapasse o prazo de vigência previsto na Cláusula VIII, para que a meta seja alcançada.</p>' +
-        '<p>3.5.3. Se, ao término desses 30 (trinta) dias adicionais, a meta ainda não tiver sido atingida, a CONTRATADA devolverá à CONTRATANTE o valor pago a título dos serviços de consultoria, desde que as condições previstas no item 3.5.1 também tenham sido cumpridas durante o período adicional.</p>' +
-        '<p>3.5.4. O descumprimento de qualquer das condições acima afasta o direito à garantia, em qualquer de suas etapas, uma vez que ' + garantiaAfasta
-      : '<p>3.5.1. Caso a referida meta não seja atingida dentro do prazo ora acordado, a CONTRATANTE terá direito a acionar a garantia, devendo a CONTRATADA devolver o valor pago a título dos serviços de consultoria, desde que a CONTRATANTE tenha, cumulativamente, ao longo de toda a vigência deste CONTRATO:</p>' +
-        garantiaCondicoes +
-        '<p>3.5.2. O descumprimento de qualquer das condições acima afasta o direito à garantia, uma vez que ' + garantiaAfasta);
+  const gAfere = '<p>3.5.3. O cumprimento das condições acima será aferido com base nos registros das reuniões de acompanhamento, nos feedbacks reportados, nos materiais e ferramentas utilizados e nas comunicações trocadas entre as PARTES.</p>';
+  const gAfasta = 'o resultado ora pretendido não pode ser assegurado sem o efetivo cumprimento, pela CONTRATANTE, das obrigações que lhe cabem nos termos deste CONTRATO, notadamente as previstas na Cláusula IV.';
+  const gCabeca = '<p><strong>3.5. Garantia de Resultado.</strong> A CONTRATADA compromete-se a auxiliar a CONTRATANTE no alcance da meta de ' + wzEsc(metaGarantia) + ' até ' + metaMesAno + '.</p>' +
+    '<p>3.5.1. Apuração da meta. Para os fins desta cláusula, a meta considera-se atingida pelos resultados originados das estratégias e do funil implementados no âmbito deste CONTRATO, apurados com base nos registros da CONTRATANTE (CRM, planilhas ou relatórios) compartilhados com a CONTRATADA durante a vigência' + (garantiaComExtensao ? ' e o período adicional previsto no item 3.5.4' : '') + '.</p>';
+  const garantiaHTML = !garantiaModelo
+    ? '<p><strong>3.5. Garantia de Resultado.</strong> A CONTRATADA compromete-se a auxiliar a CONTRATANTE no alcance da meta de 4 (quatro) vendas até ' + metaMesAno + '. Caso a referida meta não seja atingida dentro do prazo ora acordado, a CONTRATADA devolverá à CONTRATANTE o valor pago a título dos serviços de consultoria, condicionado ao efetivo cumprimento, pela CONTRATANTE, das obrigações que lhe cabem nos termos deste CONTRATO — notadamente as previstas na Cláusula IV —, sem as quais o resultado ora garantido não pode ser assegurado.</p>' 
+    : gCabeca + (garantiaComExtensao
+      ? '<p>3.5.2. Caso a meta não seja atingida dentro do prazo ora acordado, a CONTRATANTE terá direito a acionar a garantia, mediante solicitação por escrito encaminhada nos termos do item 12.1 em até 15 (quinze) dias contados do término desse prazo, desde que tenha, cumulativamente, ao longo de toda a vigência deste CONTRATO:</p>' +
+        gCond + gAfere +
+        '<p>3.5.4. Acionada a garantia, a CONTRATADA prestará à CONTRATANTE, sem qualquer custo adicional, mais 30 (trinta) dias de mentoria, mantendo o acompanhamento nos mesmos moldes deste CONTRATO, ainda que isso ultrapasse o prazo de vigência previsto na Cláusula VIII, ficando o prazo para o alcance da meta prorrogado por igual período.</p>' +
+        '<p>3.5.5. Se, ao término desse período adicional, a meta ainda não tiver sido atingida, a CONTRATANTE poderá solicitar, por escrito e nos termos do item 12.1, em até 15 (quinze) dias contados do término desse período, a devolução do valor pago a título dos serviços de consultoria, desde que as condições previstas no item 3.5.2 também tenham sido cumpridas durante o período adicional. A devolução será efetuada em até 10 (dez) dias corridos contados do recebimento da solicitação, uma vez confirmado o cumprimento das condições.</p>' +
+        '<p>3.5.6. O descumprimento de qualquer das condições acima afasta o direito à garantia, em qualquer de suas etapas, uma vez que ' + gAfasta + ' A ausência de solicitação nos prazos previstos nesta cláusula importa renúncia à respectiva etapa da garantia.</p>'
+      : '<p>3.5.2. Caso a meta não seja atingida dentro do prazo ora acordado, a CONTRATANTE terá direito a acionar a garantia, mediante solicitação por escrito encaminhada nos termos do item 12.1 em até 15 (quinze) dias contados do término desse prazo, devendo a CONTRATADA devolver o valor pago a título dos serviços de consultoria, desde que a CONTRATANTE tenha, cumulativamente, ao longo de toda a vigência deste CONTRATO:</p>' +
+        gCond + gAfere +
+        '<p>3.5.4. A devolução será efetuada em até 10 (dez) dias corridos contados do recebimento da solicitação, uma vez confirmado o cumprimento das condições.</p>' +
+        '<p>3.5.5. O descumprimento de qualquer das condições acima afasta o direito à garantia, uma vez que ' + gAfasta + ' A ausência de solicitação no prazo previsto nesta cláusula importa renúncia à garantia.</p>');
   const assinaturaExt = dataExtenso(d.data_inicio);
   const estado = (d.estado || '').toUpperCase();
 
@@ -10831,8 +10838,8 @@ function ctrResumoAtualizar() {
   const comExtensao = v('ctr-modelo-garantia') === 'extensao-devolucao';
   document.getElementById('ctr-r-remedio').textContent = comExtensao ? '+30 dias de mentoria, depois devolução' : 'Devolução do valor';
   document.getElementById('ctr-regra-fim').textContent = comExtensao
-    ? 'Cumpriu tudo isso e não teve a meta? Primeiro vêm mais 30 dias de mentoria, sem custo. Se ainda assim não vier resultado, aí o valor é devolvido.'
-    : 'Cumpriu tudo isso e não teve a meta? Aí sim a garantia vale e o valor é devolvido.';
+    ? 'Cumpriu tudo isso e não teve a meta? Primeiro vêm mais 30 dias de mentoria, sem custo. Se ainda assim não vier resultado, aí o valor é devolvido. O cliente tem 15 dias pra pedir cada etapa, por escrito, e a devolução sai em até 10 dias.'
+    : 'Cumpriu tudo isso e não teve a meta? Aí sim a garantia vale e o valor é devolvido. O cliente tem 15 dias pra pedir, por escrito, e a devolução sai em até 10 dias.';
   const ini = v('ctr-data-inicio');
   document.getElementById('ctr-r-inicio').textContent = ini ? ini.split('-').reverse().join('/') : '—';
   const quem = v('ctr-responsavel');
