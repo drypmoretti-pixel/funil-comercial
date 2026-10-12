@@ -1932,6 +1932,12 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 .ct-campos .full { grid-column: 1 / -1; }
 @media (max-width: 640px) { .ct-campos { grid-template-columns: 1fr; } }
 .ct-campos label { font-weight: 600; margin-bottom: 5px !important; }
+.ct-ajuda { display: block; margin-top: 6px; color: var(--muted); font-size: .76rem; line-height: 1.4; }
+.ct-regra { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: .82rem; line-height: 1.45; }
+.ct-regra b { display: block; font-size: .8rem; margin-bottom: 8px; }
+.ct-regra ul { margin: 0 0 8px; padding-left: 18px; }
+.ct-regra li { margin: 2px 0; }
+.ct-regra span { color: var(--muted); }
 #form-contrato input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
 .ct-resumo.lanc { margin: 0; padding: 22px; border-radius: 20px; position: sticky; top: 16px; }
@@ -3002,6 +3008,26 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
             </div>
           </div>
         </div>
+        <div class="ct-grupo">
+          <div class="ct-grupo-cab"><span class="ct-num">5</span><span class="ct-tit">Garantia de resultado<small>A meta muda por cliente; as condições para acionar são sempre as mesmas</small></span></div>
+          <div class="ct-campos">
+            <div class="full">
+              <label>Meta garantida</label>
+              <input type="text" id="ctr-meta-garantia" value="4 (quatro) vendas" placeholder="Ex.: 4 (quatro) vendas · 10 (dez) reuniões qualificadas" required>
+              <small class="ct-ajuda">Escreve como vai ler no contrato: “…no alcance da meta de <b>[isso aqui]</b> até o fim dos 90 dias”. Com número por extenso entre parênteses.</small>
+            </div>
+            <div class="full ct-regra">
+              <b>Condições para acionar a garantia (padrão, entram em todo contrato)</b>
+              <ul>
+                <li>Aplicou tudo o que foi passado pela consultoria</li>
+                <li>Participou de todos os encontros de acompanhamento</li>
+                <li>Reportou todos os feedbacks nos prazos combinados</li>
+                <li>Seguiu o Método Demanda Infinita na íntegra e com dedicação</li>
+              </ul>
+              <span>Cumpriu tudo isso e não teve a meta? Aí sim a garantia vale e o valor é devolvido.</span>
+            </div>
+          </div>
+        </div>
         </form>
 
         <aside class="lanc ct-resumo" aria-label="Resumo do contrato">
@@ -3010,6 +3036,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <div class="ct-r-doc" id="ctr-r-cnpj">CNPJ não informado</div>
           <div class="ct-r-valor vazio" id="ctr-r-valor">R$ —</div>
           <div class="ct-r-linha"><span>Pagamento</span><b id="ctr-r-pag">—</b></div>
+          <div class="ct-r-linha"><span>Garantia</span><b id="ctr-r-garantia">—</b></div>
           <div class="ct-r-linha"><span>Início</span><b id="ctr-r-inicio">—</b></div>
           <div class="ct-r-linha"><span>Assina</span><b id="ctr-r-quem">—</b></div>
           <div class="ct-prog">
@@ -9273,26 +9300,14 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-10-10b',
+  versao: '2026-10-12',
   titulo: 'Chegou coisa nova',
   passos: [
     {
-      emoji: '🎯',
-      titulo: 'O funil do mês, completo, lá em cima',
-      texto: 'A faixa verde do topo agora mostra o funil inteiro, na ordem em que o dinheiro anda: <b>Leads geral → Leads MQL → Reuniões do mês → Negociação na mesa → Vendas fechadas → Ticket médio → Faturamento</b>. Cada card tem a meta do mês e uma barrinha que vai enchendo; bateu a meta, aparece o ✓ verde. Passa o mouse em qualquer card e ele conta de onde vem o número.',
-      aba: 'dashboard', onde: 'Dashboard e CRM · faixa verde no topo',
-    },
-    {
-      emoji: '🧮',
-      titulo: 'Ticket médio consertado e score mais justo',
-      texto: 'Tinha venda sem valor preenchido sendo contada como <b>R$ 0</b> e derrubando o ticket médio — agora, se o valor da venda está em branco, o painel usa o faturado ou o da proposta. E o lead parado esfria mais devagar: <b>1 ponto por semana</b> (eram 5), depois de 21 dias sem ninguém mexer. Esfria, mas sem desmaiar.',
-      aba: 'dashboard', onde: 'Dashboard · ticket médio · CRM · score do lead',
-    },
-    {
-      emoji: '💎',
-      titulo: 'Faturamento com degraus: supermeta, diamante e cristal',
-      texto: 'Bateu <b>R$ 30 mil</b>? O card de Faturamento fica <b>vermelho</b> e a barra passa a perseguir a supermeta de <b>R$ 50 mil</b>. Chegou nos 50? Vira <b>azul diamante</b>, rumo aos <b>R$ 80 mil</b>. Passou dos 80? <b>Amarelo cristal</b>. Cada degrau vem com brilho, faísca e um anel de luz girando em volta do card. Dá vontade de vender só pra ver.',
-      aba: 'dashboard', onde: 'Dashboard e CRM · card de Faturamento',
+      emoji: '🛡️',
+      titulo: 'Garantia do contrato sob medida',
+      texto: 'Na aba <b>Contrato</b> tem um campo novo: <b>Meta garantida</b>. Cada cliente tem a sua (4 vendas, 10 reuniões, o que foi combinado) e o contrato já sai com ela escrita. As condições pra acionar a garantia são sempre as mesmas: aplicou tudo, foi em todos os encontros, reportou todos os feedbacks e seguiu o Método Demanda Infinita. Cumpriu e não veio resultado? Aí a garantia vale. Contratos antigos continuam como foram emitidos.',
+      aba: 'contrato', onde: 'Contrato · passo 5, Garantia de resultado',
     },
   ],
 };
@@ -10503,6 +10518,7 @@ function montarContratoCorpo(d) {
   const inicioExt = dataExtenso(d.data_inicio);
   const terminoExt = dataExtenso(dataTermino);
   const metaMesAno = mesAnoExtenso(dataTermino);
+  const metaGarantia = (d.meta_garantia || '').trim() || '4 (quatro) vendas';
   const assinaturaExt = dataExtenso(d.data_inicio);
   const estado = (d.estado || '').toUpperCase();
 
@@ -10534,7 +10550,13 @@ function montarContratoCorpo(d) {
     '<p class="al">f) Sugestão de uso da ferramenta Tracionei como apoio à operação de automação de comentários, resposta a DMs e envio de link dos materiais, com orientações gerais sobre possibilidades de integração à estratégia recomendada. A contratação, assinatura e utilização efetiva da ferramenta Tracionei são de responsabilidade exclusiva da CONTRATANTE, não integrando o escopo obrigatório deste CONTRATO.</p>' +
     '<p>3.3. Natureza da Obrigação. Os serviços contratados caracterizam-se como obrigação de meio, e não de resultado, nos termos do art. 421-A do Código Civil, obrigando-se a CONTRATADA a empregar as melhores técnicas, práticas de mercado e diligência profissional compatíveis com projetos de igual natureza e complexidade.</p>' +
     '<p>3.4. Serviços Adicionais. Qualquer atividade adicional não expressamente prevista no escopo desta Cláusula será considerada serviço adicional, devendo ser tratada mediante nova proposta comercial e aprovação expressa da CONTRATANTE.</p>' +
-    '<p><strong>3.5. Garantia de Resultado.</strong> A CONTRATADA compromete-se a auxiliar a CONTRATANTE no alcance da meta de 4 (quatro) vendas até ' + metaMesAno + '. Caso a referida meta não seja atingida dentro do prazo ora acordado, a CONTRATADA devolverá à CONTRATANTE o valor pago a título dos serviços de consultoria, condicionado ao efetivo cumprimento, pela CONTRATANTE, das obrigações que lhe cabem nos termos deste CONTRATO — notadamente as previstas na Cláusula IV —, sem as quais o resultado ora garantido não pode ser assegurado.</p>' +
+    '<p><strong>3.5. Garantia de Resultado.</strong> A CONTRATADA compromete-se a auxiliar a CONTRATANTE no alcance da meta de ' + wzEsc(metaGarantia) + ' até ' + metaMesAno + '.</p>' +
+    '<p>3.5.1. Caso a referida meta não seja atingida dentro do prazo ora acordado, a CONTRATANTE terá direito a acionar a garantia, devendo a CONTRATADA devolver o valor pago a título dos serviços de consultoria, desde que a CONTRATANTE tenha, cumulativamente, ao longo de toda a vigência deste CONTRATO:</p>' +
+    '<p class="al">a) aplicado todas as estratégias, orientações e recomendações repassadas pela CONTRATADA;</p>' +
+    '<p class="al">b) participado de todos os encontros de acompanhamento;</p>' +
+    '<p class="al">c) reportado todos os feedbacks solicitados, dentro dos prazos acordados;</p>' +
+    '<p class="al">d) seguido o Método Demanda Infinita de forma integral e com a máxima dedicação.</p>' +
+    '<p>3.5.2. O descumprimento de qualquer das condições acima afasta o direito à garantia, uma vez que o resultado ora pretendido não pode ser assegurado sem o efetivo cumprimento, pela CONTRATANTE, das obrigações que lhe cabem nos termos deste CONTRATO, notadamente as previstas na Cláusula IV.</p>' +
 
     '<h2>IV. OBRIGAÇÕES DA CONTRATANTE</h2>' +
     '<p>4. Caberá à CONTRATANTE:</p>' +
@@ -10679,6 +10701,7 @@ function lerDadosContrato() {
     valor: Number(document.getElementById('ctr-valor').value),
     forma_pagamento: document.getElementById('ctr-pagamento').value.trim(),
     data_inicio: document.getElementById('ctr-data-inicio').value,
+    meta_garantia: document.getElementById('ctr-meta-garantia').value.trim(),
   };
   d.data_termino = somarDias(d.data_inicio, 90);
   return d;
@@ -10783,6 +10806,7 @@ function ctrResumoAtualizar() {
   const valor = parseFloat(document.getElementById('ctr-valor').value);
   set('ctr-r-valor', isNaN(valor) ? 'R$ —' : formatarMoeda(valor), isNaN(valor));
   document.getElementById('ctr-r-pag').textContent = v('ctr-pagamento') || '—';
+  document.getElementById('ctr-r-garantia').textContent = v('ctr-meta-garantia') || '—';
   const ini = v('ctr-data-inicio');
   document.getElementById('ctr-r-inicio').textContent = ini ? ini.split('-').reverse().join('/') : '—';
   const quem = v('ctr-responsavel');
