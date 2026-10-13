@@ -2349,12 +2349,23 @@ ACT['mentorado-novo'] = () => abrirModal('Novo mentorado', `<form data-sub="ment
   <div class="campo"><label class="lbl" for="nc-nome">Nome</label><input type="text" id="nc-nome" required></div><div class="campo"><label class="lbl" for="nc-empresa">Empresa</label><input type="text" id="nc-empresa"></div>
   <div class="campo"><label class="lbl" for="nc-nivel">Nível / plano</label><input type="text" id="nc-nivel"></div><div class="campo"><label class="lbl" for="nc-email">E-mail de contato (referência)</label><input type="email" id="nc-email"></div>
   <div class="campo"><label class="lbl" for="nc-ini">Data de início</label><input type="date" id="nc-ini" value="${hojeISO()}"></div><div class="campo"><label class="lbl" for="nc-meta">Posts por semana</label><input type="number" id="nc-meta" value="4" min="1" max="7"></div></div>
-  <p class="hint" style="margin-bottom:12px">Depois de cadastrar, você gera o login na aba “Acesso”.</p><button class="btn btn-primary" type="submit">Cadastrar</button></form>`);
+  <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:8px"><input type="checkbox" id="nc-login" data-chg="nc-login-toggle"> Criar o login de acesso agora</label>
+  <div id="nc-login-box" hidden class="campo"><label class="lbl" for="nc-login-email">E-mail de login</label><input type="email" id="nc-login-email" placeholder="deixe em branco para o padrão do portal" autocomplete="off">
+    <div class="hint">A senha é gerada pelo sistema e aparece uma única vez, com a mensagem pronta pra copiar.</div></div>
+  <p class="hint" style="margin-bottom:12px">Sem marcar, você cria o login depois em Configurações.</p><button class="btn btn-primary" type="submit">Cadastrar</button></form>`);
+CHG['nc-login-toggle'] = el => { $('#nc-login-box').hidden = !el.checked; if (el.checked) $('#nc-login-email').focus(); };
 SUB['mentorado-novo'] = async () => {
+  const comLogin = $('#nc-login').checked, emailLogin = $('#nc-login-email').value.trim().toLowerCase();
+  if (comLogin && emailLogin && !EMAIL_RE.test(emailLogin)) { toast('E-mail de login inválido.', true); return; }
   const { data, error } = await sb.from('cli_clientes').insert({ nome: $('#nc-nome').value.trim(), empresa: $('#nc-empresa').value.trim() || null, nivel: $('#nc-nivel').value.trim() || null,
     email: $('#nc-email').value.trim() || null, data_inicio: $('#nc-ini').value || null, meta_semanal: parseInt($('#nc-meta').value) || 4, status: 'ativo' }).select('id').single();
   if (error) throw error;
-  await clientes(true); fecharModal(); toast('Mentorado cadastrado.'); ir(`admin/mentorado/${data.id}/acesso`);
+  await clientes(true); fecharModal(); toast('Mentorado cadastrado.');
+  if (comLogin) {
+    try { const r = await fnAdmin({ acao: 'criar_login', cliente_id: data.id, ...(emailLogin ? { email: emailLogin } : {}) }); modalCredenciais({ nome: r.nome, email: r.email, senha: r.senha }); }
+    catch (e) { erroAcao(new Error('Mentorado cadastrado, mas o login não foi criado: ' + msgErro(e))); }
+  }
+  ir(`admin/mentorado/${data.id}/acesso`);
 };
 
 /* ---------- página do mentorado (abas) ---------- */
@@ -2416,12 +2427,12 @@ function mensagemBoasVindas(nome, email, senha) {
 async function acessoConteudo(cli) {
   const [perfis, acs] = await Promise.all([q(sb.from('cli_perfis').select('id,created_at').eq('cliente_id', cli.id).eq('role', 'cliente')), acessos()]);
   const ac = acs ? acs.find(a => a.cliente_id === cli.id) : null;
-  if (!perfis.length) return `<div class="card"><h2>Este mentorado ainda não tem login</h2><p class="desc">Escolha o e-mail e a senha de acesso dele. O login é criado aqui, sem passar pelo Supabase. Também dá pra fazer isso em <a href="#/admin/config">Configurações</a>.</p>
-    <button class="btn btn-primary" data-act="cfg-criar" data-id="${cli.id}">${svg('mais', 16)} Criar login e senha</button></div>`;
+  if (!perfis.length) return `<div class="card"><h2>Este mentorado ainda não tem login</h2><p class="desc">Você escolhe o e-mail de login e o sistema gera a senha, que aparece uma única vez com a mensagem pronta pra copiar. Também dá pra fazer isso em <a href="#/admin/config">Configurações</a>.</p>
+    <button class="btn btn-primary" data-act="cfg-criar" data-id="${cli.id}">${svg('mais', 16)} Criar login</button></div>`;
   return `<div class="card"><h2>Acesso ao portal</h2><div class="stack" style="margin-top:8px"><div><span class="muted">E-mail de login:</span> <b>${esc(ac ? ac.email : '—')}</b></div>
     <div><span class="muted">Último acesso:</span> <b>${ac && ac.ultimo_login ? esc(new Date(ac.ultimo_login).toLocaleString('pt-BR')) + ' (' + esc(tempoAtras(ac.ultimo_login)) + ')' : 'nunca entrou'}</b></div></div>
-    <p class="desc" style="margin-top:14px">Esqueceu ou quer reenviar? Definir uma nova senha invalida a anterior.</p>
-    <div class="row"><button class="btn" data-act="cfg-senha" data-id="${cli.id}">${svg('chave', 16)} Definir senha</button><button class="btn" data-act="acesso-resetar">Gerar senha aleatória</button><button class="btn" data-act="cfg-email" data-id="${cli.id}">Trocar e-mail</button></div></div>`;
+    <p class="desc" style="margin-top:14px">Esqueceu ou quer reenviar? Gerar uma nova senha invalida a anterior. O mentorado também pode trocar a própria senha pelo menu dele.</p>
+    <div class="row"><button class="btn" data-act="cfg-senha" data-id="${cli.id}">${svg('chave', 16)} Gerar nova senha</button></div></div>`;
 }
 function modalCredenciais(r) {
   const msg = mensagemBoasVindas(r.nome, r.email, r.senha);
@@ -2433,12 +2444,6 @@ async function copiarTexto(t) {
   catch (e) { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); const ok = document.execCommand && document.execCommand('copy'); ta.remove(); return !!ok; }
 }
 ACT['copiar'] = async el => { const alvo = $('#' + el.dataset.alvo); if (await copiarTexto(alvo.value)) toast('Copiado.'); else { alvo.select(); toast('Selecione e copie (Ctrl/Cmd+C).', true); } };
-ACT['acesso-resetar'] = async el => {
-  if (!confirm('Gerar uma nova senha? A senha atual deixa de funcionar.')) return;
-  const r = await ocupado(el, () => fnAdmin({ acao: 'resetar_senha', cliente_id: S.ctx.clienteId }));
-  modalCredenciais(r);
-};
-
 /* ---------- lançamento: gerar acessos em lote ---------- */
 let LANC = null;
 async function vLancamento() {
@@ -2740,11 +2745,11 @@ ACT['imp-plano-ok'] = async el => {
 };
 
 /* =====================================================================
-   CONFIGURAÇÕES — acessos: criar login e definir senha de cada mentorado
+   CONFIGURAÇÕES — acessos: criar o login de cada mentorado
+   Você escolhe o e-mail de login; o sistema gera a senha, mostra UMA vez junto com a mensagem pronta,
+   e o mentorado troca a senha no primeiro acesso (menu do usuário > Trocar minha senha).
    (a conta é criada pela Edge Function mentorado-admin; a senha nunca fica salva aqui)
    ===================================================================== */
-const SENHA_ALFA = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // sem 0/O/1/l/I: a senha é lida e digitada por gente
-function gerarSenhaLocal(n = 12) { const b = new Uint32Array(n); crypto.getRandomValues(b); return Array.from(b, x => SENHA_ALFA[x % SENHA_ALFA.length]).join(''); }
 const slugEmailLocal = nome => `${(nome || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.+|\.+$/g, '') || 'mentorado'}@mentorados.demandainfinita.com`;
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -2758,68 +2763,44 @@ async function vConfig() {
     const chip = !tem ? '<span class="chip neutro">sem login</span>' : ac && ac.ultimo_login ? `<span class="chip ok" title="${esc(new Date(ac.ultimo_login).toLocaleString('pt-BR'))}">entrou ${esc(tempoAtras(ac.ultimo_login))}</span>` : '<span class="chip alerta">nunca entrou</span>';
     return `<div class="acc-linha"><div class="acc-nome">${esc(c.nome)}<small>${esc([c.empresa, c.status !== 'ativo' ? c.status : ''].filter(Boolean).join(' · ') || ' ')}</small></div>
       <div class="acc-email">${tem ? esc(ac ? ac.email : '—') : '<span class="muted">—</span>'}</div><div>${chip}</div>
-      <div class="acc-acoes">${tem ? `<button class="btn btn-sm" data-act="cfg-senha" data-id="${c.id}">${svg('chave', 14)} Definir senha</button><button class="btn btn-sm" data-act="cfg-email" data-id="${c.id}">Trocar e-mail</button>`
-        : `<button class="btn btn-sm btn-primary" data-act="cfg-criar" data-id="${c.id}">${svg('mais', 14)} Criar login e senha</button>`}</div></div>`;
+      <div class="acc-acoes">${tem ? `<button class="btn btn-sm" data-act="cfg-senha" data-id="${c.id}">${svg('chave', 14)} Gerar nova senha</button>`
+        : `<button class="btn btn-sm btn-primary" data-act="cfg-criar" data-id="${c.id}">${svg('mais', 14)} Criar login</button>`}</div></div>`;
   };
   return { kicker: 'Painel do Igor', titulo: 'Configurações', refrescavel: false,
     html: `<div class="card cfg-bloco"><div class="row-between" style="align-items:flex-start"><div><h2>Acessos dos mentorados</h2>
-        <p class="desc" style="max-width:560px;margin:2px 0 0">Crie o login de cada mentorado e escolha a senha dele (ou use a sugerida). ${sem ? `<b>${sem}</b> ${sem === 1 ? 'ativo ainda não tem' : 'ativos ainda não têm'} login.` : 'Todos os ativos já têm login.'}</p></div>
-        <a class="btn btn-sm" href="#/admin/lancamento">${svg('chave', 14)} Gerar acessos em lote</a></div>
+        <p class="desc" style="max-width:600px;margin:2px 0 0">Crie o login de cada mentorado: você escolhe o e-mail, o sistema gera a senha e mostra uma única vez, com a mensagem pronta pra copiar e mandar. O mentorado troca a senha no primeiro acesso. ${sem ? `<b>${sem}</b> ${sem === 1 ? 'ativo ainda não tem' : 'ativos ainda não têm'} login.` : 'Todos os ativos já têm login.'}</p></div>
+        <div class="row"><a class="btn btn-sm" href="#/admin/lancamento">${svg('chave', 14)} Gerar acessos em lote</a><button class="btn btn-sm btn-primary" data-act="mentorado-novo">${svg('mais', 14)} Novo mentorado</button></div></div>
       ${acs ? '' : '<div class="card alerta" style="margin:14px 0 0"><p class="desc" style="margin:0">Não consegui consultar os e-mails e os últimos acessos agora. As ações abaixo continuam funcionando.</p></div>'}
       <div style="margin-top:16px"><div class="acc-linha cab"><span>Mentorado</span><span>E-mail de login</span><span>Situação</span><span></span></div>${ordenados.map(linha).join('') || '<div class="vazio">Nenhum mentorado cadastrado.</div>'}</div></div>
       <div class="card cfg-bloco"><h2>Sua conta</h2><p class="desc">Você entra aqui com o seu e-mail de admin. Troque a senha quando quiser.</p>
         <button class="btn btn-sm" data-act="trocar-senha">${svg('chave', 14)} Trocar minha senha</button></div>` };
 }
 
-function campoSenhaHtml(id, valor) {
-  return `<div class="campo"><label class="lbl" for="${id}">Senha</label><div class="senha-linha"><div class="senha-wrap" style="flex:1"><input type="password" id="${id}" value="${esc(valor)}" minlength="8" maxlength="72" required autocomplete="new-password"><button type="button" class="ver" data-act="senha-ver" data-alvo="${id}">mostrar</button></div>
-    <button type="button" class="btn" data-act="cfg-gerar" data-alvo="${id}" title="Gerar outra senha">Gerar outra</button></div><div class="hint">De 8 a 72 caracteres. Anote ou copie: ela não fica salva em lugar nenhum.</div></div>`;
-}
-ACT['cfg-gerar'] = el => { const i = document.getElementById(el.dataset.alvo); i.value = gerarSenhaLocal(); i.type = 'text'; const b = i.parentElement.querySelector('.ver'); if (b) b.textContent = 'ocultar'; };
-
 async function nomeDe(id) { const c = await getCliente(id); return c ? c.nome : 'Mentorado'; }
+const notaSenha = '<p class="hint" style="margin:0 0 14px">A senha é gerada pelo sistema e aparece <b>uma única vez</b>, na mensagem pronta pra copiar. O mentorado pode trocá-la no primeiro acesso, pelo menu no canto superior direito.</p>';
+
 ACT['cfg-criar'] = async el => {
   const id = Number(el.dataset.id), nome = await nomeDe(id);
   abrirModal(`Criar login · ${nome}`, `<form data-sub="cfg-criar"><input type="hidden" name="id" value="${id}">
     <div class="campo"><label class="lbl" for="cc-email">E-mail de login</label><input type="email" id="cc-email" required value="${esc(slugEmailLocal(nome))}" autocomplete="off"><div class="hint">Pode ser o e-mail real do mentorado ou o padrão do portal. É só o identificador de login.</div></div>
-    ${campoSenhaHtml('cc-senha', gerarSenhaLocal())}<button class="btn btn-primary" type="submit">Criar login</button></form>`);
+    ${notaSenha}<button class="btn btn-primary" type="submit">Criar login e gerar senha</button></form>`);
 };
 SUB['cfg-criar'] = async f => {
-  const id = Number(f.id.value), email = $('#cc-email').value.trim().toLowerCase(), senha = $('#cc-senha').value;
+  const id = Number(f.id.value), email = $('#cc-email').value.trim().toLowerCase();
   if (!EMAIL_RE.test(email)) { toast('E-mail inválido.', true); return; }
-  if (senha.length < 8) { toast('A senha precisa ter pelo menos 8 caracteres.', true); return; }
-  const r = await fnAdmin({ acao: 'criar_login', cliente_id: id, email, senha });
-  finalizarCredenciais(r, senha, email);
+  const r = await fnAdmin({ acao: 'criar_login', cliente_id: id, email });
+  modalCredenciais({ nome: r.nome, email: r.email || email, senha: r.senha }); render();
 };
 ACT['cfg-senha'] = async el => {
   const id = Number(el.dataset.id), nome = await nomeDe(id);
-  abrirModal(`Definir senha · ${nome}`, `<form data-sub="cfg-senha"><input type="hidden" name="id" value="${id}">
-    <p class="desc">A senha atual deixa de funcionar assim que você salvar.</p>${campoSenhaHtml('cs-senha', gerarSenhaLocal())}<button class="btn btn-primary" type="submit">Salvar nova senha</button></form>`);
+  abrirModal(`Gerar nova senha · ${nome}`, `<form data-sub="cfg-senha"><input type="hidden" name="id" value="${id}">
+    <p class="desc">A senha atual deixa de funcionar assim que você gerar a nova, e quem estiver usando o portal com ela precisa entrar de novo.</p>
+    ${notaSenha}<button class="btn btn-primary" type="submit">Gerar nova senha</button></form>`);
 };
 SUB['cfg-senha'] = async f => {
-  const id = Number(f.id.value), senha = $('#cs-senha').value;
-  if (senha.length < 8) { toast('A senha precisa ter pelo menos 8 caracteres.', true); return; }
-  const r = await fnAdmin({ acao: 'resetar_senha', cliente_id: id, senha });
-  finalizarCredenciais(r, senha, r.email);
+  const r = await fnAdmin({ acao: 'resetar_senha', cliente_id: Number(f.id.value) });
+  modalCredenciais({ nome: r.nome, email: r.email, senha: r.senha }); render();
 };
-ACT['cfg-email'] = async el => {
-  const id = Number(el.dataset.id), nome = await nomeDe(id), acs = await acessos(), ac = acs ? acs.find(a => a.cliente_id === id) : null;
-  abrirModal(`Trocar e-mail · ${nome}`, `<form data-sub="cfg-email"><input type="hidden" name="id" value="${id}">
-    <p class="desc">E-mail atual: <b>${esc(ac ? ac.email : '—')}</b>. A senha continua a mesma.</p>
-    <div class="campo"><label class="lbl" for="ce-email">Novo e-mail de login</label><input type="email" id="ce-email" required autocomplete="off"></div><button class="btn btn-primary" type="submit">Trocar e-mail</button></form>`);
-};
-SUB['cfg-email'] = async f => {
-  const email = $('#ce-email').value.trim().toLowerCase(); if (!EMAIL_RE.test(email)) { toast('E-mail inválido.', true); return; }
-  try { await fnAdmin({ acao: 'trocar_email', cliente_id: Number(f.id.value), email }); }
-  catch (e) { throw /desconhecida/i.test(msgErro(e)) ? new Error('A função de acessos ainda não tem a troca de e-mail. Ela precisa ser publicada de novo.') : e; }
-  fecharModal(); toast('E-mail trocado.'); await render();
-};
-// a mensagem pronta usa a senha efetiva: a que o Igor digitou, ou a gerada pela função (versão antiga ignora a senha enviada)
-function finalizarCredenciais(r, digitada, email) {
-  const efetiva = r.senha || digitada;
-  if (r.senha && r.senha !== digitada) toast('A função de acessos ainda é a versão antiga: gerei uma senha aleatória no lugar da que você digitou.', true);
-  modalCredenciais({ nome: r.nome, email: r.email || email, senha: efetiva }); render();
-}
 
 /* =====================================================================
    REGISTRO DE TELAS + partida (sempre o último arquivo)
