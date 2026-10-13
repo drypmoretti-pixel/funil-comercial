@@ -3006,6 +3006,11 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
               <label>Data de início</label>
               <input type="date" id="ctr-data-inicio" required>
             </div>
+            <div>
+              <label>Duração da consultoria (dias)</label>
+              <input type="number" id="ctr-duracao" min="1" max="1095" step="1" value="90" required>
+              <small class="ct-ajuda" id="ctr-duracao-ajuda">90 dias = 3 meses. Entra no objeto, na vigência, no valor e na data de término.</small>
+            </div>
           </div>
         </div>
         <div class="ct-grupo">
@@ -3019,11 +3024,11 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
               </select>
             </div>
             <div class="full">
-              <label>Meta garantida</label>
-              <input type="text" id="ctr-meta-garantia" value="4 (quatro) vendas" placeholder="Ex.: 4 (quatro) vendas · 10 (dez) reuniões qualificadas" required>
-              <small class="ct-ajuda">Escreve como vai ler no contrato: “…no alcance da meta de <b>[isso aqui]</b> até o fim dos 90 dias”. Com número por extenso entre parênteses. Só conta o que veio do funil montado neste contrato, pelos registros do cliente (CRM, planilha ou relatório).</small>
+              <label>Meta garantida (opcional)</label>
+              <input type="text" id="ctr-meta-garantia" value="4 (quatro) vendas" placeholder="Ex.: 4 (quatro) vendas · 10 (dez) reuniões qualificadas">
+              <small class="ct-ajuda">Escreve como vai ler no contrato: “…no alcance da meta de <b>[isso aqui]</b> até o fim do prazo”. Com número por extenso entre parênteses. Só conta o que veio do funil montado neste contrato, pelos registros do cliente (CRM, planilha ou relatório). <b>Em branco, o contrato sai sem a cláusula de garantia (3.5).</b></small>
             </div>
-            <div class="full ct-regra">
+            <div class="full ct-regra" id="ctr-regra">
               <b>Condições para acionar a garantia (padrão, entram em todo contrato)</b>
               <ul>
                 <li>Aplicou tudo o que foi passado pela consultoria</li>
@@ -3046,6 +3051,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <div class="ct-r-linha"><span>Garantia</span><b id="ctr-r-garantia">—</b></div>
           <div class="ct-r-linha"><span>Se não bater</span><b id="ctr-r-remedio">—</b></div>
           <div class="ct-r-linha"><span>Início</span><b id="ctr-r-inicio">—</b></div>
+          <div class="ct-r-linha"><span>Prazo</span><b id="ctr-r-prazo">—</b></div>
           <div class="ct-r-linha"><span>Assina</span><b id="ctr-r-quem">—</b></div>
           <div class="ct-prog">
             <div class="lanc-barra"><i id="ctr-r-barra"></i></div>
@@ -9308,14 +9314,20 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-10-12b',
+  versao: '2026-10-13',
   titulo: 'Chegou coisa nova',
   passos: [
     {
-      emoji: '🛡️',
-      titulo: 'Garantia do contrato sob medida',
-      texto: 'Na aba <b>Contrato</b>, passo 5, a garantia agora tem <b>modelo</b> e <b>meta</b>. O modelo padrão já vem selecionado: se o cliente aplicou tudo, foi em todos os encontros, reportou todos os feedbacks e seguiu o Método e mesmo assim não bateu a meta, ele ganha <b>mais 30 dias de mentoria</b>. Só se ainda não vier resultado é que entra a <b>devolução do valor</b>. Prefere só devolução? É só trocar o modelo. A meta (4 vendas, 10 reuniões, o que foi combinado) é escrita por cliente e já sai no contrato. Contratos antigos continuam como foram emitidos.',
-      aba: 'contrato', onde: 'Contrato · passo 5, Garantia de resultado',
+      emoji: '📅',
+      titulo: 'Contrato com prazo sob medida',
+      texto: 'Na aba <b>Contrato</b>, passo 4, agora você escolhe a <b>duração da consultoria em dias</b> (o padrão continua 90). O número vai sozinho pro objeto, pra vigência, pro valor e pra data de término, e a meta garantida passa a valer até esse novo fim. A <b>meta garantida</b> também deixou de ser obrigatória: deixou em branco, o contrato sai <b>sem a cláusula de garantia</b> (o resumo ao lado avisa "Sem garantia"). Contratos antigos continuam como foram emitidos.',
+      aba: 'contrato', onde: 'Contrato · passo 4, Condições comerciais',
+    },
+    {
+      emoji: '✍️',
+      titulo: 'O Igor já assina junto',
+      texto: 'Todo contrato enviado pelo botão <b>Enviar pra assinar (Autentique)</b> agora já leva o Igor como <b>segundo signatário</b> (CONTRATADA), ao lado do cliente. Ninguém precisa adicionar nada: o convite chega pros dois ao mesmo tempo.',
+      aba: 'contrato', onde: 'Contrato · botão Enviar pra assinar',
     },
   ],
 };
@@ -10519,8 +10531,17 @@ function porExtensoReais(valor) {
   return txt;
 }
 
+// "90 (noventa) dias": reaproveita o extenso dos reais, tirando o " reais" do fim
+function prazoPorExtenso(dias) {
+  const n = Math.max(1, Math.floor(Number(dias)) || 90);
+  return n + ' (' + porExtensoReais(n).replace(/ (reais|real)$/, '') + ') ' + (n === 1 ? 'dia' : 'dias');
+}
+
 function montarContratoCorpo(d) {
-  const dataTermino = d.data_termino || somarDias(d.data_inicio, 90);
+  // contrato antigo (gravado antes da coluna duracao_dias) = 90 dias, como foi assinado
+  const dias = Math.max(1, Math.floor(Number(d.duracao_dias)) || 90);
+  const prazoExt = prazoPorExtenso(dias);
+  const dataTermino = d.data_termino || somarDias(d.data_inicio, dias);
   const valorFmt = formatarMoeda(d.valor);
   const valorExtenso = porExtensoReais(d.valor);
   const inicioExt = dataExtenso(d.data_inicio);
@@ -10531,6 +10552,9 @@ function montarContratoCorpo(d) {
   // original da 3.5 (4 vendas, devolução direta), idêntico ao que o cliente assinou.
   const garantiaModelo = (d.modelo_garantia === 'extensao-devolucao' || d.modelo_garantia === 'devolucao') ? d.modelo_garantia : null;
   const garantiaComExtensao = garantiaModelo === 'extensao-devolucao';
+  // Meta em branco num contrato novo = sem cláusula de garantia. O '4 (quatro) vendas' de fallback
+  // acima só vale pro texto legado (sem modelo gravado), nunca pra inventar garantia que ninguém escreveu.
+  const semMeta = !!garantiaModelo && !(d.meta_garantia || '').trim();
   const gCond =
     '<p class="al">a) aplicado todas as estratégias, orientações e recomendações repassadas pela CONTRATADA;</p>' +
     '<p class="al">b) participado de todos os encontros de acompanhamento;</p>' +
@@ -10542,7 +10566,7 @@ function montarContratoCorpo(d) {
     '<p>3.5.1. Apuração da meta. Para os fins desta cláusula, a meta considera-se atingida pelos resultados originados das estratégias e do funil implementados no âmbito deste CONTRATO, apurados com base nos registros da CONTRATANTE (CRM, planilhas ou relatórios) compartilhados com a CONTRATADA durante a vigência' + (garantiaComExtensao ? ' e o período adicional previsto no item 3.5.4' : '') + '.</p>';
   const garantiaHTML = !garantiaModelo
     ? '<p><strong>3.5. Garantia de Resultado.</strong> A CONTRATADA compromete-se a auxiliar a CONTRATANTE no alcance da meta de 4 (quatro) vendas até ' + metaMesAno + '. Caso a referida meta não seja atingida dentro do prazo ora acordado, a CONTRATADA devolverá à CONTRATANTE o valor pago a título dos serviços de consultoria, condicionado ao efetivo cumprimento, pela CONTRATANTE, das obrigações que lhe cabem nos termos deste CONTRATO — notadamente as previstas na Cláusula IV —, sem as quais o resultado ora garantido não pode ser assegurado.</p>' 
-    : gCabeca + (garantiaComExtensao
+    : semMeta ? '' : gCabeca + (garantiaComExtensao
       ? '<p>3.5.2. Caso a meta não seja atingida dentro do prazo ora acordado, a CONTRATANTE terá direito a acionar a garantia, mediante solicitação por escrito encaminhada nos termos do item 12.1 em até 15 (quinze) dias contados do término desse prazo, desde que tenha, cumulativamente, ao longo de toda a vigência deste CONTRATO:</p>' +
         gCond + gAfere +
         '<p>3.5.4. Acionada a garantia, a CONTRATADA prestará à CONTRATANTE, sem qualquer custo adicional, mais 30 (trinta) dias de mentoria, mantendo o acompanhamento nos mesmos moldes deste CONTRATO, ainda que isso ultrapasse o prazo de vigência previsto na Cláusula VIII, ficando o prazo para o alcance da meta prorrogado por igual período.</p>' +
@@ -10570,13 +10594,13 @@ function montarContratoCorpo(d) {
     '<p class="al">a) a CONTRATANTE exerce atividades empresariais e tem interesse em estruturar sua presença digital, geração de leads qualificados, estratégia de conteúdo por meio do LinkedIn.</p>' +
     '<p class="al">b) a CONTRATADA é sociedade empresária especializada em estratégia digital, marketing de conteúdo, estruturação de funis de geração de leads, automações, desenvolvimento de agentes de IA em N8N e consultoria em crescimento orgânico nas redes sociais;</p>' +
     '<p class="al">c) a CONTRATADA possui expertise comprovada na implementação de estratégias de conteúdo para LinkedIn, estruturação de funis de lead magnet e configuração de agentes de N8N para prospecção ativa;</p>' +
-    '<p class="al">d) a CONTRATANTE tem interesse em contratar os serviços de consultoria da CONTRATADA pelo período de 90 (noventa) dias, com foco em geração de leads qualificados via funil LinkedIn -&gt; Post -&gt; Comentário -&gt; Lead -&gt; Comercial -&gt; Marcação de Reunião -&gt; Venda, além de auxílio técnico na implementação de funis de vendas.</p>' +
+    '<p class="al">d) a CONTRATANTE tem interesse em contratar os serviços de consultoria da CONTRATADA pelo período de ' + prazoExt + ', com foco em geração de leads qualificados via funil LinkedIn -&gt; Post -&gt; Comentário -&gt; Lead -&gt; Comercial -&gt; Marcação de Reunião -&gt; Venda, além de auxílio técnico na implementação de funis de vendas.</p>' +
 
     '<h2>III. OBJETO</h2>' +
-    '<p>3.1. Escopo Geral. O presente CONTRATO tem por objeto a prestação de serviços de consultoria estratégica pela CONTRATADA à CONTRATANTE pelo período de 90 (noventa) dias, com início em ' + inicioExt + ' e término em ' + terminoExt + '.</p>' +
+    '<p>3.1. Escopo Geral. O presente CONTRATO tem por objeto a prestação de serviços de consultoria estratégica pela CONTRATADA à CONTRATANTE pelo período de ' + prazoExt + ', com início em ' + inicioExt + ' e término em ' + terminoExt + '.</p>' +
     '<p>3.2. Escopo dos Serviços. Compreendem-se no objeto as seguintes atividades:</p>' +
     '<p class="al">a) Desenvolvimento de estratégias de posts e conteúdos para LinkedIn, com foco em engajamento, autoridade e geração de leads qualificados;</p>' +
-    '<p class="al">b) Acompanhamento semanal durante os 90 dias de vigência do contrato, por meio de reuniões remotas para revisão de resultados, ajustes de estratégia e alinhamento de próximos passos;</p>' +
+    '<p class="al">b) Acompanhamento semanal durante os ' + dias + ' dias de vigência do contrato, por meio de reuniões remotas para revisão de resultados, ajustes de estratégia e alinhamento de próximos passos;</p>' +
     '<p class="al">c) Estruturação do funil completo de geração de leads: LinkedIn -&gt; Post -&gt; Comentário -&gt; Lead -&gt; Comercial -&gt; Marcação de Reunião -&gt; Venda;</p>' +
     '<p class="al">d) Orientação sobre boas práticas de abordagem e qualificação de leads no processo comercial;</p>' +
     '<p class="al">e) Fornecimento de estrutura base de agentes de N8N voltados à estruturação do funil de vendas, bem como apoio técnico na configuração, customização e colocação em operação dos referidos agentes no ambiente da CONTRATANTE, incluindo orientação sobre fluxos de automação, integrações e troubleshooting durante a vigência do contrato;</p>' +
@@ -10612,13 +10636,13 @@ function montarContratoCorpo(d) {
     '<p>6.2. O atraso no pagamento das parcelas previstas na Cláusula VII implicará multa de 2% (dois por cento) sobre o valor da parcela em atraso, acrescido de juros moratórios de 1% (um por cento) ao mês, pro rata die.</p>' +
 
     '<h2>VII. PREÇO E CONDIÇÕES DE PAGAMENTO</h2>' +
-    '<p>7.1. O valor total pelos serviços de consultoria pelo período de 90 (noventa) dias é de ' + valorFmt + ' (' + valorExtenso + '), pago ' + d.forma_pagamento + '.</p>' +
+    '<p>7.1. O valor total pelos serviços de consultoria pelo período de ' + prazoExt + ' é de ' + valorFmt + ' (' + valorExtenso + '), pago ' + d.forma_pagamento + '.</p>' +
     '<p>7.2. Forma de Pagamento. O pagamento será realizado via Pix, utilizando a chave 19 99792-9873, de titularidade da CONTRATADA.</p>' +
     '<p>Parágrafo único: Eventuais tarifas ou encargos eventualmente cobrados pela instituição financeira da CONTRATANTE na realização da transferência via Pix ficarão a cargo exclusivo da CONTRATANTE.</p>' +
     '<p>7.3. O atraso no pagamento ou a ausência de confirmação da transferência via Pix no prazo acordado implicarão as penalidades previstas na Cláusula VI.2, sem prejuízo da suspensão imediata dos serviços até regularização.</p>' +
 
     '<h2>VIII. VIGÊNCIA E RENOVAÇÃO</h2>' +
-    '<p>8.1. O presente CONTRATO terá vigência de 90 (noventa) dias, com início em ' + inicioExt + ' e término em ' + terminoExt + '.</p>' +
+    '<p>8.1. O presente CONTRATO terá vigência de ' + prazoExt + ', com início em ' + inicioExt + ' e término em ' + terminoExt + '.</p>' +
     '<p>8.2. As PARTES poderão, de comum acordo, ajustar os prazos indicados nesta cláusula, mediante registro por escrito (e-mail ou aditivo).</p>' +
     '<p>8.3. A renovação da vigência após o período contratado dependerá de manifestação expressa das PARTES, por meio de aditivo ou novo contrato.</p>' +
     '<p>8.4. Não havendo manifestação dentro do prazo final da vigência, o contrato será considerado encerrado, conforme art. 473 do Código Civil.</p>' +
@@ -10730,8 +10754,9 @@ function lerDadosContrato() {
     data_inicio: document.getElementById('ctr-data-inicio').value,
     meta_garantia: document.getElementById('ctr-meta-garantia').value.trim(),
     modelo_garantia: document.getElementById('ctr-modelo-garantia').value,
+    duracao_dias: Math.max(1, Math.floor(Number(document.getElementById('ctr-duracao').value)) || 90),
   };
-  d.data_termino = somarDias(d.data_inicio, 90);
+  d.data_termino = somarDias(d.data_inicio, d.duracao_dias);
   return d;
 }
 
@@ -10792,7 +10817,7 @@ async function enviarAutentique() {
     if (!resultado.ok) { alert('Não consegui enviar pra Autentique: ' + (resultado.erro || 'erro desconhecido')); return; }
 
     await salvarHistoricoContrato(d);
-    alert('Contrato enviado! ' + d.nome_responsavel + ' vai receber um e-mail da Autentique em ' + emailSignatario + ' pra assinar (o Igor entra em cópia).');
+    alert('Contrato enviado! ' + d.nome_responsavel + ' vai receber um e-mail da Autentique em ' + emailSignatario + ' pra assinar. Você também recebe o convite em ' + CONTRATADA.email + ' pra assinar como CONTRATADA.');
   } catch (e) {
     alert('Não consegui enviar pra Autentique: ' + e.message);
   } finally {
@@ -10834,14 +10859,27 @@ function ctrResumoAtualizar() {
   const valor = parseFloat(document.getElementById('ctr-valor').value);
   set('ctr-r-valor', isNaN(valor) ? 'R$ —' : formatarMoeda(valor), isNaN(valor));
   document.getElementById('ctr-r-pag').textContent = v('ctr-pagamento') || '—';
-  document.getElementById('ctr-r-garantia').textContent = v('ctr-meta-garantia') || '—';
+  const semMeta = !v('ctr-meta-garantia');
+  document.getElementById('ctr-r-garantia').textContent = semMeta ? 'Sem garantia' : v('ctr-meta-garantia');
   const comExtensao = v('ctr-modelo-garantia') === 'extensao-devolucao';
-  document.getElementById('ctr-r-remedio').textContent = comExtensao ? '+30 dias de mentoria, depois devolução' : 'Devolução do valor';
+  document.getElementById('ctr-r-remedio').textContent = semMeta ? '—' : (comExtensao ? '+30 dias de mentoria, depois devolução' : 'Devolução do valor');
+  // sem meta não há o que acionar: esconde as condições e trava o modelo (o contrato sai sem a cláusula 3.5)
+  document.getElementById('ctr-regra').hidden = semMeta;
+  document.getElementById('ctr-modelo-garantia').disabled = semMeta;
   document.getElementById('ctr-regra-fim').textContent = comExtensao
     ? 'Cumpriu tudo isso e não teve a meta? Primeiro vêm mais 30 dias de mentoria, sem custo. Se ainda assim não vier resultado, aí o valor é devolvido. O cliente tem 15 dias pra pedir cada etapa, por escrito, e a devolução sai em até 10 dias.'
     : 'Cumpriu tudo isso e não teve a meta? Aí sim a garantia vale e o valor é devolvido. O cliente tem 15 dias pra pedir, por escrito, e a devolução sai em até 10 dias.';
   const ini = v('ctr-data-inicio');
   document.getElementById('ctr-r-inicio').textContent = ini ? ini.split('-').reverse().join('/') : '—';
+  const dur = Math.floor(Number(v('ctr-duracao')));
+  const durOk = dur >= 1;
+  const meses = durOk ? Math.round((dur / 30) * 10) / 10 : 0;
+  document.getElementById('ctr-duracao-ajuda').textContent = durOk
+    ? dur + (dur === 1 ? ' dia' : ' dias') + (dur >= 30 ? ' = ' + String(meses).replace('.', ',') + (meses === 1 ? ' mês' : ' meses') : '') + '. Entra no objeto, na vigência, no valor e na data de término.'
+    : 'Informa a duração em dias (ex.: 90 = 3 meses).';
+  document.getElementById('ctr-r-prazo').textContent = durOk
+    ? dur + (dur === 1 ? ' dia' : ' dias') + (ini ? ' · até ' + somarDias(ini, dur).split('-').reverse().join('/') : '')
+    : '—';
   const quem = v('ctr-responsavel');
   document.getElementById('ctr-r-quem').textContent = quem ? (v('ctr-cargo') ? `${quem} · ${v('ctr-cargo')}` : quem) : '—';
   document.getElementById('ctr-r-barra').style.width = (obrig.length ? (feitos / obrig.length) * 100 : 0) + '%';
