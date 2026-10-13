@@ -1964,7 +1964,17 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 .ct-hist-nome b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ct-hist-nome span { font-size: .76rem; color: var(--muted); }
 .ct-hist-valor { font-weight: 800; font-variant-numeric: tabular-nums; }
-@media (max-width: 640px) { .ct-hist-item { grid-template-columns: auto minmax(0, 1fr) auto; } .ct-hist-valor { grid-column: 2; } }
+.ct-opcoes { display: flex; gap: 10px; flex-wrap: wrap; }
+.ct-campos .ct-opcao { display: inline-flex !important; align-items: center; gap: 8px; margin: 0 !important; padding: 10px 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); cursor: pointer; font-weight: 600; font-size: .92rem; color: var(--text-primary); }
+.ct-campos .ct-opcao input { width: auto !important; padding: 0 !important; margin: 0; accent-color: var(--good); }
+.ct-campos .ct-opcao:has(input:checked) { border-color: var(--good); box-shadow: inset 0 0 0 1px var(--good); }
+.ct-campos .ct-opcao[hidden] { display: none !important; }
+.ct-hist-acoes { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.ct-modo { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; margin-bottom: 14px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--good); background: var(--surface-2); font-size: .86rem; line-height: 1.4; }
+.ct-modo[hidden], .ct-acoes [hidden] { display: none !important; }
+.ct-modo b { display: block; }
+.ct-modo span { color: var(--muted); }
+@media (max-width: 640px) { .ct-hist-item { grid-template-columns: auto minmax(0, 1fr) auto; } .ct-hist-valor { grid-column: 2; } .ct-hist-acoes { grid-column: 1 / -1; justify-content: flex-start; } }
 
 /* ==========================================================================
    Polimento visual, rodada 3 (10/2026): Dicas, Checklist e Relatório do dia.
@@ -2918,6 +2928,11 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         </div>
       </div>
 
+      <div class="ct-modo" id="ctr-modo" role="status" hidden>
+        <div><b id="ctr-modo-tit"></b><span id="ctr-modo-sub"></span></div>
+        <button type="button" class="btn btn-secondary" onclick="ctrSairDoModo(true)">Cancelar</button>
+      </div>
+
       <div class="ct-layout">
         <form class="form-grid ct-form" id="form-contrato" onsubmit="return gerarContrato(event)">
         <div class="ct-grupo">
@@ -3002,14 +3017,15 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
               <label>Forma de pagamento</label>
               <input type="text" id="ctr-pagamento" value="à vista via Pix" required>
             </div>
-            <div>
-              <label>Data de início</label>
-              <input type="date" id="ctr-data-inicio" required>
-            </div>
-            <div>
-              <label>Duração da consultoria (dias)</label>
-              <input type="number" id="ctr-duracao" min="1" max="1095" step="1" value="90" required>
-              <small class="ct-ajuda" id="ctr-duracao-ajuda">90 dias = 3 meses. Entra no objeto, na vigência, no valor e na data de término.</small>
+            <div class="full">
+              <label id="ctr-prazo-rotulo">Tempo da consultoria</label>
+              <div class="ct-opcoes" role="radiogroup" aria-labelledby="ctr-prazo-rotulo">
+                <label class="ct-opcao"><input type="radio" name="ctr-prazo" value="90" checked><span>3 meses</span></label>
+                <label class="ct-opcao"><input type="radio" name="ctr-prazo" value="180"><span>6 meses</span></label>
+                <label class="ct-opcao" id="ctr-prazo-outro-wrap" hidden><input type="radio" name="ctr-prazo" id="ctr-prazo-outro" value=""><span id="ctr-prazo-outro-txt"></span></label>
+              </div>
+              <small class="ct-ajuda" id="ctr-duracao-ajuda">3 meses (90 dias). O prazo começa na data de elaboração do contrato e entra no objeto, na vigência, no valor e na data de término.</small>
+              <input type="hidden" id="ctr-data-inicio">
             </div>
           </div>
         </div>
@@ -3058,6 +3074,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
             <small id="ctr-r-prog"></small>
           </div>
           <div class="ct-acoes">
+            <button class="btn" type="button" id="ctr-btn-salvar" onclick="ctrSalvarEdicao()" hidden>Salvar alterações</button>
             <button class="btn" type="submit" form="form-contrato">Gerar contrato (baixar/imprimir)</button>
             <button class="btn btn-secondary" type="button" id="ctr-btn-autentique" onclick="enviarAutentique()">Enviar pra assinar (Autentique)</button>
           </div>
@@ -3804,8 +3821,6 @@ async function carregarTudo() {
   renderTudo();
   carregarReunioesPendentes();
   if (checklistMetricas.length) renderChecklist();
-  const ctrData = document.getElementById('ctr-data-inicio');
-  if (ctrData && !ctrData.value) ctrData.value = dataLocalStr();
   ctrResumoAtualizar();
   carregarContratos();
 }
@@ -9314,20 +9329,26 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-10-13',
+  versao: '2026-10-13b',
   titulo: 'Chegou coisa nova',
   passos: [
     {
       emoji: '📅',
       titulo: 'Contrato com prazo sob medida',
-      texto: 'Na aba <b>Contrato</b>, passo 4, agora você escolhe a <b>duração da consultoria em dias</b> (o padrão continua 90). O número vai sozinho pro objeto, pra vigência, pro valor e pra data de término, e a meta garantida passa a valer até esse novo fim. A <b>meta garantida</b> também deixou de ser obrigatória: deixou em branco, o contrato sai <b>sem a cláusula de garantia</b> (o resumo ao lado avisa "Sem garantia"). Contratos antigos continuam como foram emitidos.',
-      aba: 'contrato', onde: 'Contrato · passo 4, Condições comerciais',
+      texto: 'Na aba <b>Contrato</b>, passo 4, agora você marca o <b>tempo da consultoria: 3 meses ou 6 meses</b> (o padrão é 3). O prazo <b>começa na data em que o contrato é elaborado</b>, então não existe mais campo de data de início. O tempo vai sozinho pro objeto, pra vigência, pro valor e pra data de término, e a meta garantida vale até esse fim. A <b>meta garantida</b> também deixou de ser obrigatória: deixou em branco, o contrato sai <b>sem a cláusula de garantia</b> (o resumo ao lado avisa "Sem garantia"). Contratos antigos continuam como foram emitidos.',
+      aba: 'contrato', onde: 'Contrato · passo 4, Tempo da consultoria',
     },
     {
       emoji: '✍️',
       titulo: 'O Igor já assina junto',
       texto: 'Todo contrato enviado pelo botão <b>Enviar pra assinar (Autentique)</b> agora já leva o Igor como <b>segundo signatário</b> (CONTRATADA), ao lado do cliente. Ninguém precisa adicionar nada: o convite chega pros dois ao mesmo tempo.',
       aba: 'contrato', onde: 'Contrato · botão Enviar pra assinar',
+    },
+    {
+      emoji: '🔁',
+      titulo: 'Duplicar e editar contrato',
+      texto: 'Na lista <b>Últimos contratos gerados</b>, cada contrato agora tem <b>Duplicar</b> e <b>Editar</b>. <b>Duplicar</b> joga os dados dele no formulário pra você montar um contrato novo sem digitar tudo de novo (o prazo começa de novo na data de hoje). <b>Editar</b> corrige aquele contrato mesmo: o botão <b>Salvar alterações</b> atualiza o registro em vez de criar outro. Se ele já foi enviado pro Autentique, o painel avisa que o documento do cliente não muda.',
+      aba: 'contrato', onde: 'Contrato · Últimos contratos gerados',
     },
   ],
 };
@@ -10733,6 +10754,39 @@ function abrirEImprimir(html) {
   setTimeout(function () { win.focus(); win.print(); }, 350);
 }
 
+// Tempo da consultoria: 3 meses (90 dias) ou 6 meses (180 dias). Um contrato gravado com outro prazo
+// (ex.: 120 dias, de antes de existir a escolha) ganha uma 3ª opção temporária pra não ser trocado em silêncio.
+function ctrLerDuracao() {
+  const marcado = document.querySelector('input[name="ctr-prazo"]:checked');
+  return Math.max(1, Math.floor(Number(marcado && marcado.value)) || 90);
+}
+function ctrRotuloPrazo(dias) {
+  return dias === 90 ? '3 meses' : dias === 180 ? '6 meses' : dias + (dias === 1 ? ' dia' : ' dias');
+}
+function ctrOcultarOutroPrazo() {
+  document.getElementById('ctr-prazo-outro-wrap').hidden = true;
+  document.getElementById('ctr-prazo-outro').value = '';
+}
+function ctrDefinirDuracao(dias) {
+  const n = Math.floor(Number(dias)) || 90;
+  ctrOcultarOutroPrazo();
+  if (n === 90 || n === 180) {
+    document.querySelector('input[name="ctr-prazo"][value="' + n + '"]').checked = true;
+    return;
+  }
+  const outro = document.getElementById('ctr-prazo-outro');
+  outro.value = String(n);
+  document.getElementById('ctr-prazo-outro-txt').textContent = n + (n === 1 ? ' dia' : ' dias') + ' (prazo do contrato original)';
+  document.getElementById('ctr-prazo-outro-wrap').hidden = false;
+  outro.checked = true;
+}
+// O prazo começa na elaboração do contrato = hoje. Só na EDIÇÃO a data gravada é mantida (corrigir um
+// erro de digitação não pode empurrar o início do contrato pra hoje).
+function ctrDataInicio() {
+  const gravada = document.getElementById('ctr-data-inicio').value;
+  return ctrEditandoId && gravada ? gravada : dataLocalStr();
+}
+
 function lerDadosContrato() {
   const d = {
     razao_social: document.getElementById('ctr-razao').value.trim(),
@@ -10751,21 +10805,32 @@ function lerDadosContrato() {
     cpf: document.getElementById('ctr-cpf').value.trim(),
     valor: Number(document.getElementById('ctr-valor').value),
     forma_pagamento: document.getElementById('ctr-pagamento').value.trim(),
-    data_inicio: document.getElementById('ctr-data-inicio').value,
+    data_inicio: ctrDataInicio(),
     meta_garantia: document.getElementById('ctr-meta-garantia').value.trim(),
     modelo_garantia: document.getElementById('ctr-modelo-garantia').value,
-    duracao_dias: Math.max(1, Math.floor(Number(document.getElementById('ctr-duracao').value)) || 90),
+    duracao_dias: ctrLerDuracao(),
   };
   d.data_termino = somarDias(d.data_inicio, d.duracao_dias);
   return d;
 }
 
-async function salvarHistoricoContrato(d) {
-  const { error } = await sb.from('com_contratos').insert([Object.assign({}, d, {
-    gerado_por: currentPerfil ? currentPerfil.id : null,
-  })]);
+// id do registro que está sendo editado (null = contrato novo, mesmo quando veio de "Duplicar")
+let ctrEditandoId = null;
+
+async function salvarHistoricoContrato(d, extras) {
+  const dados = Object.assign({}, d, extras || {});
+  let error;
+  if (ctrEditandoId) {
+    // edição: atualiza o mesmo registro (não mexe em criado_em nem em gerado_por)
+    ({ error } = await sb.from('com_contratos').update(dados).eq('id', ctrEditandoId));
+  } else {
+    ({ error } = await sb.from('com_contratos').insert([Object.assign(dados, {
+      gerado_por: currentPerfil ? currentPerfil.id : null,
+    })]));
+  }
   if (error) console.error('Não salvou o histórico do contrato:', error.message);
   carregarContratos();
+  return !error;
 }
 
 async function gerarContrato(event) {
@@ -10816,7 +10881,7 @@ async function enviarAutentique() {
     const resultado = await resp.json();
     if (!resultado.ok) { alert('Não consegui enviar pra Autentique: ' + (resultado.erro || 'erro desconhecido')); return; }
 
-    await salvarHistoricoContrato(d);
+    await salvarHistoricoContrato(d, { autentique_documento_id: (resultado.documento && resultado.documento.id) || null });
     alert('Contrato enviado! ' + d.nome_responsavel + ' vai receber um e-mail da Autentique em ' + emailSignatario + ' pra assinar. Você também recebe o convite em ' + CONTRATADA.email + ' pra assinar como CONTRATADA.');
   } catch (e) {
     alert('Não consegui enviar pra Autentique: ' + e.message);
@@ -10840,9 +10905,13 @@ async function carregarContratos() {
   wrap.innerHTML = contratosCache.map(c => `
     <div class="ct-hist-item">
       <div class="tl-avatar">${wzEsc(iniciaisDe(c.razao_social))}</div>
-      <div class="ct-hist-nome"><b title="${wzEsc(c.razao_social)}">${wzEsc(c.razao_social)}</b><span>Gerado em ${new Date(c.criado_em).toLocaleDateString('pt-BR')}</span></div>
+      <div class="ct-hist-nome"><b title="${wzEsc(c.razao_social)}">${wzEsc(c.razao_social)}</b><span>Gerado em ${new Date(c.criado_em).toLocaleDateString('pt-BR')}${c.autentique_documento_id ? ' · enviado pra assinatura' : ''}</span></div>
       <div class="ct-hist-valor">${formatarMoeda(c.valor)}</div>
-      <button class="add-toggle" onclick="reimprimirContrato('${c.id}')">Reimprimir</button>
+      <div class="ct-hist-acoes">
+        <button class="add-toggle" title="Cria um contrato novo com os mesmos dados" onclick="duplicarContrato('${c.id}')">Duplicar</button>
+        <button class="add-toggle" title="Corrige este contrato (atualiza o registro, não cria outro)" onclick="editarContrato('${c.id}')">Editar</button>
+        <button class="add-toggle" onclick="reimprimirContrato('${c.id}')">Reimprimir</button>
+      </div>
     </div>`).join('');
 }
 
@@ -10869,17 +10938,12 @@ function ctrResumoAtualizar() {
   document.getElementById('ctr-regra-fim').textContent = comExtensao
     ? 'Cumpriu tudo isso e não teve a meta? Primeiro vêm mais 30 dias de mentoria, sem custo. Se ainda assim não vier resultado, aí o valor é devolvido. O cliente tem 15 dias pra pedir cada etapa, por escrito, e a devolução sai em até 10 dias.'
     : 'Cumpriu tudo isso e não teve a meta? Aí sim a garantia vale e o valor é devolvido. O cliente tem 15 dias pra pedir, por escrito, e a devolução sai em até 10 dias.';
-  const ini = v('ctr-data-inicio');
-  document.getElementById('ctr-r-inicio').textContent = ini ? ini.split('-').reverse().join('/') : '—';
-  const dur = Math.floor(Number(v('ctr-duracao')));
-  const durOk = dur >= 1;
-  const meses = durOk ? Math.round((dur / 30) * 10) / 10 : 0;
-  document.getElementById('ctr-duracao-ajuda').textContent = durOk
-    ? dur + (dur === 1 ? ' dia' : ' dias') + (dur >= 30 ? ' = ' + String(meses).replace('.', ',') + (meses === 1 ? ' mês' : ' meses') : '') + '. Entra no objeto, na vigência, no valor e na data de término.'
-    : 'Informa a duração em dias (ex.: 90 = 3 meses).';
-  document.getElementById('ctr-r-prazo').textContent = durOk
-    ? dur + (dur === 1 ? ' dia' : ' dias') + (ini ? ' · até ' + somarDias(ini, dur).split('-').reverse().join('/') : '')
-    : '—';
+  const ini = ctrDataInicio();
+  document.getElementById('ctr-r-inicio').textContent = ini.split('-').reverse().join('/') + ' (elaboração)';
+  const dur = ctrLerDuracao();
+  document.getElementById('ctr-duracao-ajuda').textContent = ctrRotuloPrazo(dur) + (dur === 90 || dur === 180 ? ' (' + dur + ' dias)' : '')
+    + '. O prazo começa na data de elaboração do contrato e entra no objeto, na vigência, no valor e na data de término.';
+  document.getElementById('ctr-r-prazo').textContent = ctrRotuloPrazo(dur) + ' · até ' + somarDias(ini, dur).split('-').reverse().join('/');
   const quem = v('ctr-responsavel');
   document.getElementById('ctr-r-quem').textContent = quem ? (v('ctr-cargo') ? `${quem} · ${v('ctr-cargo')}` : quem) : '—';
   document.getElementById('ctr-r-barra').style.width = (obrig.length ? (feitos / obrig.length) * 100 : 0) + '%';
@@ -10891,7 +10955,7 @@ function ctrResumoAtualizar() {
   const f = document.getElementById('form-contrato');
   if (!f) return;
   f.addEventListener('input', ctrResumoAtualizar);
-  f.addEventListener('reset', () => setTimeout(ctrResumoAtualizar, 0));
+  f.addEventListener('reset', () => setTimeout(() => { ctrOcultarOutroPrazo(); document.getElementById('ctr-data-inicio').value = ''; ctrResumoAtualizar(); }, 0));
   ctrResumoAtualizar();
 })();
 
@@ -10899,6 +10963,97 @@ function reimprimirContrato(id) {
   const c = contratosCache.find(function (x) { return x.id === id; });
   if (!c) return;
   abrirEImprimir(montarContratoHTML(c));
+}
+
+// ---- Duplicar / Editar contrato do histórico: devolvem os dados pro formulário ----
+// coluna do banco -> id do campo
+const CTR_CAMPOS = {
+  razao_social: 'ctr-razao', cnpj: 'ctr-cnpj', email: 'ctr-email', email_assinatura: 'ctr-email-assinatura',
+  telefone: 'ctr-telefone', endereco: 'ctr-endereco', bairro: 'ctr-bairro', cep: 'ctr-cep', cidade: 'ctr-cidade',
+  estado: 'ctr-estado', nome_responsavel: 'ctr-responsavel', cargo_responsavel: 'ctr-cargo', rg: 'ctr-rg', cpf: 'ctr-cpf',
+  valor: 'ctr-valor', forma_pagamento: 'ctr-pagamento',
+  meta_garantia: 'ctr-meta-garantia', modelo_garantia: 'ctr-modelo-garantia',
+};  // prazo e data de início têm tratamento próprio (ctrDefinirDuracao / ctrDataInicio)
+
+function ctrPreencherForm(c, limparInicio) {
+  const dados = Object.assign({}, c);
+  // contrato anterior ao modelo de garantia (sem modelo gravado): o texto original era meta de 4 vendas
+  // com devolução direta, que é o modelo "devolucao". Preenche assim pra não virar outra coisa ao salvar.
+  if (!dados.modelo_garantia) {
+    dados.modelo_garantia = 'devolucao';
+    if (dados.meta_garantia == null) dados.meta_garantia = '4 (quatro) vendas';
+  }
+  Object.keys(CTR_CAMPOS).forEach(function (campo) {
+    document.getElementById(CTR_CAMPOS[campo]).value = dados[campo] == null ? '' : dados[campo];
+  });
+  ctrDefinirDuracao(c.duracao_dias || 90);
+  // duplicar = contrato novo: o prazo começa hoje. Editar mantém a data gravada.
+  document.getElementById('ctr-data-inicio').value = limparInicio ? '' : (c.data_inicio || '');
+  ctrResumoAtualizar();
+}
+
+function ctrMostrarModo(modo, c) {
+  const nome = c.razao_social || 'contrato';
+  document.getElementById('ctr-modo-tit').textContent = modo === 'edit'
+    ? 'Editando o contrato de ' + nome
+    : 'Novo contrato a partir de ' + nome;
+  document.getElementById('ctr-modo-sub').textContent = modo === 'edit'
+    ? 'Gerado em ' + new Date(c.criado_em).toLocaleDateString('pt-BR') + '. Salvar atualiza este registro, não cria outro.'
+    : 'Os dados foram copiados e o prazo começa hoje. Ajuste o que mudou.';
+  document.getElementById('ctr-modo').hidden = false;
+  document.getElementById('ctr-btn-salvar').hidden = modo !== 'edit';
+  const form = document.getElementById('form-contrato');
+  if (form.scrollIntoView) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const foco = document.getElementById('ctr-razao');
+  if (foco && foco.focus) foco.focus({ preventScroll: true });
+}
+
+function duplicarContrato(id) {
+  const c = contratosCache.find(function (x) { return x.id === id; });
+  if (!c) return;
+  ctrEditandoId = null;
+  ctrPreencherForm(c, true);
+  ctrMostrarModo('dup', c);
+}
+
+function editarContrato(id) {
+  const c = contratosCache.find(function (x) { return x.id === id; });
+  if (!c) return;
+  if (c.autentique_documento_id && !confirm('Esse contrato já foi enviado pra assinatura no Autentique.\n\nEditar aqui muda o registro do painel, mas NÃO muda o documento que o cliente recebeu. Pra um contrato novo com os mesmos dados, use Duplicar.\n\nEditar mesmo assim?')) return;
+  ctrEditandoId = id;
+  ctrPreencherForm(c, false);
+  ctrMostrarModo('edit', c);
+}
+
+function ctrSairDoModo(limpar) {
+  ctrEditandoId = null;
+  document.getElementById('ctr-modo').hidden = true;
+  document.getElementById('ctr-btn-salvar').hidden = true;
+  if (limpar) {
+    document.getElementById('form-contrato').reset();
+    ctrOcultarOutroPrazo();
+    document.getElementById('ctr-data-inicio').value = '';
+    ctrResumoAtualizar();
+  }
+}
+
+async function ctrSalvarEdicao() {
+  if (!ctrEditandoId) return;
+  const form = document.getElementById('form-contrato');
+  if (!form.reportValidity()) return;
+  const btn = document.getElementById('ctr-btn-salvar');
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+  try {
+    const ok = await salvarHistoricoContrato(lerDadosContrato());
+    if (!ok) { alert('Não consegui salvar as alterações. Tenta de novo.'); return; }
+    alert('Contrato atualizado.');
+    ctrSairDoModo(true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+  }
 }
 
 // ---------- ADMIN (criar SDR/vendedor e número de WhatsApp, via proxy no n8n) ----------
