@@ -8,56 +8,62 @@
 <link rel="icon" href="../logo-demanda-infinita.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
   color-scheme: light;
-  --plane:#f6f8f6; --surface-1:#ffffff; --surface-2:#fbfcfb;
-  --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#7a7872;
-  --grid:#e4e6e1; --baseline:#c3c2b7; --border:rgba(11,11,11,.13); --field-bg:#f5f6f4;
-  --accent:#0ca30c; --accent-deep:#0a7d22; --accent-wash:#e7f6e7; --accent-glow:rgba(12,163,12,.16);
-  --good:#0ca30c; --warning:#fab219; --critical:#d03b3b;
-  --st-rascunho-bg:#eceae5; --st-rascunho-tx:#4b4a46;
-  --st-aguardando-bg:#fff1cc; --st-aguardando-tx:#7a5200;
-  --st-ajustes-bg:#fde6da; --st-ajustes-tx:#9a3d17;
-  --st-aprovado-bg:#e1f5e1; --st-aprovado-tx:#0a6a1c;
-  --st-reprovado-bg:#fbe1df; --st-reprovado-tx:#9a2620;
-  --st-publicado-bg:#e1ecfb; --st-publicado-tx:#1a53a3;
-  --radius:14px; --ink:28,34,28;
+  /* identidade Demanda Infinita (mesmos tokens dos materiais e do site) */
+  --plane:#F8F7F4; --surface-1:#ffffff; --surface-2:#FBFAF7;
+  --text-primary:#111111; --text-secondary:#454542; --muted:#6B6B6B;
+  --grid:#E7E4DD; --line:#D8D5CE; --baseline:#C9C6BE; --border:rgba(17,17,17,.13); --field-bg:#F1EFEA;
+  --accent:#008E43; --accent-light:#12B85E; --accent-deep:#006B32; --accent-wash:#E3F1E8; --accent-glow:rgba(0,142,67,.16);
+  --ink-solid:#0F1A14; --ink-2:#17261D;
+  --good:#008E43; --warning:#C98400; --critical:#C23B2E;
+  --st-rascunho-bg:#ECEAE5; --st-rascunho-tx:#4B4A46;
+  --st-aguardando-bg:#FFF1CC; --st-aguardando-tx:#7A5200;
+  --st-ajustes-bg:#FDE6DA; --st-ajustes-tx:#9A3D17;
+  --st-aprovado-bg:#E3F1E8; --st-aprovado-tx:#006B32;
+  --st-reprovado-bg:#FBE1DF; --st-reprovado-tx:#9A2620;
+  --st-publicado-bg:#E1ECFB; --st-publicado-tx:#1A53A3;
+  --f-title:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:14px; --ink:15,26,20;
   --sombra-1:0 1px 2px rgba(var(--ink),.05),0 1px 3px rgba(var(--ink),.04);
-  --sombra-2:0 2px 4px rgba(var(--ink),.05),0 6px 16px -6px rgba(var(--ink),.10);
-  --sombra-3:0 4px 8px rgba(var(--ink),.06),0 14px 34px -10px rgba(var(--ink),.18);
-  --sidebar-w:212px;
+  --sombra-2:0 2px 4px rgba(var(--ink),.05),0 8px 18px -8px rgba(var(--ink),.12);
+  --sombra-3:0 4px 8px rgba(var(--ink),.06),0 18px 40px -12px rgba(var(--ink),.22);
+  --sidebar-w:226px;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;font-family:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text-primary);
-  background:radial-gradient(1100px 520px at 78% -12%,rgba(12,163,12,.055),transparent 62%),var(--plane);
-  background-attachment:fixed;-webkit-font-smoothing:antialiased;line-height:1.45}
-h1,h2,h3,h4{margin:0;letter-spacing:-.02em}
-h1{font-size:1.35rem;font-weight:800}
-h2{font-size:1.02rem;font-weight:800}
-h3{font-size:.92rem;font-weight:700}
+body{margin:0;font-family:var(--f-body);color:var(--text-primary);
+  background:radial-gradient(1100px 520px at 78% -12%,rgba(0,142,67,.06),transparent 62%),var(--plane);
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;line-height:1.5}
+h1,h2,h3,h4{margin:0;letter-spacing:-.02em;font-family:var(--f-title)}
+h1{font-size:1.4rem;font-weight:800}
+h2{font-size:1.04rem;font-weight:800}
+h3{font-size:.94rem;font-weight:700}
 p{margin:0}
 a{color:var(--accent-deep)}
 button,input,select,textarea{font-family:inherit;font-size:.92rem;color:inherit}
+button.btn,button.tab,button.nav-item,button.chip-btn{font-family:var(--f-title)}
 button{cursor:pointer}
 [hidden]{display:none!important}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .muted{color:var(--muted)} .sec{color:var(--text-secondary)}
 .mono{font-variant-numeric:tabular-nums}
-.kicker{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-deep);font-weight:800}
+.kicker{font-family:var(--f-mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);font-weight:700}
 
 /* ---------- botões ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--border);background:var(--surface-1);
-  color:var(--text-primary);padding:9px 16px;border-radius:10px;font-weight:700;font-size:.88rem;line-height:1.1;
+  color:var(--text-primary);padding:9px 16px;border-radius:10px;font-family:var(--f-title);font-weight:700;font-size:.86rem;line-height:1.1;
   transition:background .16s,border-color .16s,transform .16s,box-shadow .16s;text-decoration:none;white-space:nowrap}
 .btn:hover{background:var(--field-bg)}
 .btn:active{transform:translateY(1px)}
 .btn:focus-visible,.nav-item:focus-visible,.tab:focus-visible,.chip-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.btn-primary{background:linear-gradient(140deg,var(--accent),var(--accent-deep));border-color:transparent;color:#fff;box-shadow:0 4px 12px -4px var(--accent-glow)}
-.btn-primary:hover{background:linear-gradient(140deg,#0fb30f,var(--accent-deep))}
+.btn-primary{background:var(--accent);border-color:transparent;color:#fff;box-shadow:0 8px 20px -10px rgba(0,142,67,.7)}
+.btn-primary:hover{background:var(--accent-deep)}
 .btn-danger{color:var(--critical);border-color:rgba(208,59,59,.35)}
 .btn-danger:hover{background:#fbe9e8}
 .btn-warn{background:#fff1cc;border-color:#f0d58a;color:var(--st-aguardando-tx)}
@@ -80,37 +86,56 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 
 /* ---------- casca ---------- */
 #carregando{display:flex;align-items:center;justify-content:center;min-height:100vh;color:var(--muted);font-weight:600}
-#tela-login{min-height:100vh;display:none;align-items:center;justify-content:center;padding:20px}
-.login-box{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:34px 30px;width:100%;max-width:380px;box-shadow:var(--sombra-3)}
-.login-box img.logo{width:60px;height:60px;border-radius:50%;display:block;margin:0 0 16px}
-.login-box h1{margin:4px 0 4px}
-.login-box .sub{color:var(--text-secondary);font-size:.88rem;margin-bottom:22px}
-.login-box .btn{width:100%;padding:11px;margin-top:4px}
+#tela-login{min-height:100vh;display:none;align-items:stretch;justify-content:center}
+.login-marca{flex:1.05;display:flex;flex-direction:column;justify-content:space-between;padding:44px 52px;color:#fff;position:relative;overflow:hidden;
+  background:radial-gradient(900px 520px at 85% 110%,rgba(18,184,94,.28),transparent 62%),linear-gradient(160deg,var(--ink-solid) 0%,var(--ink-2) 100%)}
+.login-marca img.logo{width:64px;height:64px;border-radius:50%;background:#fff;display:block}
+.login-marca .kicker{color:var(--accent-light)}
+.login-marca h2{font-family:var(--f-title);font-size:2.15rem;line-height:1.12;font-weight:800;letter-spacing:-.03em;margin:14px 0 14px;max-width:440px}
+.login-marca p{color:rgba(255,255,255,.7);font-size:.98rem;max-width:420px;line-height:1.6}
+.login-marca ul{list-style:none;margin:26px 0 0;padding:0;display:grid;gap:11px;font-size:.9rem;color:rgba(255,255,255,.82)}
+.login-marca li{display:flex;align-items:center;gap:11px}
+.login-marca li svg{width:18px;height:18px;flex-shrink:0;stroke:var(--accent-light);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.login-marca .rodape-l{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.42)}
+.login-form{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 24px}
+.login-box{width:100%;max-width:380px}
+.login-box img.logo-m{display:none;width:56px;height:56px;border-radius:50%;margin:0 0 16px}
+.login-box h1{margin:6px 0 6px;font-size:1.55rem}
+.login-box .sub{color:var(--text-secondary);font-size:.92rem;margin-bottom:24px}
+.login-box .btn{width:100%;padding:12px;margin-top:6px;font-size:.92rem}
+.login-box .ajuda{margin-top:22px;padding-top:16px;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted)}
+.senha-wrap{position:relative}
+.senha-wrap input{padding-right:70px}
+.senha-wrap .ver{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--accent-deep);font-weight:700;font-size:.76rem;padding:6px 8px;border-radius:6px}
+.senha-wrap .ver:hover{background:var(--accent-wash)}
+@media (max-width:860px){.login-marca{display:none}.login-box img.logo-m{display:block}}
 .erro{color:var(--critical);font-size:.82rem;margin-top:10px;display:none}
 .app-shell{display:none;min-height:100vh}
-.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--accent);display:flex;flex-direction:column;padding:16px 10px;
-  position:sticky;top:0;height:100vh;align-self:flex-start;overflow-y:auto}
-.sidebar .marca{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;letter-spacing:-.02em;padding:2px 8px 16px}
-.sidebar .marca img{width:32px;height:32px;border-radius:50%;background:#fff}
-.sidebar .marca small{display:block;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--ink-solid);display:flex;flex-direction:column;padding:18px 12px;
+  position:sticky;top:0;height:100vh;align-self:flex-start;overflow-y:auto;border-right:1px solid rgba(255,255,255,.05)}
+.sidebar .marca{display:flex;align-items:center;gap:11px;color:#fff;font-family:var(--f-title);font-weight:800;letter-spacing:-.01em;padding:2px 8px 20px;font-size:.92rem;line-height:1.15}
+.sidebar .marca img{width:40px;height:40px;border-radius:50%;background:#fff;flex-shrink:0}
+.sidebar .marca small{display:block;font-family:var(--f-mono);font-size:.56rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-light);margin-top:3px}
 .sidebar nav{display:flex;flex-direction:column;gap:3px}
-.nav-item{position:relative;display:flex;align-items:center;gap:11px;border:0;background:none;color:rgba(255,255,255,.88);
-  padding:10px 11px;border-radius:11px;font-weight:700;font-size:.88rem;text-align:left;transition:background .16s,color .16s}
-.nav-item svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.nav-item:hover{background:rgba(255,255,255,.12);color:#fff}
-.nav-item.ativo{background:#fff;color:var(--accent-deep);box-shadow:var(--sombra-2)}
+.nav-item{position:relative;display:flex;align-items:center;gap:11px;border:0;background:none;color:rgba(255,255,255,.66);
+  padding:10px 12px;border-radius:10px;font-weight:700;font-size:.86rem;text-align:left;transition:background .16s,color .16s}
+.nav-item svg{width:19px;height:19px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.ativo{background:rgba(18,184,94,.14);color:#fff;box-shadow:inset 3px 0 0 var(--accent-light)}
+.nav-item.ativo svg{color:var(--accent-light)}
 .nav-item .cont{margin-left:auto;background:var(--critical);color:#fff;border-radius:99px;font-size:.66rem;min-width:19px;height:19px;padding:0 5px;
   display:none;align-items:center;justify-content:center}
 .nav-item.piscando{animation:pisca 1.15s ease-in-out infinite}
-@keyframes pisca{0%,100%{box-shadow:0 0 0 2px #fff}50%{box-shadow:0 0 0 6px rgba(255,255,255,.28)}}
-.sidebar .rodape{margin-top:auto;padding:14px 8px 0;color:rgba(255,255,255,.75);font-size:.7rem}
+@keyframes pisca{0%,100%{box-shadow:0 0 0 2px var(--accent-light)}50%{box-shadow:0 0 0 6px rgba(18,184,94,.25)}}
+.nav-sep{height:1px;background:rgba(255,255,255,.08);margin:10px 8px}
+.sidebar .rodape{margin-top:auto;padding:14px 8px 0;color:rgba(255,255,255,.45);font-family:var(--f-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase}
 .main{flex:1;min-width:0;display:flex;flex-direction:column}
 .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 28px;
-  background:rgba(246,248,246,.86);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);
+  background:rgba(248,247,244,.88);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);
   border-bottom:1px solid rgba(var(--ink),.07)}
 .topbar .titulo{min-width:0}
 .topbar .titulo .kicker{margin-bottom:1px}
-.topbar .titulo h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .titulo h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:1.3rem}
 .topbar .dir{display:flex;align-items:center;gap:10px}
 .userchip{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--surface-1);border-radius:99px;padding:4px 12px 4px 5px;font-weight:700;font-size:.82rem;max-width:200px}
 .userchip .av{width:26px;height:26px;border-radius:50%;background:var(--accent-wash);color:var(--accent-deep);display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:800;flex-shrink:0}
@@ -121,8 +146,8 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .menu-pop button{display:block;width:100%;text-align:left;border:0;background:none;padding:9px 11px;border-radius:8px;font-weight:600;font-size:.86rem}
 .menu-pop button:hover{background:var(--field-bg)}
 #view{width:100%;max-width:1120px;margin:0 auto;padding:24px 28px 90px}
-.banner-preview{background:#1d2a1f;color:#fff;padding:9px 28px;font-size:.84rem;font-weight:600;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.banner-preview .btn{background:#fff;color:#1d2a1f;border:0}
+.banner-preview{background:var(--ink-solid);color:#fff;border-bottom:2px solid var(--accent-light);padding:9px 28px;font-size:.84rem;font-weight:600;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.banner-preview .btn{background:#fff;color:var(--ink-solid);border:0;box-shadow:none}
 
 /* ---------- sino ---------- */
 .notif-wrap{position:relative}
@@ -142,10 +167,10 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .notif-item .h{font-size:.68rem;color:var(--muted);margin-top:3px}
 
 /* ---------- superfícies ---------- */
-.card{background:var(--surface-1);border:1px solid rgba(var(--ink),.09);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--sombra-1)}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--sombra-1)}
 .card > h2{margin-bottom:3px}
 .card .desc{color:var(--text-secondary);font-size:.84rem;margin-bottom:14px}
-.card.destaque{border-color:rgba(12,163,12,.45);background:linear-gradient(180deg,#fbfffb,var(--surface-1));box-shadow:0 0 0 3px var(--accent-glow),var(--sombra-1)}
+.card.destaque{border-color:rgba(0,142,67,.45);background:linear-gradient(180deg,#F5FAF7,var(--surface-1));box-shadow:0 0 0 3px var(--accent-glow),var(--sombra-1)}
 .card.alerta{border-color:#f0d58a;background:#fffbee}
 .row-between{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -159,7 +184,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .vazio{color:var(--muted);font-size:.86rem;padding:18px 0;text-align:center}
 .vazio b{color:var(--text-secondary)}
 .bar{height:8px;border-radius:99px;background:var(--grid);overflow:hidden}
-.bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#38c738);border-radius:99px;transition:width .35s ease}
+.bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:99px;transition:width .35s ease}
 .bar.fina{height:5px}
 
 /* ---------- chips e status ---------- */
@@ -194,7 +219,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .item-lista.clicavel{cursor:pointer}
 .item-lista.clicavel:hover .txt{color:var(--accent-deep)}
 .mrow{display:block;width:100%;text-align:left;background:var(--surface-1);border:1px solid rgba(var(--ink),.09);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sombra-1);transition:box-shadow .16s,border-color .16s}
-.mrow:hover{box-shadow:var(--sombra-2);border-color:rgba(12,163,12,.45)}
+.mrow:hover{box-shadow:var(--sombra-2);border-color:rgba(0,142,67,.45)}
 .mrow .nome{font-weight:800;font-size:.96rem}
 .mrow .meta{color:var(--muted);font-size:.78rem;margin-top:2px}
 .mrow .stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.78rem;color:var(--text-secondary)}
@@ -203,7 +228,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 /* ---------- etapas ---------- */
 .stepper{display:flex;gap:6px;margin:0 0 18px;flex-wrap:wrap}
 .step{flex:1;min-width:118px;background:var(--surface-1);border:1px solid var(--grid);border-radius:11px;padding:10px 12px}
-.step.done{background:var(--accent-wash);border-color:rgba(12,163,12,.35)}
+.step.done{background:var(--accent-wash);border-color:rgba(0,142,67,.35)}
 .step.atual{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .step .n{font-size:.66rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .step.done .n{color:var(--accent-deep)}
@@ -212,7 +237,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 /* ---------- checklist de hoje ---------- */
 .hoje-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .hoje-item{border:1px solid var(--grid);border-radius:12px;padding:13px 14px;background:var(--surface-2)}
-.hoje-item.feito{background:var(--accent-wash);border-color:rgba(12,163,12,.4)}
+.hoje-item.feito{background:var(--accent-wash);border-color:rgba(0,142,67,.4)}
 .hoje-item .tt{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary)}
 .hoje-item .meta{font-size:.76rem;color:var(--muted);margin-top:2px}
 .num-ctl{display:flex;align-items:center;gap:8px;margin-top:9px}
@@ -222,7 +247,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 
 /* ---------- posts ---------- */
 .post-card{display:block;width:100%;text-align:left;background:var(--surface-1);border:1px solid rgba(var(--ink),.09);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sombra-1)}
-.post-card:hover{box-shadow:var(--sombra-2);border-color:rgba(12,163,12,.45)}
+.post-card:hover{box-shadow:var(--sombra-2);border-color:rgba(0,142,67,.45)}
 .post-card .tt{font-weight:800;font-size:.94rem;margin-bottom:3px}
 .post-card .pv{color:var(--text-secondary);font-size:.84rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
 .post-card .rod{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:9px;font-size:.76rem;color:var(--muted)}
@@ -240,11 +265,11 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .thread{display:flex;flex-direction:column;gap:10px}
 .msg{border-radius:12px;padding:10px 13px;font-size:.88rem;border:1px solid var(--grid);background:var(--surface-2);white-space:pre-wrap;word-wrap:break-word}
 .msg .quem{font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;white-space:normal}
-.msg.admin{background:var(--accent-wash);border-color:rgba(12,163,12,.3)}
+.msg.admin{background:var(--accent-wash);border-color:rgba(0,142,67,.3)}
 .msg.sistema{background:transparent;border:0;padding:2px 4px;color:var(--text-secondary);font-size:.8rem;text-align:center}
 .msg.ajuste{background:#fff6ef;border-color:#f3c9b3}
 .msg.reprov{background:#fff2f1;border-color:#f1bdb9}
-.decisao{border:2px solid var(--accent);border-radius:14px;padding:16px;background:#fbfffb}
+.decisao{border:2px solid var(--accent);border-radius:14px;padding:16px;background:#F5FAF7}
 .decisao .botoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .faixa-status{display:flex;align-items:flex-start;gap:12px;border-radius:12px;padding:13px 15px;margin-bottom:14px;font-size:.9rem}
 .faixa-status b{display:block;font-size:.95rem;margin-bottom:2px}
@@ -303,8 +328,9 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .modal.largo{max-width:760px}
 .modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--grid);background:var(--surface-1);border-radius:16px 16px 0 0}
 .modal-body{padding:18px 20px 20px}
+.modal-body > .desc,.modal-body form > .desc{margin:0 0 14px;color:var(--text-secondary);font-size:.88rem}
 @keyframes sobe{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:400;background:#1d2a1f;color:#fff;padding:11px 18px;border-radius:12px;font-weight:700;font-size:.88rem;box-shadow:var(--sombra-3);opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:400;background:var(--ink-solid);color:#fff;padding:11px 18px;border-radius:12px;font-weight:700;font-size:.88rem;box-shadow:var(--sombra-3);opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
 #toast.on{opacity:1}
 #toast.erro-t{background:var(--critical)}
 
@@ -315,7 +341,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .tour-card{background:var(--surface-1);border-radius:18px;width:100%;max-width:470px;padding:26px 26px 20px;box-shadow:0 24px 60px rgba(0,0,0,.28);position:relative;animation:sobe .34s cubic-bezier(.2,.9,.3,1.1)}
 .tour-fechar{position:absolute;top:13px;right:14px;border:0;background:none;color:var(--muted);font-size:1.1rem;padding:4px 8px;border-radius:6px}
 .tour-fechar:hover{background:var(--field-bg);color:var(--text-primary)}
-.tour-emoji{font-size:2rem;line-height:1;margin-bottom:10px}
+.tour-ico{width:52px;height:52px;border-radius:14px;background:var(--accent-wash);color:var(--accent-deep);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
 .tour-titulo{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;line-height:1.25}
 .tour-texto{font-size:.9rem;line-height:1.62;color:var(--text-secondary);margin-top:9px}
 .tour-texto b{color:var(--text-primary)}
@@ -328,6 +354,100 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .tour-pular:hover{color:var(--text-primary);text-decoration:underline}
 .lembrete-card{max-width:400px;text-align:center}
 .lembrete-card .tour-titulo{font-size:1.15rem}
+
+/* ---------- v5 · plano de ação com profundidade ---------- */
+.plano-cab .plano-obj{margin-top:8px;max-width:700px;color:var(--text-secondary);font-size:.92rem}
+.plano-cab .plano-obj p{margin:0 0 8px}
+.plano-pct{font-family:var(--f-title)}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.mini-stats > div{background:var(--surface-2);border:1px solid var(--grid);border-radius:12px;padding:11px 14px}
+.mini-stats b{display:block;font-family:var(--f-title);font-size:1.15rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.mini-stats span{font-family:var(--f-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.prox-passo{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--ink-solid);color:#fff;border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;position:relative;overflow:hidden;
+  background-image:radial-gradient(260px 160px at 100% 100%,rgba(18,184,94,.32),transparent 70%)}
+.prox-passo .kicker{color:var(--accent-light)}
+.prox-passo h3{color:#fff;font-size:1.02rem;margin-top:4px;max-width:520px}
+.prox-passo .chip.neutro{background:rgba(255,255,255,.1);color:#d6e6dc}
+.prox-passo .chip.critico{background:#fbe1df}
+.prox-passo .btn{position:relative;z-index:1;background:var(--accent-light);border-color:transparent;color:var(--ink-solid)}
+.prox-passo .btn:hover{background:#2fcb74}
+.fase-tg .fn small{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.08em;color:var(--muted);font-weight:500;margin-top:2px;text-transform:uppercase}
+.fbar{width:84px;height:5px;background:var(--grid);border-radius:99px;overflow:hidden;flex-shrink:0}
+.fbar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .35s}
+.fase-obj{margin:12px 0 6px;padding:10px 14px;background:var(--accent-wash);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;font-size:.86rem;color:#1E3B2B;line-height:1.55}
+.pi-chips{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:7px}
+.pi-chips .chip svg{width:12px;height:12px}
+.pi-chips:empty{display:none}
+.pi-more{font-size:.78rem}
+.pi-det{display:none;margin-top:12px;background:var(--surface-2);border:1px solid var(--grid);border-radius:12px;padding:14px 16px}
+.pi.det-aberto .pi-det{display:block}
+.det-rot{display:block;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);font-weight:700;margin-bottom:8px}
+.pi-det p{margin:0 0 8px;font-size:.88rem;color:var(--text-secondary)}
+.det-lista{list-style:none;margin:0 0 10px;padding:0;counter-reset:d}
+.det-lista li{counter-increment:d;position:relative;padding:0 0 9px 32px;font-size:.88rem;line-height:1.5}
+.det-lista li::before{content:counter(d);position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:.72rem;display:flex;align-items:center;justify-content:center;font-family:var(--f-title)}
+.det-entrega{display:flex;gap:10px;align-items:flex-start;background:var(--accent-wash);border-radius:10px;padding:10px 14px;margin:4px 0 12px;font-size:.88rem;font-weight:600;color:#1E3B2B}
+.det-entrega svg{flex-shrink:0;stroke:var(--accent-deep);margin-top:3px;stroke-width:2.4}
+.det-entrega .det-rot{margin-bottom:2px}
+.imp-op{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;justify-content:space-between;background:var(--surface-1)}
+.imp-op h3{margin-bottom:3px}
+.imp-op p{font-size:.84rem;color:var(--text-secondary);max-width:380px}
+.imp-resumo{background:var(--surface-2);border:1px solid var(--grid);border-radius:12px;padding:12px 14px;margin:10px 0 14px;font-size:.88rem}
+.imp-resumo b{font-family:var(--f-title)}
+.imp-resumo ul{margin:8px 0 0;padding-left:18px;color:var(--text-secondary);font-size:.82rem}
+
+/* ---------- v5 · início do mentorado ---------- */
+.hero{background:var(--ink-solid);color:#fff;border-radius:18px;padding:22px 24px;margin-bottom:16px;position:relative;overflow:hidden;
+  background-image:radial-gradient(520px 260px at 95% 0%,rgba(18,184,94,.30),transparent 65%);box-shadow:var(--sombra-2)}
+.hero .kicker{color:var(--accent-light)}
+.hero h2{color:#fff;font-size:1.3rem;margin:5px 0 4px}
+.hero p{color:rgba(255,255,255,.72);font-size:.9rem;max-width:540px}
+.hero-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.hero-metrics > div{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px 14px;min-width:0}
+.hero-metrics b{display:block;font-family:var(--f-title);font-weight:800;font-size:1.55rem;letter-spacing:-.03em;color:#fff;line-height:1.1;font-variant-numeric:tabular-nums}
+.hero-metrics b small{font-size:.8rem;color:var(--accent-light);font-weight:700;letter-spacing:0}
+.hero-metrics span{display:block;font-family:var(--f-mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.58);margin-top:3px}
+.hero .bar{background:rgba(255,255,255,.14);margin-top:9px;height:6px}
+.hero .bar > i{background:var(--accent-light)}
+.dash{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+.dash > div{display:flex;flex-direction:column;gap:16px;min-width:0}
+.dash .card{margin-bottom:0}
+.semana{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:0 0 14px}
+.sem-dia{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 0;border-radius:10px;background:var(--field-bg);color:var(--muted)}
+.sem-dia .d{font-family:var(--f-mono);letter-spacing:.08em;text-transform:uppercase;font-size:.56rem;font-weight:700}
+.sem-dia .n{font-size:.7rem;font-weight:800}
+.sem-dia .ic{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--baseline);background:#fff}
+.sem-dia .ic svg{width:12px;height:12px;stroke-width:3}
+.sem-dia.completo{background:var(--accent-wash);color:var(--accent-deep)}
+.sem-dia.completo .ic{background:var(--accent);border-color:var(--accent);color:#fff}
+.sem-dia.parcial{background:var(--st-aguardando-bg);color:var(--st-aguardando-tx)}
+.sem-dia.parcial .ic{border-color:#C98400;background:linear-gradient(90deg,#C98400 50%,#fff 50%)}
+.sem-dia.hoje{outline:2px solid var(--accent);outline-offset:1px}
+.sem-dia.futuro,.sem-dia.fds{opacity:.5}
+.rotina{margin-top:14px;border-top:1px solid var(--grid);padding-top:10px}
+.rotina summary{cursor:pointer;font-weight:700;font-size:.84rem;color:var(--accent-deep);list-style:none;display:flex;align-items:center;gap:6px}
+.rotina summary::-webkit-details-marker{display:none}
+.rotina summary::before{content:"+";display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--accent-wash);align-items:center;justify-content:center;font-weight:800}
+.rotina[open] summary::before{content:"−"}
+.rotina .rot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.rotina .rot-grid > div{background:var(--surface-2);border:1px solid var(--grid);border-radius:12px;padding:12px 14px;font-size:.84rem;color:var(--text-secondary)}
+.rotina .rot-grid b{display:block;font-family:var(--f-title);color:var(--text-primary);margin-bottom:4px;font-size:.88rem}
+.rotina .rot-ex{margin-top:6px;font-size:.78rem;color:var(--muted)}
+
+/* ---------- v5 · configurações / acessos ---------- */
+.acc-linha{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) 150px 250px;gap:14px;align-items:center;padding:13px 0;border-bottom:1px solid var(--grid)}
+.acc-linha:last-child{border-bottom:0}
+.acc-linha.cab{font-family:var(--f-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0 0 8px}
+.acc-nome{font-weight:700;font-size:.92rem}
+.acc-nome small{display:block;color:var(--muted);font-weight:500;font-size:.76rem}
+.acc-email{font-size:.84rem;word-break:break-all;color:var(--text-secondary)}
+.acc-acoes{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.senha-linha{display:flex;gap:8px;align-items:stretch}
+.senha-linha input{flex:1}
+.cfg-bloco + .cfg-bloco{margin-top:6px}
+
+.dr-vistas button{display:inline-flex;align-items:center;justify-content:center}
+.item-lista .dr-ico{width:46px}
 
 /* ---------- drive ---------- */
 .ic-btn{font-size:1.1rem;font-weight:800}
@@ -391,13 +511,28 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 
 
 /* ---------- responsivo ---------- */
+@media (max-width:980px){
+  .dash{grid-template-columns:1fr}
+}
 @media (max-width:900px){
   .post-layout{grid-template-columns:1fr}
   .hoje-grid{grid-template-columns:1fr}
+  .rotina .rot-grid{grid-template-columns:1fr}
+  .acc-linha{grid-template-columns:1fr;gap:6px}
+  .acc-linha.cab{display:none}
+  .acc-acoes{justify-content:flex-start;margin-top:4px}
+}
+@media (max-width:560px){
+  .fbar{display:none}
+  .mini-stats{gap:6px}.mini-stats > div{padding:9px 10px}.mini-stats b{font-size:1rem}
+  .hero{padding:18px 16px}.hero-metrics{gap:8px}.hero-metrics > div{padding:10px}.hero-metrics b{font-size:1.25rem}
+  .imp-op{flex-direction:column}
 }
 @media (max-width:780px){
   .sidebar{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:auto;flex-direction:row;padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:80;
-    box-shadow:0 -4px 20px rgba(0,0,0,.14);overflow-x:auto;align-self:auto}
+    box-shadow:0 -4px 20px rgba(0,0,0,.2);overflow-x:auto;align-self:auto;border-right:0}
+  .nav-sep{display:none}
+  .nav-item.ativo{box-shadow:inset 0 2px 0 var(--accent-light)}
   .sidebar .marca,.sidebar .rodape{display:none}
   .sidebar nav{flex-direction:row;width:100%;gap:2px;justify-content:space-around}
   .nav-item{flex-direction:column;gap:2px;font-size:.62rem;padding:6px 8px;min-width:58px;text-align:center;flex:1}
@@ -412,6 +547,8 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
   .modal-bg{padding:2vh 8px}
   .card{padding:16px}
   .pi{flex-wrap:wrap}
+  .pi .tx{min-width:calc(100% - 44px)}
+  .pi .lado{width:100%;flex-direction:row;align-items:center;flex-wrap:wrap;padding-left:32px;gap:8px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -421,19 +558,38 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 <div id="carregando">carregando…</div>
 
 <div id="tela-login">
-  <div class="login-box">
-    <img class="logo" src="../logo-demanda-infinita.png" alt="Demanda Infinita">
-    <div class="kicker">Método Demanda Infinita®</div>
-    <h1>Portal dos Mentorados</h1>
-    <p class="sub">Entre com o e-mail e a senha que você recebeu.</p>
-    <form id="form-login">
-      <div class="campo"><label class="lbl" for="login-email">E-mail</label>
-        <input type="email" id="login-email" required autocomplete="username"></div>
-      <div class="campo"><label class="lbl" for="login-senha">Senha</label>
-        <input type="password" id="login-senha" required autocomplete="current-password"></div>
-      <button type="submit" class="btn btn-primary">Entrar</button>
-      <div class="erro" id="login-erro" role="alert"></div>
-    </form>
+  <div class="login-marca">
+    <div>
+      <img class="logo" src="../logo-demanda-infinita.png" alt="Demanda Infinita">
+      <div style="margin-top:44px">
+        <div class="kicker">Método Demanda Infinita®</div>
+        <h2>Seu plano, seus posts e seus arquivos num só lugar.</h2>
+        <p>O portal da sua mentoria: o que fazer em cada semana, o que postar hoje e tudo aprovado antes de ir ao ar.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Plano de ação com passo a passo de cada tarefa</li>
+          <li><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Posts com aprovação antes de publicar</li>
+          <li><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Checklist diário e calendário de constância</li>
+        </ul>
+      </div>
+    </div>
+    <div class="rodape-l">demandainfinita.com</div>
+  </div>
+  <div class="login-form">
+    <div class="login-box">
+      <img class="logo-m" src="../logo-demanda-infinita.png" alt="Demanda Infinita">
+      <div class="kicker">Portal dos mentorados</div>
+      <h1>Entrar</h1>
+      <p class="sub">Use o e-mail e a senha que você recebeu.</p>
+      <form id="form-login">
+        <div class="campo"><label class="lbl" for="login-email">E-mail</label>
+          <input type="email" id="login-email" required autocomplete="username"></div>
+        <div class="campo"><label class="lbl" for="login-senha">Senha</label>
+          <div class="senha-wrap"><input type="password" id="login-senha" required autocomplete="current-password"><button type="button" class="ver" data-act="senha-ver" data-alvo="login-senha" aria-label="Mostrar ou ocultar a senha">mostrar</button></div></div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <div class="erro" id="login-erro" role="alert"></div>
+      </form>
+      <div class="ajuda">Não recebeu o acesso ou esqueceu a senha? Fale com o Igor que ele gera uma nova.</div>
+    </div>
   </div>
 </div>
 
@@ -570,6 +726,17 @@ const ICO = {
   mais: '<path d="M12 5v14M5 12h14"/>',
   baixar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
   chave: '<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3"/>',
+  config: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>',
+  relogio: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  grade: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  lista: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  subir: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+  doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+  link: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  chama: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5Z"/>',
+  alvo: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  usuario: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
 };
 const svg = (n, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[n] || ''}</svg>`;
 
@@ -615,8 +782,8 @@ const ir = caminho => { const alvo = '#/' + caminho; if (location.hash === alvo)
 window.addEventListener('hashchange', () => render());
 
 const NAV_CLIENTE = [['inicio', 'Início'], ['plano', 'Plano de ação'], ['posts', 'Posts'], ['calendario', 'Calendário'], ['drive', 'Drive']];
-const NAV_ADMIN = [['dashboard', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['mentorados', 'Mentorados'], ['modelos', 'Modelos de plano']];
-const ADMIN_ATIVA = { post: 'aprovacoes', mentorado: 'mentorados', modelo: 'modelos', lancamento: 'mentorados' };
+const NAV_ADMIN = [['dashboard', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['mentorados', 'Mentorados'], ['modelos', 'Modelos de plano'], ['config', 'Configurações']];
+const ADMIN_ATIVA = { post: 'aprovacoes', mentorado: 'mentorados', modelo: 'modelos', lancamento: 'config' };
 
 function resolverCtx(p) {
   if (S.admin) {
@@ -634,9 +801,9 @@ function montarNav(ctx) {
   const ativa = ctx.modo === 'admin' ? (ADMIN_ATIVA[ctx.tela] || ctx.tela) : ctx.tela;
   $('#nav').innerHTML = itens.map(([id, nome]) => {
     const cont = id === 'aprovacoes' ? S.contAguardando : (id === 'posts' && ctx.modo === 'cliente') ? S.contPosts : 0;
-    return `<button class="nav-item ${id === ativa ? 'ativo' : ''}" data-act="nav" data-to="${id}" ${id === ativa ? 'aria-current="page"' : ''}>${svg(id)}<span>${esc(nome)}</span><span class="cont" style="${cont ? 'display:inline-flex' : ''}">${cont || ''}</span></button>`;
+    return `${id === 'config' ? '<div class="nav-sep"></div>' : ''}<button class="nav-item ${id === ativa ? 'ativo' : ''}" data-act="nav" data-to="${id}" ${id === ativa ? 'aria-current="page"' : ''}>${svg(id)}<span>${esc(nome)}</span><span class="cont" style="${cont ? 'display:inline-flex' : ''}">${cont || ''}</span></button>`;
   }).join('');
-  $('#side-rodape').textContent = ctx.modo === 'admin' ? 'Painel do Igor' : 'Seu portal de mentoria';
+  $('#side-rodape').textContent = ctx.modo === 'admin' ? 'Painel do Igor' : 'Portal dos mentorados';
 }
 ACT['nav'] = el => {
   const c = S.ctx; const to = el.dataset.to;
@@ -693,6 +860,7 @@ $('#form-login').addEventListener('submit', async e => {
   await iniciar();
 });
 ACT['sair'] = async () => { await sb.auth.signOut(); location.reload(); };
+ACT['senha-ver'] = el => { const i = document.getElementById(el.dataset.alvo); const ver = i.type === 'password'; i.type = ver ? 'text' : 'password'; el.textContent = ver ? 'ocultar' : 'mostrar'; };
 ACT['user-toggle'] = () => $('#user-menu').classList.toggle('aberto');
 ACT['trocar-senha'] = () => {
   $('#user-menu').classList.remove('aberto');
@@ -849,12 +1017,12 @@ function assinarRealtime() {
 
 /* ---------- tour de primeiro acesso (versionado, igual ao painel) ---------- */
 // Para soltar tour novo: mude NOVIDADES.versao e reescreva os passos. Corrigiu só um texto? Não mexa na versão.
-const NOVIDADES = { versao: '2026-10-12', passos: [
-  { emoji: '👋', titulo: 'Bem-vindo ao seu portal', texto: 'Aqui fica **tudo** da sua mentoria: plano de ação, posts, arquivos e o checklist do dia. Chega de material perdido no WhatsApp.' },
-  { emoji: '✅', titulo: 'O checklist de hoje', texto: 'Todo dia, três coisas: **conectar, postar e comentar**. Leva um minuto pra marcar, e é o que mostra pra nós onde você está.', aba: 'inicio' },
-  { emoji: '✍️', titulo: 'Post com aprovação', texto: 'Escreveu um post? Mande em **Posts → Novo post**. O Igor aprova ou pede ajuste e o aviso chega aqui no sino. Aprovado, é só publicar e colar o link: o checklist do dia se preenche sozinho.', aba: 'posts' },
-  { emoji: '🗺️', titulo: 'Seu plano de ação', texto: 'É a sua lista de passos. Marque cada item quando concluir. Quem **vê** o progresso **mantém** o ritmo.', aba: 'plano' },
-  { emoji: '📁', titulo: 'Seu drive', texto: 'Materiais, prints, vídeos: tudo na sua pasta. Só você e o Igor enxergam.', aba: 'drive' },
+const NOVIDADES = { versao: '2026-10-13', passos: [
+  { ico: 'inicio', titulo: 'Bem-vindo ao seu portal', texto: 'Aqui fica **tudo** da sua mentoria: plano de ação, posts, arquivos e o checklist do dia. Chega de material perdido no WhatsApp.' },
+  { ico: 'check', titulo: 'O checklist de hoje', texto: 'Todo dia, três coisas: **conectar, postar e comentar**. Leva um minuto pra marcar, e é o que mostra pra nós onde você está.', aba: 'inicio' },
+  { ico: 'posts', titulo: 'Post com aprovação', texto: 'Escreveu um post? Mande em **Posts → Novo post**. O Igor aprova ou pede ajuste e o aviso chega aqui no sino. Aprovado, é só publicar e colar o link: o checklist do dia se preenche sozinho.', aba: 'posts' },
+  { ico: 'plano', titulo: 'Seu plano de ação', texto: 'Cada passo mostra **como fazer, o que entregar e quanto tempo leva**. Marque ao concluir e, quando quiser, baixe o plano em PDF.', aba: 'plano' },
+  { ico: 'drive', titulo: 'Seu drive', texto: 'Materiais, prints, vídeos: tudo na sua pasta. Só você e o Igor enxergam.', aba: 'drive' },
 ] };
 let tourI = 0;
 async function verificarTour() {
@@ -870,7 +1038,7 @@ function tourAbrir(i) {
   if (p.aba) { const b = $(`.nav-item[data-to="${p.aba}"]`); if (b) b.classList.add('piscando'); }
   const t = $('#tour'); t.classList.add('aberto');
   t.innerHTML = `<div class="tour-card"><button class="tour-fechar" data-act="tour-fechar" aria-label="Fechar">✕</button>
-    <div class="tour-passo"><div class="tour-emoji">${p.emoji}</div><div class="tour-titulo">${esc(p.titulo)}</div><div class="tour-texto">${md(p.texto)}</div></div>
+    <div class="tour-passo"><div class="tour-ico">${svg(p.ico, 26)}</div><div class="tour-titulo">${esc(p.titulo)}</div><div class="tour-texto">${md(p.texto)}</div></div>
     <div class="tour-rodape"><div class="tour-pontos">${NOVIDADES.passos.map((_, k) => `<i class="${k === i ? 'ativo' : ''}"></i>`).join('')}</div>
     <div class="tour-botoes">${ultimo ? '' : '<button class="tour-pular" data-act="tour-fechar">pular tour</button>'}
     ${p.aba && !ultimo ? `<button class="btn btn-sm" data-act="tour-ir" data-aba="${p.aba}">me leva lá</button>` : ''}
@@ -905,7 +1073,7 @@ async function lembreteChecklist() {
   if (statusAtividade(a[0], cli) === 'completo') return;
   lsSet('lembrete-' + hoje, '1');
   const t = $('#tour'); t.classList.add('aberto');
-  t.innerHTML = `<div class="tour-card lembrete-card"><div class="tour-emoji">⏰</div><div class="tour-titulo">Você fechou o checklist de ${quando}?</div>
+  t.innerHTML = `<div class="tour-card lembrete-card"><div class="tour-ico">${svg('relogio', 26)}</div><div class="tour-titulo">Você fechou o checklist de ${quando}?</div>
     <div class="tour-texto">${esc(fmtDiaSem(ontem))} ficou em aberto.</div>
     <div class="tour-rodape" style="justify-content:center"><div class="tour-botoes"><button class="btn" data-act="tour-fechar-simples">Ok</button>
     <button class="btn btn-primary" data-act="lembrete-preencher" data-dia="${ontem}">Preencher agora</button></div></div></div>`;
@@ -951,7 +1119,7 @@ function formChecklist(dia, a, cli, opt = {}) {
       <div class="hoje-item ${(a.conexoes || 0) >= mC ? 'feito' : ''}" data-box="conexoes"><div class="tt">Conexões</div><div class="meta">meta: ${mC} por dia</div>${numCtl('conexoes', a.conexoes, 'conexões')}</div>
       <div class="hoje-item ${a.post_feito ? 'feito' : ''}" data-box="post"><div class="tt">Post</div><div class="meta">meta: ${cli.meta_semanal || 4} por semana</div>
         <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-weight:700;font-size:.88rem"><input type="checkbox" name="post_feito" ${a.post_feito ? 'checked' : ''} data-chg="ck" ${dis}> Postei neste dia</label>
-        <input type="url" name="post_link" value="${esc(a.post_link || '')}" placeholder="Link do post (opcional)" data-chg="ck" ${dis} style="margin-top:8px"></div>
+        <input type="url" name="post_link" value="${esc(a.post_link || '')}" placeholder="Link (opcional)" data-chg="ck" ${dis} style="margin-top:8px"></div>
       <div class="hoje-item ${(a.comentarios || 0) >= mMin ? 'feito' : ''}" data-box="comentarios"><div class="tt">Comentários</div><div class="meta">meta: ${mMin} a ${mMax} em posts do seu público</div>${numCtl('comentarios', a.comentarios, 'comentários')}</div>
     </div>
     <div class="row-between" style="margin-top:12px"><span class="hint" data-ckstatus>${opt.auto && !opt.somenteLeitura ? 'Salva sozinho a cada mudança.' : ''}</span>
@@ -1022,57 +1190,102 @@ ACT['pend-enviado'] = async el => {
   toast('Avisei o Igor.'); await carregarNotifs(); await render();
 };
 
+// sequência = dias úteis seguidos com o checklist completo (fim de semana não quebra; hoje ainda aberto não quebra)
+function calcSequencia(mapa, cli, hoje) {
+  let n = 0, d = hoje;
+  for (let k = 0; k < 120; k++, d = addDias(d, -1)) {
+    if (fimDeSemana(d) && !(mapa[d] && statusAtividade(mapa[d], cli) === 'completo')) continue;
+    const completo = statusAtividade(mapa[d], cli) === 'completo';
+    if (completo) n++; else if (d !== hoje) break;
+  }
+  return n;
+}
+function semanaHtml(mapa, cli, hoje) {
+  const dow = (dataDe(hoje).getDay() + 6) % 7, seg = addDias(hoje, -dow), NOMES = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
+  let feitos = 0;
+  const html = NOMES.map((nm, i) => {
+    const d = addDias(seg, i), futuro = d > hoje, fds = i >= 5, st = futuro ? 'vazio' : statusAtividade(mapa[d], cli);
+    if (st === 'completo' && !fds) feitos++;
+    const cls = futuro ? 'futuro' : (st !== 'vazio' ? st : (fds ? 'fds' : ''));
+    const rot = futuro ? 'ainda não chegou' : st === 'completo' ? 'checklist completo' : st === 'parcial' ? 'checklist parcial' : fds ? 'fim de semana' : 'sem registro';
+    const ic = st === 'completo' && !futuro ? svg('check', 12) : '';
+    return `<div class="sem-dia ${cls} ${d === hoje ? 'hoje' : ''}" role="img" aria-label="${esc(nm)} ${esc(fmtCurta(d))}: ${rot}" title="${esc(fmtCurta(d))} · ${rot}"><span class="d">${nm}</span><span class="ic">${ic}</span><span class="n">${d.slice(8, 10)}</span></div>`;
+  }).join('');
+  return { html: `<div class="semana">${html}</div>`, feitos };
+}
 async function vInicio(ctx) {
   const cli = await getCliente(ctx.clienteId);
   if (!cli) throw new Error('Mentorado não encontrado.');
   const ro = ctx.modo === 'preview', hoje = hojeISO();
   const [prog, ativ, posts, planos, pend] = await Promise.all([
     q(sb.from('cli_progresso').select('*').eq('cliente_id', cli.id)),
-    q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).eq('data', hoje).limit(1)),
+    q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).gte('data', addDias(hoje, -60)).order('data')),
     q(sb.from('cli_posts').select('id,titulo,status,versao,data_prevista,enviado_em,texto').eq('cliente_id', cli.id).order('id', { ascending: false }).limit(60)),
     q(sb.from('cli_planos').select('*').eq('cliente_id', cli.id).eq('status', 'ativo')),
     q(sb.from('cli_materiais_pendentes').select('*').eq('cliente_id', cli.id).eq('status', 'pendente').order('pedido_em')),
   ]);
   const plano = planos[0] || null;
   const itens = plano ? await q(sb.from('cli_plano_itens').select('*').eq('plano_id', plano.id).order('fase_ordem').order('ordem').order('id')) : [];
+  const mapa = {}; ativ.forEach(a => { mapa[a.data] = a; });
+  const aHoje = mapa[hoje], stHoje = statusAtividade(aHoje, cli);
+  const rp = plano ? resumoPlano(plano, itens) : null, seq = calcSequencia(mapa, cli, hoje), sem = semanaHtml(mapa, cli, hoje);
 
   // 1) o que exige ação AGORA (é o que traz o mentorado de volta ao portal)
   const aprovados = posts.filter(p => p.status === 'aprovado'), ajustes = posts.filter(p => p.status === 'ajustes');
   const atencao = [
-    ...aprovados.map(p => `<div class="card destaque"><div class="row-between"><div><span class="chip aprovado">Aprovado</span><h2 style="margin-top:8px">${esc(p.titulo || 'Post sem título')}</h2>
+    ...aprovados.map(p => `<div class="card destaque"><div class="row-between"><div><span class="chip aprovado">Aprovado</span><h2 style="margin-top:8px">${esc(postTitulo(p))}</h2>
       <p class="desc" style="margin:2px 0 0">Está liberado. Publique no LinkedIn e cole o link aqui pra fechar o checklist do dia.</p></div>
       <a class="btn btn-primary" href="${lnkPost(ctx, p.id)}">Publicar e colar o link</a></div></div>`),
-    ...ajustes.map(p => `<div class="card alerta"><div class="row-between"><div><span class="chip ajustes">Ajustes pedidos</span><h2 style="margin-top:8px">${esc(p.titulo || 'Post sem título')}</h2>
+    ...ajustes.map(p => `<div class="card alerta"><div class="row-between"><div><span class="chip ajustes">Ajustes pedidos</span><h2 style="margin-top:8px">${esc(postTitulo(p))}</h2>
       <p class="desc" style="margin:2px 0 0">O Igor deixou comentários. Ajuste e envie de novo.</p></div>
       <a class="btn btn-warn" href="${lnkPost(ctx, p.id)}">Ver o que pediram</a></div></div>`),
   ].join('');
 
-  // 2) próximo passo do plano
-  const abertos = itens.filter(i => !i.concluido), feitos = itens.length - abertos.length;
-  const prox = abertos[0];
+  // 2) cabeçalho: uma frase que diz o que fazer agora + 3 números que mostram o momento
+  const manchete = aprovados.length ? ['Você tem um post aprovado esperando', 'Publique no LinkedIn e cole o link: o checklist de hoje se preenche sozinho.']
+    : ajustes.length ? ['Pediram ajustes num post seu', 'Abra o post, veja o comentário e envie de novo.']
+    : stHoje === 'completo' ? ['Checklist de hoje fechado', rp && rp.prox ? `Quando quiser avançar, o próximo passo do plano é: ${rp.prox.titulo}.` : 'Constância é o que faz o LinkedIn trabalhar por você.']
+    : ['Falta fechar o checklist de hoje', rp && rp.prox ? `Depois dele, o próximo passo do plano: ${rp.prox.titulo}.` : 'Três coisas por dia: conectar, postar e comentar.'];
+  const hero = `<div class="hero"><div class="kicker">${esc(rp && rp.dia ? rp.dia : 'Seu portal')}</div><h2>${esc(manchete[0])}</h2><p>${esc(manchete[1])}</p>
+    <div class="hero-metrics">
+      <div><b>${rp ? rp.pct : 0}<small>%</small></b><span>plano concluído</span>${rp ? `<div class="bar"><i style="width:${rp.pct}%"></i></div>` : ''}</div>
+      <div><b>${seq}<small> ${seq === 1 ? 'dia' : 'dias'}</small></b><span>de sequência</span></div>
+      <div><b>${sem.feitos}<small>/5</small></b><span>dias completos na semana</span></div></div></div>`;
+
+  // 3) plano: o que vem agora
+  const abertos = itens.filter(i => !i.concluido), prox = abertos[0];
   const planoCard = plano ? `<div class="card"><div class="row-between"><h2>Seu plano de ação</h2><a class="btn-link" href="${lnk(ctx, 'plano')}">ver plano completo</a></div>
-    <div class="row" style="margin:10px 0 12px;gap:14px"><div class="plano-pct">${itens.length ? Math.round(feitos / itens.length * 100) : 0}%</div>
-      <div style="flex:1;min-width:140px"><div class="bar"><i style="width:${itens.length ? feitos / itens.length * 100 : 0}%"></i></div><div class="hint">${feitos} de ${itens.length} itens concluídos</div></div></div>
-    ${prox ? `<div class="item-lista" style="border-top:1px solid var(--grid)"><div class="txt"><small style="margin:0 0 2px;color:var(--accent-deep);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:.66rem">Próximo passo · ${esc(prox.fase)}</small>${esc(prox.titulo)}${prox.prazo ? `<small>${chipPrazoTxt(prox.prazo)}</small>` : ''}</div>
-      ${ro ? '' : `<button class="btn btn-sm" data-act="item-marcar" data-id="${prox.id}" data-v="1" data-volta="inicio">Marcar como feito</button>`}</div>` : '<div class="vazio" style="padding:8px 0">Tudo concluído. Hora de falar com o Igor sobre o próximo plano.</div>'}</div>`
+    <div class="row" style="margin:10px 0 12px;gap:14px"><div class="plano-pct">${rp.pct}%</div>
+      <div style="flex:1;min-width:140px"><div class="bar"><i style="width:${rp.pct}%"></i></div><div class="hint">${rp.feitos} de ${rp.total} itens concluídos${rp.minRest ? ` · ≈ ${esc(fmtTempo(rp.minRest))} de trabalho restante` : ''}</div></div>${rp.atras ? `<span class="chip critico">${rp.atras} ${rp.atras === 1 ? 'atrasado' : 'atrasados'}</span>` : ''}</div>
+    ${prox ? `<div class="item-lista" style="border-top:1px solid var(--grid)"><div class="txt"><small style="margin:0 0 3px" class="kicker">Próximo passo · ${esc(prox.fase)}</small>${esc(prox.titulo)}
+        <small style="margin-top:5px">${[prox.tempo_min ? '≈ ' + fmtTempo(prox.tempo_min) : '', prox.prazo ? chipPrazoTxt(prox.prazo) : '', prox.entregavel ? 'entrega: ' + esc(prox.entregavel) : ''].filter(Boolean).join(' · ')}</small></div>
+      <div class="row" style="gap:6px;flex-wrap:nowrap"><a class="btn btn-sm" href="${lnk(ctx, 'plano')}">Passo a passo</a>${ro ? '' : `<button class="btn btn-sm btn-primary" data-act="item-marcar" data-id="${prox.id}" data-v="1" data-volta="inicio">Feito</button>`}</div></div>` : '<div class="vazio" style="padding:8px 0">Tudo concluído. Hora de falar com o Igor sobre o próximo plano.</div>'}</div>`
     : `<div class="card"><h2>Seu plano de ação</h2><div class="vazio">Seu plano de ação ainda está sendo montado. Assim que ficar pronto, ele aparece aqui.</div></div>`;
 
-  // 3) posts
+  // 4) posts
   const cont = s => posts.filter(p => p.status === s).length;
   const postsCard = `<div class="card"><div class="row-between"><h2>Seus posts</h2>${ro ? '' : `<a class="btn btn-primary btn-sm" href="${lnk(ctx, 'posts/novo')}">Novo post</a>`}</div>
     <div class="row" style="margin:12px 0 4px">${['aguardando', 'aprovado', 'ajustes', 'publicado'].map(s => `<span class="chip ${s}">${cont(s)} ${ST[s].toLowerCase()}</span>`).join('')}</div>
-    ${posts.slice(0, 3).map(p => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="${lnkPost(ctx, p.id)}"><div class="txt">${esc(p.titulo || (p.texto || '').split('\n')[0].slice(0, 70) || 'Sem título')}</div>${chipSt(p.status)}</a>`).join('')
+    ${posts.slice(0, 3).map(p => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="${lnkPost(ctx, p.id)}"><div class="txt">${esc(postTitulo(p))}</div>${chipSt(p.status)}</a>`).join('')
       || '<div class="vazio">Você ainda não enviou nenhum post. Escreva o primeiro e mande pra aprovação.</div>'}
     ${posts.length > 3 ? `<div style="margin-top:8px"><a class="btn-link" href="${lnk(ctx, 'posts')}">ver todos os posts</a></div>` : ''}</div>`;
+
+  // 5) rotina diária: como cumprir cada um dos três (método Demanda Infinita)
+  const mC = cli.meta_conexoes || 5, mMin = cli.meta_comentarios_min || 5, mMax = cli.meta_comentarios_max || 10;
+  const rotina = `<details class="rotina"><summary>Como cumprir cada um dos três</summary><div class="rot-grid">
+    <div><b>Conectar · ${mC} por dia</b>Na busca, digite o cargo do seu cliente, filtre por Pessoas e pelo setor. Convite com uma linha de contexto, sem vender nada.<div class="rot-ex">Ex.: “Olá, [nome]. Acompanho o setor de [setor] e gostaria de ter você na minha rede.”</div></div>
+    <div><b>Postar · ${cli.meta_semanal || 4} por semana</b>Todo post passa pela aprovação antes. Publique entre 7h e 9h ou entre 17h e 19h e fique por perto na primeira hora respondendo.</div>
+    <div><b>Comentar · ${mMin} a ${mMax} por dia</b>Em posts do seu público, com 2 ou 3 linhas de experiência sua. “Parabéns pelo post” não leva ninguém ao seu perfil.</div></div></details>`;
 
   return {
     kicker: [cli.empresa, cli.nivel].filter(Boolean).join(' · ') || 'Seu portal',
     titulo: `Olá, ${primeiroNome(cli.nome)}`,
-    html: `${renderStepper(prog)}${atencao}
+    html: `${hero}<div class="dash"><div>${atencao}
       <div class="card"><div class="row-between"><div><h2>Checklist de hoje</h2><p class="desc" style="margin-bottom:12px">${esc(fmtDiaSem(hoje))} · três coisas por dia: conectar, postar e comentar.</p></div>
       <a class="btn-link" href="${lnk(ctx, 'calendario')}">ver calendário</a></div>
-      ${formChecklist(hoje, ativ[0], cli, { auto: !ro, somenteLeitura: ro })}</div>
-      ${planoCard}${postsCard}${cardPendencias(pend, !ro)}`,
+      ${sem.html}${formChecklist(hoje, aHoje, cli, { auto: !ro, somenteLeitura: ro })}${rotina}</div>
+      ${planoCard}</div>
+      <div>${postsCard}${cardPendencias(pend, !ro)}<div class="card"><h2>Etapas da mentoria</h2><p class="desc">Onde você está no onboarding.</p>${renderStepper(prog)}</div></div></div>`,
   };
 }
 
@@ -1112,7 +1325,7 @@ async function calendarioHtml(ctx) {
   return `<div class="cal-nav"><button class="btn btn-sm" data-act="cal-nav" data-d="-1" aria-label="Mês anterior">‹</button>
     <strong style="text-transform:capitalize">${MESES[CAL.mes]} de ${CAL.ano}</strong><button class="btn btn-sm" data-act="cal-nav" data-d="1" aria-label="Próximo mês">›</button></div>
     <div class="cal-grid">${['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map(x => `<div class="cal-dow">${x}</div>`).join('')}${cel}</div>
-    <div class="legenda"><span><i style="background:var(--accent-wash);border:1px solid rgba(12,163,12,.4)"></i>checklist completo</span><span><i style="background:var(--st-aguardando-bg)"></i>parcial</span>
+    <div class="legenda"><span><i style="background:var(--accent-wash);border:1px solid rgba(0,142,67,.4)"></i>checklist completo</span><span><i style="background:var(--st-aguardando-bg)"></i>parcial</span>
     <span><i style="background:var(--field-bg)"></i>vazio</span><span><i style="background:var(--st-publicado-tx);border-radius:50%"></i>post publicado</span><span><i style="background:var(--accent-deep);border-radius:50%"></i>aprovado</span><span><i style="background:#c98400;border-radius:50%"></i>aguardando</span></div>`;
 }
 ACT['dia-abrir'] = async el => {
@@ -1157,7 +1370,7 @@ async function uploadXHR(path, file, onProg) {
     xhr.send(file);
   });
 }
-async function urlAssinada(path, seg = 300) { const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(path, seg); if (error) throw error; return data.signedUrl; }
+async function urlAssinada(path, seg = 300, baixarComo) { const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(path, seg, baixarComo ? { download: baixarComo } : undefined); if (error) throw error; return data.signedUrl; }
 const ehImagem = a => /^image\//.test(a.mime || '');
 
 /* ---------- lista (mentorado e aba do admin) ---------- */
@@ -1402,6 +1615,7 @@ async function vAprovacoes() {
    PLANO DE AÇÃO — o plano E o checklist são o mesmo objeto.
    Modelo = cli_planos com cliente_id null. Mentorado só marca (RPC); admin edita.
    ===================================================================== */
+const PASTA_DOCS = 'Plano de ação/Documentos do plano';
 function prazoInfo(prazo, feito) {
   if (!prazo) return null; const h = hojeISO();
   if (feito) return { cls: 'neutro sem-dot', txt: `prazo ${fmtCurta(prazo)}` };
@@ -1411,8 +1625,12 @@ function prazoInfo(prazo, feito) {
 }
 const chipPrazoTxt = prazo => { const i = prazoInfo(prazo, false); return i ? esc(i.txt) : ''; };
 const cmpItem = (a, b) => a.fase_ordem - b.fase_ordem || a.ordem - b.ordem || a.id - b.id;
-let PLANO = { plano: null, itens: [] };      // plano em edição/visualização na tela atual
+const diffDias = (a, b) => Math.round((dataDe(a) - dataDe(b)) / 864e5);
+const fmtTempo = m => !m ? '' : m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${m % 60 ? ' ' + (m % 60) + ' min' : ''}`;
+const paragrafos = t => String(t || '').split(/\n+/).map(x => x.trim()).filter(Boolean).map(x => `<p>${esc(x)}</p>`).join('');
+let PLANO = { plano: null, itens: [], docs: [] };      // plano em edição/visualização na tela atual
 const FASES_FECHADAS = new Set();
+const ITENS_ABERTOS = new Set();                        // itens com o "como fazer" aberto (sobrevive ao refresh silencioso)
 
 function agruparFases(itens) {
   const m = new Map();
@@ -1423,12 +1641,30 @@ function agruparFases(itens) {
   });
   return [...m.values()];
 }
+const temDetalhe = i => !!(i.como_fazer || i.entregavel || urlSegura(i.link_url));
+// "como fazer": linhas "1. …" viram lista numerada; o resto vira parágrafo
+function comoFazerHtml(txt) {
+  const linhas = String(txt || '').split('\n').map(l => l.trim()).filter(Boolean); let out = '', lista = [];
+  const fecha = () => { if (lista.length) { out += `<ol class="det-lista">${lista.map(x => `<li>${esc(x)}</li>`).join('')}</ol>`; lista = []; } };
+  linhas.forEach(l => { const m = /^\d+[.)]\s+(.*)$/.exec(l); if (m) lista.push(m[1]); else { fecha(); out += `<p>${esc(l)}</p>`; } });
+  fecha(); return out;
+}
+function detalheHtml(i) {
+  const lk = urlSegura(i.link_url);
+  return `<div class="pi-det">${i.como_fazer ? `<div class="det-rot">Como fazer</div>${comoFazerHtml(i.como_fazer)}` : ''}
+    ${i.entregavel ? `<div class="det-entrega">${svg('check', 16)}<div><span class="det-rot">Você entrega</span>${esc(i.entregavel)}</div></div>` : ''}
+    ${lk ? `<a class="btn btn-sm" href="${esc(lk)}" target="_blank" rel="noopener noreferrer">${svg('link', 14)} ${esc(i.link_rotulo || 'Material de apoio')}</a>` : ''}</div>`;
+}
 function itemHtml(i, o) {
   const pz = o.modelo ? (i.prazo_dias != null ? { cls: 'neutro sem-dot', txt: `dia ${i.prazo_dias}` } : null) : prazoInfo(i.prazo, i.concluido);
-  return `<div class="pi ${i.concluido ? 'feito' : ''}" data-item="${i.id}">
+  const det = temDetalhe(i), aberto = ITENS_ABERTOS.has(i.id);
+  return `<div class="pi ${i.concluido ? 'feito' : ''} ${det && aberto ? 'det-aberto' : ''}" data-item="${i.id}" data-tempo="${i.tempo_min || 0}" data-prazo="${esc(i.prazo || '')}">
     <div class="ck">${o.modelo ? '<span style="display:block;width:8px;height:8px;border-radius:50%;background:var(--grid);margin:7px 6px"></span>'
       : `<input type="checkbox" ${i.concluido ? 'checked' : ''} data-chg="item-marcar" data-id="${i.id}" ${o.ro ? 'disabled' : ''} aria-label="Concluir: ${esc(i.titulo)}">`}</div>
     <div class="tx"><div class="tt">${esc(i.titulo)}</div>${i.descricao ? `<div class="ds">${esc(i.descricao)}</div>` : ''}
+      <div class="pi-chips">${i.tempo_min ? `<span class="chip neutro sem-dot">${svg('relogio', 12)} ${esc(fmtTempo(i.tempo_min))}</span>` : ''}
+        ${det ? `<button class="btn-link pi-more" data-act="item-det" data-id="${i.id}" aria-expanded="${aberto}">${aberto ? 'Ocultar o passo a passo' : 'Ver o passo a passo'}</button>` : ''}</div>
+      ${det ? detalheHtml(i) : ''}
       ${i.concluido && i.concluido_em ? `<div class="hint">concluído em ${esc(fmtData(isoLocal(new Date(i.concluido_em))))}</div>` : ''}</div>
     <div class="lado">${pz ? `<span class="chip ${pz.cls}">${esc(pz.txt)}</span>` : ''}
       ${o.editavel ? `<div class="acoes-ed"><button class="ic-btn" data-act="item-mover" data-id="${i.id}" data-d="-1" title="Subir" aria-label="Subir item">${svg('cima', 16)}</button>
@@ -1437,38 +1673,86 @@ function itemHtml(i, o) {
       <button class="ic-btn" data-act="item-excluir" data-id="${i.id}" title="Excluir" aria-label="Excluir item">${svg('lixo', 16)}</button></div>` : ''}</div></div>`;
 }
 function faseHtml(f, o, aberta) {
-  const feitos = f.itens.filter(i => i.concluido).length;
-  const nf = esc(f.nome);
+  const feitos = f.itens.filter(i => i.concluido).length, pct = f.itens.length ? Math.round(feitos / f.itens.length * 100) : 0;
+  const nf = esc(f.nome), obj = (f.itens.find(i => i.fase_objetivo) || {}).fase_objetivo;
+  const prazos = f.itens.map(i => i.prazo).filter(Boolean).sort(), periodo = !o.modelo && prazos.length ? (prazos[0] === prazos[prazos.length - 1] ? `até ${fmtCurta(prazos[0])}` : `${fmtCurta(prazos[0])} a ${fmtCurta(prazos[prazos.length - 1])}`) : '';
   return `<section class="fase ${aberta ? 'aberta' : ''}" data-fase="${nf}">
-    <div class="fase-cab"><button class="fase-tg" data-act="fase-toggle" aria-expanded="${aberta}"><span class="seta">${svg('seta', 16)}</span><span class="fn">${nf}</span>
+    <div class="fase-cab"><button class="fase-tg" data-act="fase-toggle" aria-expanded="${aberta}"><span class="seta">${svg('seta', 16)}</span>
+      <span class="fn">${nf}${periodo ? `<small>${esc(periodo)}</small>` : ''}</span>
+      ${o.modelo ? '' : `<span class="fbar" aria-hidden="true"><i style="width:${pct}%"></i></span>`}
       <span class="fp">${o.modelo ? `${f.itens.length} ${f.itens.length === 1 ? 'item' : 'itens'}` : `${feitos}/${f.itens.length}`}</span></button>
       ${o.editavel ? `<div class="acoes-ed"><button class="ic-btn" data-act="fase-mover" data-fase="${nf}" data-d="-1" title="Subir fase" aria-label="Subir fase">${svg('cima', 16)}</button>
       <button class="ic-btn" data-act="fase-mover" data-fase="${nf}" data-d="1" title="Descer fase" aria-label="Descer fase">${svg('baixo', 16)}</button>
       <button class="ic-btn" data-act="fase-renomear" data-fase="${nf}" title="Renomear fase" aria-label="Renomear fase">${svg('editar', 16)}</button>
       <button class="ic-btn" data-act="fase-excluir" data-fase="${nf}" title="Excluir fase" aria-label="Excluir fase">${svg('lixo', 16)}</button></div>` : ''}</div>
-    <div class="fase-corpo">${f.itens.map(i => itemHtml(i, o)).join('')}
+    <div class="fase-corpo">${obj ? `<p class="fase-obj">${esc(obj)}</p>` : ''}${f.itens.map(i => itemHtml(i, o)).join('')}
       ${o.editavel ? `<div style="padding:10px 0 4px"><button class="btn btn-sm" data-act="item-novo" data-fase="${nf}">${svg('mais', 14)} Adicionar item nesta fase</button></div>` : ''}</div></section>`;
 }
+// números do plano (usados no cabeçalho e no recálculo ao marcar um item)
+function resumoPlano(plano, itens) {
+  const hoje = hojeISO(), total = itens.length, feitos = itens.filter(i => i.concluido).length, abertos = itens.filter(i => !i.concluido);
+  const atras = abertos.filter(i => i.prazo && i.prazo < hoje).length, minRest = abertos.reduce((m, i) => m + (i.tempo_min || 0), 0);
+  const prazos = abertos.map(i => i.prazo).filter(Boolean).sort(), prox = [...abertos].sort(cmpItem)[0] || null;
+  let dia = '';
+  if (plano.inicio) {
+    const n = diffDias(hoje, plano.inicio) + 1;
+    if (n < 1) dia = `Começa em ${fmtData(plano.inicio)}`;
+    else if (plano.fim) { const f = diffDias(plano.fim, hoje); dia = f >= 0 ? `Dia ${n} · termina em ${fmtData(plano.fim)}${f ? ` (faltam ${f} ${f === 1 ? 'dia' : 'dias'})` : ' (hoje)'}` : `Prazo encerrado em ${fmtData(plano.fim)}`; }
+    else dia = `Dia ${n}`;
+  }
+  return { total, feitos, pct: total ? Math.round(feitos / total * 100) : 0, atras, minRest, proxPrazo: prazos[0] || null, prox, dia };
+}
 function planoDocHtml(plano, itens, o) {
-  const fases = agruparFases(itens), total = itens.length, feitos = itens.filter(i => i.concluido).length;
-  const pct = total ? Math.round(feitos / total * 100) : 0, hoje = hojeISO();
-  const atras = itens.filter(i => !i.concluido && i.prazo && i.prazo < hoje).length;
+  const fases = agruparFases(itens), r = resumoPlano(plano, itens);
   const primeiraPend = fases.findIndex(f => f.itens.some(i => !i.concluido));
   const periodo = plano.inicio ? `${fmtData(plano.inicio)}${plano.fim ? ' a ' + fmtData(plano.fim) : ''}` : '';
-  return `<div class="card"><div class="row-between"><div><div class="kicker">${o.modelo ? 'Modelo de plano' : 'Plano de ação'}</div><h2 style="font-size:1.2rem;margin-top:2px">${esc(plano.titulo)}</h2>
-      ${plano.objetivo ? `<p class="sec" style="margin-top:4px;max-width:640px;white-space:pre-wrap">${esc(plano.objetivo)}</p>` : ''}${periodo ? `<p class="hint">${esc(periodo)}</p>` : ''}</div>
-      ${o.editavel ? `<button class="btn btn-sm" data-act="plano-meta">${svg('editar', 15)} Editar dados do plano</button>` : ''}</div>
-    ${o.modelo ? '' : `<div class="plano-topo" style="margin-top:16px"><div class="plano-pct" id="plano-pct">${pct}%</div>
-      <div style="flex:1;min-width:180px"><div class="bar"><i id="plano-bar" style="width:${pct}%"></i></div><div class="hint" id="plano-cont">${feitos} de ${total} itens concluídos</div></div>
-      ${atras ? `<span class="chip critico" id="plano-atras">${atras} ${atras === 1 ? 'atrasado' : 'atrasados'}</span>` : '<span id="plano-atras"></span>'}</div>`}</div>
+  const docs = o.docs || [];
+  const prox = r.prox && !o.modelo ? `<div class="prox-passo"><div><div class="kicker">Próximo passo · ${esc(r.prox.fase)}</div><h3>${esc(r.prox.titulo)}</h3>
+      <div class="row" style="margin-top:8px;gap:8px">${r.prox.tempo_min ? `<span class="chip neutro sem-dot">${svg('relogio', 12)} ${esc(fmtTempo(r.prox.tempo_min))}</span>` : ''}${r.prox.prazo ? `<span class="chip ${prazoInfo(r.prox.prazo, false).cls}">${chipPrazoTxt(r.prox.prazo)}</span>` : ''}</div></div>
+      ${temDetalhe(r.prox) ? `<button class="btn btn-sm" data-act="item-det-ir" data-id="${r.prox.id}">Ver o passo a passo</button>` : ''}</div>` : '';
+  return `<div class="card plano-cab"><div class="row-between" style="align-items:flex-start"><div style="min-width:0;flex:1"><div class="kicker">${o.modelo ? 'Modelo de plano' : 'Plano de ação'}</div><h2 style="font-size:1.3rem;margin-top:3px">${esc(plano.titulo)}</h2>
+      ${plano.objetivo ? `<div class="plano-obj">${paragrafos(plano.objetivo)}</div>` : ''}
+      ${periodo ? `<p class="hint" style="margin-top:8px">${esc(periodo)}${r.dia && !o.modelo ? ' · ' + esc(r.dia) : ''}</p>` : ''}</div>
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn btn-sm" data-act="plano-exportar-menu" aria-haspopup="true">${svg('baixar', 15)} Exportar</button>
+        ${o.editavel && !o.modelo ? `<button class="btn btn-sm" data-act="plano-importar">${svg('subir', 15)} Importar</button>` : ''}${o.editavel ? `<button class="btn btn-sm" data-act="plano-meta">${svg('editar', 15)} Editar dados</button>` : ''}</div></div>
+    ${o.modelo ? '' : `<div class="plano-topo" style="margin-top:18px"><div class="plano-pct" id="plano-pct">${r.pct}%</div>
+      <div style="flex:1;min-width:180px"><div class="bar"><i id="plano-bar" style="width:${r.pct}%"></i></div><div class="hint" id="plano-cont">${r.feitos} de ${r.total} itens concluídos</div></div>
+      ${r.atras ? `<span class="chip critico" id="plano-atras">${r.atras} ${r.atras === 1 ? 'atrasado' : 'atrasados'}</span>` : '<span id="plano-atras"></span>'}</div>
+      <div class="mini-stats"><div><b id="ms-feitos">${r.feitos}/${r.total}</b><span>itens concluídos</span></div>
+        <div><b id="ms-tempo">${r.minRest ? '≈ ' + esc(fmtTempo(r.minRest)) : '—'}</b><span>de trabalho restante</span></div>
+        <div><b id="ms-prazo">${r.proxPrazo ? esc(fmtCurta(r.proxPrazo)) : '—'}</b><span>próximo prazo</span></div></div>`}</div>
+    ${prox}
+    ${!o.modelo && (docs.length || o.editavel) ? docsCardHtml(docs, o.editavel) : ''}
     ${fases.length ? fases.map((f, k) => faseHtml(f, o, FASES_FECHADAS.has(f.nome) ? false : (o.modelo || o.editavel ? true : k === Math.max(0, primeiraPend)))).join('')
       : '<div class="card"><div class="vazio">Plano vazio.</div></div>'}
     ${o.editavel ? `<div style="margin:6px 0 16px"><button class="btn" data-act="item-novo" data-fase="">${svg('mais', 15)} Adicionar nova fase</button></div>` : ''}`;
+}
+function docsCardHtml(docs, admin) {
+  return `<div class="card"><div class="row-between"><div><h2>Documentos do plano</h2><p class="desc" style="margin:2px 0 0">${admin ? 'O PDF ou HTML do plano, guardado na pasta deste mentorado. Ele vê aqui na tela dele.' : 'O plano completo, em documento.'}</p></div>
+    ${admin ? `<button class="btn btn-sm" data-act="plano-importar">${svg('subir', 15)} Importar documento</button>` : ''}</div>
+    ${docs.length ? docs.map(d => `<div class="item-lista"><div class="txt row" style="gap:12px;flex-wrap:nowrap">${icoArq(d)}<span style="min-width:0"><span class="dr-nome" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d.nome)}</span><small>${esc(fmtData(isoLocal(new Date(d.created_at))))} · ${esc(fmtBytes(d.tamanho))}</small></span></div>
+      <div class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn btn-sm" data-act="pd-abrir" data-id="${d.id}">${svg('olho', 14)} Abrir</button><button class="btn btn-sm" data-act="pd-baixar" data-id="${d.id}">${svg('baixar', 14)} Baixar</button>
+      ${admin ? `<button class="ic-btn" data-act="pd-excluir" data-id="${d.id}" title="Excluir documento" aria-label="Excluir ${esc(d.nome)}">${svg('lixo', 16)}</button>` : ''}</div></div>`).join('')
+      : '<div class="vazio" style="padding:12px 0">Nenhum documento ainda. Use “Importar documento” pra guardar o PDF ou HTML do plano.</div>'}</div>`;
 }
 ACT['fase-toggle'] = el => {
   const s = el.closest('.fase'), nome = s.dataset.fase; s.classList.toggle('aberta');
   el.setAttribute('aria-expanded', s.classList.contains('aberta'));
   if (s.classList.contains('aberta')) FASES_FECHADAS.delete(nome); else FASES_FECHADAS.add(nome);
+};
+function alternarDetalhe(id, abrir) {
+  const row = $(`.pi[data-item="${id}"]`); if (!row) return;
+  const ab = abrir == null ? !ITENS_ABERTOS.has(Number(id)) : abrir;
+  if (ab) ITENS_ABERTOS.add(Number(id)); else ITENS_ABERTOS.delete(Number(id));
+  row.classList.toggle('det-aberto', ab);
+  const b = $('.pi-more', row); if (b) { b.setAttribute('aria-expanded', ab); b.textContent = ab ? 'Ocultar o passo a passo' : 'Ver o passo a passo'; }
+}
+ACT['item-det'] = el => alternarDetalhe(el.dataset.id);
+ACT['item-det-ir'] = el => {
+  const row = $(`.pi[data-item="${el.dataset.id}"]`); if (!row) return;
+  const fase = row.closest('.fase'); if (fase && !fase.classList.contains('aberta')) { fase.classList.add('aberta'); FASES_FECHADAS.delete(fase.dataset.fase); }
+  alternarDetalhe(el.dataset.id, true); row.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
 /* ---------- marcar item (mentorado) ---------- */
@@ -1477,15 +1761,20 @@ function recalcPlanoDOM() {
   const pct = total ? Math.round(feitos / total * 100) : 0;
   const set = (id, fn) => { const e = $('#' + id); if (e) fn(e); };
   set('plano-pct', e => { e.textContent = pct + '%'; }); set('plano-bar', e => { e.style.width = pct + '%'; });
-  set('plano-cont', e => { e.textContent = `${feitos} de ${total} itens concluídos`; });
-  $$('.fase').forEach(s => { const cs = $$('input[data-chg="item-marcar"]', s); const fp = $('.fp', s); if (fp) fp.textContent = `${cs.filter(c => c.checked).length}/${cs.length}`; });
+  set('plano-cont', e => { e.textContent = `${feitos} de ${total} itens concluídos`; }); set('ms-feitos', e => { e.textContent = `${feitos}/${total}`; });
+  const min = todos.filter(c => !c.checked).reduce((m, c) => m + Number(c.closest('.pi').dataset.tempo || 0), 0);
+  set('ms-tempo', e => { e.textContent = min ? '≈ ' + fmtTempo(min) : '—'; });
+  const prazos = todos.filter(c => !c.checked).map(c => c.closest('.pi').dataset.prazo).filter(Boolean).sort();
+  set('ms-prazo', e => { e.textContent = prazos[0] ? fmtCurta(prazos[0]) : '—'; });
+  $$('.fase').forEach(s => { const cs = $$('input[data-chg="item-marcar"]', s); const f = cs.filter(c => c.checked).length; const fp = $('.fp', s); if (fp) fp.textContent = `${f}/${cs.length}`;
+    const b = $('.fbar i', s); if (b) b.style.width = (cs.length ? f / cs.length * 100 : 0) + '%'; });
 }
 CHG['item-marcar'] = async el => {
   const marcado = el.checked, linha = el.closest('.pi');
   linha.classList.toggle('feito', marcado); recalcPlanoDOM();
   try { await rpc('cli_marcar_item', { p_item_id: Number(el.dataset.id), p_concluido: marcado }); }
   catch (e) { el.checked = !marcado; linha.classList.toggle('feito', !marcado); recalcPlanoDOM(); throw e; }
-  carregarNotifs();
+  carregarNotifs(); render({ silencioso: true });
 };
 ACT['item-marcar'] = async el => {
   await ocupado(el, () => rpc('cli_marcar_item', { p_item_id: Number(el.dataset.id), p_concluido: el.dataset.v === '1' }));
@@ -1502,19 +1791,20 @@ async function carregarPlanoAtivo(clienteId) {
 async function planoConteudo(ctx) {
   const admin = ctx.modo === 'admin', ro = ctx.modo === 'preview';
   const { plano, itens, arquivados } = await carregarPlanoAtivo(ctx.clienteId);
-  PLANO = { plano, itens };
+  const docs = await q(sb.from('cli_arquivos').select('*').eq('cliente_id', ctx.clienteId).eq('pasta', PASTA_DOCS).order('id', { ascending: false }));
+  PLANO = { plano, itens, docs };
   if (!plano) {
-    if (!admin) return '<div class="card"><div class="vazio"><b>Seu plano de ação ainda está sendo montado.</b><br>Assim que ficar pronto, ele aparece aqui com o checklist de cada passo.</div></div>';
+    if (!admin) return '<div class="card"><div class="vazio"><b>Seu plano de ação ainda está sendo montado.</b><br>Assim que ficar pronto, ele aparece aqui com o checklist de cada passo.</div></div>' + (docs.length ? docsCardHtml(docs, false) : '');
     const modelos = await q(sb.from('cli_planos').select('id,titulo').is('cliente_id', null).order('titulo'));
     return `<div class="card"><h2>Este mentorado ainda não tem plano</h2><p class="desc">Comece de um modelo e ajuste, ou crie um plano em branco.</p>
       <div class="grid2"><div class="campo"><label class="lbl" for="md-modelo">Modelo</label><select id="md-modelo">${modelos.map(m => `<option value="${m.id}">${esc(m.titulo)}</option>`).join('') || '<option value="">Nenhum modelo criado</option>'}</select></div>
       <div class="campo"><label class="lbl" for="md-inicio">Começa em</label><input type="date" id="md-inicio" value="${hojeISO()}"></div></div>
       <div class="row"><button class="btn btn-primary" data-act="plano-aplicar" ${modelos.length ? '' : 'disabled'}>Aplicar modelo</button><button class="btn" data-act="plano-vazio">Criar plano em branco</button></div></div>`
-      + arquivadosHtml(arquivados);
+      + (docs.length || admin ? docsCardHtml(docs, admin) : '') + arquivadosHtml(arquivados);
   }
   const barra = admin ? `<div class="row" style="margin-bottom:14px"><button class="btn btn-sm" data-act="plano-trocar">Trocar por outro modelo</button>
     <button class="btn btn-sm" data-act="plano-comomodelo">Salvar como modelo</button><button class="btn btn-sm btn-danger" data-act="plano-arquivar">Arquivar plano</button></div>` : '';
-  return barra + planoDocHtml(plano, itens, { editavel: admin, ro, modelo: false }) + arquivadosHtml(arquivados);
+  return barra + planoDocHtml(plano, itens, { editavel: admin, ro, modelo: false, docs }) + arquivadosHtml(arquivados);
 }
 const arquivadosHtml = arq => arq.length ? `<div class="card"><h3>Planos anteriores</h3>${arq.map(p => `<div class="item-lista"><div class="txt">${esc(p.titulo)}<small>${esc(p.inicio ? fmtData(p.inicio) : '')}${p.fim ? ' a ' + esc(fmtData(p.fim)) : ''} · arquivado</small></div></div>`).join('')}</div>` : '';
 async function vPlano(ctx) {
@@ -1575,30 +1865,43 @@ const itemPorId = id => PLANO.itens.find(i => i.id === Number(id));
 const modeloAtual = () => PLANO.plano && PLANO.plano.cliente_id == null;
 function modalItem(item, fase) {
   const fases = [...new Set(PLANO.itens.sort(cmpItem).map(i => i.fase))], modelo = modeloAtual();
+  const faseAtual = item ? item.fase : fase || '', objFase = (PLANO.itens.find(i => i.fase === faseAtual && i.fase_objetivo) || {}).fase_objetivo || '';
   abrirModal(item ? 'Editar item' : 'Novo item', `<form data-sub="item"><input type="hidden" name="id" value="${item ? item.id : ''}">
-    <div class="campo"><label class="lbl" for="it-fase">Fase</label><input type="text" id="it-fase" list="it-fases" required value="${esc(item ? item.fase : fase || '')}" placeholder="Ex: Semana 1 · Posicionamento"><datalist id="it-fases">${fases.map(f => `<option value="${esc(f)}">`).join('')}</datalist></div>
+    <div class="campo"><label class="lbl" for="it-fase">Fase</label><input type="text" id="it-fase" list="it-fases" required value="${esc(faseAtual)}" placeholder="Ex: Semana 1 · Posicionamento"><datalist id="it-fases">${fases.map(f => `<option value="${esc(f)}">`).join('')}</datalist></div>
+    <div class="campo"><label class="lbl" for="it-fobj">Objetivo da fase (aparece no topo da fase; vale pra todos os itens dela)</label><textarea id="it-fobj" rows="2" maxlength="800" placeholder="Ex: Quem lê um post seu clica no perfil antes de qualquer coisa…">${esc(objFase)}</textarea></div>
     <div class="campo"><label class="lbl" for="it-titulo">O que precisa ser feito</label><input type="text" id="it-titulo" required value="${esc(item ? item.titulo : '')}"></div>
-    <div class="campo"><label class="lbl" for="it-desc">Detalhes (opcional)</label><textarea id="it-desc" rows="4">${esc(item ? item.descricao || '' : '')}</textarea></div>
-    ${modelo ? `<div class="campo"><label class="lbl" for="it-dias">Prazo em dias desde o início (opcional)</label><input type="number" id="it-dias" min="0" value="${item && item.prazo_dias != null ? item.prazo_dias : ''}" style="max-width:160px"></div>`
-      : `<div class="campo"><label class="lbl" for="it-prazo">Prazo (opcional)</label><input type="date" id="it-prazo" value="${esc(item ? item.prazo || '' : '')}" style="max-width:220px"></div>`}
-    <button class="btn btn-primary" type="submit">Salvar</button></form>`);
+    <div class="campo"><label class="lbl" for="it-desc">Resumo (por que isso importa)</label><textarea id="it-desc" rows="2">${esc(item ? item.descricao || '' : '')}</textarea></div>
+    <div class="campo"><label class="lbl" for="it-como">Como fazer (um passo por linha, começando com 1. 2. 3.)</label><textarea id="it-como" rows="6" maxlength="6000">${esc(item ? item.como_fazer || '' : '')}</textarea></div>
+    <div class="campo"><label class="lbl" for="it-ent">Você entrega (o resultado concreto)</label><input type="text" id="it-ent" maxlength="600" value="${esc(item ? item.entregavel || '' : '')}" placeholder="Ex: Print do SSI guardado na pasta “Plano de ação”"></div>
+    <div class="grid2"><div class="campo"><label class="lbl" for="it-tempo">Tempo estimado (minutos)</label><input type="number" id="it-tempo" min="1" max="1440" value="${item && item.tempo_min ? item.tempo_min : ''}"></div>
+    ${modelo ? `<div class="campo"><label class="lbl" for="it-dias">Prazo em dias desde o início</label><input type="number" id="it-dias" min="0" value="${item && item.prazo_dias != null ? item.prazo_dias : ''}"></div>`
+      : `<div class="campo"><label class="lbl" for="it-prazo">Prazo</label><input type="date" id="it-prazo" value="${esc(item ? item.prazo || '' : '')}"></div>`}</div>
+    <div class="grid2"><div class="campo"><label class="lbl" for="it-lrot">Material de apoio: nome do botão</label><input type="text" id="it-lrot" maxlength="80" value="${esc(item ? item.link_rotulo || '' : '')}" placeholder="Ex: Baixar a skill"></div>
+    <div class="campo"><label class="lbl" for="it-lurl">Material de apoio: link</label><input type="url" id="it-lurl" maxlength="500" value="${esc(item ? item.link_url || '' : '')}" placeholder="https://…"></div></div>
+    <button class="btn btn-primary" type="submit">Salvar</button></form>`, true);
 }
 ACT['item-novo'] = el => modalItem(null, el.dataset.fase);
 ACT['item-editar'] = el => modalItem(itemPorId(el.dataset.id));
 SUB['item'] = async f => {
   const id = Number(f.id.value) || null, fase = $('#it-fase').value.trim(), modelo = modeloAtual();
   const itens = PLANO.itens, existente = itens.find(i => i.fase === fase);
-  const campos = { fase, titulo: $('#it-titulo').value.trim(), descricao: $('#it-desc').value.trim() || null };
+  const lurl = $('#it-lurl').value.trim(); if (lurl && !urlSegura(lurl)) { toast('O link do material de apoio precisa começar com http:// ou https://', true); return; }
+  const tempo = $('#it-tempo').value === '' ? null : Math.max(1, Math.min(1440, parseInt($('#it-tempo').value) || 0)) || null, fobj = $('#it-fobj').value.trim() || null;
+  const campos = { fase, titulo: $('#it-titulo').value.trim(), descricao: $('#it-desc').value.trim() || null, como_fazer: $('#it-como').value.trim() || null,
+    entregavel: $('#it-ent').value.trim() || null, tempo_min: tempo, link_url: lurl || null, link_rotulo: $('#it-lrot').value.trim() || null, fase_objetivo: fobj };
   if (modelo) campos.prazo_dias = $('#it-dias').value === '' ? null : Number($('#it-dias').value); else campos.prazo = $('#it-prazo').value || null;
   campos.fase_ordem = existente ? existente.fase_ordem : (itens.reduce((m, i) => Math.max(m, i.fase_ordem), 0) + 1);
+  let novoId = id;
   if (id) {
     const antigo = itemPorId(id);
     if (antigo.fase !== fase) campos.ordem = itens.filter(i => i.fase === fase).reduce((m, i) => Math.max(m, i.ordem), 0) + 1;
     const { error } = await sb.from('cli_plano_itens').update(campos).eq('id', id); if (error) throw error;
   } else {
     campos.plano_id = PLANO.plano.id; campos.ordem = itens.filter(i => i.fase === fase).reduce((m, i) => Math.max(m, i.ordem), 0) + 1;
-    const { error } = await sb.from('cli_plano_itens').insert(campos); if (error) throw error;
+    const { data, error } = await sb.from('cli_plano_itens').insert(campos).select('id').single(); if (error) throw error; novoId = data.id;
   }
+  // o objetivo é da fase: replica nos outros itens dela
+  const { error: e2 } = await sb.from('cli_plano_itens').update({ fase_objetivo: fobj }).eq('plano_id', PLANO.plano.id).eq('fase', fase); if (e2) throw e2;
   fecharModal(); toast('Salvo.'); await render();
 };
 ACT['item-excluir'] = async el => {
@@ -1639,7 +1942,7 @@ async function vModelos() {
   const [modelos, itens] = await Promise.all([q(sb.from('cli_planos').select('*').is('cliente_id', null).order('titulo')),
     paginado(() => sb.from('cli_plano_itens').select('id,plano_id').order('id'))]);
   return { kicker: 'Biblioteca', titulo: 'Modelos de plano',
-    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">Um modelo é o plano padrão que você aplica a um mentorado e depois ajusta pra ele.</p><button class="btn btn-primary" data-act="modelo-novo">${svg('mais', 16)} Novo modelo</button></div>
+    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">Um modelo é o plano padrão que você aplica a um mentorado e depois ajusta pra ele.</p><div class="row"><button class="btn" data-act="modelo-importar">${svg('subir', 16)} Importar de arquivo</button><button class="btn btn-primary" data-act="modelo-novo">${svg('mais', 16)} Novo modelo</button></div></div>
       ${modelos.length ? modelos.map(m => { const n = itens.filter(i => i.plano_id === m.id).length;
         return `<div class="mrow"><div class="row-between"><div><a class="nome" href="#/admin/modelo/${m.id}" style="color:inherit;text-decoration:none">${esc(m.titulo)}</a><div class="meta">${n} ${n === 1 ? 'item' : 'itens'}${m.objetivo ? ' · ' + esc(m.objetivo.slice(0, 90)) : ''}</div></div>
         <div class="row"><a class="btn btn-sm" href="#/admin/modelo/${m.id}">Abrir e editar</a><button class="btn btn-sm btn-danger" data-act="modelo-excluir" data-id="${m.id}">Excluir</button></div></div></div>`; }).join('')
@@ -1674,11 +1977,12 @@ let DR = { cli: null, arquivos: [], caminho: '', vista: lsGet('drive-vista') || 
 const semAcento = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const extDe = n => (/\.([a-z0-9]{1,5})$/i.exec(n || '') || [, ''])[1].toLowerCase();
 function corExt(ext, mime) {
-  if (ext === 'pdf') return '#d03b3b';
+  if (ext === 'pdf') return '#C23B2E';
   if (/^image\//.test(mime || '') || ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext)) return '#2a78d6';
   if (/^video\//.test(mime || '') || ['mp4', 'mov', 'webm', 'mkv'].includes(ext)) return '#4a3aa7';
-  if (['xls', 'xlsx', 'csv'].includes(ext)) return '#1a8f4a';
-  if (['doc', 'docx', 'txt', 'md'].includes(ext)) return '#2a6fd6';
+  if (['xls', 'xlsx', 'csv'].includes(ext)) return '#008E43';
+  if (['doc', 'docx', 'txt', 'md'].includes(ext)) return '#2A6FD6';
+  if (['html', 'htm'].includes(ext)) return '#B45309';
   if (['ppt', 'pptx', 'key'].includes(ext)) return '#eb6834';
   return '#7a7872';
 }
@@ -1737,7 +2041,7 @@ function desenharDrive() {
   root.innerHTML = `<div class="dr-doc" data-drop="${esc(DR.caminho)}">
     <div class="dr-topo">${DR.ro ? '' : `<button class="btn btn-primary" data-act="dr-novo">${svg('mais', 16)} Novo</button>`}
       <input type="search" class="dr-busca" id="dr-busca" placeholder="Buscar nos seus arquivos" value="${esc(DR.busca)}" aria-label="Buscar arquivos">
-      <div class="dr-vistas" role="group" aria-label="Modo de exibição"><button class="${DR.vista === 'grade' ? 'ativa' : ''}" data-act="dr-vista" data-v="grade" aria-label="Grade">▦</button><button class="${DR.vista === 'lista' ? 'ativa' : ''}" data-act="dr-vista" data-v="lista" aria-label="Lista">☰</button></div></div>
+      <div class="dr-vistas" role="group" aria-label="Modo de exibição"><button class="${DR.vista === 'grade' ? 'ativa' : ''}" data-act="dr-vista" data-v="grade" aria-label="Grade" title="Grade">${svg('grade', 16)}</button><button class="${DR.vista === 'lista' ? 'ativa' : ''}" data-act="dr-vista" data-v="lista" aria-label="Lista" title="Lista">${svg('lista', 16)}</button></div></div>
     ${crumbs}${corpo}<input type="file" id="dr-file" multiple hidden data-chg="dr-upload"></div>`;
   const b = $('#dr-busca');
   b.oninput = () => { DR.busca = b.value; const pos = b.selectionStart; desenharDrive(); const nb = $('#dr-busca'); nb.focus(); nb.setSelectionRange(pos, pos); };
@@ -1768,25 +2072,33 @@ ACT['dr-vista'] = el => { DR.vista = el.dataset.v; lsSet('drive-vista', DR.vista
 const arqPorId = id => DR.arquivos.find(a => a.id === Number(id));
 
 /* ---------- visualizador ---------- */
-ACT['dr-abrir'] = async el => {
-  const a = arqPorId(el.dataset.id); if (!a) return;
+async function abrirArquivo(a) {
+  if (!a) return;
   const url = await urlAssinada(a.path, 900), e = extDe(a.nome);
   let corpo;
   if (ehImg(a)) corpo = `<img src="${esc(url)}" alt="${esc(a.nome)}">`;
   else if (/^video\//.test(a.mime || '') || ['mp4', 'mov', 'webm'].includes(e)) corpo = `<video src="${esc(url)}" controls autoplay></video>`;
   else if (/^audio\//.test(a.mime || '') || ['mp3', 'wav', 'm4a'].includes(e)) corpo = `<audio src="${esc(url)}" controls autoplay></audio>`;
   else if (e === 'pdf' || a.mime === 'application/pdf') corpo = `<iframe src="${esc(url)}" title="${esc(a.nome)}"></iframe>`;
+  else if (['html', 'htm'].includes(e)) corpo = '<iframe id="dr-html-frame" title="' + esc(a.nome) + '" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>';
   else corpo = `<div class="dr-semprev"><p>Este tipo de arquivo não abre aqui.</p><a class="btn btn-primary" href="${esc(url)}" download="${esc(a.nome)}">Baixar ${esc(a.nome)}</a></div>`;
   let v = $('#dr-viewer'); if (!v) { v = document.createElement('div'); v.id = 'dr-viewer'; v.className = 'dr-viewer'; document.body.appendChild(v); }
-  v.innerHTML = `<div class="dr-vtopo"><div class="dr-vnome">${esc(a.nome)}</div><a class="btn btn-sm" href="${esc(url)}" download="${esc(a.nome)}">${svg('baixar', 15)} Baixar</a><button class="btn btn-sm" data-act="dr-fechar-viewer">Fechar</button></div><div class="dr-vcorpo">${corpo}</div>`;
+  const urlDl = await urlAssinada(a.path, 900, a.nome);   // com ?download= o navegador baixa em vez de abrir
+  v.innerHTML = `<div class="dr-vtopo"><div class="dr-vnome">${esc(a.nome)}</div><a class="btn btn-sm" href="${esc(urlDl)}" download="${esc(a.nome)}">${svg('baixar', 15)} Baixar</a><button class="btn btn-sm" data-act="dr-fechar-viewer">Fechar</button></div><div class="dr-vcorpo">${corpo}</div>`;
   v.classList.add('aberto');
-};
+  if (['html', 'htm'].includes(e) && !ehImg(a)) {
+    // sem same-origin: o HTML roda numa origem opaca e não alcança a sessão do portal
+    try { const r = await fetch(url); const txt = await r.text(); const f = $('#dr-html-frame'); if (f) f.srcdoc = txt; }
+    catch (err) { const f = $('#dr-html-frame'); if (f) f.replaceWith(Object.assign(document.createElement('div'), { className: 'dr-semprev', textContent: 'Não consegui abrir este HTML aqui. Use o botão Baixar.' })); }
+  }
+}
+ACT['dr-abrir'] = el => abrirArquivo(arqPorId(el.dataset.id));
 ACT['dr-fechar-viewer'] = () => { const v = $('#dr-viewer'); if (v) { v.classList.remove('aberto'); v.innerHTML = ''; } };
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape') ACT['dr-fechar-viewer'](); });
 
 /* ---------- menu ⋮ ---------- */
 function fecharMenuDrive() { const m = $('#dr-menu'); if (m) m.remove(); }
-document.addEventListener('click', ev => { if (!ev.target.closest('#dr-menu') && !ev.target.closest('[data-act="dr-menu"]') && !ev.target.closest('[data-act="dr-novo"]')) fecharMenuDrive(); });
+document.addEventListener('click', ev => { if (!ev.target.closest('#dr-menu') && !ev.target.closest('[data-act="dr-menu"]') && !ev.target.closest('[data-act="dr-novo"]') && !ev.target.closest('[data-act="plano-exportar-menu"]')) fecharMenuDrive(); });
 function abrirMenuDrive(ancora, itens) {
   fecharMenuDrive();
   const m = document.createElement('div'); m.id = 'dr-menu'; m.className = 'menu-pop aberto'; m.style.position = 'fixed';
@@ -1800,7 +2112,7 @@ ACT['dr-menu'] = el => {
 };
 ACT['dr-novo'] = el => abrirMenuDrive(el, [['dr-nova-pasta', 'Nova pasta'], ['dr-enviar', 'Enviar arquivos']]);
 ACT['dr-abrir-m'] = el => { fecharMenuDrive(); return ACT['dr-abrir'](el); };
-ACT['dr-baixar'] = async el => { fecharMenuDrive(); const a = arqPorId(el.dataset.id); const url = await urlAssinada(a.path, 120); const l = document.createElement('a'); l.href = url; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove(); };
+ACT['dr-baixar'] = async el => { fecharMenuDrive(); const a = arqPorId(el.dataset.id); const url = await urlAssinada(a.path, 120, a.nome); const l = document.createElement('a'); l.href = url; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove(); };
 ACT['dr-enviar'] = () => { fecharMenuDrive(); $('#dr-file').click(); };
 ACT['dr-nova-pasta'] = () => {
   fecharMenuDrive(); const nome = (prompt('Nome da nova pasta:') || '').trim().replace(/\//g, '-'); if (!nome) return;
@@ -1924,7 +2236,7 @@ async function vDashboard() {
   const nunca = acs ? ativos.filter(c => comLogin.has(c.id) && !(acs.find(a => a.cliente_id === c.id) || {}).ultimo_login) : [];
   const semLogin = ativos.filter(c => !comLogin.has(c.id));
   const atrasoPor = {}; itensAtras.forEach(i => { const pl = planos.find(p => p.id === i.plano_id); if (pl) atrasoPor[pl.cliente_id] = (atrasoPor[pl.cliente_id] || 0) + 1; });
-  const rankAtraso = Object.entries(atrasoPor).map(([id, n]) => ({ c: cls.find(c => c.id === Number(id)), n })).filter(x => x.c).sort((a, b) => b.n - a.n).slice(0, 6);
+  const rankAtraso = Object.entries(atrasoPor).map(([id, n]) => ({ c: cls.find(c => c.id === Number(id)), n })).filter(x => x.c && x.c.status === 'ativo').sort((a, b) => b.n - a.n).slice(0, 6);
   const dist = S.etapas.map(et => ({ et, n: ativos.filter(c => etapaAtualDe(c.id, prog).id === et.id).length })), maxD = Math.max(1, ...dist.map(d => d.n));
   const rank = ativosLogin.map(c => ({ c, n: ativ7.filter(a => a.cliente_id === c.id && statusAtividade(a, c) === 'completo').length })).sort((a, b) => b.n - a.n);
   const nomeDe = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
@@ -2052,12 +2364,12 @@ function mensagemBoasVindas(nome, email, senha) {
 async function acessoConteudo(cli) {
   const [perfis, acs] = await Promise.all([q(sb.from('cli_perfis').select('id,created_at').eq('cliente_id', cli.id).eq('role', 'cliente')), acessos()]);
   const ac = acs ? acs.find(a => a.cliente_id === cli.id) : null;
-  if (!perfis.length) return `<div class="card"><h2>Este mentorado ainda não tem login</h2><p class="desc">O login é criado aqui, sem passar pelo Supabase. A senha aparece uma única vez.</p>
-    <div class="campo" style="max-width:420px"><label class="lbl" for="ac-email">E-mail de login (opcional; se vazio, uso nome.sobrenome@mentorados.demandainfinita.com)</label><input type="email" id="ac-email" placeholder="deixe em branco para o padrão"></div>
-    <button class="btn btn-primary" data-act="acesso-criar">Gerar acesso</button></div>`;
+  if (!perfis.length) return `<div class="card"><h2>Este mentorado ainda não tem login</h2><p class="desc">Escolha o e-mail e a senha de acesso dele. O login é criado aqui, sem passar pelo Supabase. Também dá pra fazer isso em <a href="#/admin/config">Configurações</a>.</p>
+    <button class="btn btn-primary" data-act="cfg-criar" data-id="${cli.id}">${svg('mais', 16)} Criar login e senha</button></div>`;
   return `<div class="card"><h2>Acesso ao portal</h2><div class="stack" style="margin-top:8px"><div><span class="muted">E-mail de login:</span> <b>${esc(ac ? ac.email : '—')}</b></div>
     <div><span class="muted">Último acesso:</span> <b>${ac && ac.ultimo_login ? esc(new Date(ac.ultimo_login).toLocaleString('pt-BR')) + ' (' + esc(tempoAtras(ac.ultimo_login)) + ')' : 'nunca entrou'}</b></div></div>
-    <p class="desc" style="margin-top:14px">Esqueceu ou quer reenviar? Gerar nova senha invalida a anterior.</p><button class="btn" data-act="acesso-resetar">${svg('chave', 16)} Gerar nova senha</button></div>`;
+    <p class="desc" style="margin-top:14px">Esqueceu ou quer reenviar? Definir uma nova senha invalida a anterior.</p>
+    <div class="row"><button class="btn" data-act="cfg-senha" data-id="${cli.id}">${svg('chave', 16)} Definir senha</button><button class="btn" data-act="acesso-resetar">Gerar senha aleatória</button><button class="btn" data-act="cfg-email" data-id="${cli.id}">Trocar e-mail</button></div></div>`;
 }
 function modalCredenciais(r) {
   const msg = mensagemBoasVindas(r.nome, r.email, r.senha);
@@ -2069,11 +2381,6 @@ async function copiarTexto(t) {
   catch (e) { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); const ok = document.execCommand && document.execCommand('copy'); ta.remove(); return !!ok; }
 }
 ACT['copiar'] = async el => { const alvo = $('#' + el.dataset.alvo); if (await copiarTexto(alvo.value)) toast('Copiado.'); else { alvo.select(); toast('Selecione e copie (Ctrl/Cmd+C).', true); } };
-ACT['acesso-criar'] = async el => {
-  const email = ($('#ac-email').value || '').trim();
-  const r = await ocupado(el, () => fnAdmin({ acao: 'criar_login', cliente_id: S.ctx.clienteId, email: email || undefined }));
-  modalCredenciais(r); render();
-};
 ACT['acesso-resetar'] = async el => {
   if (!confirm('Gerar uma nova senha? A senha atual deixa de funcionar.')) return;
   const r = await ocupado(el, () => fnAdmin({ acao: 'resetar_senha', cliente_id: S.ctx.clienteId }));
@@ -2120,10 +2427,353 @@ ACT['lanc-copiar-tudo'] = async () => {
 };
 
 /* =====================================================================
-   REGISTRO DE TELAS + partida
+   PLANO · EXPORTAR (PDF / HTML) e IMPORTAR (documento ou itens)
+   - Exportar: documento com a identidade Demanda Infinita (capa, resumo, fases, passo a passo).
+     O HTML leva os dados do plano embutidos (id="di-plano"), então dá pra importar de volta.
+   - Importar: (a) guardar um PDF/HTML na pasta do mentorado; (b) recriar o checklist a partir de um arquivo exportado.
+   ===================================================================== */
+let LOGO_DATAURI = null;
+async function logoDataUri() {
+  if (LOGO_DATAURI !== null) return LOGO_DATAURI;
+  try {
+    const b = await (await fetch('../logo-demanda-infinita.png')).blob();
+    LOGO_DATAURI = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => res(''); r.readAsDataURL(b); });
+  } catch (e) { LOGO_DATAURI = ''; }
+  return LOGO_DATAURI;
+}
+
+function planoParaJson(plano, itens) {
+  return { formato: 'demanda-infinita-plano', versao: 1, titulo: plano.titulo, objetivo: plano.objetivo || null,
+    itens: [...itens].sort(cmpItem).map(i => ({ fase: i.fase, fase_ordem: i.fase_ordem, ordem: i.ordem, titulo: i.titulo, descricao: i.descricao || null,
+      como_fazer: i.como_fazer || null, entregavel: i.entregavel || null, tempo_min: i.tempo_min || null, link_url: i.link_url || null, link_rotulo: i.link_rotulo || null,
+      fase_objetivo: i.fase_objetivo || null,
+      prazo_dias: i.prazo_dias != null ? i.prazo_dias : (i.prazo && plano.inicio ? diffDias(i.prazo, plano.inicio) : null) })) };
+}
+
+const DOC_CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+:root{--green:#008E43;--green-light:#12B85E;--green-deep:#006B32;--green-soft:#E3F1E8;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE;--ink:#0F1A14}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:13px;line-height:1.55}
+h1,h2,h3{font-family:'Plus Jakarta Sans',system-ui,sans-serif;margin:0}
+p{margin:0 0 8px}
+.wrap{max-width:820px;margin:0 auto;padding:36px 22px 40px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);font-weight:700}
+.cover{padding:6px 0 22px;border-bottom:1px solid var(--line)}
+.cover img{width:64px;height:64px;display:block;margin-bottom:26px}
+.cover h1{font-size:34px;line-height:1.1;font-weight:800;margin:10px 0 0;letter-spacing:-.5px}
+.who{margin-top:26px;display:flex;gap:34px;flex-wrap:wrap}
+.who div span{display:block;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray)}
+.who div b{font-family:'Plus Jakarta Sans',sans-serif;font-size:14.5px}
+.metas{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0 4px}
+.metas div{background:var(--ink);color:#fff;border-radius:10px;padding:12px 14px}
+.metas b{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;color:var(--green-light);line-height:1.15}
+.metas span{font-size:11px;color:#d0d8d3}
+.sec{padding:26px 0 0}
+.lab{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);font-weight:700;margin-bottom:6px;display:block}
+.obj p{font-size:13.5px;color:#2b2b2b;max-width:700px}
+.week{border:1px solid var(--line);background:#fff;border-radius:12px;padding:16px 18px 8px;margin:16px 0 0}
+.wh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:6px;break-after:avoid}
+.wh b{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800}
+.wh span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+.wobj{background:var(--green-soft);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:8px 12px;margin:8px 0 6px;font-size:12.5px;color:#1E3B2B;break-inside:avoid}
+.it{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #ECE9E2;break-inside:avoid}
+.it:last-child{border-bottom:0}
+.box{flex:0 0 17px;height:17px;border:2px solid var(--green);border-radius:4px;margin-top:2px;background:#fff;display:flex;align-items:center;justify-content:center}
+.box.ok{background:var(--green)}
+.box svg{width:11px;height:11px;stroke:#fff;stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tt{font-weight:700;font-size:13.5px}
+.it.done .tt{color:var(--gray);text-decoration:line-through}
+.ds{color:#444;font-size:12.5px;margin-top:2px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.meta span{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;background:var(--card);border-radius:99px;padding:2px 9px;color:#4a4a47}
+.meta span.late{background:#FBE1DF;color:#9A2620}
+.cf{margin-top:9px;background:#FBFAF7;border:1px solid #ECE9E2;border-radius:9px;padding:10px 12px}
+.cf ol{margin:4px 0 0;padding-left:18px}.cf li{margin-bottom:3px;font-size:12.5px}
+.cf p{font-size:12.5px;color:#444;margin:4px 0 0}
+.en{margin-top:8px;background:var(--green-soft);border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:600;color:#1E3B2B}
+.lk{margin-top:7px;font-size:12px;color:var(--gray)}.lk a{color:var(--green-deep);font-weight:600}
+.foot{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--gray);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+@page{size:A4;margin:14mm 13mm 16mm}
+@media print{html,body{background:#fff}body{font-size:12px}.wrap{max-width:none;padding:0}.week{break-inside:auto}.capa{break-after:page}.week:first-of-type{margin-top:0}}
+@media (max-width:640px){.metas{grid-template-columns:repeat(2,1fr)}.cover h1{font-size:26px}}
+`;
+const CHECK_SVG = '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
+
+function docPlanoHtml(plano, itens, cli, logo) {
+  const modelo = plano.cliente_id == null, fases = agruparFases(itens), r = resumoPlano(plano, itens), hoje = hojeISO();
+  const totalMin = itens.reduce((m, i) => m + (i.tempo_min || 0), 0), periodo = plano.inicio ? `${fmtData(plano.inicio)}${plano.fim ? ' a ' + fmtData(plano.fim) : ''}` : '';
+  const item = i => {
+    const lk = urlSegura(i.link_url), atras = !i.concluido && i.prazo && i.prazo < hoje;
+    const meta = [i.prazo && !modelo ? `<span class="${atras ? 'late' : ''}">${atras ? 'Atrasado · ' : 'Prazo '}${esc(fmtCurta(i.prazo))}</span>` : (modelo && i.prazo_dias != null ? `<span>Dia ${i.prazo_dias}</span>` : ''),
+      i.tempo_min ? `<span>≈ ${esc(fmtTempo(i.tempo_min))}</span>` : '', i.concluido && i.concluido_em ? `<span>Concluído em ${esc(fmtCurta(isoLocal(new Date(i.concluido_em))))}</span>` : ''].filter(Boolean).join('');
+    return `<div class="it ${i.concluido ? 'done' : ''}"><div class="box ${i.concluido ? 'ok' : ''}">${i.concluido ? CHECK_SVG : ''}</div><div style="min-width:0;flex:1">
+      <div class="tt">${esc(i.titulo)}</div>${i.descricao ? `<div class="ds">${esc(i.descricao)}</div>` : ''}${meta ? `<div class="meta">${meta}</div>` : ''}
+      ${i.como_fazer ? `<div class="cf"><span class="lab">Como fazer</span>${comoFazerHtml(i.como_fazer).replace(/class="det-lista"/g, '')}</div>` : ''}
+      ${i.entregavel ? `<div class="en"><span class="lab" style="margin-bottom:2px">Você entrega</span>${esc(i.entregavel)}</div>` : ''}
+      ${lk ? `<div class="lk">${esc(i.link_rotulo || 'Material de apoio')}: <a href="${esc(lk)}">${esc(lk)}</a></div>` : ''}</div></div>`;
+  };
+  const fase = f => {
+    const feitos = f.itens.filter(i => i.concluido).length, obj = (f.itens.find(i => i.fase_objetivo) || {}).fase_objetivo;
+    const prazos = f.itens.map(i => i.prazo).filter(Boolean).sort(), per = !modelo && prazos.length ? `${fmtCurta(prazos[0])} a ${fmtCurta(prazos[prazos.length - 1])} · ` : '';
+    return `<section class="week"><div class="wh"><b>${esc(f.nome)}</b><span>${esc(per)}${modelo ? f.itens.length + ' itens' : feitos + '/' + f.itens.length}</span></div>${obj ? `<div class="wobj">${esc(obj)}</div>` : ''}${f.itens.map(item).join('')}</section>`;
+  };
+  const json = JSON.stringify(planoParaJson(plano, itens)).replace(/</g, '\\u003c');
+  const titulo = `Plano de ação · ${cli ? cli.nome : plano.titulo}`;
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(titulo)}</title><style>${DOC_CSS}</style></head><body><div class="wrap"><div class="capa">
+  <header class="cover">${logo ? `<img src="${logo}" alt="Demanda Infinita">` : ''}<div class="kicker">Método Demanda Infinita®</div><h1>${esc(plano.titulo)}</h1>
+    <div class="who">${cli ? `<div><span>Preparado para</span><b>${esc(cli.nome)}</b></div>${cli.empresa ? `<div><span>Empresa</span><b>${esc(cli.empresa)}</b></div>` : ''}` : '<div><span>Tipo</span><b>Modelo de plano</b></div>'}
+      ${periodo ? `<div><span>Período</span><b>${esc(periodo)}</b></div>` : ''}<div><span>Emitido em</span><b>${esc(fmtData(hoje))}</b></div></div></header>
+  <div class="metas"><div><b>${itens.length}</b><span>itens em ${fases.length} ${fases.length === 1 ? 'fase' : 'fases'}</span></div>
+    ${modelo ? '' : `<div><b>${r.pct}%</b><span>concluído (${r.feitos} de ${r.total})</span></div>`}
+    <div><b>${totalMin ? '≈ ' + esc(fmtTempo(totalMin)) : '—'}</b><span>de trabalho estimado</span></div>
+    <div><b>${plano.fim ? esc(fmtCurta(plano.fim)) : '—'}</b><span>${plano.fim ? 'termina em ' + esc(fmtData(plano.fim)) : 'sem data final'}</span></div></div>
+  ${plano.objetivo ? `<div class="sec obj"><span class="lab">Objetivo</span>${paragrafos(plano.objetivo)}</div>` : ''}</div>
+  ${fases.map(fase).join('')}
+  <div class="foot"><span>Portal dos Mentorados · demandainfinita.com</span><span>Emitido em ${esc(fmtData(hoje))}</span></div></div>
+  <script type="application/json" id="di-plano">${json}<` + `/script></body></html>`;
+}
+
+/* ---------- exportar ---------- */
+async function dadosExport() {
+  const { plano, itens } = PLANO; if (!plano) throw new Error('Não há plano pra exportar.');
+  const cli = plano.cliente_id != null ? await getCliente(plano.cliente_id) : null;
+  return { plano, itens, cli, logo: await logoDataUri() };
+}
+const nomeBaseDoc = (cli, plano) => `Plano de ação - ${cli ? cli.nome : plano.titulo} - ${hojeISO()}`;
+function baixarBlob(nome, blob) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nome; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+// imprime num iframe escondido (sem popup): o navegador abre o diálogo e o PDF sai com texto selecionável e fontes da marca
+function imprimirHtml(html) {
+  const f = document.createElement('iframe'); f.setAttribute('aria-hidden', 'true'); f.setAttribute('tabindex', '-1');
+  f.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0'; document.body.appendChild(f);
+  f.onload = async () => {
+    try { await f.contentDocument.fonts.ready; } catch (e) { /* segue sem esperar fonte */ }
+    setTimeout(() => { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { erroAcao(e); } setTimeout(() => f.remove(), 120000); }, 350);
+  };
+  f.srcdoc = html;
+}
+ACT['plano-exportar-menu'] = el => {
+  const guardar = S.admin && PLANO.plano && PLANO.plano.cliente_id != null && S.ctx && S.ctx.modo === 'admin';
+  abrirMenuDrive(el, [['plano-exp-pdf', 'PDF (imprimir ou salvar como PDF)'], ['plano-exp-html', 'HTML (arquivo)'], ...(guardar ? [['plano-exp-copia', 'Guardar cópia na pasta do mentorado']] : [])]);
+};
+ACT['plano-exp-pdf'] = async () => {
+  fecharMenuDrive(); const d = await dadosExport();
+  imprimirHtml(docPlanoHtml(d.plano, d.itens, d.cli, d.logo)); toast('Na janela que abrir, escolha “Salvar como PDF”.');
+};
+ACT['plano-exp-html'] = async () => {
+  fecharMenuDrive(); const d = await dadosExport();
+  baixarBlob(nomeBaseDoc(d.cli, d.plano) + '.html', new Blob([docPlanoHtml(d.plano, d.itens, d.cli, d.logo)], { type: 'text/html;charset=utf-8' })); toast('HTML baixado.');
+};
+ACT['plano-exp-copia'] = async () => {
+  fecharMenuDrive(); const d = await dadosExport();
+  const arq = new File([docPlanoHtml(d.plano, d.itens, d.cli, d.logo)], nomeBaseDoc(d.cli, d.plano) + '.html', { type: 'text/html' });
+  await subirParaPasta(arq, d.plano.cliente_id, PASTA_DOCS); toast('Cópia guardada na pasta do mentorado.'); await render();
+};
+
+/* ---------- guardar arquivo na pasta do mentorado ---------- */
+async function subirParaPasta(file, clienteId, pasta) {
+  if (file.size > 20 * 1048576) throw new Error('O arquivo passa de 20 MB.');
+  const path = `${clienteId}/${safeNome(pasta.replace(/\//g, '_'))}/${Date.now()}_${safeNome(file.name)}`;
+  await uploadXHR(path, file, null);
+  const { error } = await sb.from('cli_arquivos').insert({ cliente_id: clienteId, pasta, nome: file.name, path, tamanho: file.size, mime: file.type || null });
+  if (error) { await sb.storage.from(BUCKET).remove([path]); throw error; }
+}
+const docPorId = id => (PLANO.docs || []).find(d => d.id === Number(id));
+ACT['pd-abrir'] = el => abrirArquivo(docPorId(el.dataset.id));
+ACT['pd-baixar'] = async el => {
+  const a = docPorId(el.dataset.id); if (!a) return;
+  const url = await urlAssinada(a.path, 120, a.nome); const l = document.createElement('a'); l.href = url; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove();
+};
+ACT['pd-excluir'] = async el => {
+  const a = docPorId(el.dataset.id); if (!a || !confirm(`Excluir “${a.nome}”? Não dá pra desfazer.`)) return;
+  await sb.storage.from(BUCKET).remove([a.path]);
+  const { error } = await sb.from('cli_arquivos').delete().eq('id', a.id); if (error) throw error;
+  toast('Documento excluído.'); await render();
+};
+
+/* ---------- importar ---------- */
+let IMP = null;
+function validarPlanoImportado(o) {
+  if (!o || o.formato !== 'demanda-infinita-plano' || o.versao !== 1 || !Array.isArray(o.itens)) throw new Error('Este arquivo não é um plano exportado pelo portal.');
+  if (!o.itens.length) throw new Error('O arquivo não tem nenhum item.');
+  if (o.itens.length > 300) throw new Error('Itens demais (máximo 300).');
+  const txt = (v, max) => v == null ? null : (String(v).trim().slice(0, max) || null), inteiro = (v, a, b) => Number.isInteger(v) && v >= a && v <= b ? v : null;
+  const itens = o.itens.map((i, k) => {
+    const titulo = txt(i && i.titulo, 300); if (!titulo) throw new Error(`O item ${k + 1} está sem título.`);
+    const lu = txt(i.link_url, 500);
+    return { fase: txt(i.fase, 200) || 'Geral', fase_ordem: inteiro(i.fase_ordem, 0, 999) ?? 0, ordem: inteiro(i.ordem, 0, 9999) ?? k, titulo, descricao: txt(i.descricao, 4000),
+      como_fazer: txt(i.como_fazer, 6000), entregavel: txt(i.entregavel, 600), tempo_min: inteiro(i.tempo_min, 1, 1440), link_url: lu && urlSegura(lu) ? lu : null,
+      link_rotulo: txt(i.link_rotulo, 80), fase_objetivo: txt(i.fase_objetivo, 800), prazo_dias: inteiro(i.prazo_dias, 0, 3650) };
+  });
+  return { titulo: txt(o.titulo, 200) || 'Plano importado', objetivo: txt(o.objetivo, 8000), itens };
+}
+function extrairPlano(texto, nomeArq) {
+  let obj;
+  try {
+    if (/\.json$/i.test(nomeArq)) obj = JSON.parse(texto);
+    else { const m = /<script[^>]*id=["']di-plano["'][^>]*>([\s\S]*?)<\/script>/i.exec(texto); if (!m) throw new Error('semdados'); obj = JSON.parse(m[1]); }
+  } catch (e) {
+    throw new Error(e.message === 'semdados' ? 'Este HTML não foi exportado pelo portal (não tem os dados do plano). Use “Guardar um documento” pra só guardar o arquivo.' : 'Não consegui ler o arquivo. Ele precisa ser um plano exportado pelo portal.');
+  }
+  return validarPlanoImportado(obj);
+}
+async function criarPlanoImportado(dados, d) {
+  const modelo = !!d.modelo, maxDias = Math.max(-1, ...dados.itens.map(i => i.prazo_dias ?? -1));
+  const base = { cliente_id: modelo ? null : d.clienteId, titulo: dados.titulo, objetivo: dados.objetivo };
+  if (!modelo) { base.inicio = d.inicio; base.fim = maxDias >= 0 ? addDias(d.inicio, maxDias) : null; base.status = 'arquivado'; }
+  const { data: novo, error } = await sb.from('cli_planos').insert(base).select('id').single(); if (error) throw error;
+  let antigos = [];
+  try {
+    const linhas = dados.itens.map(i => ({ ...i, plano_id: novo.id, prazo: !modelo && i.prazo_dias != null ? addDias(d.inicio, i.prazo_dias) : null }));
+    for (let k = 0; k < linhas.length; k += 100) { const { error: e2 } = await sb.from('cli_plano_itens').insert(linhas.slice(k, k + 100)); if (e2) throw e2; }
+    if (!modelo) {
+      if (d.substituir) {
+        antigos = (await q(sb.from('cli_planos').select('id').eq('cliente_id', d.clienteId).eq('status', 'ativo'))).map(x => x.id);
+        if (antigos.length) { const { error: e3 } = await sb.from('cli_planos').update({ status: 'arquivado' }).in('id', antigos); if (e3) throw e3; }
+      }
+      const { error: e4 } = await sb.from('cli_planos').update({ status: 'ativo' }).eq('id', novo.id); if (e4) throw e4;
+    }
+  } catch (e) {
+    await sb.from('cli_planos').delete().eq('id', novo.id);                                    // não deixa plano pela metade
+    if (antigos.length) await sb.from('cli_planos').update({ status: 'ativo' }).in('id', antigos);   // devolve o plano que estava ativo
+    throw e;
+  }
+  return novo.id;
+}
+function resumoImportHtml(dados, d) {
+  const fases = [...new Set(dados.itens.map(i => i.fase))], min = dados.itens.reduce((m, i) => m + (i.tempo_min || 0), 0), temAtivo = !d.modelo && PLANO.plano;
+  return `<div class="imp-resumo"><b>${esc(dados.titulo)}</b><div class="hint" style="margin-top:2px">${dados.itens.length} itens em ${fases.length} ${fases.length === 1 ? 'fase' : 'fases'}${min ? ` · ≈ ${esc(fmtTempo(min))} de trabalho` : ''}</div>
+    <ul>${fases.slice(0, 8).map(f => `<li>${esc(f)} <span class="muted">(${dados.itens.filter(i => i.fase === f).length})</span></li>`).join('')}</ul></div>
+    ${d.modelo ? '' : `<div class="campo"><label class="lbl" for="imp-inicio">Começa em</label><input type="date" id="imp-inicio" value="${hojeISO()}" style="max-width:220px"></div>
+      ${temAtivo ? `<label style="display:flex;gap:9px;align-items:flex-start;font-size:.86rem;margin-bottom:12px"><input type="checkbox" id="imp-subst" checked style="margin-top:3px"><span>Este mentorado já tem um plano ativo. <b>Arquivar o atual</b> (o progresso fica guardado em “planos anteriores”) e usar este.</span></label>` : ''}`}
+    <button class="btn btn-primary" data-act="imp-plano-ok">${d.modelo ? 'Criar modelo' : 'Importar plano'}</button>`;
+}
+ACT['plano-importar'] = () => {
+  IMP = { clienteId: S.ctx.clienteId };
+  abrirModal('Importar para este mentorado', `
+    <div class="imp-op"><div><h3>Guardar um documento</h3><p>O PDF ou HTML do plano feito fora do portal. Fica na pasta do mentorado (Plano de ação › Documentos do plano) e ele abre na tela dele.</p></div><button class="btn btn-primary btn-sm" data-act="imp-escolher" data-tipo="doc">Escolher arquivo</button></div>
+    <div class="imp-op"><div><h3>Carregar os itens de um plano</h3><p>Um arquivo .html ou .json exportado pelo portal. Recria o checklist com como fazer, prazos e tempo.</p></div><button class="btn btn-sm" data-act="imp-escolher" data-tipo="plano">Escolher arquivo</button></div>
+    <input type="file" id="imp-file-doc" accept=".pdf,.html,.htm,application/pdf,text/html" hidden data-chg="imp-doc">
+    <input type="file" id="imp-file-plano" accept=".html,.htm,.json,application/json,text/html" hidden data-chg="imp-plano"><div id="imp-saida"></div>`);
+};
+ACT['modelo-importar'] = () => {
+  abrirModal('Importar modelo de um arquivo', `<p class="desc">Um arquivo .html ou .json exportado pelo portal vira um modelo novo na biblioteca.</p>
+    <button class="btn btn-primary" data-act="imp-escolher" data-tipo="plano">Escolher arquivo</button>
+    <input type="file" id="imp-file-plano" accept=".html,.htm,.json,application/json,text/html" hidden data-chg="imp-plano"><div id="imp-saida" style="margin-top:12px"></div>`);
+  IMP = { modelo: true };
+};
+ACT['imp-escolher'] = el => $('#imp-file-' + el.dataset.tipo).click();
+CHG['imp-doc'] = async el => {
+  const f = el.files[0]; el.value = ''; if (!f) return;
+  if (!/\.(pdf|html?)$/i.test(f.name)) { toast('Envie um arquivo PDF ou HTML.', true); return; }
+  const cid = S.ctx.clienteId; $('#imp-saida').innerHTML = '<div class="vazio">Enviando…</div>';
+  await subirParaPasta(f, cid, PASTA_DOCS); fecharModal(); toast('Documento guardado na pasta do mentorado.'); await render();
+};
+CHG['imp-plano'] = async el => {
+  const f = el.files[0]; el.value = ''; if (!f) return;
+  if (f.size > 5 * 1048576) { toast('Arquivo grande demais pra ser um plano (máx. 5 MB).', true); return; }
+  const dados = extrairPlano(await f.text(), f.name); const d = IMP && IMP.modelo ? { modelo: true } : { clienteId: S.ctx.clienteId };
+  IMP = { ...d, dados }; $('#imp-saida').innerHTML = resumoImportHtml(dados, d);
+};
+ACT['imp-plano-ok'] = async el => {
+  if (!IMP || !IMP.dados) return; const d = IMP;
+  const args = d.modelo ? { modelo: true } : { clienteId: d.clienteId, inicio: $('#imp-inicio').value || hojeISO(), substituir: !!($('#imp-subst') && $('#imp-subst').checked) };
+  if (!d.modelo && PLANO.plano && !args.substituir) { toast('Marque “arquivar o atual” pra importar: cada mentorado só pode ter um plano ativo.', true); return; }
+  const id = await ocupado(el, () => criarPlanoImportado(d.dados, args)); IMP = null; fecharModal();
+  if (d.modelo) { toast('Modelo criado.'); ir(`admin/modelo/${id}`); } else { toast('Plano importado.'); await render(); }
+};
+
+/* =====================================================================
+   CONFIGURAÇÕES — acessos: criar login e definir senha de cada mentorado
+   (a conta é criada pela Edge Function mentorado-admin; a senha nunca fica salva aqui)
+   ===================================================================== */
+const SENHA_ALFA = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // sem 0/O/1/l/I: a senha é lida e digitada por gente
+function gerarSenhaLocal(n = 12) { const b = new Uint32Array(n); crypto.getRandomValues(b); return Array.from(b, x => SENHA_ALFA[x % SENHA_ALFA.length]).join(''); }
+const slugEmailLocal = nome => `${(nome || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.+|\.+$/g, '') || 'mentorado'}@mentorados.demandainfinita.com`;
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/;
+
+async function vConfig() {
+  const [cls, perfis, acs] = await Promise.all([clientes(true), q(sb.from('cli_perfis').select('cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), acessos()]);
+  const comLogin = new Set(perfis.map(p => p.cliente_id));
+  const ordenados = [...cls].sort((a, b) => (a.status === 'ativo' ? 0 : 1) - (b.status === 'ativo' ? 0 : 1) || a.nome.localeCompare(b.nome, 'pt-BR'));
+  const sem = ordenados.filter(c => !comLogin.has(c.id) && c.status === 'ativo').length;
+  const linha = c => {
+    const ac = acs ? acs.find(a => a.cliente_id === c.id) : null, tem = comLogin.has(c.id);
+    const chip = !tem ? '<span class="chip neutro">sem login</span>' : ac && ac.ultimo_login ? `<span class="chip ok" title="${esc(new Date(ac.ultimo_login).toLocaleString('pt-BR'))}">entrou ${esc(tempoAtras(ac.ultimo_login))}</span>` : '<span class="chip alerta">nunca entrou</span>';
+    return `<div class="acc-linha"><div class="acc-nome">${esc(c.nome)}<small>${esc([c.empresa, c.status !== 'ativo' ? c.status : ''].filter(Boolean).join(' · ') || ' ')}</small></div>
+      <div class="acc-email">${tem ? esc(ac ? ac.email : '—') : '<span class="muted">—</span>'}</div><div>${chip}</div>
+      <div class="acc-acoes">${tem ? `<button class="btn btn-sm" data-act="cfg-senha" data-id="${c.id}">${svg('chave', 14)} Definir senha</button><button class="btn btn-sm" data-act="cfg-email" data-id="${c.id}">Trocar e-mail</button>`
+        : `<button class="btn btn-sm btn-primary" data-act="cfg-criar" data-id="${c.id}">${svg('mais', 14)} Criar login e senha</button>`}</div></div>`;
+  };
+  return { kicker: 'Painel do Igor', titulo: 'Configurações', refrescavel: false,
+    html: `<div class="card cfg-bloco"><div class="row-between" style="align-items:flex-start"><div><h2>Acessos dos mentorados</h2>
+        <p class="desc" style="max-width:560px;margin:2px 0 0">Crie o login de cada mentorado e escolha a senha dele (ou use a sugerida). ${sem ? `<b>${sem}</b> ${sem === 1 ? 'ativo ainda não tem' : 'ativos ainda não têm'} login.` : 'Todos os ativos já têm login.'}</p></div>
+        <a class="btn btn-sm" href="#/admin/lancamento">${svg('chave', 14)} Gerar acessos em lote</a></div>
+      ${acs ? '' : '<div class="card alerta" style="margin:14px 0 0"><p class="desc" style="margin:0">Não consegui consultar os e-mails e os últimos acessos agora. As ações abaixo continuam funcionando.</p></div>'}
+      <div style="margin-top:16px"><div class="acc-linha cab"><span>Mentorado</span><span>E-mail de login</span><span>Situação</span><span></span></div>${ordenados.map(linha).join('') || '<div class="vazio">Nenhum mentorado cadastrado.</div>'}</div></div>
+      <div class="card cfg-bloco"><h2>Sua conta</h2><p class="desc">Você entra aqui com o seu e-mail de admin. Troque a senha quando quiser.</p>
+        <button class="btn btn-sm" data-act="trocar-senha">${svg('chave', 14)} Trocar minha senha</button></div>` };
+}
+
+function campoSenhaHtml(id, valor) {
+  return `<div class="campo"><label class="lbl" for="${id}">Senha</label><div class="senha-linha"><div class="senha-wrap" style="flex:1"><input type="password" id="${id}" value="${esc(valor)}" minlength="8" maxlength="72" required autocomplete="new-password"><button type="button" class="ver" data-act="senha-ver" data-alvo="${id}">mostrar</button></div>
+    <button type="button" class="btn" data-act="cfg-gerar" data-alvo="${id}" title="Gerar outra senha">Gerar outra</button></div><div class="hint">De 8 a 72 caracteres. Anote ou copie: ela não fica salva em lugar nenhum.</div></div>`;
+}
+ACT['cfg-gerar'] = el => { const i = document.getElementById(el.dataset.alvo); i.value = gerarSenhaLocal(); i.type = 'text'; const b = i.parentElement.querySelector('.ver'); if (b) b.textContent = 'ocultar'; };
+
+async function nomeDe(id) { const c = await getCliente(id); return c ? c.nome : 'Mentorado'; }
+ACT['cfg-criar'] = async el => {
+  const id = Number(el.dataset.id), nome = await nomeDe(id);
+  abrirModal(`Criar login · ${nome}`, `<form data-sub="cfg-criar"><input type="hidden" name="id" value="${id}">
+    <div class="campo"><label class="lbl" for="cc-email">E-mail de login</label><input type="email" id="cc-email" required value="${esc(slugEmailLocal(nome))}" autocomplete="off"><div class="hint">Pode ser o e-mail real do mentorado ou o padrão do portal. É só o identificador de login.</div></div>
+    ${campoSenhaHtml('cc-senha', gerarSenhaLocal())}<button class="btn btn-primary" type="submit">Criar login</button></form>`);
+};
+SUB['cfg-criar'] = async f => {
+  const id = Number(f.id.value), email = $('#cc-email').value.trim().toLowerCase(), senha = $('#cc-senha').value;
+  if (!EMAIL_RE.test(email)) { toast('E-mail inválido.', true); return; }
+  if (senha.length < 8) { toast('A senha precisa ter pelo menos 8 caracteres.', true); return; }
+  const r = await fnAdmin({ acao: 'criar_login', cliente_id: id, email, senha });
+  finalizarCredenciais(r, senha, email);
+};
+ACT['cfg-senha'] = async el => {
+  const id = Number(el.dataset.id), nome = await nomeDe(id);
+  abrirModal(`Definir senha · ${nome}`, `<form data-sub="cfg-senha"><input type="hidden" name="id" value="${id}">
+    <p class="desc">A senha atual deixa de funcionar assim que você salvar.</p>${campoSenhaHtml('cs-senha', gerarSenhaLocal())}<button class="btn btn-primary" type="submit">Salvar nova senha</button></form>`);
+};
+SUB['cfg-senha'] = async f => {
+  const id = Number(f.id.value), senha = $('#cs-senha').value;
+  if (senha.length < 8) { toast('A senha precisa ter pelo menos 8 caracteres.', true); return; }
+  const r = await fnAdmin({ acao: 'resetar_senha', cliente_id: id, senha });
+  finalizarCredenciais(r, senha, r.email);
+};
+ACT['cfg-email'] = async el => {
+  const id = Number(el.dataset.id), nome = await nomeDe(id), acs = await acessos(), ac = acs ? acs.find(a => a.cliente_id === id) : null;
+  abrirModal(`Trocar e-mail · ${nome}`, `<form data-sub="cfg-email"><input type="hidden" name="id" value="${id}">
+    <p class="desc">E-mail atual: <b>${esc(ac ? ac.email : '—')}</b>. A senha continua a mesma.</p>
+    <div class="campo"><label class="lbl" for="ce-email">Novo e-mail de login</label><input type="email" id="ce-email" required autocomplete="off"></div><button class="btn btn-primary" type="submit">Trocar e-mail</button></form>`);
+};
+SUB['cfg-email'] = async f => {
+  const email = $('#ce-email').value.trim().toLowerCase(); if (!EMAIL_RE.test(email)) { toast('E-mail inválido.', true); return; }
+  try { await fnAdmin({ acao: 'trocar_email', cliente_id: Number(f.id.value), email }); }
+  catch (e) { throw /desconhecida/i.test(msgErro(e)) ? new Error('A função de acessos ainda não tem a troca de e-mail. Ela precisa ser publicada de novo.') : e; }
+  fecharModal(); toast('E-mail trocado.'); await render();
+};
+// a mensagem pronta usa a senha efetiva: a que o Igor digitou, ou a gerada pela função (versão antiga ignora a senha enviada)
+function finalizarCredenciais(r, digitada, email) {
+  const efetiva = r.senha || digitada;
+  if (r.senha && r.senha !== digitada) toast('A função de acessos ainda é a versão antiga: gerei uma senha aleatória no lugar da que você digitou.', true);
+  modalCredenciais({ nome: r.nome, email: r.email || email, senha: efetiva }); render();
+}
+
+/* =====================================================================
+   REGISTRO DE TELAS + partida (sempre o último arquivo)
    ===================================================================== */
 const VIEWS_CLIENTE = { inicio: vInicio, plano: vPlano, posts: vPosts, calendario: vCalendario, drive: vDrive };
-const VIEWS_ADMIN = { dashboard: vDashboard, aprovacoes: vAprovacoes, post: vPostAdmin, mentorados: vMentorados, mentorado: vMentorado, modelos: vModelos, modelo: vModelo, lancamento: vLancamento };
+const VIEWS_ADMIN = { dashboard: vDashboard, aprovacoes: vAprovacoes, post: vPostAdmin, mentorados: vMentorados, mentorado: vMentorado, modelos: vModelos, modelo: vModelo, lancamento: vLancamento, config: vConfig };
 boot();
 
 </script>
