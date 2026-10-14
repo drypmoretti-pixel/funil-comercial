@@ -3138,7 +3138,8 @@ async function verificarTour() {
 const TUTORIAL_VIDEO = 'tutorial/tutorial.mp4';
 // confirmação de que assistiu: fica em cli_novidades_vistas (o admin já lê essa tabela). Mudou o vídeo? Troque a versão e todos confirmam de novo.
 const VIDEO_VISTO = 'video-tutorial-1';
-const VID = { assistido: 0, ultimo: null };   // segundos realmente reproduzidos (pular pro fim não conta)
+const VID = { assistido: 0, ultimo: null };
+const txtCheck = t => { const e = $('#tut-check-txt'); if (e && e.textContent !== t) e.textContent = t; };   // segundos realmente reproduzidos (pular pro fim não conta)
 async function videoConfirmado(perfilId) { const r = await q(sb.from('cli_novidades_vistas').select('vista_em').eq('perfil_id', perfilId).eq('versao', VIDEO_VISTO).limit(1)); return r[0] ? r[0].vista_em : null; }
 const TUTORIAL_CAPITULOS = [[0, 'Abertura'], [9, 'Entrar'], [29, 'O Início'], [50, 'Checklist diário'], [76, 'Escrever o post'], [112, 'Aprovar e publicar'], [140, 'Avisos do sino'], [172, 'Plano de ação'], [197, 'Drive e modo escuro'], [212, 'Resumo']];   // [segundo, título] do vídeo tutorial
 const AVISOS = [
@@ -3181,12 +3182,12 @@ async function vTutorial(ctx) {
       const v = $('#tut-video'); if (!v) return;
       v.addEventListener('error', () => { v.hidden = true; $('#tut-sem').hidden = false; }, { once: true });
       if (!cliente || visto) return;
-      const liberar = () => { const b = $('#tut-confirmar'); if (!b || !b.disabled) return; b.disabled = false; b.classList.add('pulsa'); setText($('#tut-check-txt'), 'Pronto! Agora é só confirmar.'); };
+      const liberar = () => { const b = $('#tut-confirmar'); if (!b || !b.disabled) return; b.disabled = false; b.classList.add('pulsa'); txtCheck('Pronto! Agora é só confirmar.'); };
       v.addEventListener('timeupdate', () => {   // soma só o tempo assistido de verdade (pulos não contam)
         const t = v.currentTime; if (VID.ultimo != null && !v.paused && t > VID.ultimo && t - VID.ultimo < 1.5 * Math.max(1, v.playbackRate)) VID.assistido += t - VID.ultimo;
         VID.ultimo = t;   // vale assistir acelerado; pulo (seeking) não conta
         if (v.duration && VID.assistido >= v.duration * 0.85 && t >= v.duration - 3) liberar();
-        else if (v.duration) { const f = Math.round(VID.assistido / v.duration * 100); setText($('#tut-check-txt'), `Você já assistiu ${f}% do vídeo. Vai até o fim pra liberar a confirmação.`); }
+        else if (v.duration) { const f = Math.round(VID.assistido / v.duration * 100); txtCheck(`Você já assistiu ${f}% do vídeo. Vai até o fim pra liberar a confirmação.`); }
       });
       v.addEventListener('seeking', () => { VID.ultimo = null; });
       v.addEventListener('ended', () => { if (v.duration && VID.assistido >= v.duration * 0.85) liberar(); });
