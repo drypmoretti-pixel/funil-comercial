@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evento Semanal | Demanda Infinita</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../logo-demanda-infinita.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+  :root{--green:#008E43;--green-light:#12B85E;--green-soft:#E6F4EC;--bg:#F8F7F4;--card:#ECEAE5;--white:#fff;--text:#111;--gray:#6B6B6B;--line:#D8D5CE;--warn:#C2410C;--warn-soft:#FDEEE6;--ph:#FFF1B8;--ph-text:#6B4E00;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;}
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+  button{font:inherit;cursor:pointer;}
+  input{font:inherit;}
+  .wrap{max-width:860px;margin:0 auto;padding:0 16px;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .muted{color:var(--gray);}
+  .hidden{display:none !important;}
+
+  /* topo */
+  .top{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;}
+  .top .wrap{display:flex;align-items:center;gap:10px;height:58px;}
+  .top img{width:34px;height:34px;}
+  .top .brand{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:15px;line-height:1.1;}
+  .top .brand small{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--green);letter-spacing:1px;text-transform:uppercase;}
+  .top .sp{flex:1;}
+  .top .who{font-size:12.5px;color:var(--gray);}
+
+  .btn{border:0;border-radius:10px;padding:10px 16px;font-weight:600;font-size:13.5px;background:var(--text);color:#fff;}
+  .btn.green{background:var(--green);}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line);}
+  .btn.small{padding:6px 11px;font-size:12.5px;border-radius:8px;}
+  .btn.danger{background:transparent;color:var(--warn);border:1px solid #F0C8B4;}
+  .btn:disabled{opacity:.5;cursor:default;}
+  .link{background:none;border:0;padding:0;color:var(--green);font-weight:600;text-decoration:underline;}
+
+  /* login */
+  .login{max-width:380px;margin:12vh auto 0;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:28px 24px;text-align:center;}
+  .login img{width:64px;height:64px;margin-bottom:12px;}
+  .login h1{font-size:22px;margin-bottom:4px;}
+  .login p{color:var(--gray);font-size:13px;margin:0 0 18px;}
+  .field{text-align:left;margin-bottom:12px;}
+  .field label{display:block;font-size:12px;font-weight:600;margin-bottom:4px;}
+  .field input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px;}
+  .field input:focus{outline:2px solid var(--green);border-color:transparent;}
+  .err{color:var(--warn);font-size:12.5px;min-height:18px;margin-top:6px;}
+
+  /* home */
+  .head{padding:26px 0 14px;display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;}
+  .head h1{font-size:26px;}
+  .head .kicker{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--green);letter-spacing:1.4px;text-transform:uppercase;margin-bottom:4px;}
+  .head .sp{flex:1;}
+  .evcard{display:flex;gap:14px;align-items:center;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;width:100%;text-align:left;}
+  .evcard:hover{border-color:var(--green);}
+  .evcard .date{flex:0 0 62px;text-align:center;border-radius:10px;background:var(--green-soft);padding:7px 0;}
+  .evcard .date b{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;line-height:1;color:var(--green);}
+  .evcard .date span{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--green);}
+  .evcard .info{flex:1;min-width:0;}
+  .evcard .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:15px;}
+  .evcard .s{font-size:12.5px;color:var(--gray);}
+  .bar{height:6px;background:var(--card);border-radius:99px;overflow:hidden;margin-top:7px;}
+  .bar i{display:block;height:100%;background:var(--green);border-radius:99px;}
+  .evcard.done{opacity:.65;}
+  .evcard.done .date{background:var(--card);}
+  .evcard.done .date b,.evcard.done .date span{color:var(--gray);}
+  .empty{background:var(--white);border:1px dashed var(--line);border-radius:14px;padding:30px 20px;text-align:center;color:var(--gray);}
+  .sec-t{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gray);margin:22px 0 10px;}
+
+  /* evento */
+  .back{margin-top:18px;}
+  .evhead{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0;}
+  .evhead .row1{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;}
+  .evhead h1{font-size:23px;line-height:1.2;}
+  .evhead .tema{font-size:13px;color:var(--gray);margin-top:3px;}
+  .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;border-radius:99px;padding:3px 10px;background:var(--green-soft);color:var(--green);}
+  .pill.gray{background:var(--card);color:var(--gray);}
+  .prog{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12.5px;color:var(--gray);}
+  .prog .bar{flex:1;margin:0;height:8px;}
+
+  .now{border:2px solid var(--green);background:var(--white);border-radius:16px;padding:14px 16px;margin:12px 0;}
+  .now .l{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--green);}
+  .now .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:17px;margin:2px 0;}
+  .now .s{font-size:13px;color:var(--gray);}
+  .now .acts{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+  .banner{background:var(--warn-soft);border:1px solid #F0C8B4;border-radius:12px;padding:11px 14px;margin:12px 0;font-size:13px;}
+  .banner b{color:var(--warn);}
+  .banner .btn{margin-top:8px;}
+
+  details.ficha{background:var(--white);border:1px solid var(--line);border-radius:14px;margin:12px 0;}
+  details.ficha summary{list-style:none;padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;}
+  details.ficha summary::-webkit-details-marker{display:none;}
+  details.ficha summary .sp{flex:1;}
+  details.ficha summary .chev{transition:transform .15s;color:var(--gray);}
+  details.ficha[open] summary .chev{transform:rotate(90deg);}
+  .ficha-body{padding:0 16px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;}
+  .ficha-body .field{margin:0;}
+  .ficha-body .full{grid-column:1/-1;}
+  .saved{font-size:11.5px;color:var(--green);min-height:16px;}
+  .miss{font-size:11.5px;color:var(--warn);font-weight:600;}
+
+  .day{margin-top:20px;}
+  .day-h{display:flex;align-items:center;gap:9px;margin-bottom:8px;position:sticky;top:58px;background:var(--bg);padding:6px 0;z-index:5;}
+  .day-h .dd{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:#fff;border-radius:7px;padding:3px 9px;}
+  .day-h .dn{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:15px;}
+  .day-h .tag{margin-left:auto;}
+  .f-margem{background:#8FAE9B;} .f-antecip{background:#3E9E68;} .f-contagem{background:var(--green);} .f-diad{background:var(--text);} .f-pos{background:#6B6B6B;} .f-prep{background:#A8A39A;}
+
+  .item{background:var(--white);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+  .item .ih{display:flex;align-items:center;gap:11px;padding:11px 13px;}
+  .ck{flex:0 0 24px;width:24px;height:24px;border-radius:7px;border:2px solid #B9B4AA;background:#fff;display:flex;align-items:center;justify-content:center;padding:0;}
+  .ck svg{width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none;opacity:0;}
+  .item.ok .ck{background:var(--green);border-color:var(--green);}
+  .item.ok .ck svg{opacity:1;}
+  .item .hr{flex:0 0 50px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;}
+  .item .tt{flex:1;min-width:0;}
+  .item .tt b{font-weight:600;}
+  .item .tt .k{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;border-radius:5px;padding:1px 6px;margin-right:6px;vertical-align:1px;}
+  .k.msg{background:var(--green-soft);color:var(--green);}
+  .k.acao{background:var(--card);color:var(--text);}
+  .item .st{font-size:11px;font-weight:600;white-space:nowrap;}
+  .st.late{color:var(--warn);}
+  .st.next{color:var(--green);}
+  .st.skip{color:var(--gray);}
+  .item .tog{background:none;border:0;color:var(--gray);padding:4px;display:flex;}
+  .item .tog svg{width:18px;height:18px;transition:transform .15s;}
+  .item.open .tog svg{transform:rotate(180deg);}
+  .item.ok .tt b{color:var(--gray);text-decoration:line-through;text-decoration-color:#B9B4AA;}
+  .item.skipped{opacity:.6;}
+  .item.isnext{border:2px solid var(--green);}
+  .item.islate{border-color:#F0C8B4;}
+  .ib{display:none;border-top:1px solid var(--line);padding:12px 13px;background:#FBFAF8;}
+  .item.open .ib{display:block;}
+  .msgtext{white-space:pre-wrap;word-break:break-word;background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:10px;padding:11px 13px;font-size:13.5px;line-height:1.55;}
+  .ph{background:var(--ph);color:var(--ph-text);border-radius:4px;padding:0 4px;font-family:'JetBrains Mono',monospace;font-size:.88em;font-weight:600;}
+  .ib .row{display:flex;gap:8px;align-items:center;margin-top:9px;flex-wrap:wrap;}
+  .ib .why{font-size:12px;color:var(--gray);margin-top:8px;}
+  .ib .desc{font-size:13.5px;}
+  .ib ol{margin:6px 0 10px;padding-left:20px;font-size:13.5px;}
+  .ib ol li{margin-bottom:4px;}
+  .ib h4{font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;margin:14px 0 6px;}
+  .copyblk{margin-bottom:10px;}
+  .copyblk .lb{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .alert{border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:8px;padding:8px 12px;font-size:12.5px;margin:8px 0;}
+
+  .foot{text-align:center;font-size:12px;color:var(--gray);padding:34px 0 40px;}
+
+  /* modal */
+  .ov{position:fixed;inset:0;background:rgba(17,17,17,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;}
+  .modal{background:var(--white);border-radius:16px;padding:22px;width:100%;max-width:440px;max-height:92vh;overflow:auto;}
+  .modal h2{font-size:19px;margin-bottom:4px;}
+  .modal p{color:var(--gray);font-size:13px;margin:0 0 14px;}
+  .modal .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .modal .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--text);color:#fff;border-radius:10px;padding:10px 16px;font-size:13px;z-index:60;box-shadow:0 6px 20px rgba(0,0,0,.2);}
+
+  @media (max-width:600px){
+    .ficha-body{grid-template-columns:1fr;}
+    .item .hr{flex-basis:44px;font-size:11px;}
+    .item .st{display:none;}
+    .head h1{font-size:22px;}
+    .evhead h1{font-size:20px;}
+    .top .who{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <img src="../logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="brand"><small>Demanda Infinita</small>Evento semanal</div>
+    <div class="sp"></div>
+    <span class="who" id="who"></span>
+    <button class="btn ghost small hidden" id="btn-sair">Sair</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- LOGIN -->
+  <section id="v-login" class="hidden">
+    <form class="login" id="f-login">
+      <img src="../logo-demanda-infinita.png" alt="">
+      <h1>Evento semanal</h1>
+      <p>Entre com o mesmo login do painel da Demanda Infinita.</p>
+      <div class="field"><label for="l-email">E-mail</label><input id="l-email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="l-senha">Senha</label><input id="l-senha" type="password" autocomplete="current-password" required></div>
+      <button class="btn green" style="width:100%" type="submit">Entrar</button>
+      <div class="err" id="l-err"></div>
+    </form>
+  </section>
+
+  <!-- LISTA -->
+  <section id="v-lista" class="hidden">
+    <div class="head">
+      <div><div class="kicker">Método Demanda Infinita®</div><h1>Eventos</h1></div>
+      <div class="sp"></div>
+      <button class="btn green" id="btn-novo">+ Novo evento</button>
+    </div>
+    <div id="lista-ativos"></div>
+    <div id="lista-concluidos"></div>
+  </section>
+
+  <!-- EVENTO -->
+  <section id="v-evento" class="hidden">
+    <button class="link back" id="btn-voltar">← Todos os eventos</button>
+    <div id="ev"></div>
+  </section>
+
+  <div class="foot">Demanda Infinita · uso interno do time · <a href="manual.pdf" target="_blank" style="color:var(--green)">manual em PDF</a></div>
+</main>
+
+<div id="modal-root"></div>
+
+<script>
+const SUPA_URL = 'https://okolawlvmfyxzvnnpvtv.supabase.co';
+const SUPA_KEY = 'sb_publishable_IsQdhzWIou3tBX9qxak1VQ_m-wEHCFZ';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+const TEMA = 'Como gerar 30 reuniões qualificadas por mês usando o LinkedIn, dedicando apenas 1 hora por semana';
+const NOME_EVENTO = 'Como gerar 30 reuniões por mês com o LinkedIn';
+const CAL = 'cal.com/igor-miguel/demanda-infinita';
+const DIAS = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+const DIAS_CURTO = ['dom','seg','ter','qua','qui','sex','sáb'];
+const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+let eu = null;          // perfil logado
+let perfis = [];
+let eventos = [];
+let atual = null;       // evento aberto
+let checks = {};        // chave -> linha
+let abertos = new Set();
+
+/* ---------- utilidades ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+function dataLocal(iso) { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); }
+function isoDe(dt) { return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`; }
+function somaDias(dt, n) { const x = new Date(dt); x.setDate(x.getDate() + n); return x; }
+function ddmm(dt) { return `${pad(dt.getDate())}/${pad(dt.getMonth() + 1)}`; }
+function fmtHora(dt) { return dt.getMinutes() ? `${dt.getHours()}h${pad(dt.getMinutes())}` : `${dt.getHours()}h`; }
+function hhmm(dt) { return `${pad(dt.getHours())}:${pad(dt.getMinutes())}`; }
+function inicioEvento(ev) { const d = dataLocal(ev.data); const [h, m] = ev.hora.split(':').map(Number); d.setHours(h, m, 0, 0); return d; }
+function mesmoDia(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2200); }
+
+async function copiar(texto) {
+  try { await navigator.clipboard.writeText(texto); }
+  catch (e) {
+    const ta = document.createElement('textarea'); ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+  }
+}
+
+/* ---------- o plano ---------- */
+// d = dias em relação ao evento; t = hora fixa "HH:MM"; rel = minutos em relação ao horário do evento
+const PLANO = [
+  { k:'a-ficha',     d:-11, t:'09:00', tipo:'acao', tit:'Conferir a ficha da edição e atualizar a data na arte da capa',
+    desc:'Abra "Ficha da edição" lá em cima e preencha o que já tiver: link da sala, link do grupo. Na arte da capa do evento (1280 x 720 px), troque só a data.' },
+  { k:'a-linkedin',  d:-10, t:'09:00', tipo:'acao', tit:'Criar o evento no LinkedIn', guia:'linkedin' },
+  { k:'a-grupo',     d:-10, t:'09:15', tipo:'acao', tit:'Criar o grupo de WhatsApp desta edição', guia:'grupo' },
+  { k:'a-automacao', d:-10, t:'09:30', tipo:'acao', tit:'Trocar o link da automação da palavra-chave do post para o evento novo',
+    desc:'Quem comenta a palavra-chave no post precisa receber o link DESTA edição, não o da semana passada.' },
+  { k:'m-10', d:-10, t:'10:00', tipo:'msg', tit:'Boas-vindas' },
+  { k:'a-convites',  d:-9,  t:'09:00', tipo:'acao', tit:'Mandar o lote de convites da semana no LinkedIn',
+    desc:'Na página do evento: Compartilhar → convidar conexões. Até 1.000 convites por semana, somando todos os eventos, e só conexões de 1º grau. Decisores primeiro (dono, sócio, diretor, gestor comercial) e um bloco novo de conexões a cada edição.' },
+  { k:'m-9',  d:-9,  t:'10:00', tipo:'msg', tit:'A pergunta' },
+  { k:'m-8',  d:-8,  t:'10:00', tipo:'msg', tit:'O que você vai ver' },
+  { k:'m-7',  d:-7,  t:'10:00', tipo:'msg', tit:'Falta 1 semana' },
+  { k:'m-6',  d:-6,  t:'10:00', tipo:'msg', tit:'O erro mais comum' },
+  { k:'m-5',  d:-5,  t:'10:00', tipo:'msg', tit:'Para quem é' },
+  { k:'m-4',  d:-4,  t:'10:00', tipo:'msg', tit:'Traga alguém' },
+  { k:'m-3',  d:-3,  t:'10:00', tipo:'msg', tit:'Prepare-se' },
+  { k:'m-2',  d:-2,  t:'10:00', tipo:'msg', tit:'Contagem' },
+  { k:'a-sala',      d:-1,  t:'10:00', tipo:'acao', tit:'Testar o link da sala numa aba anônima',
+    desc:'Abra o link da sala numa janela anônima e confirme que entra sem pedir nada estranho. Se o link mudou, atualize na ficha.' },
+  { k:'a-alarmes',   d:-1,  t:'10:05', tipo:'acao', tit:'Pôr alarme no celular para os 9 avisos de amanhã',
+    desc:'Amanhã são 9 mensagens: 4h, 2h, 1h, 30 min, 15 min, 10 min e 5 min antes (com o link), na hora (ao vivo) e 10 min depois (atrasados). Um alarme para cada.' },
+  { k:'m-1',  d:-1,  rel:0,    tipo:'msg', tit:'É amanhã' },
+  { k:'m-240', d:0,  rel:-240, tipo:'msg', tit:'É hoje · faltam 4 horas' },
+  { k:'m-120', d:0,  rel:-120, tipo:'msg', tit:'Faltam 2 horas' },
+  { k:'m-60',  d:0,  rel:-60,  tipo:'msg', tit:'Falta 1 hora' },
+  { k:'m-30',  d:0,  rel:-30,  tipo:'msg', tit:'Faltam 30 minutos' },
+  { k:'m-15',  d:0,  rel:-15,  tipo:'msg', tit:'Faltam 15 minutos' },
+  { k:'m-10m', d:0,  rel:-10,  tipo:'msg', tit:'Faltam 10 minutos' },
+  { k:'m-5m',  d:0,  rel:-5,   tipo:'msg', tit:'O link da sala' },
+  { k:'m-0',   d:0,  rel:0,    tipo:'msg', tit:'Ao vivo' },
+  { k:'m-atr', d:0,  rel:10,   tipo:'msg', tit:'Para quem ainda não entrou' },
+  { k:'a-gravacao',  d:1,   t:'09:00', tipo:'acao', tit:'Subir a gravação e colar o link na ficha',
+    desc:'Se o vídeo for pro YouTube, deixe como Não listado ou Público. Sem link de gravação, a mensagem de amanhã sai sem essa parte, sozinha.' },
+  { k:'m+1',  d:1,   t:'10:00', tipo:'msg', tit:'Obrigado + próxima edição' },
+  { k:'a-concluir',  d:1,   t:'11:00', tipo:'acao', tit:'Concluir este evento e criar o próximo', guia:'concluir' },
+];
+
+function fase(d) {
+  if (d <= -11) return ['f-prep', 'Preparação'];
+  if (d <= -8) return ['f-margem', 'Margem'];
+  if (d <= -3) return ['f-antecip', 'Antecipação'];
+  if (d <= -1) return ['f-contagem', 'Contagem'];
+  if (d === 0) return ['f-diad', 'Dia do evento'];
+  return ['f-pos', 'Depois'];
+}
+
+function quandoItem(ev, it) {
+  const ini = inicioEvento(ev);
+  if (it.rel !== undefined) { const x = somaDias(ini, it.d); x.setMinutes(x.getMinutes() + it.rel); return x; }
+  const x = somaDias(dataLocal(ev.data), it.d); const [h, m] = it.t.split(':').map(Number); x.setHours(h, m, 0, 0); return x;
+}
+
+function proximaData(ev) {
+  const seguinte = eventos.filter(e => e.id !== ev.id && e.data > ev.data).sort((a, b) => a.data.localeCompare(b.data))[0];
+  return seguinte ? seguinte : null;
+}
+
+function ctx(ev) {
+  const ini = inicioEvento(ev);
+  const h = m => { const x = new Date(ini); x.setMinutes(x.getMinutes() + m); return fmtHora(x); };
+  const seg = proximaData(ev);
+  const prox = seg ? inicioEvento(seg) : somaDias(ini, 7);
+  return {
+    dia: DIAS[ini.getDay()], data: ddmm(ini), hora: fmtHora(ini), h,
+    sala: ev.link_sala || '[LINK DA SALA]',
+    evento: ev.link_evento || '[LINK DO EVENTO]',
+    grupo: ev.link_grupo || '[LINK DO GRUPO]',
+    grav: ev.link_gravacao || '',
+    proxDia: DIAS[prox.getDay()], proxData: ddmm(prox), proxHora: fmtHora(prox),
+  };
+}
+
+/* ---------- textos das mensagens ---------- */
+const MSG = {
+  'm-10': c => `Seja bem-vindo(a) ao grupo do evento 👋
+
+*${TEMA}*
+
+📅 *${c.dia}, ${c.data}*
+⏰ *${c.hora} (horário de Brasília)*
+💻 Online, gratuito e ao vivo com o Igor Miguel
+
+Este grupo é só para avisos do evento. O link da sala chega aqui no dia, 5 minutos antes de começar.
+
+Confirma presença no LinkedIn para não esquecer:
+${c.evento}`,
+  'm-9': c => `Uma pergunta rápida antes do evento de ${c.data}:
+
+*Quantas reuniões com decisor você marcou pelo LinkedIn no último mês?*
+
+Se a resposta foi "nenhuma" ou "não sei", o evento foi feito para você.
+
+O LinkedIn está cheio de dono de empresa, sócio e diretor. Quase ninguém sabe transformar isso em agenda.
+
+Guarda esse número. No dia, a gente volta nele.`,
+  'm-8': c => `O que você vai ver no dia ${c.data}, às ${c.hora}:
+
+*1.* O post que faz o decisor pedir para conversar com você
+
+*2.* Como treinar uma IA para escrever no seu tom de voz, sem parecer robô
+
+*3.* O caminho automático que transforma comentário em reunião marcada
+
+Tudo baseado no que o Igor usa hoje na operação dele. Nada de teoria.`,
+  'm-7': c => `Falta *1 semana* para o evento 🗓️
+
+*${c.dia}, ${c.data}, às ${c.hora}*
+${TEMA}.
+
+Faz agora, leva 10 segundos: abre a sua agenda e bloqueia esse horário.
+
+Quem bloqueia, aparece. Quem deixa para depois, esquece.
+
+Link do evento: ${c.evento}`,
+  'm-6': c => `O erro que a gente mais vê no LinkedIn:
+
+Postar todo dia. Conteúdo bem feito. Frequência certa.
+
+E nenhuma reunião marcada.
+
+*Não é falta de frequência. É falta de estrutura.*
+
+É exatamente essa estrutura que o Igor abre no evento de ${c.dia}, às ${c.hora}.`,
+  'm-5': c => `Esse evento é para você se:
+
+✅ Você vende para outras empresas
+✅ Depende de indicação e quer parar de depender
+✅ Já postou no LinkedIn e não virou reunião
+✅ Não tem tempo para ficar o dia inteiro na rede
+
+Não é para quem quer viralizar ou ganhar seguidor. É para quem quer *agenda*.
+
+📅 ${c.dia}, ${c.data} · ${c.hora}`,
+  'm-4': c => `Pensa em uma pessoa que precisava estar nesse evento.
+
+Seu sócio. Quem cuida do comercial. Aquele amigo que vive reclamando que o LinkedIn não dá resultado.
+
+Manda o link para ela agora:
+${c.evento}
+
+É gratuito, e assistir junto com o time acelera muito a implementação.`,
+  'm-3': c => `Faltam *3 dias*. Para aproveitar 100%, chega com isso pronto:
+
+*1.* Seu perfil do LinkedIn aberto em outra aba
+*2.* A resposta para: quanto vale 1 cliente para o seu negócio? (ticket × quantos meses ele fica com você)
+*3.* Papel e caneta, ou um bloco de notas
+
+E um pedido: fica até o final. Tem uma coisa que só quem estiver ao vivo vai receber.
+
+📅 ${c.dia}, ${c.data} · ${c.hora}`,
+  'm-2': c => `Depois de amanhã 🔥
+
+*${c.dia}, ${c.data}, às ${c.hora}*
+
+Ao vivo é diferente: você tira a sua dúvida na hora, com o seu caso, com o seu mercado.
+
+Já está na agenda?`,
+  'm-1': c => `Daqui a exatamente *24 horas* a gente está ao vivo.
+
+*Amanhã, ${c.dia}, às ${c.hora}*
+${TEMA}.
+
+Deixa reservado:
+💻 Computador (dá para ver no celular, mas no computador é melhor)
+🎧 Fone
+📝 Onde anotar
+
+O link da sala chega aqui amanhã, *5 minutos antes* de começar.`,
+  'm-240': c => `*É HOJE* 🚀
+
+Às *${c.hora}* o Igor abre a sala ao vivo.
+
+${TEMA}.
+
+Fecha a agenda da noite. O link chega aqui *5 minutos antes*.`,
+  'm-120': c => `Faltam *2 horas* ⏰
+
+Às ${c.hora} a gente começa. Pontualmente.
+
+Já deixa o computador por perto e a pergunta que você quer fazer anotada.`,
+  'm-60': c => `Falta *1 hora* ⏳
+
+Às ${c.hora} a gente está ao vivo.
+
+Aguarde aqui no grupo: o link da sala chega *5 minutos antes* de começar, às ${c.h(-5)}.`,
+  'm-30': c => `Faltam *30 minutos*.
+
+Pega uma água, fecha as outras abas e deixa o fone por perto.
+
+O link chega aqui às *${c.h(-5)}*.`,
+  'm-15': c => `Faltam *15 minutos* 🔥
+
+Fica de olho no grupo: às ${c.h(-5)} eu mando o link da sala.`,
+  'm-10m': c => `Faltam *10 minutos*.
+
+Mais 5 minutinhos e o link chega aqui. Já deixa o computador ligado.`,
+  'm-5m': c => `🔗 *A sala está aberta. Entra agora:*
+
+${c.sala}
+
+Começamos às *${c.hora}*. Entra já para testar o áudio.`,
+  'm-0': c => `🔴 *ESTAMOS AO VIVO*
+
+O Igor já começou. Entra:
+${c.sala}`,
+  'm-atr': c => `Você que ainda não entrou: *ainda dá tempo*. A parte principal está só começando.
+
+${c.sala}`,
+  'm+1': c => `Obrigado a todo mundo que esteve com a gente ontem 🙏
+${c.grav ? `
+Quem não conseguiu ficar até o fim, a gravação está aqui:
+${c.grav}
+` : ''}
+Quer aplicar isso no seu negócio com o Igor olhando o seu caso? Agenda aqui:
+${CAL}
+
+E o evento acontece *toda semana*. A próxima edição é *${c.proxDia}, ${c.proxData}, às ${c.proxHora}*. Manda para quem precisa ver.`,
+};
+
+const WHY = {
+  'm-10': 'Responde as três perguntas de quem acabou de entrar: o que é, quando é, onde entro.',
+  'm-9': 'A pessoa mede a própria dor sozinha.',
+  'm-8': 'Três promessas concretas. Se o conteúdo do evento mudar, avise o Igor.',
+  'm-7': 'Pede uma ação pequena e imediata. Se o grupo abriu hoje, ela também serve de boas-vindas.',
+  'm-6': 'Reframe seco: não é frequência, é estrutura.',
+  'm-5': 'Quem se reconhece na lista vai.',
+  'm-4': 'Cada participante vira divulgador.',
+  'm-3': 'Quem se prepara já se comprometeu. O "fica até o final" segura a audiência.',
+  'm-2': 'Curta de propósito: só data, hora e o motivo de ir ao vivo.',
+  'm-1': 'Enviada no mesmo horário do evento, para a pessoa sentir o horário.',
+  'm-240': 'Abre o dia e protege o horário da noite.',
+  'm-120': '"Pontualmente" faz a pessoa chegar no horário.',
+  'm-60': 'Avisa que o link vem 5 minutos antes, para ninguém sair do grupo procurando.',
+  'm-30': 'Tira as distrações antes de começar.',
+  'm-15': 'Mantém a atenção no grupo.',
+  'm-10m': 'Último aviso antes do link.',
+  'm-5m': 'A mensagem mais importante: o link vai sozinho, sem texto longo em volta.',
+  'm-0': 'Quem estava em dúvida decide agora.',
+  'm-atr': 'Resgata quem se atrasou e ia desistir por vergonha de entrar no meio.',
+  'm+1': 'Fecha o ciclo e já empurra a próxima edição. Sem link de gravação, essa parte some sozinha.',
+};
+
+function faltando(texto) { return [...new Set((texto.match(/\[(LINK[^\]]*)\]/g) || []))]; }
+function htmlMsg(texto) { return esc(texto).replace(/\[(LINK[^\]]*)\]/g, '<span class="ph">[$1]</span>'); }
+
+function blocoCopia(rotulo, texto) {
+  const falta = faltando(texto);
+  const id = 'c' + Math.random().toString(36).slice(2, 9);
+  window._copias = window._copias || {};
+  window._copias[id] = texto;
+  return `<div class="copyblk"><div class="lb">${esc(rotulo)} <button class="btn ghost small" onclick="copiarBloco('${id}')">Copiar</button></div>
+    <div class="msgtext">${htmlMsg(texto)}</div>
+    ${falta.length ? `<div class="miss">Falta preencher na ficha: ${falta.map(f => f.slice(1, -1).toLowerCase()).join(', ')}</div>` : ''}</div>`;
+}
+async function copiarBloco(id) {
+  const texto = window._copias[id];
+  await copiar(texto);
+  toast(faltando(texto).length ? 'Copiado, mas ainda tem link faltando' : 'Copiado');
+}
+
+function guia(ev, it, c) {
+  if (it.guia === 'linkedin') {
+    const desc = `Evento online, gratuito e ao vivo com Igor Miguel, criador do Método Demanda Infinita®.
+
+${TEMA}.
+
+O que você vai ver:
+→ O post que faz o decisor pedir para conversar com você
+→ Como treinar uma IA para escrever no seu tom de voz
+→ O caminho automático que transforma comentário em reunião marcada
+
+Para quem é: dono de empresa, sócio e gestor comercial que vende para outras empresas e quer agenda cheia sem depender de tráfego pago.
+
+📅 ${c.dia}, ${c.data} · ${c.hora} (horário de Brasília)
+
+Clique em "Participar" para receber o lembrete. Grupo de avisos no WhatsApp: ${c.grupo}`;
+    const post = `Toda semana eu abro uma sala ao vivo para mostrar como o LinkedIn vira agenda de reunião com decisor.
+
+Sem tráfego pago. Sem mandar mensagem fria. Com 1 hora por semana.
+
+Essa semana é ${c.dia}, ${c.data}, às ${c.hora}.
+
+É gratuito. Confirma presença no evento abaixo.`;
+    return `<ol>
+      <li>No LinkedIn, clique em <b>Início</b> e, no painel da esquerda, em <b>Eventos</b>.</li>
+      <li>Clique em <b>Criar evento</b>.</li>
+      <li>Suba a capa (<b>1280 x 720 px</b>, salva no computador) e preencha: <b>Organizador</b> igual ao das edições anteriores · <b>Tipo</b>: Online · <b>Formato</b>: Link de evento externo · <b>Fuso</b>: Brasília · <b>Início</b>: ${esc(c.data)}, ${esc(hhmm(inicioEvento(ev)))} · marque <b>Adicionar data e hora de término</b> · <b>Palestrante</b>: Igor Miguel.</li>
+      <li>Clique em <b>Avançar</b>, cole o post abaixo e clique em <b>Publicar</b>. O evento só existe depois desse clique.</li>
+      <li>Copie o link da página do evento e cole na <b>Ficha da edição</b>, no campo "Link do evento no LinkedIn".</li>
+    </ol>
+    <div class="alert"><b>Organizador, tipo e formato não mudam depois de publicado.</b> Se algum sair errado, só apagando e criando de novo (e o link muda).</div>
+    <h4>Textos prontos</h4>
+    ${blocoCopia('Nome do evento', NOME_EVENTO)}
+    ${blocoCopia('Descrição do evento', desc)}
+    ${blocoCopia('Post que acompanha o evento', post)}`;
+  }
+  if (it.guia === 'grupo') {
+    return `<ol>
+      <li>Crie o grupo com o nome <b>Evento Demanda Infinita · ${esc(c.data)}</b>.</li>
+      <li>Em configurações do grupo, deixe <b>só administradores enviam mensagens</b>. Dúvida de participante é respondida no privado.</li>
+      <li>Gere o link de convite e cole na <b>Ficha da edição</b>, no campo "Link do grupo".</li>
+      <li>Se o evento no LinkedIn já foi publicado, edite a descrição e troque o <span class="ph">[LINK DO GRUPO]</span> pelo link.</li>
+    </ol>
+    <div class="desc muted">Um grupo por edição: como o evento é toda semana, os lembretes de uma edição começam antes da anterior acontecer. Com grupos separados, ninguém recebe aviso de duas datas ao mesmo tempo.</div>`;
+  }
+  if (it.guia === 'concluir') {
+    return `<div class="desc">Depois que a mensagem de agradecimento saiu, encerre esta edição. O sistema já sugere a próxima, 7 dias depois, no mesmo horário.</div>
+      <div class="row"><button class="btn green small" onclick="concluir()">Concluir evento</button></div>`;
+  }
+  return '';
+}
+
+/* ---------- auth ---------- */
+async function iniciar() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return mostrar('login');
+  const { data: p } = await sb.from('com_perfis').select('id,nome').order('nome');
+  perfis = p || [];
+  eu = perfis.find(x => x.id === session.user.id) || null;
+  if (!eu) {
+    mostrar('login');
+    $('l-err').textContent = 'Este login não faz parte do time. Fale com o Igor.';
+    await sb.auth.signOut();
+    return;
+  }
+  $('who').textContent = eu.nome;
+  $('btn-sair').classList.remove('hidden');
+  await carregarEventos();
+  const alvo = Number(new URLSearchParams(location.search).get('e'));
+  if (alvo && eventos.some(e => e.id === alvo)) abrirEvento(alvo, true); else mostrarLista(true);
+}
+
+$('f-login').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('l-err').textContent = '';
+  const { error } = await sb.auth.signInWithPassword({ email: $('l-email').value.trim(), password: $('l-senha').value });
+  if (error) { $('l-err').textContent = 'E-mail ou senha incorretos.'; return; }
+  iniciar();
+});
+$('btn-sair').onclick = async () => { await sb.auth.signOut(); location.href = location.pathname; };
+
+function mostrar(v) {
+  ['login', 'lista', 'evento'].forEach(x => $('v-' + x).classList.toggle('hidden', x !== v));
+}
+
+/* ---------- lista ---------- */
+async function carregarEventos() {
+  const { data, error } = await sb.from('evs_eventos').select('*').order('data', { ascending: true });
+  if (error) { toast('Erro ao carregar eventos'); return; }
+  eventos = data || [];
+  const ids = eventos.map(e => e.id);
+  window._contagem = {};
+  if (ids.length) {
+    const { data: cs } = await sb.from('evs_checks').select('evento_id,chave').in('evento_id', ids);
+    (cs || []).forEach(c => { window._contagem[c.evento_id] = (window._contagem[c.evento_id] || 0) + 1; });
+  }
+}
+
+function cardEvento(ev) {
+  const ini = inicioEvento(ev);
+  const feitos = Math.min(window._contagem[ev.id] || 0, PLANO.length);
+  const pct = Math.round(feitos / PLANO.length * 100);
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const dias = Math.round((dataLocal(ev.data) - hoje) / 864e5);
+  const quando = ev.status === 'concluido' ? 'Concluído' : dias === 0 ? 'É hoje' : dias === 1 ? 'Amanhã' : dias > 1 ? `Faltam ${dias} dias` : `Foi há ${-dias} dia${dias === -1 ? '' : 's'}, falta concluir`;
+  return `<button class="evcard ${ev.status === 'concluido' ? 'done' : ''}" onclick="abrirEvento(${ev.id})">
+    <div class="date"><b>${pad(ini.getDate())}</b><span>${MESES[ini.getMonth()]}</span></div>
+    <div class="info">
+      <div class="t">${ev.edicao ? ev.edicao + 'ª edição · ' : ''}${DIAS[ini.getDay()]}, ${ddmm(ini)} às ${fmtHora(ini)}</div>
+      <div class="s">${quando} · ${feitos} de ${PLANO.length} etapas</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+    </div></button>`;
+}
+
+function mostrarLista(semHistorico) {
+  atual = null;
+  if (!semHistorico) history.pushState({}, '', location.pathname);
+  const ativos = eventos.filter(e => e.status === 'ativo');
+  const conc = eventos.filter(e => e.status === 'concluido').reverse();
+  $('lista-ativos').innerHTML = ativos.length ? ativos.map(cardEvento).join('')
+    : `<div class="empty">Nenhum evento em andamento.<br><br><button class="btn green" onclick="novoEvento()">+ Criar o primeiro</button></div>`;
+  $('lista-concluidos').innerHTML = conc.length ? `<div class="sec-t">Concluídos</div>` + conc.slice(0, 12).map(cardEvento).join('') : '';
+  mostrar('lista');
+  window.scrollTo(0, 0);
+}
+
+$('btn-novo').onclick = () => novoEvento();
+$('btn-voltar').onclick = async () => { await carregarEventos(); mostrarLista(); };
+window.onpopstate = () => { const alvo = Number(new URLSearchParams(location.search).get('e')); alvo ? abrirEvento(alvo, true) : mostrarLista(true); };
+
+/* ---------- criar evento ---------- */
+function novoEvento(base) {
+  const ultimo = [...eventos].sort((a, b) => b.data.localeCompare(a.data))[0];
+  const ref = base || ultimo;
+  const sugestao = ref ? isoDe(somaDias(dataLocal(ref.data), 7)) : isoDe(somaDias(new Date(), 10));
+  const hora = ref ? ref.hora.slice(0, 5) : '19:00';
+  const edicao = ref && ref.edicao ? ref.edicao + 1 : '';
+  const sala = ref && ref.link_sala ? ref.link_sala : '';
+  $('modal-root').innerHTML = `<div class="ov" onclick="if(event.target===this)fecharModal()"><form class="modal" id="f-novo">
+    <h2>${base ? 'Criar a próxima edição' : 'Novo evento'}</h2>
+    <p>O plano completo de 10 dias (ações + mensagens) já nasce com as datas certas.</p>
+    <div class="g2">
+      <div class="field"><label>Data do evento</label><input type="date" id="n-data" value="${sugestao}" required></div>
+      <div class="field"><label>Horário (Brasília)</label><input type="time" id="n-hora" value="${hora}" required></div>
+    </div>
+    <div class="field"><label>Número da edição (opcional)</label><input type="number" min="1" id="n-edicao" value="${edicao}" placeholder="ex: 3"></div>
+    <div class="field"><label>Link da sala (opcional, dá para pôr depois)</label><input type="url" id="n-sala" value="${esc(sala)}" placeholder="https://meet.google.com/..."></div>
+    <div class="err" id="n-err"></div>
+    <div class="acts"><button type="button" class="btn ghost" onclick="fecharModal()">Cancelar</button><button class="btn green" type="submit">Criar evento</button></div>
+  </form></div>`;
+  $('f-novo').onsubmit = async e => {
+    e.preventDefault();
+    const data = $('n-data').value;
+    if (eventos.some(x => x.data === data && x.status === 'ativo')) { $('n-err').textContent = 'Já existe um evento ativo nessa data.'; return; }
+    const linha = { data, hora: $('n-hora').value, edicao: $('n-edicao').value ? Number($('n-edicao').value) : null, link_sala: $('n-sala').value.trim() || null, criado_por: eu.id };
+    const { data: novo, error } = await sb.from('evs_eventos').insert(linha).select().single();
+    if (error) { $('n-err').textContent = 'Não consegui criar: ' + error.message; return; }
+    fecharModal();
+    await carregarEventos();
+    abrirEvento(novo.id);
+  };
+}
+function fecharModal() { $('modal-root').innerHTML = ''; }
+
+/* ---------- tela do evento ---------- */
+async function abrirEvento(id, semHistorico) {
+  atual = eventos.find(e => e.id === id);
+  if (!atual) return mostrarLista();
+  if (!semHistorico) history.pushState({}, '', '?e=' + id);
+  const { data } = await sb.from('evs_checks').select('*').eq('evento_id', id);
+  checks = {};
+  (data || []).forEach(c => { checks[c.chave] = c; });
+  abertos = new Set();
+  renderEvento(true);
+  mostrar('evento');
+}
+
+function itensDoEvento(ev) {
+  return PLANO.map(it => ({ ...it, quando: quandoItem(ev, it) })).sort((a, b) => a.quando - b.quando);
+}
+
+function renderEvento(rolarParaHoje, manterFicha) {
+  const ev = atual;
+  const c = ctx(ev);
+  const ini = inicioEvento(ev);
+  const itens = itensDoEvento(ev);
+  const agora = new Date();
+  const feitos = itens.filter(i => checks[i.k]).length;
+  const pend = itens.filter(i => !checks[i.k]);
+  const proximo = pend[0];
+  const atrasadosMsg = itens.filter(i => i.tipo === 'msg' && !checks[i.k] && i.quando < agora && !mesmoDia(i.quando, agora));
+  const nenhumaMsgFeita = !itens.some(i => i.tipo === 'msg' && checks[i.k]);
+  const concluido = ev.status === 'concluido';
+
+  if (rolarParaHoje && proximo && !concluido) abertos.add(proximo.k);
+
+  let h = `<div class="evhead">
+    <div class="row1"><div style="flex:1;min-width:220px">
+      <span class="pill ${concluido ? 'gray' : ''}">${concluido ? 'Concluído' : 'Em andamento'}${ev.edicao ? ' · ' + ev.edicao + 'ª edição' : ''}</span>
+      <h1 style="margin-top:8px">${c.dia[0].toUpperCase() + c.dia.slice(1)}, ${c.data} às ${c.hora}</h1>
+      <div class="tema">${esc(TEMA)}</div></div>
+      ${concluido ? `<button class="btn ghost small" onclick="reabrir()">Reabrir</button>` : `<button class="btn small" onclick="concluir()">Concluir evento</button>`}
+    </div>
+    <div class="prog"><div class="bar"><i style="width:${Math.round(feitos / itens.length * 100)}%"></i></div><span>${feitos} de ${itens.length}</span></div>
+  </div>`;
+
+  if (!concluido && proximo) {
+    const ehAtraso = proximo.quando < agora;
+    h += `<div class="now"><div class="l">${ehAtraso ? 'Próximo passo · já passou do horário' : 'Próximo passo'}</div>
+      <div class="t">${esc(proximo.tit)}</div>
+      <div class="s">${DIAS[proximo.quando.getDay()]}, ${ddmm(proximo.quando)} às ${fmtHora(proximo.quando)} · ${proximo.tipo === 'msg' ? 'mensagem no grupo' : 'ação do time'}</div>
+      <div class="acts">${proximo.tipo === 'msg' ? `<button class="btn green small" onclick="copiarMsg('${proximo.k}')">Copiar mensagem</button>` : ''}
+      <button class="btn ghost small" onclick="irPara('${proximo.k}')">Ver no plano</button>
+      <button class="btn ghost small" onclick="marcar('${proximo.k}')">Marcar como feito</button></div></div>`;
+  } else if (!concluido && !proximo) {
+    h += `<div class="now"><div class="l">Tudo feito</div><div class="t">Plano completo. Pode concluir o evento.</div><div class="acts"><button class="btn green small" onclick="concluir()">Concluir e criar a próxima edição</button></div></div>`;
+  }
+
+  if (!concluido && atrasadosMsg.length && nenhumaMsgFeita) {
+    h += `<div class="banner"><b>${atrasadosMsg.length} mensage${atrasadosMsg.length > 1 ? 'ns ficaram' : 'm ficou'} para trás</b> porque o evento foi criado com menos de 10 dias. Não mande duas no mesmo dia para recuperar: pule as que passaram e siga a partir de hoje.<br>
+      <button class="btn small" onclick="pularPassadas()">Pular as que já passaram</button></div>`;
+  }
+
+  const campos = [
+    ['link_evento', 'Link do evento no LinkedIn', 'https://www.linkedin.com/events/...'],
+    ['link_sala', 'Link da sala (enviado 5 min antes)', 'https://meet.google.com/...'],
+    ['link_grupo', 'Link do grupo de WhatsApp', 'https://chat.whatsapp.com/...'],
+    ['link_gravacao', 'Link da gravação (depois do evento)', 'https://youtu.be/...'],
+  ];
+  const faltam = campos.filter(([k]) => k !== 'link_gravacao' && !ev[k]).length;
+  const resumoFicha = faltam ? `<span class="miss">${faltam} link${faltam > 1 ? 's' : ''} faltando</span>` : '<span class="saved">completa</span>';
+  const topo = h;
+  h = '';
+  h += `<details class="ficha" ${faltam && !concluido ? 'open' : ''}><summary>Ficha da edição <span class="sp"></span><span id="ficha-resumo">${resumoFicha}</span><span class="chev">›</span></summary>
+    <div class="ficha-body">
+      <div class="field"><label>Data</label><input type="date" value="${ev.data}" onchange="salvarCampo('data', this.value)"></div>
+      <div class="field"><label>Horário (Brasília)</label><input type="time" value="${ev.hora.slice(0, 5)}" onchange="salvarCampo('hora', this.value)"></div>
+      ${campos.map(([k, l, ph]) => `<div class="field full"><label>${l}</label><input type="url" value="${esc(ev[k] || '')}" placeholder="${ph}" onchange="salvarCampo('${k}', this.value)"></div>`).join('')}
+      <div class="field"><label>Edição</label><input type="number" min="1" value="${ev.edicao || ''}" onchange="salvarCampo('edicao', this.value)"></div>
+      <div class="field" style="display:flex;align-items:flex-end;justify-content:flex-end"><button class="btn danger small" onclick="excluirEvento()">Excluir evento</button></div>
+      <div class="saved full" id="ficha-msg"></div>
+    </div></details>`;
+  const ficha = h;
+  h = '';
+
+  // agrupa por dia
+  const grupos = [];
+  itens.forEach(it => {
+    const chave = isoDe(it.quando);
+    let g = grupos.find(x => x.chave === chave);
+    if (!g) { g = { chave, d: it.d, data: it.quando, itens: [] }; grupos.push(g); }
+    g.itens.push(it);
+  });
+
+  grupos.forEach(g => {
+    const [cls, nomeFase] = fase(g.d);
+    const cod = g.d === 0 ? 'DIA D' : (g.d > 0 ? 'D+' + g.d : 'D' + g.d);
+    const ehHoje = mesmoDia(g.data, agora);
+    h += `<div class="day" id="dia-${g.chave}"><div class="day-h"><span class="dd ${cls}">${cod}</span><span class="dn">${DIAS[g.data.getDay()]}, ${ddmm(g.data)}</span>
+      <span class="tag">${ehHoje ? '<span class="pill">Hoje</span>' : `<span class="muted" style="font-size:12px">${nomeFase}</span>`}</span></div>`;
+    g.itens.forEach(it => { h += renderItem(it, c, proximo, agora); });
+    h += `</div>`;
+  });
+
+  if (manterFicha && $('ev-ficha')) {
+    $('ev-top').innerHTML = topo;
+    $('ficha-resumo').innerHTML = resumoFicha;
+    $('ev-plano').innerHTML = h;
+  } else {
+    $('ev').innerHTML = `<div id="ev-top">${topo}</div><div id="ev-ficha">${ficha}</div><div id="ev-plano">${h}</div>`;
+  }
+  if (rolarParaHoje && proximo && !concluido) {
+    const alvo = document.getElementById('it-' + proximo.k);
+    if (alvo && itens.indexOf(proximo) > 2) setTimeout(() => alvo.scrollIntoView({ block: 'center' }), 50);
+  }
+}
+
+function renderItem(it, c, proximo, agora) {
+  const ck = checks[it.k];
+  const pulado = ck && ck.pulado;
+  const ok = ck && !pulado;
+  const late = !ck && it.quando < agora;
+  const isNext = proximo && proximo.k === it.k;
+  const aberto = abertos.has(it.k);
+  let st = '';
+  if (pulado) st = '<span class="st skip">pulada</span>';
+  else if (ok) { const p = perfis.find(x => x.id === ck.feito_por); st = `<span class="st skip">${p ? esc(p.nome) : 'feito'}</span>`; }
+  else if (isNext) st = '<span class="st next">próximo</span>';
+  else if (late) st = '<span class="st late">atrasado</span>';
+
+  let corpo = '';
+  if (it.tipo === 'msg') {
+    const texto = MSG[it.k](c);
+    corpo = blocoCopia('Mensagem para o grupo', texto) + `<div class="why">${esc(WHY[it.k] || '')}</div>`;
+  } else {
+    corpo = (it.desc ? `<div class="desc">${esc(it.desc)}</div>` : '') + guia(atual, it, c);
+  }
+  corpo += `<div class="row">${it.tipo === 'msg' ? `<button class="btn green small" onclick="copiarMsg('${it.k}')">Copiar mensagem</button>` : ''}
+    ${ck ? `<button class="btn ghost small" onclick="desmarcar('${it.k}')">${pulado ? 'Desfazer pulo' : 'Desmarcar'}</button>`
+         : `<button class="btn ghost small" onclick="marcar('${it.k}')">Marcar como feito</button>${it.tipo === 'msg' ? `<button class="btn ghost small" onclick="marcar('${it.k}', true)">Pular</button>` : ''}`}</div>`;
+
+  return `<div class="item ${ok ? 'ok' : ''} ${pulado ? 'skipped' : ''} ${isNext ? 'isnext' : ''} ${late && !isNext ? 'islate' : ''} ${aberto ? 'open' : ''}" id="it-${it.k}">
+    <div class="ih">
+      <button class="ck" title="${ck ? 'Desmarcar' : 'Marcar como feito'}" onclick="${ck ? `desmarcar('${it.k}')` : `marcar('${it.k}')`}"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></button>
+      <span class="hr">${hhmm(it.quando)}</span>
+      <div class="tt" onclick="alternar('${it.k}')" style="cursor:pointer"><span class="k ${it.tipo}">${it.tipo === 'msg' ? 'Mensagem' : 'Ação'}</span><b>${esc(it.tit)}</b></div>
+      ${st}
+      <button class="tog" onclick="alternar('${it.k}')" aria-label="Abrir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+    </div>
+    <div class="ib">${corpo}</div></div>`;
+}
+
+function alternar(k) {
+  abertos.has(k) ? abertos.delete(k) : abertos.add(k);
+  document.getElementById('it-' + k).classList.toggle('open');
+}
+function irPara(k) {
+  abertos.add(k);
+  renderEvento(false, true);
+  document.getElementById('it-' + k).scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+async function copiarMsg(k) {
+  const texto = MSG[k](ctx(atual));
+  await copiar(texto);
+  toast(faltando(texto).length ? 'Copiado, mas ainda tem link faltando' : 'Mensagem copiada');
+}
+
+async function marcar(k, pular) {
+  const linha = { evento_id: atual.id, chave: k, pulado: !!pular, feito_por: eu.id };
+  const { error } = await sb.from('evs_checks').upsert(linha);
+  if (error) { toast('Não salvou: ' + error.message); return; }
+  checks[k] = { ...linha, feito_em: new Date().toISOString() };
+  abertos.delete(k);
+  renderEvento(false, true);
+}
+async function desmarcar(k) {
+  const { error } = await sb.from('evs_checks').delete().eq('evento_id', atual.id).eq('chave', k);
+  if (error) { toast('Não salvou: ' + error.message); return; }
+  delete checks[k];
+  renderEvento(false, true);
+}
+async function pularPassadas() {
+  const agora = new Date();
+  const linhas = itensDoEvento(atual).filter(i => i.tipo === 'msg' && !checks[i.k] && i.quando < agora && !mesmoDia(i.quando, agora))
+    .map(i => ({ evento_id: atual.id, chave: i.k, pulado: true, feito_por: eu.id }));
+  if (!linhas.length) return;
+  const { error } = await sb.from('evs_checks').upsert(linhas);
+  if (error) { toast('Não salvou: ' + error.message); return; }
+  linhas.forEach(l => { checks[l.chave] = l; });
+  renderEvento(true);
+}
+
+async function salvarCampo(campo, valor) {
+  let v = typeof valor === 'string' ? valor.trim() : valor;
+  if (campo === 'edicao') v = v ? Number(v) : null;
+  else if (campo !== 'data' && campo !== 'hora') v = v || null;
+  if ((campo === 'data' || campo === 'hora') && !v) return;
+  const { error } = await sb.from('evs_eventos').update({ [campo]: v }).eq('id', atual.id);
+  if (error) { $('ficha-msg').textContent = 'Não salvou: ' + error.message; return; }
+  atual[campo] = campo === 'hora' ? v + ':00' : v;
+  renderEvento(false, true);
+  $('ficha-msg').textContent = 'Salvo. As mensagens já foram atualizadas.';
+}
+
+async function concluir() {
+  if (!confirm('Concluir este evento? Ele vai para a lista de concluídos.')) return;
+  const { error } = await sb.from('evs_eventos').update({ status: 'concluido', concluido_em: new Date().toISOString() }).eq('id', atual.id);
+  if (error) { toast('Não salvou: ' + error.message); return; }
+  if (!checks['a-concluir']) await sb.from('evs_checks').upsert({ evento_id: atual.id, chave: 'a-concluir', pulado: false, feito_por: eu.id });
+  const base = { ...atual };
+  await carregarEventos();
+  mostrarLista();
+  const jaTemProximo = eventos.some(e => e.status === 'ativo' && e.data > base.data);
+  if (!jaTemProximo) novoEvento(base);
+  else toast('Evento concluído');
+}
+async function reabrir() {
+  const { error } = await sb.from('evs_eventos').update({ status: 'ativo', concluido_em: null }).eq('id', atual.id);
+  if (error) { toast('Não salvou: ' + error.message); return; }
+  atual.status = 'ativo';
+  renderEvento(true);
+}
+async function excluirEvento() {
+  if (!confirm('Excluir este evento e todo o checklist dele? Não dá para desfazer.')) return;
+  const { error } = await sb.from('evs_eventos').delete().eq('id', atual.id);
+  if (error) { toast('Não excluiu: ' + error.message); return; }
+  await carregarEventos();
+  mostrarLista();
+}
+
+iniciar();
+</script>
+</body>
+</html>
