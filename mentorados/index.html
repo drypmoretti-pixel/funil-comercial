@@ -490,6 +490,54 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 :root[data-theme="dark"] .cal-dia.hoje,:root[data-theme="dark"] .step.atual{border-color:var(--accent-light)}
 :root[data-theme="dark"] .menu-pop,:root[data-theme="dark"] .notif-panel{box-shadow:0 18px 40px -12px rgba(0,0,0,.8)}
 
+/* ---------- simulador de post do LinkedIn (sempre claro: é a aparência do feed) ---------- */
+.li-wrap{background:#F4F2EE;border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px}
+.li-barra{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.li-barra .tit{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#4b4a46;font-weight:700}
+.li-disp{display:inline-flex;border:1px solid #cfccc4;border-radius:99px;overflow:hidden;background:#fff}
+.li-disp button{border:0;background:#fff;padding:5px 12px;font-size:.74rem;font-weight:700;color:#4b4a46;font-family:var(--f-title)}
+.li-disp button.ativo{background:var(--accent-fill);color:#fff}
+.li-nota{margin:10px 2px 0;font-size:.72rem;color:#6b6b6b}
+.li-aviso{margin:0 0 10px;padding:8px 12px;border-radius:8px;background:#FFF1CC;color:#7A5200;font-size:.78rem}
+.li-card{background:#fff;border:1px solid #e0dfdc;border-radius:8px;margin:0 auto;max-width:555px;color:rgba(0,0,0,.9);overflow:hidden;
+  font-family:-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.li-card.celular{max-width:360px}
+.li-topo{display:flex;gap:8px;padding:12px 16px 0;align-items:flex-start}
+.li-av{width:48px;height:48px;border-radius:50%;background:#d6e7dc;color:#006B32;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.li-nome{font-size:14px;font-weight:600;line-height:1.3;color:rgba(0,0,0,.9)}
+.li-sub{font-size:12px;color:rgba(0,0,0,.6);line-height:1.33;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-tempo{font-size:12px;color:rgba(0,0,0,.6);display:flex;gap:4px;align-items:center;line-height:1.33}
+.li-pontos{color:rgba(0,0,0,.6);display:flex}
+.li-corpo{padding:8px 16px 0;position:relative}
+.li-texto{font-size:14px;line-height:1.43;white-space:pre-wrap;overflow-wrap:anywhere;min-height:20px}
+.li-texto.corte{max-height:calc(14px * 1.43 * 3);overflow:hidden}
+.li-vazio{color:rgba(0,0,0,.45)}
+.li-link{color:#0a66c2;font-weight:600}
+.li-vermais{border:0;background:none;color:rgba(0,0,0,.6);font-size:14px;cursor:pointer;padding:0;font-family:inherit}
+.li-vermais:hover{color:#0a66c2;text-decoration:underline}
+.li-vermais:not(.aberto){position:absolute;right:16px;bottom:0;background:linear-gradient(90deg,rgba(255,255,255,0),#fff 32%);padding-left:30px;line-height:1.43}
+.li-vermais.aberto{display:block;margin-top:4px}
+.li-midia{margin-top:10px;background:#f3f2ef}
+.li-img1 img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain;background:#f3f2ef}
+.li-grade{display:grid;gap:2px;background:#fff}
+.li-grade.g2,.li-grade.g4{grid-template-columns:1fr 1fr}
+.li-grade.g3{grid-template-columns:1fr 1fr}.li-grade.g3 .a{grid-row:span 2}
+.li-grade > div{position:relative;overflow:hidden;aspect-ratio:1/1}.li-grade.g3 .a{aspect-ratio:auto}
+.li-grade img{width:100%;height:100%;object-fit:cover;display:block}
+.li-mais::after{content:attr(data-mais);position:absolute;inset:0;background:rgba(0,0,0,.55);color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center}
+.li-doc{position:relative;background:#fff;min-height:120px}
+.li-doc canvas{display:block;width:100%;height:auto;background:#fff}
+.li-doc-carga{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(0,0,0,.55);padding:16px;text-align:center}
+.li-doc .nav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.96);border:1px solid #cfccc4;box-shadow:0 1px 5px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;color:#000;font-size:20px;line-height:1;cursor:pointer}
+.li-doc .nav.ant{left:8px}.li-doc .nav.prox{right:8px}
+.li-doc .pag{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.68);color:#fff;font-size:12px;border-radius:99px;padding:2px 10px}
+.li-doc-rodape{display:flex;justify-content:space-between;gap:10px;padding:8px 14px;font-size:12px;border-top:1px solid #e0dfdc;background:#fff;color:rgba(0,0,0,.7)}
+.li-doc-rodape span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.li-video video{display:block;width:100%;max-height:560px;background:#000}
+.li-acoes{display:flex;border-top:1px solid #e0dfdc;margin-top:10px;padding:2px 6px}
+.li-acoes span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 2px;color:rgba(0,0,0,.6);font-size:13px;font-weight:600}
+.li-card.celular .li-acoes span{font-size:11.5px;gap:4px}
+
 /* ---------- drive ---------- */
 .ic-btn{font-size:1.1rem;font-weight:800}
 .dr-doc{position:relative;min-height:50vh;border-radius:14px}
@@ -1171,7 +1219,7 @@ function formChecklist(dia, a, cli, opt = {}) {
       <div class="hoje-item ${(a.conexoes || 0) >= mC ? 'feito' : ''}" data-box="conexoes"><div class="tt">Conexões</div><div class="meta">meta: ${mC} por dia</div>${numCtl('conexoes', a.conexoes, 'conexões')}</div>
       <div class="hoje-item ${a.post_feito ? 'feito' : ''}" data-box="post"><div class="tt">Post</div><div class="meta">meta: ${cli.meta_semanal || 4} por semana</div>
         <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-weight:700;font-size:.88rem"><input type="checkbox" name="post_feito" ${a.post_feito ? 'checked' : ''} data-chg="ck" ${dis}> Postei neste dia</label>
-        <input type="url" name="post_link" value="${esc(a.post_link || '')}" placeholder="Link (opcional)" data-chg="ck" ${dis} style="margin-top:8px"></div>
+        <input type="url" name="post_link" value="${esc(a.post_link || '')}" placeholder="Link, depois de publicar" data-chg="ck" ${dis} style="margin-top:8px"></div>
       <div class="hoje-item ${(a.comentarios || 0) >= mMin ? 'feito' : ''}" data-box="comentarios"><div class="tt">Comentários</div><div class="meta">meta: ${mMin} a ${mMax} em posts do seu público</div>${numCtl('comentarios', a.comentarios, 'comentários')}</div>
     </div>
     <div class="row-between" style="margin-top:12px"><span class="hint" data-ckstatus>${opt.auto && !opt.somenteLeitura ? 'Salva sozinho a cada mudança.' : ''}</span>
@@ -1482,6 +1530,7 @@ async function refazerAnexos() {
   const id = Number($('#p-id').value); if (!id) return;
   const ax = await q(sb.from('cli_arquivos').select('*').eq('post_id', id).order('id'));
   $('#p-anexos').innerHTML = anexosHtml(ax, true); carregarThumbs();
+  PREV.anexos = ax; await assinarMidias(); atualizarPrevia();
 }
 const lerEditor = () => ({ id: Number($('#p-id').value) || null, titulo: $('#p-titulo').value.trim(), texto: $('#p-texto').value, data: $('#p-data').value || null });
 async function gravarRascunho() {
@@ -1494,8 +1543,6 @@ async function gravarRascunho() {
 function atualizarContador() {
   const t = $('#p-texto'), n = t.value.length, c = $('#p-contador');
   c.textContent = `${n.toLocaleString('pt-BR')} / ${LIMITE_POST.toLocaleString('pt-BR')} caracteres`; c.classList.toggle('alto', n > LIMITE_POST);
-  const g = t.value.slice(0, GANCHO), gb = $('#p-gancho');
-  gb.textContent = !g ? 'Escreva o texto e as primeiras linhas aparecem aqui.' : t.value.length > GANCHO ? g + '…' : 'O texto inteiro cabe antes do “ver mais”.';
 }
 CHG['post-texto'] = atualizarContador;
 document.addEventListener('input', ev => { if (ev.target.id === 'p-texto') atualizarContador(); });
@@ -1518,6 +1565,7 @@ function threadHtml(eventos, p, ctx, nomeCli) {
 async function editorPost(ctx, p) {
   const eventos = p ? await q(sb.from('cli_post_eventos').select('*').eq('post_id', p.id).order('id')) : [];
   const anexos = p ? await q(sb.from('cli_arquivos').select('*').eq('post_id', p.id).order('id')) : [];
+  await prepararPrevia(ctx, anexos, p ? p.texto : '');
   const ult = [...eventos].reverse().find(e => e.autor_papel === 'admin' && ['ajuste', 'reprovacao', 'comentario'].includes(e.tipo));
   const faixa = p && p.status === 'ajustes' ? `<div class="faixa-status ajustes"><div><b>O Igor pediu ajustes</b>${ult && ult.texto ? esc(ult.texto) : 'Veja os comentários ao lado, ajuste o texto e envie de novo.'}</div></div>` : '';
   return {
@@ -1526,7 +1574,6 @@ async function editorPost(ctx, p) {
       <div class="post-layout"><div class="card" style="margin:0"><input type="hidden" id="p-id" value="${p ? p.id : ''}">
         <div class="campo"><label class="lbl" for="p-titulo">Título (só pra você se achar; opcional)</label><input type="text" id="p-titulo" maxlength="120" value="${esc(p ? p.titulo || '' : '')}"></div>
         <div class="campo"><label class="lbl" for="p-texto">Texto do post</label><textarea id="p-texto" rows="14" placeholder="Escreva o post aqui…">${esc(p ? p.texto : '')}</textarea><div class="contador" id="p-contador"></div></div>
-        <div class="gancho"><small>Gancho · o que aparece antes do “ver mais”</small><span id="p-gancho"></span></div>
         <div class="campo"><label class="lbl" for="p-data">Quando quer publicar? (opcional)</label><input type="date" id="p-data" value="${esc(p ? p.data_prevista || '' : '')}" style="max-width:220px"></div>
         <div class="campo"><label class="lbl">Anexos</label>
           <label class="btn btn-sm" style="cursor:pointer">${svg('clip', 16)} Adicionar arquivo<input type="file" id="p-arquivos" multiple hidden data-chg="post-anexar" accept="image/*,application/pdf,video/*"></label>
@@ -1534,10 +1581,10 @@ async function editorPost(ctx, p) {
         <div class="row" style="margin-top:6px"><button class="btn" data-act="post-rascunho">Salvar rascunho</button>
           <button class="btn btn-primary" data-act="post-enviar">Enviar para aprovação</button>
           ${p && p.status === 'rascunho' ? '<button class="btn btn-danger btn-sm" data-act="post-excluir" style="margin-left:auto">Excluir rascunho</button>' : ''}</div></div>
-      <div class="stack">${eventos.length ? `<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx)}</div>` : ''}
+      <div class="stack">${previaShell()}${eventos.length ? `<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx)}</div>` : ''}
         <div class="card" style="margin:0"><h2>Antes de enviar</h2><ul style="margin:8px 0 0;padding-left:18px;color:var(--text-secondary);font-size:.86rem;line-height:1.6">
-          <li>As primeiras ${GANCHO} letras decidem se alguém clica em “ver mais”.</li><li>Carrossel? Anexe o PDF. Imagem? Anexe a imagem.</li><li>Depois de enviar você só edita se o Igor pedir ajustes.</li></ul></div></div></div>`,
-    depois: () => { atualizarContador(); carregarThumbs(); },
+          <li>Você manda o <b>texto e a imagem</b> (ou o carrossel em PDF, ou o vídeo). O link do post só existe depois de publicar: ele entra no último passo.</li><li>As 3 primeiras linhas decidem se alguém clica em “ver mais”. A prévia mostra o corte.</li><li>Depois de enviar você só edita se o Igor pedir ajustes.</li></ul></div></div></div>`,
+    depois: () => { atualizarContador(); carregarThumbs(); atualizarPrevia(); },
   };
 }
 ACT['post-rascunho'] = async el => { await ocupado(el, gravarRascunho); toast('Rascunho salvo.'); };
@@ -1578,6 +1625,7 @@ async function detalhePost(ctx, p) {
     getCliente(p.cliente_id)]);
   const ult = [...eventos].reverse().find(e => e.autor_papel === 'admin' && ['ajuste', 'reprovacao', 'aprovacao'].includes(e.tipo));
   const nome = cli ? cli.nome : 'Mentorado';
+  await prepararPrevia({ ...ctx, clienteId: p.cliente_id }, anexos, p.texto);
   const F = {
     aguardando: admin ? ['Aguardando sua decisão', `Enviado ${tempoAtras(p.enviado_em)} · versão ${p.versao}`] : ['Aguardando aprovação', 'O Igor vai olhar e responder. Você recebe o aviso aqui no portal.'],
     ajustes: admin ? ['Aguardando o mentorado ajustar', ult && ult.texto || ''] : ['Ajustes pedidos', ult && ult.texto || ''],
@@ -1588,7 +1636,10 @@ async function detalhePost(ctx, p) {
   }[p.status];
   const faixa = `<div class="faixa-status ${p.status}"><div><b>${esc(F[0])}</b>${esc(F[1])}${p.status === 'publicado' && urlSegura(p.post_link) ? `<a href="${esc(urlSegura(p.post_link))}" target="_blank" rel="noopener noreferrer">${esc(p.post_link)}</a>` : ''}</div></div>`;
 
-  const publicar = !admin && p.status === 'aprovado' ? `<div class="card destaque"><h2>Já publicou?</h2><p class="desc">Cole o link do post no LinkedIn. Isso fecha o item “post” do seu checklist de hoje.</p>
+  const publicar = !admin && p.status === 'aprovado' ? `<div class="card destaque"><h2>Hora de publicar</h2><p class="desc">O LinkedIn é o último passo: copie o texto, baixe a imagem, publique e volte aqui colar o link.</p>
+    <div class="row" style="margin-bottom:14px">${ro ? '' : `<button class="btn btn-sm" data-act="post-copiar">Copiar o texto</button>${anexos.map((a, i) => { const k = tipoMidia(a), n = anexos.filter(x => tipoMidia(x) === k).length, pos = anexos.slice(0, i).filter(x => tipoMidia(x) === k).length + 1; const rot = { img: 'imagem', pdf: 'carrossel (PDF)', video: 'vídeo' }[k] || 'arquivo'; return `<button class="btn btn-sm" data-act="anexo-baixar" data-path="${esc(a.path)}" data-nome="${esc(a.nome)}" title="${esc(a.nome)}">${svg('baixar', 14)} Baixar ${rot}${n > 1 ? ' ' + pos : ''}</button>`; }).join('')}
+      <a class="btn btn-sm" href="https://www.linkedin.com/feed/?shareActive=true" target="_blank" rel="noopener noreferrer">${svg('link', 14)} Abrir o LinkedIn</a>`}</div>
+    <h3 style="margin-bottom:4px">Já publicou?</h3><p class="desc" style="margin-bottom:10px">Cole o link do post. Isso fecha o item “post” do seu checklist de hoje.</p>
     <form data-sub="post-publicar"><input type="hidden" name="id" value="${p.id}"><div class="row"><input type="url" name="link" placeholder="https://www.linkedin.com/posts/…" style="flex:1;min-width:220px" ${ro ? 'disabled' : ''}>
     <button class="btn btn-primary" type="submit" ${ro ? 'disabled' : ''}>Marcar como publicado</button></div></form></div>` : '';
 
@@ -1608,12 +1659,11 @@ async function detalhePost(ctx, p) {
     html: `<div style="margin-bottom:12px"><a class="btn-link" href="${admin ? '#/admin/aprovacoes' : lnk(ctx, 'posts')}">← ${admin ? 'voltar para aprovações' : 'voltar para os posts'}</a>
       ${admin && cli ? ` · <a class="btn-link" href="#/admin/mentorado/${cli.id}">ver ${esc(primeiroNome(cli.nome))}</a>` : ''}</div>${faixa}
       <div class="post-layout"><div class="stack">
-        ${p.texto.length > GANCHO ? `<div class="gancho"><small>Gancho · aparece antes do “ver mais”</small>${esc(p.texto.slice(0, GANCHO))}${p.texto.length > GANCHO ? '…' : ''}</div>` : ''}
-        <div class="post-corpo">${esc(p.texto) || '<i class="muted">Sem texto.</i>'}</div>
+        ${previaShell()}
         <div class="row" style="font-size:.8rem;color:var(--muted)"><span>${p.texto.length.toLocaleString('pt-BR')} caracteres</span>${p.data_prevista ? `<span>· previsto para ${esc(fmtData(p.data_prevista))}</span>` : ''}</div>
-        ${anexos.length ? `<div><h3 style="margin-bottom:6px">Anexos</h3>${anexosHtml(anexos, false)}</div>` : ''}${publicar}</div>
+        ${anexos.length ? `<div><h3 style="margin-bottom:6px">Arquivos do post</h3>${anexosHtml(anexos, false)}</div>` : ''}${publicar}</div>
       <div class="stack">${decidir}<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx, nome)}${comentar}</div></div></div>`,
-    depois: carregarThumbs,
+    depois: () => { carregarThumbs(); atualizarPrevia(); },
   };
 }
 SUB['post-publicar'] = async f => {
@@ -2800,6 +2850,145 @@ ACT['cfg-senha'] = async el => {
 SUB['cfg-senha'] = async f => {
   const r = await fnAdmin({ acao: 'resetar_senha', cliente_id: Number(f.id.value) });
   modalCredenciais({ nome: r.nome, email: r.email, senha: r.senha }); render();
+};
+
+/* =====================================================================
+   SIMULADOR DE POST DO LINKEDIN
+   O mentorado manda TEXTO + IMAGEM (ou carrossel em PDF, ou vídeo) pra aprovação; aqui o post aparece como vai aparecer
+   no feed: nome, texto cortado em 3 linhas com "ver mais", hashtags/links em azul, imagens em grade, carrossel com setas.
+   O link do post só existe DEPOIS de publicar (é o último passo, depois da aprovação).
+   ===================================================================== */
+const PREV = { cli: null, anexos: [], urls: {}, texto: '', pdfs: {}, disp: lsGet('li-disp') === 'celular' ? 'celular' : 'computador' };
+const tipoMidia = a => /^video\//.test(a.mime || '') || /\.(mp4|mov|webm)$/i.test(a.nome) ? 'video' : (a.mime === 'application/pdf' || /\.pdf$/i.test(a.nome)) ? 'pdf' : (/^image\//.test(a.mime || '') || /\.(png|jpe?g|gif|webp)$/i.test(a.nome)) ? 'img' : 'arq';
+
+async function prepararPrevia(ctx, anexos, texto) {
+  PREV.cli = await getCliente(ctx.clienteId); PREV.anexos = anexos; PREV.texto = texto || '';
+  await assinarMidias();
+}
+async function assinarMidias() {
+  const faltam = PREV.anexos.filter(a => !PREV.urls[a.path]).map(a => a.path);
+  if (!faltam.length) return;
+  const { data } = await sb.storage.from(BUCKET).createSignedUrls(faltam, 3600);
+  (data || []).forEach(r => { if (r.signedUrl) PREV.urls[r.path] = r.signedUrl; });
+}
+
+// hashtags e links em azul, como no LinkedIn. Quebra o texto CRU em pedaços e escapa cada um (nunca mexe em texto já escapado).
+function liTextoHtml(t) {
+  if (!t.trim()) return '<span class="li-vazio">Escreva o texto do post e ele aparece aqui, como vai aparecer no LinkedIn.</span>';
+  return t.split(/(https?:\/\/[^\s<>"']+|#[\p{L}\p{N}_]+)/u).map((x, i) => i % 2 ? `<span class="li-link">${esc(x)}</span>` : esc(x)).join('');
+}
+const LI_ICO = {
+  gostei: '<path d="M7 11v9H4v-9zM7 11l4-8a2 2 0 0 1 2 2v4h6a2 2 0 0 1 2 2.3l-1 6a2 2 0 0 1-2 1.7H7"/>',
+  comentar: '<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-5.4A8 8 0 1 1 21 12z"/>',
+  repostar: '<path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/>',
+  enviar: '<path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/>',
+  mundo: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>',
+  pontos: '<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
+};
+const liSvg = (n, w = 18) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${LI_ICO[n]}</svg>`;
+
+function liMidiaHtml() {
+  const por = k => PREV.anexos.filter(a => tipoMidia(a) === k);
+  const docs = por('pdf'), vids = por('video'), imgs = por('img');
+  const tipos = [docs.length && 'documento (carrossel)', vids.length && 'vídeo', imgs.length && 'imagem'].filter(Boolean);
+  const aviso = tipos.length > 1 ? `<div class="li-aviso">O LinkedIn aceita um tipo de mídia por post. Aqui aparece só ${docs.length ? 'o carrossel em PDF' : vids.length ? 'o vídeo' : 'as imagens'}; o resto do anexo não vai junto.</div>` : '';
+  let corpo = '';
+  if (docs.length) {
+    const d = docs[0];
+    corpo = `<div class="li-doc" data-path="${esc(d.path)}"><canvas></canvas><div class="li-doc-carga">Carregando o carrossel…</div>
+      <button class="nav ant" data-act="li-pag" data-d="-1" aria-label="Página anterior" hidden>‹</button><button class="nav prox" data-act="li-pag" data-d="1" aria-label="Próxima página" hidden>›</button><span class="pag" hidden></span></div>
+      <div class="li-doc-rodape"><span>${esc(d.nome)}</span><span>Documento</span></div>`;
+  } else if (vids.length) {
+    const u = PREV.urls[vids[0].path]; corpo = u ? `<div class="li-video"><video src="${esc(u)}" controls preload="metadata"></video></div>` : '';
+  } else if (imgs.length) {
+    const us = imgs.map(a => PREV.urls[a.path]).filter(Boolean), n = us.length;
+    if (n === 1) corpo = `<div class="li-img1"><img src="${esc(us[0])}" alt="Imagem do post"></div>`;
+    else if (n >= 2) { const m = us.slice(0, 4); corpo = `<div class="li-grade g${m.length}">${m.map((u, i) => `<div class="${i === 0 ? 'a' : ''} ${i === 3 && n > 4 ? 'li-mais' : ''}" ${i === 3 && n > 4 ? `data-mais="+${n - 4}"` : ''}><img src="${esc(u)}" alt="Imagem ${i + 1} do post"></div>`).join('')}</div>`; }
+  }
+  return { aviso, corpo: corpo ? `<div class="li-midia">${corpo}</div>` : '' };
+}
+function liCardHtml() {
+  const c = PREV.cli || {}, nome = c.nome || 'Seu nome', sub = [c.empresa, c.nivel].filter(Boolean)[0] || 'Sua headline do LinkedIn',
+    m = liMidiaHtml(), ini = iniciais(nome);
+  return `${m.aviso}<div class="li-card ${PREV.disp === 'celular' ? 'celular' : ''}">
+    <div class="li-topo"><div class="li-av" aria-hidden="true">${esc(ini)}</div><div style="min-width:0;flex:1"><div class="li-nome">${esc(nome)}</div><div class="li-sub">${esc(sub)}</div>
+      <div class="li-tempo">Agora · ${liSvg('mundo', 12)}</div></div><span class="li-pontos" aria-hidden="true">${liSvg('pontos', 20)}</span></div>
+    <div class="li-corpo"><div class="li-texto corte" id="li-texto">${liTextoHtml(PREV.texto)}</div><button class="li-vermais" data-act="li-vermais" hidden>…ver mais</button></div>
+    ${m.corpo}
+    <div class="li-acoes" aria-hidden="true"><span>${liSvg('gostei')} Gostei</span><span>${liSvg('comentar')} Comentar</span><span>${liSvg('repostar')} Compartilhar</span><span>${liSvg('enviar')} Enviar</span></div></div>`;
+}
+function previaShell() {
+  return `<div class="li-wrap"><div class="li-barra"><span class="tit">Prévia no LinkedIn</span>
+    <div class="li-disp" role="group" aria-label="Tamanho da tela"><button class="${PREV.disp === 'computador' ? 'ativo' : ''}" data-act="li-disp" data-v="computador">Computador</button><button class="${PREV.disp === 'celular' ? 'ativo' : ''}" data-act="li-disp" data-v="celular">Celular</button></div></div>
+    <div id="li-previa"></div><p class="li-nota">Simulação: o corte do “ver mais” (3 linhas) muda um pouco conforme a tela de quem lê.</p></div>`;
+}
+// o texto muda a cada tecla: atualiza só o texto (as imagens não piscam)
+function ajustarCorte() {
+  const t = $('#li-texto'), b = $('.li-vermais'); if (!t || !b) return;
+  if (t.classList.contains('corte')) { b.hidden = !(t.scrollHeight > t.clientHeight + 1); b.textContent = '…ver mais'; b.classList.remove('aberto'); }
+  else { b.hidden = false; b.textContent = 'ver menos'; b.classList.add('aberto'); }
+}
+function atualizarPreviaTexto() {
+  const t = $('#li-texto'); if (!t) return;
+  t.innerHTML = liTextoHtml(PREV.texto); t.classList.add('corte'); ajustarCorte();
+}
+function atualizarPrevia() {
+  const el = $('#li-previa'); if (!el) return;
+  el.innerHTML = liCardHtml(); ajustarCorte(); montarCarrosseis();
+}
+ACT['li-vermais'] = el => { const t = $('#li-texto'); t.classList.toggle('corte'); ajustarCorte(); };
+ACT['li-disp'] = el => {
+  PREV.disp = el.dataset.v; lsSet('li-disp', PREV.disp);
+  $$('.li-disp button').forEach(b => b.classList.toggle('ativo', b.dataset.v === PREV.disp));
+  atualizarPrevia();
+};
+// editor: cada tecla no texto atualiza a prévia; anexo novo/removido refaz tudo
+document.addEventListener('input', ev => { if (ev.target.id === 'p-texto' && $('#li-previa')) { PREV.texto = ev.target.value; atualizarPreviaTexto(); } });
+
+/* ---------- carrossel em PDF (pdf.js, carregado só quando existe um PDF anexado) ---------- */
+let PDFJS = null;
+function carregarPdfJs() {
+  if (PDFJS) return PDFJS;
+  PDFJS = new Promise((ok, falha) => {
+    const base = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/', s = document.createElement('script');
+    s.src = base + 'pdf.min.js'; s.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = base + 'pdf.worker.min.js'; ok(window.pdfjsLib); };
+    s.onerror = () => falha(new Error('Não consegui carregar o leitor de PDF.')); document.head.appendChild(s);
+  });
+  return PDFJS;
+}
+async function montarCarrosseis() {
+  for (const box of $$('.li-doc')) {
+    const path = box.dataset.path, url = PREV.urls[path];
+    try {
+      if (!url) throw new Error('sem url');
+      let st = PREV.pdfs[path];
+      if (!st) { const lib = await carregarPdfJs(); st = PREV.pdfs[path] = { doc: await lib.getDocument({ url }).promise, pag: 1 }; }
+      box.dataset.total = st.doc.numPages; await renderPaginaPdf(box);
+    } catch (e) {
+      console.warn('carrossel', e); const c = $('.li-doc-carga', box); if (c) c.textContent = 'Não consegui mostrar o carrossel aqui. O arquivo está anexado.';
+    }
+  }
+}
+async function renderPaginaPdf(box) {
+  const st = PREV.pdfs[box.dataset.path]; if (!st) return;
+  const page = await st.doc.getPage(st.pag), cv = $('canvas', box), larg = box.clientWidth || 500, v0 = page.getViewport({ scale: 1 });
+  const v = page.getViewport({ scale: (larg / v0.width) * Math.min(window.devicePixelRatio || 1, 2) });
+  cv.width = v.width; cv.height = v.height; cv.style.width = '100%';
+  await page.render({ canvasContext: cv.getContext('2d'), viewport: v }).promise;
+  const carga = $('.li-doc-carga', box); if (carga) carga.hidden = true;
+  const total = st.doc.numPages, pag = $('.pag', box);
+  $$('.nav', box).forEach(b => { b.hidden = total < 2; }); pag.hidden = total < 2; pag.textContent = `${st.pag} / ${total}`;
+  $('.nav.ant', box).style.visibility = st.pag > 1 ? 'visible' : 'hidden'; $('.nav.prox', box).style.visibility = st.pag < total ? 'visible' : 'hidden';
+}
+ACT['li-pag'] = async el => {
+  const box = el.closest('.li-doc'), st = PREV.pdfs[box.dataset.path]; if (!st) return;
+  st.pag = Math.max(1, Math.min(st.doc.numPages, st.pag + Number(el.dataset.d))); await renderPaginaPdf(box);
+};
+
+/* ---------- ajuda pra publicar (depois de aprovado): copiar texto, baixar a mídia, abrir o LinkedIn ---------- */
+ACT['post-copiar'] = async () => { if (await copiarTexto(PREV.texto)) toast('Texto copiado. É só colar no LinkedIn.'); else toast('Não consegui copiar. Selecione o texto e copie.', true); };
+ACT['anexo-baixar'] = async el => {
+  const url = await urlAssinada(el.dataset.path, 120, el.dataset.nome), l = document.createElement('a'); l.href = url; l.download = el.dataset.nome; document.body.appendChild(l); l.click(); l.remove();
 };
 
 /* =====================================================================
