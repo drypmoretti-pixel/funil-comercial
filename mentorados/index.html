@@ -639,7 +639,177 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .faq summary{cursor:pointer;font-weight:700;font-size:.9rem}
 .faq p{margin:8px 0 0;font-size:.86rem;color:var(--text-secondary);line-height:1.6}
 @media (max-width:900px){.tut-rotina,.tut-avisos{grid-template-columns:1fr}}
-@media (max-width:780px){.nav-item[data-to="tutorial"]{display:none}}
+/* ---------- AULAS · estilo Netflix (sempre escuro: é cinema) ---------- */
+.cine{--cine-bg:#080C0A;--cine-card:#121915;--cine-tx:#F2F5F3;--cine-mut:rgba(242,245,243,.62);background:radial-gradient(900px 420px at 85% -10%,rgba(18,184,94,.16),transparent 60%),var(--cine-bg);color:var(--cine-tx);border-radius:20px;padding:0 0 22px;overflow:hidden;margin-bottom:16px;box-shadow:var(--sombra-2)}
+.cine h1,.cine h2,.cine h3{color:var(--cine-tx)}
+.cine-hero{position:relative;min-height:340px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:34px 30px 26px;flex-wrap:wrap}
+.cine-hero.sem-capa{min-height:230px;background:radial-gradient(600px 260px at 88% 10%,rgba(18,184,94,.32),transparent 65%),linear-gradient(135deg,#0F2A1C 0%,#080C0A 70%)}
+.cine-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center 30%;opacity:.55;filter:saturate(1.05)}
+.cine-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,12,10,.96) 0%,rgba(8,12,10,.78) 42%,rgba(8,12,10,.2) 100%),linear-gradient(0deg,var(--cine-bg) 0%,transparent 55%);pointer-events:none}
+.cine-hero-tx,.cine-curso{position:relative;z-index:1}
+.cine-hero-tx{max-width:560px}
+.cine-hero-k{font-family:var(--f-mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-light);font-weight:700}
+.cine-hero h1,.cine-aula-info h1{font-size:clamp(1.5rem,3.2vw,2.3rem);font-weight:800;letter-spacing:-.035em;line-height:1.08;margin:8px 0 10px}
+.cine-hero p{color:var(--cine-mut);font-size:.92rem;line-height:1.55;margin-bottom:16px}
+.cine-hero-bt{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cine-btn-play{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0B0F0D;font-family:var(--f-title);font-weight:800;font-size:.95rem;padding:11px 22px;border-radius:10px;text-decoration:none;border:0;transition:transform .15s ease,background .15s ease}
+.cine-btn-play:hover{background:#E3F1E8;transform:translateY(-1px)}
+.cine-btn-play svg{width:18px;height:18px;fill:currentColor}
+.cine-btn-sec{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.16);font-family:var(--f-title);font-weight:700;font-size:.84rem;padding:9px 15px;border-radius:10px;text-decoration:none;cursor:pointer}
+.cine-btn-sec:hover{background:rgba(255,255,255,.18)}
+.cine-btn-sec.pulsa{background:var(--accent-fill);border-color:transparent}
+.cine-hero-rest{display:inline-flex;flex-direction:column;gap:6px;font-size:.78rem;color:var(--cine-mut);min-width:140px}
+.cine-prog{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.25)}
+.cine-prog i{display:block;height:100%;background:var(--accent-light)}
+.cine-prog.solta{position:relative;height:5px;border-radius:99px;overflow:hidden;width:100%}
+.cine-curso{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);border-radius:14px;padding:12px 16px;min-width:210px}
+.cine-curso-n{font-family:var(--f-title);font-size:.9rem;color:var(--cine-mut)}.cine-curso-n b{font-size:1.7rem;color:#fff;letter-spacing:-.03em}
+.cine-curso span{display:block;font-family:var(--f-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cine-mut);margin-bottom:6px}
+.cine-row{padding:6px 0 4px}
+.cine-row-cab{display:flex;align-items:baseline;gap:10px;padding:0 30px;margin:10px 0 10px}
+.cine-row-cab h2{font-size:1.05rem}.cine-row-cab span{font-size:.76rem;color:var(--cine-mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.cine-setas{margin-left:auto;display:flex;gap:6px;flex:0 0 auto}
+.cine-row.sem-setas .cine-setas{display:none}
+.cine-seta{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.cine-seta:first-child svg{transform:rotate(180deg)}
+.cine-seta:disabled{opacity:.3;cursor:default}
+.cine-trilho{display:grid;grid-auto-flow:column;grid-auto-columns:clamp(220px,24%,290px);gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 30px 14px;scroll-padding:0 30px;scrollbar-width:none}
+.cine-trilho::-webkit-scrollbar{display:none}
+.cine-card{scroll-snap-align:start;text-decoration:none;color:inherit;display:block;min-width:0}
+.cine-thumb{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--cine-card);border:1px solid rgba(255,255,255,.08);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.cine-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.cine-card:hover .cine-thumb,.cine-card:focus-visible .cine-thumb{transform:scale(1.04);box-shadow:0 14px 34px -10px rgba(0,0,0,.8);border-color:rgba(45,208,122,.6)}
+.cine-card:focus-visible{outline:none}
+.cine-thumb-gen{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:12px 14px;background:radial-gradient(120% 120% at 100% 0%,rgba(18,184,94,.55),transparent 55%),linear-gradient(135deg,#0F2A1C,#08130D)}
+.cine-thumb-gen span{font-family:var(--f-mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cine-thumb-gen b{font-family:var(--f-title);font-size:1.35rem;font-weight:800;letter-spacing:-.03em;color:#fff}
+.cine-play{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.8);transition:all .18s ease}
+.cine-play svg{width:20px;height:20px;fill:#0B0F0D;margin-left:3px}
+.cine-card:hover .cine-play{opacity:1;transform:scale(1)}
+.cine-ok{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;background:var(--accent-fill);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.cine-ok.sm{position:static;width:20px;height:20px;flex:0 0 auto}
+.cine-dur{position:absolute;bottom:9px;right:8px;background:rgba(0,0,0,.78);color:#fff;font-size:.66rem;font-weight:700;border-radius:5px;padding:2px 6px}
+.cine-card.vista .cine-thumb img{filter:saturate(.7) brightness(.8)}
+.cine-card-tx{padding:9px 2px 0}
+.cine-card-tx b{display:block;font-size:.86rem;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cine-card-tx small{display:block;font-size:.72rem;color:var(--cine-mut);margin-top:3px}
+.cine-vazio{text-align:center;padding:56px 24px}
+.cine-vazio-ic{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:rgba(18,184,94,.18);color:var(--accent-light);display:flex;align-items:center;justify-content:center}
+.cine-vazio p{color:var(--cine-mut);max-width:420px;margin:6px auto 0;font-size:.9rem}
+.cine-aula{padding:20px 22px 24px}
+.cine-voltar{color:var(--cine-mut);text-decoration:none;font-weight:700;font-size:.84rem}.cine-voltar:hover{color:#fff}
+.cine-aula-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+.cine-player{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;box-shadow:0 20px 50px -18px rgba(0,0,0,.9)}
+.cine-player iframe,.cine-player video,.cine-player #aula-yt{position:absolute;inset:0;width:100%;height:100%;border:0}
+.cine-externo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--cine-mut);text-align:center;padding:20px}
+.cine-aula-info{padding:16px 2px 0}
+.cine-aula-info h1{font-size:clamp(1.3rem,2.4vw,1.8rem)}
+.cine-aula-acoes{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.cine-st{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;color:var(--cine-mut);font-weight:600}
+.cine-st.ok{color:var(--accent-light)}
+.cine-desc{color:var(--cine-mut);font-size:.9rem;line-height:1.65;max-width:720px}.cine-desc p{margin:0 0 10px}
+.cine-eps{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;max-height:640px;overflow:auto}
+.cine-eps-cab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 4px 10px}
+.cine-eps-cab b{font-family:var(--f-title);font-size:.9rem}.cine-eps-cab span{font-size:.72rem;color:var(--cine-mut);white-space:nowrap}
+.cine-ep{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:10px;text-decoration:none;color:inherit}
+.cine-ep:hover{background:rgba(255,255,255,.06)}
+.cine-ep.atual{background:rgba(18,184,94,.16);box-shadow:inset 3px 0 0 var(--accent-light)}
+.cine-ep-n{width:22px;text-align:center;color:var(--cine-mut);font-size:.8rem;flex:0 0 auto}
+.cine-ep-tx{min-width:0;flex:1}.cine-ep-tx b{display:block;font-size:.82rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cine-ep-tx small{font-size:.7rem;color:var(--cine-mut)}
+.cine-mini{display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit}
+.cine-mini img{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;flex:0 0 auto}
+.cine-mini > div{min-width:0;flex:1}.cine-mini b{display:block;font-family:var(--f-title);font-size:.92rem;margin-top:3px}
+/* ---------- EVENTOS ---------- */
+.ev-hero{position:relative;overflow:hidden;background:var(--ink-solid);color:#fff;border-radius:20px;padding:28px 28px 26px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;
+  background-image:radial-gradient(700px 300px at 90% 0%,rgba(18,184,94,.28),transparent 60%)}
+.ev-hero.vivo{background-image:radial-gradient(700px 300px at 90% 0%,rgba(240,103,91,.32),transparent 60%)}
+.ev-hero h1{color:#fff;font-size:clamp(1.4rem,3vw,2rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:8px 0 6px}
+.ev-hero-tx{max-width:600px;min-width:0}
+.ev-quando{color:var(--accent-light);font-weight:700;font-size:.92rem;margin-bottom:8px}
+.ev-desc{color:rgba(255,255,255,.7);font-size:.88rem;margin-bottom:16px;max-width:540px}
+.ev-sem-sala{font-size:.8rem;color:rgba(255,255,255,.6)}
+.ev-aovivo{color:#FF8A80;animation:pisca 1.15s ease-in-out infinite}
+.ev-cont{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:130px;padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);text-align:center}
+.ev-cont b{font-family:var(--f-title);font-size:2.6rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+.ev-cont span{font-family:var(--f-mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);margin:3px 0}
+.ev-lista{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.ev-item{display:flex;align-items:center;gap:14px;background:var(--surface-1);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--sombra-1)}
+.card .ev-item{box-shadow:none}
+.ev-item.passado .ev-data{background:var(--field-bg);color:var(--text-secondary)}
+.ev-data{flex:0 0 52px;height:56px;border-radius:12px;background:var(--accent-wash);color:var(--on-wash);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ev-data b{font-family:var(--f-title);font-size:1.3rem;font-weight:800;line-height:1}.ev-data span{font-family:var(--f-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em}
+.ev-item-tx{min-width:0;flex:1}.ev-item-tx b{display:block;font-family:var(--f-title);font-size:.94rem;margin-top:4px}.ev-item-tx small{display:block;color:var(--muted);font-size:.76rem;margin-top:2px}
+.ev-item-bt{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.ev-mini.vivo{border-color:rgba(194,59,46,.45)}.ev-mini.vivo .kicker{color:var(--critical)}
+/* ---------- INDICAÇÕES ---------- */
+.ind-hero{background-image:radial-gradient(700px 300px at 95% 0%,rgba(229,184,74,.22),transparent 60%)}
+.ind-hero-sec{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.18)}.ind-hero-sec:hover{background:rgba(255,255,255,.18)}
+.ind-trilha-cab{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.ind-trilha-cab b{font-family:var(--f-title);font-size:1rem}.ind-trilha-cab span{font-size:.8rem;color:var(--muted)}
+.ind-barra{position:relative;height:10px;border-radius:99px;background:var(--field-bg);margin:0 34px 34px}
+.ind-barra > i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-light))}
+.ind-marco{position:absolute;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--surface-1);border:3px solid var(--line)}
+.ind-marco.ok{border-color:var(--accent);background:var(--accent-light)}
+.ind-marco em{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-style:normal;font-size:.68rem;font-weight:800;white-space:nowrap;color:var(--text-secondary)}
+.ind-marco small{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:.66rem;color:var(--muted);font-family:var(--f-mono)}
+.ind-niveis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ind-nivel{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface-2);min-width:0}
+.ind-nivel b{display:block;font-family:var(--f-title);font-size:.9rem;margin-top:8px}.ind-nivel small{display:block;font-size:.7rem;color:var(--muted)}
+.ind-medalha{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-title);font-weight:800;font-size:.8rem;color:#fff;background:#9B9890}
+.nv-bronze .ind-medalha{background:linear-gradient(135deg,#C98A5B,#8C5530)}.nv-prata .ind-medalha{background:linear-gradient(135deg,#C9CED3,#7E868E)}
+.nv-ouro .ind-medalha{background:linear-gradient(135deg,#F0C75E,#B8860B)}.nv-diamante .ind-medalha{background:linear-gradient(135deg,#7FD4F5,#2F7FB8)}
+.ind-nivel:not(.ok) .ind-medalha{opacity:.45}
+.ind-nivel.ok{border-color:rgba(0,142,67,.45);background:var(--destaque-bg)}
+.ind-premio{display:block;margin-top:6px;font-size:.72rem;font-weight:700;color:var(--accent-deep)}
+.ind-lista{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.ind-item,.inda-item{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface-2)}
+.ind-nome{display:block;font-family:var(--f-title);font-size:.96rem}
+.ind-item small,.inda-item small{display:block;font-size:.75rem}
+.ind-etapas{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0 10px}
+.ind-etapas span{font-size:.64rem;font-weight:700;color:var(--muted);border-top:3px solid var(--line);padding-top:5px}
+.ind-etapas span.ok{color:var(--accent-deep);border-color:var(--accent)}
+.ind-etapas.perdida span{color:var(--muted);border-color:var(--line);opacity:.6}
+.ind-dor{font-size:.84rem;color:var(--text-secondary);margin-top:4px}
+.ind-retorno{margin-top:10px;background:var(--surface-1);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:8px 12px;font-size:.84rem}
+.ind-retorno span{display:block;font-family:var(--f-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:2px}
+.ind-ganho{display:flex;align-items:center;gap:10px;margin-top:10px;background:var(--accent-wash);color:var(--on-wash);border-radius:10px;padding:10px 12px;font-size:.86rem}
+.ind-ganho b{font-family:var(--f-title);font-size:1.05rem}
+.ind-rk{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:12px}
+.ind-rk + .ind-rk{border-top:1px solid var(--grid)}
+.ind-rk.eu{background:var(--accent-wash);border-top-color:transparent}
+.ind-rk-pos{width:30px;text-align:center;font-weight:700;color:var(--muted);font-size:.84rem;flex:0 0 auto}
+.ind-rk.pod .ind-rk-pos{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.74rem}
+.ind-rk.p1 .ind-rk-pos{background:linear-gradient(135deg,#F0C75E,#B8860B)}.ind-rk.p2 .ind-rk-pos{background:linear-gradient(135deg,#C9CED3,#7E868E)}.ind-rk.p3 .ind-rk-pos{background:linear-gradient(135deg,#C98A5B,#8C5530)}
+.ind-rk-tx{min-width:0;flex:1}.ind-rk-tx b{display:block;font-size:.88rem}.ind-rk-tx b em{font-style:normal;font-size:.64rem;font-weight:800;background:var(--accent-fill);color:#fff;border-radius:99px;padding:1px 7px;margin-left:4px;vertical-align:2px}
+.ind-rk-tx small{display:block;font-size:.72rem;color:var(--muted)}
+.ind-rk-pts{font-family:var(--f-title);font-size:1.05rem;white-space:nowrap}.ind-rk-pts small{font-size:.7rem;color:var(--muted)}
+.ind-rk-sep{text-align:center;color:var(--muted);line-height:1}
+.ind-regras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.ind-regras div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface-2)}
+.ind-regras b{display:block;font-family:var(--f-title);font-size:1.3rem;color:var(--accent-deep);letter-spacing:-.02em}
+.ind-regras span{font-size:.78rem;color:var(--text-secondary)}.ind-regras em{font-style:normal;font-weight:700;color:var(--accent-deep)}
+.inda-item.fechou{border-color:rgba(0,142,67,.45)}.inda-item.perdida{opacity:.75}
+.inda-topo{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.inda-topo b{font-family:var(--f-title);font-size:.96rem}
+.inda-st{width:auto;padding:6px 10px;font-size:.8rem;border-radius:9px}
+.inda-rod{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:.82rem}
+/* ---------- admin: aulas ---------- */
+.adm-aula{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--grid)}
+.adm-aula:last-of-type{border-bottom:0}
+.adm-aula-th{flex:0 0 88px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#0F2A1C,#08130D);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--f-title);font-weight:800}
+.adm-aula-th img{width:100%;height:100%;object-fit:cover}
+.adm-aula-tx{min-width:0;flex:1}.adm-aula-tx b{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.adm-aula-tx small{color:var(--muted);font-size:.74rem}
+.menu-movel{display:none}
+@media (max-width:1100px){.cine-aula-grid{grid-template-columns:1fr}.cine-eps{max-height:none}.ind-niveis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:780px){
+  .nav-item[data-to="tutorial"],.nav-item[data-to="calendario"],.nav-item[data-to="eventos"],.nav-item[data-to="modelos"]{display:none}
+  .menu-movel:not([hidden]){display:block}
+  .cine{border-radius:16px}.cine-hero{min-height:300px;padding:24px 18px 20px}.cine-row-cab{padding:0 18px}.cine-trilho{padding:6px 18px 12px;grid-auto-columns:72%;scroll-padding:0 18px}
+  .cine-setas{display:none}.cine-curso{width:100%}.cine-aula{padding:14px 12px 18px}
+  .ev-hero{padding:22px 18px}.ev-cont{min-width:0;flex-direction:row;gap:8px;padding:10px 14px}.ev-cont b{font-size:1.8rem}
+  .ev-item{flex-wrap:wrap}.ev-item-bt{width:100%;justify-content:flex-start;padding-left:66px}
+  .ind-regras{grid-template-columns:1fr}.ind-niveis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 
 .tut-check{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
 .tut-check b{display:block;font-family:var(--f-title);font-size:.95rem}.tut-check span{font-size:.84rem;color:var(--text-secondary)}
@@ -821,6 +991,8 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
         <div class="user-wrap">
           <button class="userchip" id="userchip" data-act="user-toggle" aria-haspopup="true"><span class="av" id="user-av"></span><span class="nm" id="user-nome"></span></button>
           <div class="menu-pop" id="user-menu">
+            <button data-act="ir-menu" data-to="eventos" class="menu-movel" hidden>Eventos</button>
+            <button data-act="ir-menu" data-to="calendario" class="menu-movel" hidden>Calendário</button>
             <button data-act="ir-tutorial" id="menu-tutorial" hidden>Como funciona (vídeo)</button>
             <button data-act="tour-abrir" id="menu-tour" hidden>Ver o tour de novo</button>
             <button data-act="tema-alternar"><span class="t-claro">Tema escuro</span><span class="t-escuro">Tema claro</span></button>
@@ -947,12 +1119,15 @@ const ICO = {
   alvo: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
   usuario: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
   tutorial: '<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>',
+  aulas: '<rect x="2" y="4" width="20" height="14" rx="2"/><path d="M10 8.5v5l4.5-2.5z"/><path d="M7 21h10"/>',
+  eventos: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m12 13 1.1 2.2 2.4.3-1.75 1.7.4 2.4L12 18.5l-2.15 1.1.4-2.4-1.75-1.7 2.4-.3z"/>',
+  indicacoes: '<path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3a3 3 0 0 1-3 4M7 5H4a3 3 0 0 0 3 4"/>',
 };
 const svg = (n, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[n] || ''}</svg>`;
 
 /* ---------- estado ---------- */
 const S = { user: null, perfil: null, admin: false, etapas: [], ctx: null, tk: 0, notifs: [], lidas: new Set(),
-            contAguardando: 0, contPosts: 0, canal: null, tourVistoEm: null, clientes: null };
+            contAguardando: 0, contPosts: 0, contIndicacoes: 0, canal: null, tourVistoEm: null, clientes: null };
 
 async function clientes(forcar) {
   if (!S.clientes || forcar) S.clientes = await paginado(() => sb.from('cli_clientes').select('*').order('id'));
@@ -991,8 +1166,8 @@ const rota = () => location.hash.replace(/^#\/?/, '').split('?')[0].split('/').f
 const ir = caminho => { const alvo = '#/' + caminho; if (location.hash === alvo) render(); else location.hash = alvo; };
 window.addEventListener('hashchange', () => render());
 
-const NAV_CLIENTE = [['inicio', 'Início'], ['plano', 'Plano de ação'], ['posts', 'Posts'], ['calendario', 'Calendário'], ['drive', 'Drive'], ['tutorial', 'Como funciona']];
-const NAV_ADMIN = [['dashboard', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['mentorados', 'Mentorados'], ['modelos', 'Modelos de plano'], ['config', 'Configurações']];
+const NAV_CLIENTE = [['inicio', 'Início'], ['plano', 'Plano de ação'], ['posts', 'Posts'], ['aulas', 'Aulas'], ['eventos', 'Eventos'], ['indicacoes', 'Indicações'], ['calendario', 'Calendário'], ['drive', 'Drive'], ['tutorial', 'Como funciona']];
+const NAV_ADMIN = [['dashboard', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['mentorados', 'Mentorados'], ['aulas', 'Aulas'], ['eventos', 'Eventos'], ['indicacoes', 'Indicações'], ['modelos', 'Modelos de plano'], ['config', 'Configurações']];
 const ADMIN_ATIVA = { post: 'aprovacoes', mentorado: 'mentorados', modelo: 'modelos', lancamento: 'config' };
 
 function resolverCtx(p) {
@@ -1010,11 +1185,12 @@ function montarNav(ctx) {
   const itens = ctx.modo === 'admin' ? NAV_ADMIN : NAV_CLIENTE;
   const ativa = ctx.modo === 'admin' ? (ADMIN_ATIVA[ctx.tela] || ctx.tela) : ctx.tela;
   $('#nav').innerHTML = itens.map(([id, nome]) => {
-    const cont = id === 'aprovacoes' ? S.contAguardando : (id === 'posts' && ctx.modo === 'cliente') ? S.contPosts : 0;
+    const cont = id === 'aprovacoes' ? S.contAguardando : (id === 'indicacoes' && ctx.modo === 'admin') ? S.contIndicacoes : (id === 'posts' && ctx.modo === 'cliente') ? S.contPosts : 0;
     return `${id === 'config' ? '<div class="nav-sep"></div>' : ''}<button class="nav-item ${id === ativa ? 'ativo' : ''}" data-act="nav" data-to="${id}" ${id === ativa ? 'aria-current="page"' : ''}>${svg(id)}<span>${esc(nome)}</span><span class="cont" style="${cont ? 'display:inline-flex' : ''}">${cont || ''}</span></button>`;
   }).join('');
   $('#side-rodape').textContent = ctx.modo === 'admin' ? 'Painel do Igor' : 'Portal dos mentorados';
 }
+ACT['ir-menu'] = el => { $('#user-menu').classList.remove('aberto'); ir((S.ctx && S.ctx.base ? S.ctx.base + '/' : '') + el.dataset.to); };
 ACT['nav'] = el => {
   const c = S.ctx; const to = el.dataset.to;
   ir(c.modo === 'admin' ? `admin/${to}` : (c.base ? c.base + '/' : '') + to);
@@ -1119,7 +1295,7 @@ async function iniciar() {
   }
   const nome = perfil.nome || user.email;
   $('#user-nome').textContent = primeiroNome(nome); $('#user-av').textContent = iniciais(nome);
-  $('#menu-tour').hidden = S.admin; $('#menu-tutorial').hidden = S.admin;
+  $('#menu-tour').hidden = S.admin; $('#menu-tutorial').hidden = S.admin; $$('.menu-movel').forEach(b => { b.hidden = S.admin; });
   $('#carregando').style.display = 'none'; $('#app').style.display = 'flex';
   if (!location.hash) history.replaceState(null, '', S.admin ? '#/admin/dashboard' : '#/inicio');   // replaceState não dispara hashchange (evita render duplicado)
   await carregarNotifs();
@@ -1129,12 +1305,16 @@ async function iniciar() {
 }
 
 /* ---------- sino (notificações computadas ao vivo; só o "lida" é gravado) ---------- */
-const NOTIF_SECOES = ['Aprovações', 'Posts', 'Checklist', 'Plano', 'Pendências'];
+const NOTIF_SECOES = ['Aprovações', 'Indicações', 'Eventos', 'Posts', 'Aulas', 'Checklist', 'Plano', 'Pendências'];
 async function carregarNotifs() {
   const lista = [];
   try {
     if (S.admin) await notifsAdmin(lista); else await notifsCliente(lista, S.perfil.cliente_id);
   } catch (e) { console.warn('notifs', e); }
+  try {
+    if (S.admin) { const cls = await clientes(); await notifsIndicacaoAdmin(lista, id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado'); }
+    else { await notifsEventosAulas(lista); await notifsIndicacaoCliente(lista, S.perfil.cliente_id); }
+  } catch (e) { console.warn('notifs (aulas/eventos/indicações)', e); }
   S.notifs = lista.sort((a, b) => b.quando - a.quando);
   try {
     const l = await paginado(() => sb.from('cli_notif_lidas').select('chave').eq('perfil_id', S.user.id).order('chave'));
@@ -1235,7 +1415,7 @@ function assinarRealtime() {
 
 /* ---------- tour de primeiro acesso: versão (o tour interativo mora em 12_tour.js) ---------- */
 // Para soltar tour novo pra todo mundo: mude a versão. Corrigiu só um texto? Não mexa na versão.
-const NOVIDADES = { versao: '2026-10-14' };
+const NOVIDADES = { versao: '2026-10-15' };
 
 /* ---------- lembrete bloqueante (dentro do sistema, texto curto) ---------- */
 async function lembreteChecklist() {
@@ -1402,7 +1582,7 @@ async function vInicio(ctx) {
     q(sb.from('cli_materiais_pendentes').select('*').eq('cliente_id', cli.id).eq('status', 'pendente').order('pedido_em')),
   ]);
   const plano = planos[0] || null;
-  const videoOk = ctx.modo !== 'cliente' || !!(await videoConfirmado(S.user.id));
+  const [videoOk, extras] = await Promise.all([ctx.modo !== 'cliente' ? true : videoConfirmado(S.user.id).then(Boolean), cardsInicioExtras(ctx)]);
   const itens = plano ? await q(sb.from('cli_plano_itens').select('*').eq('plano_id', plano.id).order('fase_ordem').order('ordem').order('id')) : [];
   const mapa = {}; ativ.forEach(a => { mapa[a.data] = a; });
   const aHoje = mapa[hoje], stHoje = statusAtividade(aHoje, cli);
@@ -1463,7 +1643,7 @@ async function vInicio(ctx) {
       <a class="btn-link" href="${lnk(ctx, 'calendario')}">ver calendário</a></div>
       ${sem.html}${formChecklist(hoje, aHoje, cli, { auto: !ro, somenteLeitura: ro })}${rotina}</div>
       ${planoCard}</div>
-      <div>${videoOk ? '' : `<div class="card tut-convite"><div class="kicker">3 minutinhos</div><h2>Assista ao vídeo do portal</h2><p class="desc" style="margin:4px 0 12px">Mostra tudo o que você vai usar aqui. No fim, confirme que assistiu.</p><a class="btn btn-primary btn-sm" href="${lnk(ctx, 'tutorial')}">${svg('tutorial', 15)} Assistir agora</a></div>`}${postsCard}${cardPendencias(pend, !ro)}<div class="card"><h2>Etapas da mentoria</h2><p class="desc">Onde você está no onboarding.</p>${renderStepper(prog)}</div></div></div>`,
+      <div>${extras}${videoOk ? '' : `<div class="card tut-convite"><div class="kicker">3 minutinhos</div><h2>Assista ao vídeo do portal</h2><p class="desc" style="margin:4px 0 12px">Mostra tudo o que você vai usar aqui. No fim, confirme que assistiu.</p><a class="btn btn-primary btn-sm" href="${lnk(ctx, 'tutorial')}">${svg('tutorial', 15)} Assistir agora</a></div>`}${postsCard}${cardPendencias(pend, !ro)}<div class="card"><h2>Etapas da mentoria</h2><p class="desc">Onde você está no onboarding.</p>${renderStepper(prog)}</div></div></div>`,
   };
 }
 
@@ -3132,7 +3312,7 @@ ACT['anexo-baixar'] = async el => {
    ===================================================================== */
 const TOUR_PASSOS = [
   { rota: 'inicio', centro: true, titulo: 'Opa, bem-vindo ao seu portal!', texto: 'Aqui mora o seu plano, os seus posts, o checklist do dia e os seus arquivos. Chega de material perdido no WhatsApp.\nO tour dura uns 2 minutos, menos que um café coado. Bora?' },
-  { rota: 'inicio', alvo: '#nav', lado: 'direita', titulo: 'O menu: tudo a um toque', texto: 'Início, Plano de ação, Posts, Calendário e Drive, mais o vídeo “Como funciona” (no celular ele mora no seu menu, lá em cima). Sem labirinto, sem 47 abas abertas.\nO número vermelho que aparece ao lado é “tem coisa esperando você”.' },
+  { rota: 'inicio', alvo: '#nav', lado: 'direita', titulo: 'O menu: tudo a um toque', texto: 'Início, Plano de ação, Posts, Aulas, Eventos, Indicações, Calendário e Drive. No celular, o que não cabe na barra mora no seu menu, lá em cima. Sem labirinto, sem 47 abas abertas.\nO número vermelho que aparece ao lado é “tem coisa esperando você”.' },
   { rota: 'inicio', alvo: '.hero', lado: 'baixo', titulo: 'O painel de bordo', texto: 'O portal abre dizendo o que fazer agora: post aprovado esperando, ajuste pedido ou checklist em aberto.\nEmbaixo, 3 números: **quanto do plano** você já fez, sua **sequência** de dias úteis fechados e os **dias completos** da semana.' },
   { rota: 'inicio', alvo: '.semana', lado: 'baixo', titulo: 'A semana em 7 bolinhas', texto: 'Bolinha verde com visto é dia fechado. Meio preenchida é “quase”.\nFim de semana não quebra a sua sequência: até a gente descansa.' },
   { rota: 'inicio', alvo: '.hoje-grid', lado: 'cima', titulo: 'O checklist: 3 coisas por dia', texto: '**Conectar, postar e comentar.** Toque no + e no −, marque o post e pronto: salva sozinho.\nMenos itens que a sua lista do mercado. Na dúvida de como cumprir cada um, o “Como cumprir cada um dos três” logo abaixo explica.' },
@@ -3146,6 +3326,9 @@ const TOUR_PASSOS = [
       ['Falta você enviar um material', 'Mande pelo Drive e marque como enviado.']].map(([t, d]) => `<div><b>${t}</b><span>${d}</span></div>`).join('')}</div>
       <p class="tour2-nota">Esqueceu o checklist de ontem? O portal dá um toque no dia útil seguinte. Os avisos são só aqui dentro: sua caixa de entrada agradece.</p>` },
   { rota: 'plano', alvo: ['.pi-more', '.plano-cab', '#view .card'], lado: 'baixo', titulo: 'O plano é um manual de instruções', texto: 'Cada item tem **“Ver o passo a passo”**: como fazer, o que entregar e quanto tempo leva. Marcou, a barra anda.\nDá pra exportar o plano em PDF. Sim, até a tarefa que você ia adiar tem manual.' },
+  { rota: 'aulas', alvo: ['.cine-hero', '.cine'], lado: 'baixo', titulo: 'Aulas: a sua Netflix do método', texto: 'As aulas gravadas do funil, em módulos. O portal lembra **onde você parou** e marca a aula como assistida quando você chega no fim.\nPipoca opcional, anotação obrigatória.' },
+  { rota: 'eventos', alvo: ['.ev-hero'], lado: 'baixo', titulo: 'Eventos: nunca mais “qual era o link mesmo?”', texto: 'O próximo encontro com **contagem regressiva**, o botão de entrar na sala e o de salvar na sua agenda.\nPassou o encontro? A gravação aparece aqui.' },
+  { rota: 'indicacoes', alvo: ['.ind-hero'], lado: 'baixo', titulo: 'Indique e ganhe 10%', texto: 'Indicou alguém e fechou? **10% da mentoria é seu.** Cada indicação, reunião e repost vale pontos no ranking do mês.\nSim, dá pra ganhar dinheiro sendo gente boa.' },
   { rota: 'drive', alvo: ['.dr-pastas', '.dr-doc'], lado: 'baixo', titulo: 'O Drive: sua pasta com chave', texto: 'Prints, materiais, vídeos. Só você e o Igor enxergam.\nSe o Igor pedir um material, ele aparece no Início em “O que falta você me enviar”.' },
   { rota: 'inicio', alvo: '.topbar .tema-btn', lado: 'baixo', titulo: 'Modo escuro: pra quem trabalha de madrugada', texto: 'O botão lua/sol troca o tema e a escolha fica salva. Seus olhos (e o seu sono) agradecem.' },
   { rota: 'inicio', alvo: '#userchip', abre: 'menu', lado: 'esquerda', titulo: 'Seu menu: senha, tour e tutorial', texto: 'Aqui você **troca a senha** (recomendo trocar a que veio na mensagem), revê este tour e abre o vídeo “Como funciona” quando quiser.' },
@@ -3307,10 +3490,667 @@ ACT['tut-confirmar'] = async el => {
 ACT['tut-ir'] = el => { const v = $('#tut-video'); if (v) { v.currentTime = Number(el.dataset.t); v.play().catch(() => {}); v.scrollIntoView({ behavior: 'smooth', block: 'center' }); } };
 
 /* =====================================================================
+   AULAS (biblioteca estilo Netflix) + EVENTOS (agenda dos encontros)
+   - Aula = link de vídeo (YouTube não listado, Vimeo, Loom, Drive ou .mp4). YouTube e .mp4 têm progresso de verdade:
+     o portal soma o tempo realmente assistido (pulo não conta) e marca a aula como assistida no fim, sozinho.
+   - Evento = encontro/evento/aula ao vivo com data, link da sala e, depois, a gravação (que pode virar aula).
+   ===================================================================== */
+
+/* ---------- vídeo: de onde vem e como embutir ---------- */
+function videoInfo(url) {
+  const u = String(url || '');
+  let m = /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/i.exec(u);
+  if (m) return { tipo: 'youtube', id: m[1] };
+  m = /vimeo\.com\/(?:video\/)?(\d+)(?:\/([\da-f]+))?/i.exec(u);
+  if (m) return { tipo: 'iframe', prov: 'Vimeo', src: `https://player.vimeo.com/video/${m[1]}${m[2] ? '?h=' + m[2] : ''}` };
+  m = /loom\.com\/(?:share|embed)\/([\da-f]+)/i.exec(u);
+  if (m) return { tipo: 'iframe', prov: 'Loom', src: `https://www.loom.com/embed/${m[1]}` };
+  m = /drive\.google\.com\/file\/d\/([\w-]+)/i.exec(u);
+  if (m) return { tipo: 'iframe', prov: 'Google Drive', src: `https://drive.google.com/file/d/${m[1]}/preview` };
+  if (/\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(u)) return { tipo: 'mp4', src: u };
+  return { tipo: 'externo' };
+}
+const capaDe = a => urlSegura(a.capa_url) || (videoInfo(a.video_url).tipo === 'youtube' ? `https://i.ytimg.com/vi/${videoInfo(a.video_url).id}/hqdefault.jpg` : '');
+const fmtMinSeg = s => { s = Math.max(0, Math.round(s || 0)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? `${h} h ${pad(m)} min` : m ? `${m} min` : `${s} s`; };
+let YT_API = null;
+function carregarYT() {
+  if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
+  if (YT_API) return YT_API;
+  YT_API = new Promise((ok, falha) => {
+    const ant = window.onYouTubeIframeAPIReady; window.onYouTubeIframeAPIReady = () => { if (ant) ant(); ok(window.YT); };
+    const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; s.onerror = () => { YT_API = null; falha(new Error('Não consegui carregar o player do YouTube.')); };
+    document.head.appendChild(s);
+  });
+  return YT_API;
+}
+
+/* ---------- dados ---------- */
+async function carregarBiblioteca() {
+  const [modulos, aulas] = await Promise.all([
+    q(sb.from('cli_aula_modulos').select('*').order('ordem').order('id')),
+    paginado(() => sb.from('cli_aulas').select('*').order('modulo_id').order('ordem').order('id'))]);
+  const porMod = modulos.map(m => ({ ...m, aulas: aulas.filter(a => a.modulo_id === m.id) }));
+  return { modulos: porMod, aulas: porMod.flatMap(m => m.aulas) };   // aulas na ordem de exibição
+}
+// de quem é o progresso que a tela mostra: o próprio login, ou o do mentorado no "ver como mentorado"
+async function perfilAlvo(ctx) {
+  if (ctx.modo !== 'preview') return S.user.id;
+  const r = await q(sb.from('cli_perfis').select('id').eq('cliente_id', ctx.clienteId).eq('role', 'cliente').limit(1));
+  return r[0] ? r[0].id : null;
+}
+async function progressoMapa(perfilId) {
+  if (!perfilId) return {};
+  const r = await paginado(() => sb.from('cli_aula_progresso').select('*').eq('perfil_id', perfilId).order('aula_id'));
+  const m = {}; r.forEach(p => { m[p.aula_id] = p; }); return m;
+}
+const pctAula = (a, p) => { if (!p) return 0; if (p.assistida_em) return 100; const d = p.duracao_seg || a.duracao_seg; return d ? Math.min(99, Math.round(p.posicao_seg / d * 100)) : 0; };
+
+/* ---------- AULAS: a vitrine ---------- */
+function cartaoAula(ctx, a, p, i, mod) {
+  const capa = capaDe(a), pct = pctAula(a, p), dur = (p && p.duracao_seg) || a.duracao_seg;
+  return `<a class="cine-card ${p && p.assistida_em ? 'vista' : ''}" href="${lnk(ctx, 'aulas/' + a.id)}" data-aula="${a.id}">
+    <div class="cine-thumb">${capa ? `<img src="${esc(capa)}" alt="" loading="lazy">` : `<div class="cine-thumb-gen"><span>${esc(mod.titulo)}</span><b>Aula ${i + 1}</b></div>`}
+      <span class="cine-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+      ${p && p.assistida_em ? `<span class="cine-ok" title="Assistida">${svg('check', 14)}</span>` : ''}${dur ? `<span class="cine-dur mono">${esc(fmtMinSeg(dur))}</span>` : ''}
+      ${pct > 0 && pct < 100 ? `<span class="cine-prog"><i style="width:${pct}%"></i></span>` : ''}</div>
+    <div class="cine-card-tx"><b>${esc(a.titulo)}</b><small>${esc(mod.titulo)} · aula ${i + 1}${a.publicado ? '' : ' · rascunho'}</small></div></a>`;
+}
+function fileira(ctx, titulo, sub, itens, chave) {
+  return `<section class="cine-row"><div class="cine-row-cab"><h2>${esc(titulo)}</h2>${sub ? `<span>${esc(sub)}</span>` : ''}
+      <div class="cine-setas"><button class="cine-seta" data-act="cine-rolar" data-row="${chave}" data-d="-1" aria-label="Voltar">${svg('seta', 16)}</button><button class="cine-seta" data-act="cine-rolar" data-row="${chave}" data-d="1" aria-label="Avançar">${svg('seta', 16)}</button></div></div>
+    <div class="cine-trilho" data-trilho="${chave}">${itens.join('')}</div></section>`;
+}
+ACT['cine-rolar'] = el => { const t = $(`[data-trilho="${el.dataset.row}"]`); if (t) t.scrollBy({ left: Number(el.dataset.d) * t.clientWidth * 0.85, behavior: 'smooth' }); };
+
+async function vAulas(ctx) {
+  if (ctx.args[0]) return vAula(ctx, Number(ctx.args[0]));
+  const [bib, perfil] = await Promise.all([carregarBiblioteca(), perfilAlvo(ctx)]);
+  const prog = await progressoMapa(perfil);
+  const mods = bib.modulos.filter(m => m.aulas.length);
+  if (!mods.length) return { kicker: 'Biblioteca', titulo: 'Aulas', html: `<div class="cine cine-vazio"><div class="cine-vazio-ic">${svg('aulas', 30)}</div><h2>As aulas estão chegando</h2><p>Assim que o Igor publicar as aulas gravadas do método, elas aparecem aqui, organizadas por módulo.</p></div>` };
+  const total = bib.aulas.length, vistas = bib.aulas.filter(a => prog[a.id] && prog[a.id].assistida_em).length, pctCurso = Math.round(vistas / total * 100);
+  const modDe = a => mods.find(m => m.id === a.modulo_id), idx = a => modDe(a).aulas.indexOf(a);
+  const andamento = bib.aulas.filter(a => prog[a.id] && !prog[a.id].assistida_em && prog[a.id].posicao_seg > 5).sort((x, y) => new Date(prog[y.id].atualizado_em) - new Date(prog[x.id].atualizado_em));
+  const destaque = andamento[0] || bib.aulas.find(a => !(prog[a.id] && prog[a.id].assistida_em)) || bib.aulas[0];
+  const pd = prog[destaque.id], md = modDe(destaque), capa = capaDe(destaque), cont = pd && !pd.assistida_em && pd.posicao_seg > 5;
+  const restante = cont && (pd.duracao_seg || destaque.duracao_seg) ? (pd.duracao_seg || destaque.duracao_seg) - pd.posicao_seg : 0;
+  const hero = `<div class="cine-hero ${capa ? '' : 'sem-capa'}">${capa ? `<div class="cine-hero-bg" style="background-image:url('${esc(capa)}')"></div>` : ''}<div class="cine-hero-tx">
+      <div class="cine-hero-k">${esc(md.titulo)} · aula ${idx(destaque) + 1}</div><h1>${esc(destaque.titulo)}</h1>
+      ${destaque.descricao ? `<p>${esc(destaque.descricao.slice(0, 220))}${destaque.descricao.length > 220 ? '…' : ''}</p>` : ''}
+      <div class="cine-hero-bt"><a class="cine-btn-play" href="${lnk(ctx, 'aulas/' + destaque.id)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> ${cont ? 'Continuar' : pd && pd.assistida_em ? 'Assistir de novo' : 'Assistir'}</a>
+        ${cont ? `<span class="cine-hero-rest">${restante > 0 ? `faltam ${esc(fmtMinSeg(restante))}` : ''}<span class="cine-prog solta"><i style="width:${pctAula(destaque, pd)}%"></i></span></span>` : ''}</div></div>
+    <div class="cine-curso"><div class="cine-curso-n"><b>${vistas}</b>/${total}</div><div><span>aulas assistidas</span><div class="cine-prog solta"><i style="width:${pctCurso}%"></i></div></div></div></div>`;
+  const rows = [];
+  if (andamento.length) rows.push(fileira(ctx, 'Continue assistindo', '', andamento.map(a => cartaoAula(ctx, a, prog[a.id], idx(a), modDe(a))), 'cont'));
+  mods.forEach(m => { const v = m.aulas.filter(a => prog[a.id] && prog[a.id].assistida_em).length;
+    rows.push(fileira(ctx, m.titulo, `${v}/${m.aulas.length} assistidas${m.descricao ? ' · ' + m.descricao : ''}`, m.aulas.map((a, i) => cartaoAula(ctx, a, prog[a.id], i, m)), 'm' + m.id)); });
+  return { kicker: 'Biblioteca do método', titulo: 'Aulas', html: `<div class="cine">${hero}${rows.join('')}</div>`, depois: () => $$('.cine-trilho').forEach(atualizarSetas) };
+}
+function atualizarSetas(t) {
+  const row = t.closest('.cine-row'); if (!row) return;
+  const sem = t.scrollWidth <= t.clientWidth + 4; row.classList.toggle('sem-setas', sem);
+  if (!t.dataset.ouv) { t.dataset.ouv = 1; t.addEventListener('scroll', debounce(() => atualizarSetas(t), 80)); }
+  const [a, b] = $$('.cine-seta', row); if (a) a.disabled = t.scrollLeft < 8; if (b) b.disabled = t.scrollLeft + t.clientWidth >= t.scrollWidth - 8;
+}
+window.addEventListener('resize', debounce(() => $$('.cine-trilho').forEach(atualizarSetas), 150));
+
+/* ---------- AULAS: o player ---------- */
+const AT = { timer: null, salvarT: 0 };
+function pararAula(salvarAgora = true) {
+  if (AT.timer) { clearInterval(AT.timer); AT.timer = null; }
+  if (salvarAgora && AT.aulaId && AT.grava) salvarProgresso();
+  if (AT.player && AT.player.destroy) { try { AT.player.destroy(); } catch (e) { /* já saiu */ } }
+  AT.player = null; AT.aulaId = null;
+}
+window.addEventListener('hashchange', () => { if (AT.aulaId) pararAula(true); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && AT.aulaId && AT.grava) salvarProgresso(); });
+async function salvarProgresso(extra = {}) {
+  if (!AT.grava || !AT.aulaId) return;
+  AT.salvarT = Date.now();
+  const linha = { perfil_id: S.user.id, aula_id: AT.aulaId, posicao_seg: Math.round(AT.pos || 0), assistido_seg: Math.round(Math.min(AT.acum, AT.dur || AT.acum)), atualizado_em: new Date().toISOString(), ...extra };
+  if (AT.dur) linha.duracao_seg = Math.round(AT.dur);
+  if (AT.concluida && !extra.assistida_em) linha.assistida_em = AT.concluidaEm;
+  const { error } = await sb.from('cli_aula_progresso').upsert(linha, { onConflict: 'perfil_id,aula_id' });
+  if (error) console.warn('progresso', error);
+}
+function statusAulaHtml() {
+  if (AT.concluida) return `<span class="cine-st ok">${svg('check', 15)} Aula assistida</span>`;
+  if (!AT.rastreia) return AT.grava ? '<button class="cine-btn-sec" data-act="aula-marcar">Marquei como assistida</button>' : '';
+  const pct = AT.dur ? Math.min(99, Math.round(AT.acum / AT.dur * 100)) : 0;
+  return `<span class="cine-st">${pct ? `Você já assistiu ${pct}% desta aula` : 'Assista até o fim: a aula é marcada como assistida sozinha'}</span>`;
+}
+function pintarStatusAula() { const e = $('#aula-status'); if (e) e.innerHTML = statusAulaHtml(); }
+async function concluirAula() {
+  if (AT.concluida) return; AT.concluida = true; AT.concluidaEm = new Date().toISOString();
+  pintarStatusAula();
+  const ep = $('.cine-ep.atual small'); if (ep) ep.textContent = 'assistida';
+  if (AT.grava) { await salvarProgresso({ assistida_em: AT.concluidaEm }); toast('Aula concluída. Boa!'); }
+  const prox = $('#aula-prox'); if (prox) prox.classList.add('pulsa');
+}
+// mesma regra do vídeo tutorial: soma só o tempo reproduzido de verdade (acelerar vale, pular não)
+function tickAula(t, tocando, rate, dur) {
+  if (dur && !AT.dur) AT.dur = dur;
+  if (tocando && AT.ultimo != null && t > AT.ultimo && t - AT.ultimo < 1.5 * Math.max(1, rate || 1) + 0.6) AT.acum += t - AT.ultimo;
+  AT.ultimo = tocando ? t : null; AT.pos = t;
+  if (AT.dur && !AT.concluida && AT.acum >= AT.dur * 0.85 && t >= AT.dur * 0.9) concluirAula();
+  if (AT.grava && Date.now() - AT.salvarT > 10000 && tocando) salvarProgresso();
+  if (!AT.concluida && Date.now() - (AT.pintT || 0) > 3000) { AT.pintT = Date.now(); pintarStatusAula(); }
+}
+async function vAula(ctx, id) {
+  pararAula(false);
+  const [bib, perfil] = await Promise.all([carregarBiblioteca(), perfilAlvo(ctx)]);
+  const a = bib.aulas.find(x => x.id === id); if (!a) throw new Error('Aula não encontrada.');
+  const prog = await progressoMapa(perfil), p = prog[a.id], mod = bib.modulos.find(m => m.id === a.modulo_id), i = mod.aulas.indexOf(a);
+  const prox = bib.aulas[bib.aulas.indexOf(a) + 1] || null, v = videoInfo(a.video_url);
+  Object.assign(AT, { aulaId: a.id, grava: ctx.modo === 'cliente', rastreia: v.tipo === 'youtube' || v.tipo === 'mp4', acum: p ? p.assistido_seg : 0, ultimo: null,
+    pos: p ? p.posicao_seg : 0, dur: (p && p.duracao_seg) || a.duracao_seg || 0, concluida: !!(p && p.assistida_em), concluidaEm: p && p.assistida_em, salvarT: Date.now(), pintT: 0 });
+  const inicio = p && !p.assistida_em && p.posicao_seg > 5 && (!AT.dur || p.posicao_seg < AT.dur - 15) ? p.posicao_seg : 0;
+  const player = v.tipo === 'youtube' ? '<div id="aula-yt"></div>'
+    : v.tipo === 'mp4' ? `<video id="aula-mp4" controls playsinline preload="metadata" src="${esc(a.video_url)}"></video>`
+    : v.tipo === 'iframe' ? `<iframe src="${esc(v.src)}" title="${esc(a.titulo)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`
+    : `<div class="cine-externo"><p>Esta aula abre fora do portal.</p><a class="cine-btn-play" href="${esc(urlSegura(a.video_url))}" target="_blank" rel="noopener noreferrer">Abrir a aula</a></div>`;
+  const mat = urlSegura(a.material_url);
+  const lista = mod.aulas.map((x, k) => { const px = prog[x.id], pct = pctAula(x, px);
+    return `<a class="cine-ep ${x.id === a.id ? 'atual' : ''}" href="${lnk(ctx, 'aulas/' + x.id)}"><span class="cine-ep-n mono">${k + 1}</span><div class="cine-ep-tx"><b>${esc(x.titulo)}</b><small>${px && px.assistida_em ? 'assistida' : pct ? `${pct}% assistida` : (x.duracao_seg ? fmtMinSeg(x.duracao_seg) : 'não assistida')}</small></div>${px && px.assistida_em ? `<span class="cine-ok sm">${svg('check', 12)}</span>` : ''}</a>`; }).join('');
+  return { kicker: `${mod.titulo} · aula ${i + 1}`, titulo: a.titulo, refrescavel: false,
+    html: `<div class="cine cine-aula"><div style="margin-bottom:12px"><a class="cine-voltar" href="${lnk(ctx, 'aulas')}">← todas as aulas</a></div>
+      <div class="cine-aula-grid"><div><div class="cine-player">${player}</div>
+        <div class="cine-aula-info"><div class="cine-hero-k">${esc(mod.titulo)} · aula ${i + 1} de ${mod.aulas.length}</div><h1>${esc(a.titulo)}</h1>
+          <div class="cine-aula-acoes"><div id="aula-status">${statusAulaHtml()}</div>
+            ${mat ? `<a class="cine-btn-sec" href="${esc(mat)}" target="_blank" rel="noopener noreferrer">${svg('baixar', 15)} ${esc(a.material_rotulo || 'Material de apoio')}</a>` : ''}
+            ${prox ? `<a class="cine-btn-sec" id="aula-prox" href="${lnk(ctx, 'aulas/' + prox.id)}">Próxima aula ${svg('seta', 15)}</a>` : ''}</div>
+          ${a.descricao ? `<div class="cine-desc">${paragrafos(a.descricao)}</div>` : ''}</div></div>
+        <aside class="cine-eps"><div class="cine-eps-cab"><b>${esc(mod.titulo)}</b><span>${mod.aulas.filter(x => prog[x.id] && prog[x.id].assistida_em).length}/${mod.aulas.length} assistidas</span></div>${lista}</aside></div></div>`,
+    depois: () => montarPlayer(v, a, inicio),
+  };
+}
+async function montarPlayer(v, a, inicio) {
+  const id = a.id;
+  if (v.tipo === 'mp4') {
+    const el = $('#aula-mp4'); if (!el) return; AT.player = null;
+    el.addEventListener('loadedmetadata', () => { AT.dur = el.duration || AT.dur; if (inicio) el.currentTime = inicio; atualizarDuracao(a, el.duration); }, { once: true });
+    el.addEventListener('timeupdate', () => { if (AT.aulaId === id) tickAula(el.currentTime, !el.paused, el.playbackRate, el.duration); });
+    el.addEventListener('seeking', () => { AT.ultimo = null; });
+    el.addEventListener('pause', () => { if (AT.aulaId === id && AT.grava) salvarProgresso(); });
+    el.addEventListener('ended', () => { if (AT.aulaId === id) { AT.pos = el.duration; if (AT.acum >= el.duration * 0.85) concluirAula(); else salvarProgresso(); } });
+    return;
+  }
+  if (v.tipo !== 'youtube') return;
+  let YT; try { YT = await carregarYT(); } catch (e) { const box = $('#aula-yt'); if (box) box.outerHTML = `<div class="cine-externo"><p>${esc(msgErro(e))}</p><a class="cine-btn-play" href="${esc(urlSegura(a.video_url))}" target="_blank" rel="noopener noreferrer">Assistir no YouTube</a></div>`; return; }
+  if (AT.aulaId !== id || !$('#aula-yt')) return;
+  AT.player = new YT.Player('aula-yt', { videoId: v.id, playerVars: { rel: 0, modestbranding: 1, playsinline: 1, start: Math.floor(inicio || 0) },
+    events: {
+      onReady: ev => { const d = ev.target.getDuration(); if (d) { AT.dur = d; atualizarDuracao(a, d); } },
+      onStateChange: ev => { if (AT.aulaId !== id) return; const pl = ev.target;
+        if (ev.data === 1) { if (!AT.timer) AT.timer = setInterval(() => { if (AT.aulaId !== id || !AT.player) return; try { tickAula(pl.getCurrentTime(), pl.getPlayerState() === 1, pl.getPlaybackRate(), pl.getDuration()); } catch (e) { /* player saindo */ } }, 1000); }
+        else { try { tickAula(pl.getCurrentTime(), false, 1, pl.getDuration()); } catch (e) { /* ok */ } }
+        if (ev.data === 2 && AT.grava) salvarProgresso();
+        if (ev.data === 0) { AT.pos = pl.getDuration(); if (AT.acum >= AT.dur * 0.85) concluirAula(); else salvarProgresso(); } },
+    } });
+}
+// a duração da aula entra sozinha na primeira vez que o Igor abre (o mentorado não edita aula)
+async function atualizarDuracao(a, d) { if (S.admin && d && !a.duracao_seg) { a.duracao_seg = Math.round(d); await sb.from('cli_aulas').update({ duracao_seg: Math.round(d) }).eq('id', a.id); } }
+ACT['aula-marcar'] = async el => { await ocupado(el, () => concluirAula()); };
+
+/* ---------- EVENTOS ---------- */
+const TIPO_EVENTO = { encontro: 'Encontro da mentoria', evento: 'Evento', aula: 'Aula ao vivo' };
+const DIAS_LONGO = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+const MES_CURTO = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const fimEvento = e => new Date(new Date(e.inicio).getTime() + (e.duracao_min || 60) * 60000);
+const hora = d => d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+function quandoEvento(e) {
+  const ini = new Date(e.inicio), agora = new Date();
+  if (agora >= ini && agora < fimEvento(e)) return 'acontecendo agora';
+  const dia = isoLocal(ini), hoje = hojeISO();
+  if (dia === hoje) return `hoje às ${hora(ini)}`;
+  if (dia === addDias(hoje, 1)) return `amanhã às ${hora(ini)}`;
+  if (ini > agora && ini - agora < 6 * 864e5) return `${DIAS_LONGO[ini.getDay()]} às ${hora(ini)}`;
+  return `${pad(ini.getDate())}/${pad(ini.getMonth() + 1)} às ${hora(ini)}`;
+}
+function contagem(e) {
+  const ms = new Date(e.inicio) - Date.now(); if (ms <= 0) return null;
+  const min = Math.round(ms / 60000); if (min < 60) return [min, min === 1 ? 'minuto' : 'minutos'];
+  const h = Math.round(min / 60); if (h < 36) return [h, h === 1 ? 'hora' : 'horas'];
+  const d = Math.round(h / 24); return [d, d === 1 ? 'dia' : 'dias'];
+}
+const utcCompacto = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+const linkGoogle = e => `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(e.titulo)}&dates=${utcCompacto(new Date(e.inicio))}/${utcCompacto(fimEvento(e))}&details=${encodeURIComponent([e.descricao, e.sala_url ? 'Sala: ' + e.sala_url : ''].filter(Boolean).join('\n\n'))}${e.sala_url ? '&location=' + encodeURIComponent(e.sala_url) : ''}`;
+function icsEvento(e) {
+  const x = s => String(s || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/[,;]/g, m => '\\' + m);
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Demanda Infinita//Portal dos Mentorados//PT', 'BEGIN:VEVENT', `UID:evento-${e.id}@demandainfinita.com`, `DTSTAMP:${utcCompacto(new Date())}`,
+    `DTSTART:${utcCompacto(new Date(e.inicio))}`, `DTEND:${utcCompacto(fimEvento(e))}`, `SUMMARY:${x(e.titulo)}`, e.descricao ? `DESCRIPTION:${x(e.descricao)}` : '', e.sala_url ? `LOCATION:${x(e.sala_url)}` : '',
+    'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Lembrete', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].filter(Boolean).join('\r\n');
+}
+let EVS = [];
+ACT['ev-ics'] = el => { const e = EVS.find(x => x.id === Number(el.dataset.id)); if (e) baixarBlob(`${e.titulo}.ics`, new Blob([icsEvento(e)], { type: 'text/calendar;charset=utf-8' })); };
+const gravacaoHref = (ctx, e) => e.aula_id ? lnk(ctx, 'aulas/' + e.aula_id) : urlSegura(e.gravacao_url);
+async function vEventos(ctx) {
+  EVS = await q(sb.from('cli_eventos').select('*').order('inicio'));
+  const agora = new Date(), vivo = EVS.filter(e => new Date(e.inicio) <= agora && fimEvento(e) > agora);
+  const prox = EVS.filter(e => new Date(e.inicio) > agora), pass = EVS.filter(e => fimEvento(e) <= agora).reverse();
+  const top = vivo[0] || prox[0];
+  const dataBloco = e => { const d = new Date(e.inicio); return `<div class="ev-data"><b>${d.getDate()}</b><span>${MES_CURTO[d.getMonth()]}</span></div>`; };
+  const sala = (e, forte) => urlSegura(e.sala_url) ? `<a class="${forte ? 'cine-btn-play' : 'btn btn-sm'}" href="${esc(urlSegura(e.sala_url))}" target="_blank" rel="noopener noreferrer">${svg('link', 15)} Entrar na sala</a>` : '';
+  const agenda = (e, claro) => `<a class="${claro ? 'cine-btn-sec' : 'btn btn-sm'}" href="${esc(linkGoogle(e))}" target="_blank" rel="noopener noreferrer">${svg('calendario', 15)} Google Agenda</a><button class="${claro ? 'cine-btn-sec' : 'btn btn-sm'}" data-act="ev-ics" data-id="${e.id}">${svg('baixar', 15)} Outras agendas (.ics)</button>`;
+  let hero;
+  if (top) {
+    const aoVivo = vivo.includes(top), c = contagem(top), ini = new Date(top.inicio);
+    hero = `<div class="ev-hero ${aoVivo ? 'vivo' : ''}"><div class="ev-hero-tx"><div class="cine-hero-k">${aoVivo ? '<span class="ev-aovivo">● ao vivo</span>' : 'Próximo'} · ${esc(TIPO_EVENTO[top.tipo] || 'Evento')}</div>
+        <h1>${esc(top.titulo)}</h1><p class="ev-quando">${esc(DIAS_LONGO[ini.getDay()][0].toUpperCase() + DIAS_LONGO[ini.getDay()].slice(1))}, ${ini.getDate()} de ${esc(MESES[ini.getMonth()])} · ${esc(hora(ini))} às ${esc(hora(fimEvento(top)))}</p>
+        ${top.descricao ? `<p class="ev-desc">${esc(top.descricao.slice(0, 300))}</p>` : ''}
+        <div class="cine-hero-bt">${sala(top, true) || (aoVivo ? '' : '<span class="ev-sem-sala">O link da sala aparece aqui antes do encontro.</span>')}${aoVivo ? '' : agenda(top, true)}</div></div>
+      ${aoVivo ? '<div class="ev-cont"><b>AGORA</b><span>já começou</span></div>' : c ? `<div class="ev-cont"><span>começa em</span><b>${c[0]}</b><span>${c[1]}</span></div>` : ''}</div>`;
+  } else hero = `<div class="ev-hero vazio"><div class="ev-hero-tx"><div class="cine-hero-k">Agenda</div><h1>Nenhum encontro marcado agora</h1><p class="ev-desc">Quando o Igor marcar o próximo, ele aparece aqui com o link da sala e o botão pra salvar na sua agenda.</p></div></div>`;
+  const outros = prox.filter(e => e !== top);
+  const proxHtml = outros.length ? `<div class="apv-sec-cab"><h2>Também na agenda</h2></div><div class="ev-lista">${outros.map(e => `<div class="ev-item">${dataBloco(e)}<div class="ev-item-tx"><span class="chip neutro sem-dot">${esc(TIPO_EVENTO[e.tipo] || 'Evento')}</span><b>${esc(e.titulo)}</b><small>${esc(quandoEvento(e))} · ${e.duracao_min} min</small></div>
+      <div class="ev-item-bt">${sala(e)}<a class="btn btn-sm" href="${esc(linkGoogle(e))}" target="_blank" rel="noopener noreferrer">${svg('calendario', 14)} Agenda</a></div></div>`).join('')}</div>` : '';
+  const passHtml = pass.length ? `<div class="apv-sec-cab"><h2>Já aconteceram</h2><span class="muted">com a gravação, quando houver</span></div><div class="ev-lista">${pass.map(e => { const g = gravacaoHref(ctx, e);
+      return `<div class="ev-item passado">${dataBloco(e)}<div class="ev-item-tx"><span class="chip neutro sem-dot">${esc(TIPO_EVENTO[e.tipo] || 'Evento')}</span><b>${esc(e.titulo)}</b><small>${esc(fmtData(isoLocal(new Date(e.inicio))))}</small></div>
+      <div class="ev-item-bt">${g ? `<a class="btn btn-sm btn-primary" href="${esc(g)}" ${e.aula_id ? '' : 'target="_blank" rel="noopener noreferrer"'}>${svg('tutorial', 14)} Assistir a gravação</a>` : '<span class="muted" style="font-size:.8rem">gravação em breve</span>'}</div></div>`; }).join('')}</div>` : '';
+  return { kicker: 'Agenda', titulo: 'Eventos', html: hero + proxHtml + passHtml };
+}
+
+/* ---------- Início: próximo encontro + continue assistindo ---------- */
+async function cardsInicioExtras(ctx) {
+  try {
+    const agora = new Date(), desde = new Date(agora.getTime() - 24 * 36e5).toISOString();
+    const [evs, perfil] = await Promise.all([q(sb.from('cli_eventos').select('*').gte('inicio', desde).order('inicio').limit(10)), perfilAlvo(ctx)]);
+    let html = '';
+    const e = evs.find(x => fimEvento(x) > agora);
+    if (e && new Date(e.inicio) - agora < 14 * 864e5) {
+      const vivo = new Date(e.inicio) <= agora;
+      html += `<div class="card ev-mini ${vivo ? 'vivo' : ''}"><div class="kicker">${vivo ? '● ao vivo agora' : 'Próximo encontro'}</div><h2>${esc(e.titulo)}</h2><p class="desc" style="margin:2px 0 12px">${esc(quandoEvento(e))}</p>
+        <div class="row" style="gap:8px">${urlSegura(e.sala_url) && (vivo || new Date(e.inicio) - agora < 36e5) ? `<a class="btn btn-primary btn-sm" href="${esc(urlSegura(e.sala_url))}" target="_blank" rel="noopener noreferrer">Entrar na sala</a>` : ''}<a class="btn btn-sm" href="${lnk(ctx, 'eventos')}">Ver na agenda</a></div></div>`;
+    }
+    if (perfil) {
+      const pr = await q(sb.from('cli_aula_progresso').select('aula_id,posicao_seg,duracao_seg,atualizado_em').eq('perfil_id', perfil).is('assistida_em', null).gt('posicao_seg', 5).order('atualizado_em', { ascending: false }).limit(1));
+      if (pr[0]) {
+        const [a] = await q(sb.from('cli_aulas').select('*').eq('id', pr[0].aula_id).limit(1));
+        if (a) { const capa = capaDe(a), pct = pctAula(a, pr[0]);
+          html += `<a class="card cine-mini" href="${lnk(ctx, 'aulas/' + a.id)}">${capa ? `<img src="${esc(capa)}" alt="">` : ''}<div><div class="kicker">Continue assistindo</div><b>${esc(a.titulo)}</b><div class="bar fina" style="margin-top:8px"><i style="width:${pct}%"></i></div></div></a>`; }
+      }
+    }
+    return html;
+  } catch (e) { console.warn('extras do início', e); return ''; }
+}
+
+/* ---------- sino: eventos e aulas novas ---------- */
+async function notifsEventosAulas(out) {
+  const agora = Date.now();
+  const evs = await q(sb.from('cli_eventos').select('id,titulo,tipo,inicio,duracao_min,gravacao_url,aula_id').gte('inicio', new Date(agora - 7 * 864e5).toISOString()).lte('inicio', new Date(agora + 36 * 36e5).toISOString()).order('inicio'));
+  evs.forEach(e => {
+    const ini = new Date(e.inicio).getTime(), fim = fimEvento(e).getTime();
+    if (ini > agora || fim > agora) out.push({ chave: `ev-${e.id}-${ini > agora ? 'lembrete' : 'vivo'}`, sec: 'Eventos', titulo: ini > agora ? `${TIPO_EVENTO[e.tipo] || 'Evento'} ${quandoEvento(e)}` : `Começou agora: ${e.titulo}`, desc: e.titulo, quando: new Date(Math.min(agora, ini)), href: '#/eventos' });
+    else if (e.aula_id || urlSegura(e.gravacao_url)) out.push({ chave: `ev-${e.id}-gravacao`, sec: 'Eventos', titulo: 'Gravação disponível', desc: e.titulo, quando: new Date(fim), href: e.aula_id ? `#/aulas/${e.aula_id}` : '#/eventos' });
+  });
+  const novas = await q(sb.from('cli_aulas').select('id,titulo,created_at').gte('created_at', new Date(agora - 7 * 864e5).toISOString()).order('created_at', { ascending: false }).limit(5));
+  novas.forEach(a => out.push({ chave: `aula-nova-${a.id}`, sec: 'Aulas', titulo: 'Aula nova no portal', desc: a.titulo, quando: new Date(a.created_at), href: `#/aulas/${a.id}` }));
+}
+
+/* =====================================================================
+   ADMIN: gerenciar aulas e eventos
+   ===================================================================== */
+async function alvosProgresso() {   // logins de mentorados ativos (é contra eles que o progresso é medido)
+  const [cls, perfis] = await Promise.all([clientes(), q(sb.from('cli_perfis').select('id,cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null))]);
+  return perfis.map(p => ({ perfil: p.id, cli: cls.find(c => c.id === p.cliente_id) })).filter(x => x.cli && x.cli.status === 'ativo');
+}
+let BIB = null;
+async function vAdminAulas() {
+  const [bib, alvos, prog] = await Promise.all([carregarBiblioteca(), alvosProgresso(), paginado(() => sb.from('cli_aula_progresso').select('perfil_id,aula_id,assistida_em').not('assistida_em', 'is', null).order('aula_id'))]);
+  BIB = bib;
+  const ids = new Set(alvos.map(a => a.perfil)), vistas = prog.filter(p => ids.has(p.perfil_id));
+  const pub = bib.aulas.filter(a => a.publicado && (bib.modulos.find(m => m.id === a.modulo_id) || {}).publicado);
+  const quem = aId => vistas.filter(v => v.aula_id === aId).length;
+  const media = alvos.length && pub.length ? Math.round(alvos.reduce((s, x) => s + vistas.filter(v => v.perfil_id === x.perfil && pub.some(a => a.id === v.aula_id)).length / pub.length, 0) / alvos.length * 100) : 0;
+  const prev = alvos.slice().sort((a, b) => a.cli.nome.localeCompare(b.cli.nome, 'pt-BR'))[0];
+  const linhaAula = (a, k, m) => `<div class="adm-aula"><div class="adm-aula-th">${capaDe(a) ? `<img src="${esc(capaDe(a))}" alt="">` : `<span>${k + 1}</span>`}</div>
+      <div class="adm-aula-tx"><b>${esc(a.titulo)}</b><small>${esc([videoInfo(a.video_url).tipo === 'youtube' ? 'YouTube' : videoInfo(a.video_url).prov || (videoInfo(a.video_url).tipo === 'mp4' ? 'arquivo de vídeo' : 'link externo'), a.duracao_seg ? fmtMinSeg(a.duracao_seg) : ''].filter(Boolean).join(' · '))}</small></div>
+      <span class="chip ${quem(a.id) ? 'ok' : 'neutro'} sem-dot" title="Mentorados ativos que assistiram até o fim">${quem(a.id)}/${alvos.length} assistiram</span>${a.publicado ? '' : '<span class="chip alerta sem-dot">rascunho</span>'}
+      <div class="acoes-ed"><button class="ic-btn" data-act="adm-aula-mover" data-id="${a.id}" data-d="-1" aria-label="Subir aula">${svg('cima', 16)}</button><button class="ic-btn" data-act="adm-aula-mover" data-id="${a.id}" data-d="1" aria-label="Descer aula">${svg('baixo', 16)}</button>
+      <button class="ic-btn" data-act="adm-aula-editar" data-id="${a.id}" aria-label="Editar aula">${svg('editar', 16)}</button><button class="ic-btn" data-act="adm-aula-excluir" data-id="${a.id}" aria-label="Excluir aula">${svg('lixo', 16)}</button></div></div>`;
+  const mods = bib.modulos.map((m, k) => `<div class="card adm-mod"><div class="row-between"><div><div class="kicker">Módulo ${k + 1}${m.publicado ? '' : ' · rascunho'}</div><h2 style="margin-top:3px">${esc(m.titulo)}</h2>${m.descricao ? `<p class="desc" style="margin:2px 0 0">${esc(m.descricao)}</p>` : ''}</div>
+      <div class="acoes-ed"><button class="ic-btn" data-act="adm-mod-mover" data-id="${m.id}" data-d="-1" aria-label="Subir módulo">${svg('cima', 16)}</button><button class="ic-btn" data-act="adm-mod-mover" data-id="${m.id}" data-d="1" aria-label="Descer módulo">${svg('baixo', 16)}</button>
+      <button class="ic-btn" data-act="adm-mod-editar" data-id="${m.id}" aria-label="Editar módulo">${svg('editar', 16)}</button><button class="ic-btn" data-act="adm-mod-excluir" data-id="${m.id}" aria-label="Excluir módulo">${svg('lixo', 16)}</button></div></div>
+    <div style="margin-top:12px">${m.aulas.map((a, i) => linhaAula(a, i, m)).join('') || '<div class="vazio" style="padding:10px 0">Nenhuma aula neste módulo.</div>'}</div>
+    <button class="btn btn-sm" style="margin-top:10px" data-act="adm-aula-nova" data-mod="${m.id}">${svg('mais', 14)} Aula neste módulo</button></div>`).join('');
+  const ranking = alvos.map(x => ({ x, n: vistas.filter(v => v.perfil_id === x.perfil && pub.some(a => a.id === v.aula_id)).length })).sort((a, b) => b.n - a.n || a.x.cli.nome.localeCompare(b.x.cli.nome, 'pt-BR'));
+  return { kicker: 'Biblioteca', titulo: 'Aulas',
+    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">As aulas gravadas do método, em módulos. Cole o link do YouTube (não listado), Vimeo, Loom ou de um arquivo .mp4.</p>
+      <div class="row">${prev ? `<a class="btn" href="#/ver/${prev.cli.id}/aulas">${svg('olho', 16)} Ver como mentorado</a>` : ''}<button class="btn" data-act="adm-mod-novo">${svg('mais', 16)} Novo módulo</button><button class="btn btn-primary" data-act="adm-aula-nova">${svg('mais', 16)} Nova aula</button></div></div>
+      <div class="tiles"><div class="tile"><div class="v">${bib.modulos.length}</div><div class="l">módulos</div></div><div class="tile"><div class="v">${pub.length}</div><div class="l">aulas publicadas</div></div>
+        <div class="tile"><div class="v">${media}%</div><div class="l">média do curso assistida</div></div><div class="tile"><div class="v">${vistas.length}</div><div class="l">aulas concluídas no total</div></div></div>
+      ${mods || `<div class="card"><div class="vazio"><b>Nenhum módulo ainda.</b><br>Crie o primeiro módulo (ex.: “Módulo 1 · Posicionamento”) e depois adicione as aulas.</div></div>`}
+      ${pub.length && alvos.length ? `<div class="card"><h2>Quem está assistindo</h2><p class="desc">Aulas assistidas até o fim, por mentorado ativo.</p>${ranking.map(r => `<div class="item-lista"><div class="txt">${esc(r.x.cli.nome)}</div><div class="row" style="gap:10px;flex-wrap:nowrap;min-width:180px;justify-content:flex-end"><div class="bar fina" style="width:120px"><i style="width:${Math.round(r.n / pub.length * 100)}%"></i></div><b class="mono">${r.n}/${pub.length}</b></div></div>`).join('')}</div>` : ''}` };
+}
+const modPorId = id => BIB.modulos.find(m => m.id === Number(id));
+const aulaPorId = id => BIB.aulas.find(a => a.id === Number(id));
+function modalModulo(m) {
+  abrirModal(m ? 'Editar módulo' : 'Novo módulo', `<form data-sub="adm-mod"><input type="hidden" name="id" value="${m ? m.id : ''}">
+    <div class="campo"><label class="lbl" for="mo-t">Nome do módulo</label><input type="text" id="mo-t" required maxlength="120" value="${esc(m ? m.titulo : '')}" placeholder="Ex: Módulo 1 · Posicionamento"></div>
+    <div class="campo"><label class="lbl" for="mo-d">Descrição curta (opcional)</label><input type="text" id="mo-d" maxlength="600" value="${esc(m ? m.descricao || '' : '')}"></div>
+    <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:14px"><input type="checkbox" id="mo-p" ${!m || m.publicado ? 'checked' : ''}> Publicado (os mentorados veem)</label>
+    <button class="btn btn-primary" type="submit">Salvar</button></form>`);
+}
+ACT['adm-mod-novo'] = () => modalModulo(null);
+ACT['adm-mod-editar'] = el => modalModulo(modPorId(el.dataset.id));
+SUB['adm-mod'] = async f => {
+  const id = Number(f.id.value) || null, d = { titulo: $('#mo-t').value.trim(), descricao: $('#mo-d').value.trim() || null, publicado: $('#mo-p').checked };
+  if (id) { const { error } = await sb.from('cli_aula_modulos').update(d).eq('id', id); if (error) throw error; }
+  else { d.ordem = BIB.modulos.reduce((m, x) => Math.max(m, x.ordem), 0) + 1; const { error } = await sb.from('cli_aula_modulos').insert(d); if (error) throw error; }
+  fecharModal(); toast('Módulo salvo.'); await render();
+};
+ACT['adm-mod-excluir'] = async el => {
+  const m = modPorId(el.dataset.id); if (!confirm(`Excluir o módulo “${m.titulo}”${m.aulas.length ? ` e as ${m.aulas.length} aulas dele (com o progresso dos mentorados)` : ''}?`)) return;
+  const { error } = await sb.from('cli_aula_modulos').delete().eq('id', m.id); if (error) throw error; await render();
+};
+async function reordenar(tabela, lista, id, d) {
+  const i = lista.findIndex(x => x.id === Number(id)), j = i + Number(d); if (i < 0 || j < 0 || j >= lista.length) return;
+  const nova = lista.slice(); [nova[i], nova[j]] = [nova[j], nova[i]];
+  const res = await Promise.all(nova.map((x, k) => x.ordem === k + 1 ? null : sb.from(tabela).update({ ordem: k + 1 }).eq('id', x.id)).filter(Boolean));
+  const e = res.find(r => r.error); if (e) throw e.error; await render();
+}
+ACT['adm-mod-mover'] = el => reordenar('cli_aula_modulos', BIB.modulos, el.dataset.id, el.dataset.d);
+ACT['adm-aula-mover'] = el => { const a = aulaPorId(el.dataset.id); return reordenar('cli_aulas', modPorId(a.modulo_id).aulas, a.id, el.dataset.d); };
+function modalAula(a, modId) {
+  if (!BIB.modulos.length) { toast('Crie um módulo primeiro.', true); modalModulo(null); return; }
+  const mod = a ? a.modulo_id : Number(modId) || BIB.modulos[BIB.modulos.length - 1].id;
+  abrirModal(a ? 'Editar aula' : 'Nova aula', `<form data-sub="adm-aula"><input type="hidden" name="id" value="${a ? a.id : ''}">
+    <div class="grid2"><div class="campo"><label class="lbl" for="au-t">Título da aula</label><input type="text" id="au-t" required maxlength="160" value="${esc(a ? a.titulo : '')}"></div>
+    <div class="campo"><label class="lbl" for="au-m">Módulo</label><select id="au-m">${BIB.modulos.map(m => `<option value="${m.id}" ${m.id === mod ? 'selected' : ''}>${esc(m.titulo)}</option>`).join('')}</select></div></div>
+    <div class="campo"><label class="lbl" for="au-v">Link do vídeo</label><input type="url" id="au-v" required maxlength="500" value="${esc(a ? a.video_url : '')}" placeholder="https://youtu.be/…  (YouTube não listado, Vimeo, Loom ou .mp4)"><div class="hint" id="au-v-hint"></div></div>
+    <div class="campo"><label class="lbl" for="au-d">Sobre a aula (opcional)</label><textarea id="au-d" rows="4" maxlength="4000">${esc(a ? a.descricao || '' : '')}</textarea></div>
+    <div class="grid2"><div class="campo"><label class="lbl" for="au-mr">Material de apoio: nome do botão</label><input type="text" id="au-mr" maxlength="80" value="${esc(a ? a.material_rotulo || '' : '')}" placeholder="Ex: Baixar o roteiro"></div>
+    <div class="campo"><label class="lbl" for="au-mu">Material de apoio: link</label><input type="url" id="au-mu" maxlength="500" value="${esc(a ? a.material_url || '' : '')}" placeholder="https://…"></div></div>
+    <div class="grid2"><div class="campo"><label class="lbl" for="au-c">Capa (link de imagem, opcional)</label><input type="url" id="au-c" maxlength="500" value="${esc(a ? a.capa_url || '' : '')}" placeholder="No YouTube a capa vem sozinha"></div>
+    <div class="campo"><label class="lbl" for="au-du">Duração em minutos (opcional)</label><input type="number" id="au-du" min="1" max="1440" value="${a && a.duracao_seg ? Math.round(a.duracao_seg / 60) : ''}" placeholder="No YouTube vem sozinha"></div></div>
+    <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:14px"><input type="checkbox" id="au-p" ${!a || a.publicado ? 'checked' : ''}> Publicada (os mentorados veem)</label>
+    <button class="btn btn-primary" type="submit">Salvar aula</button></form>`, true);
+  dicaVideo();
+}
+function dicaVideo() {
+  const i = $('#au-v'), h = $('#au-v-hint'); if (!i || !h) return;
+  const v = videoInfo(i.value.trim());
+  h.textContent = !i.value.trim() ? 'No YouTube, deixe o vídeo como “Não listado”: só quem tem o link assiste.' : v.tipo === 'youtube' ? 'YouTube reconhecido: capa, duração e progresso do mentorado entram sozinhos.' : v.tipo === 'mp4' ? 'Arquivo de vídeo: o progresso do mentorado é medido.' : v.tipo === 'iframe' ? `${v.prov}: o vídeo toca no portal, mas o mentorado marca “assistida” à mão.` : 'Link não reconhecido: a aula abre num botão, fora do portal.';
+}
+document.addEventListener('input', ev => { if (ev.target.id === 'au-v') dicaVideo(); });
+ACT['adm-aula-nova'] = el => modalAula(null, el.dataset.mod);
+ACT['adm-aula-editar'] = el => modalAula(aulaPorId(el.dataset.id));
+SUB['adm-aula'] = async f => {
+  const id = Number(f.id.value) || null, url = $('#au-v').value.trim(), mu = $('#au-mu').value.trim(), cp = $('#au-c').value.trim();
+  if (!urlSegura(url)) { toast('O link do vídeo precisa começar com https://', true); return; }
+  if (mu && !urlSegura(mu)) { toast('O link do material precisa começar com https://', true); return; }
+  if (cp && !urlSegura(cp)) { toast('O link da capa precisa começar com https://', true); return; }
+  const min = parseInt($('#au-du').value), modulo = Number($('#au-m').value);
+  const d = { titulo: $('#au-t').value.trim(), modulo_id: modulo, video_url: url, descricao: $('#au-d').value.trim() || null, material_rotulo: $('#au-mr').value.trim() || null, material_url: mu || null, capa_url: cp || null, publicado: $('#au-p').checked };
+  if (min > 0) d.duracao_seg = Math.min(86400, min * 60); else if (!id) d.duracao_seg = null;
+  const ant = id ? aulaPorId(id) : null;
+  if (!ant || ant.modulo_id !== modulo) d.ordem = (modPorId(modulo).aulas.reduce((m, x) => Math.max(m, x.ordem), 0)) + 1;
+  if (ant && ant.video_url !== url && !(min > 0)) d.duracao_seg = null;   // vídeo trocado: a duração é medida de novo
+  if (id) { const { error } = await sb.from('cli_aulas').update(d).eq('id', id); if (error) throw error; }
+  else { const { error } = await sb.from('cli_aulas').insert(d); if (error) throw error; }
+  fecharModal(); toast('Aula salva.'); await render();
+};
+ACT['adm-aula-excluir'] = async el => {
+  const a = aulaPorId(el.dataset.id); if (!confirm(`Excluir a aula “${a.titulo}”? O progresso dos mentorados nela também some.`)) return;
+  const { error } = await sb.from('cli_aulas').delete().eq('id', a.id); if (error) throw error; await render();
+};
+
+async function vAdminEventos() {
+  EVS = await q(sb.from('cli_eventos').select('*').order('inicio', { ascending: false }));
+  const agora = new Date(), prox = EVS.filter(e => fimEvento(e) > agora).reverse(), pass = EVS.filter(e => fimEvento(e) <= agora);
+  const linha = e => { const d = new Date(e.inicio), passado = fimEvento(e) <= agora;
+    return `<div class="ev-item adm"><div class="ev-data"><b>${d.getDate()}</b><span>${MES_CURTO[d.getMonth()]}</span></div>
+      <div class="ev-item-tx"><span class="chip neutro sem-dot">${esc(TIPO_EVENTO[e.tipo] || 'Evento')}${e.publicado ? '' : ' · rascunho'}</span><b>${esc(e.titulo)}</b>
+        <small>${esc(passado ? fmtData(isoLocal(d)) + ' · ' + hora(d) : quandoEvento(e))} · ${e.duracao_min} min${e.sala_url ? ' · com link da sala' : passado ? '' : ' · <b style="color:var(--warning-text)">sem link da sala</b>'}</small></div>
+      <div class="ev-item-bt">${passado ? (e.aula_id ? `<a class="btn btn-sm" href="#/admin/aulas">${svg('check', 14)} virou aula</a>` : e.gravacao_url ? `<button class="btn btn-sm btn-primary" data-act="ev-virar-aula" data-id="${e.id}">${svg('tutorial', 14)} Virar aula</button>` : `<button class="btn btn-sm" data-act="ev-editar" data-id="${e.id}">+ gravação</button>`) : ''}
+        <button class="ic-btn" data-act="ev-editar" data-id="${e.id}" aria-label="Editar evento">${svg('editar', 16)}</button><button class="ic-btn" data-act="ev-excluir" data-id="${e.id}" aria-label="Excluir evento">${svg('lixo', 16)}</button></div></div>`; };
+  return { kicker: 'Agenda', titulo: 'Eventos',
+    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">Encontros da mentoria, eventos e aulas ao vivo. O mentorado vê a contagem regressiva, entra na sala por aqui e salva na agenda dele. Depois, a gravação vira aula com um clique.</p>
+      <button class="btn btn-primary" data-act="ev-novo">${svg('mais', 16)} Novo evento</button></div>
+      <div class="card"><h2>Próximos</h2><div class="ev-lista" style="margin-top:10px">${prox.map(linha).join('') || '<div class="vazio">Nenhum evento marcado.</div>'}</div></div>
+      ${pass.length ? `<div class="card"><h2>Já aconteceram</h2><p class="desc">Cole o link da gravação e transforme em aula.</p><div class="ev-lista">${pass.map(linha).join('')}</div></div>` : ''}` };
+}
+function modalEvento(e) {
+  const d = e ? new Date(e.inicio) : null;
+  abrirModal(e ? 'Editar evento' : 'Novo evento', `<form data-sub="ev"><input type="hidden" name="id" value="${e ? e.id : ''}">
+    <div class="grid2"><div class="campo"><label class="lbl" for="ev-t">Título</label><input type="text" id="ev-t" required maxlength="160" value="${esc(e ? e.titulo : '')}" placeholder="Ex: Encontro 5 · Funil e conteúdo"></div>
+    <div class="campo"><label class="lbl" for="ev-tp">Tipo</label><select id="ev-tp">${Object.entries(TIPO_EVENTO).map(([k, n]) => `<option value="${k}" ${(e ? e.tipo : 'encontro') === k ? 'selected' : ''}>${n}</option>`).join('')}</select></div></div>
+    <div class="grid2"><div class="campo"><label class="lbl" for="ev-d">Data</label><input type="date" id="ev-d" required value="${d ? isoLocal(d) : ''}"></div>
+    <div class="grid2" style="gap:10px"><div class="campo"><label class="lbl" for="ev-h">Hora</label><input type="time" id="ev-h" required value="${d ? pad(d.getHours()) + ':' + pad(d.getMinutes()) : '19:00'}"></div>
+    <div class="campo"><label class="lbl" for="ev-du">Duração (min)</label><input type="number" id="ev-du" min="5" max="1440" required value="${e ? e.duracao_min : 90}"></div></div></div>
+    <div class="campo"><label class="lbl" for="ev-s">Link da sala (Meet, Zoom…)</label><input type="url" id="ev-s" maxlength="500" value="${esc(e ? e.sala_url || '' : '')}" placeholder="https://meet.google.com/…"></div>
+    <div class="campo"><label class="lbl" for="ev-ds">Descrição (opcional)</label><textarea id="ev-ds" rows="3" maxlength="4000">${esc(e ? e.descricao || '' : '')}</textarea></div>
+    <div class="campo"><label class="lbl" for="ev-g">Link da gravação (depois do evento)</label><input type="url" id="ev-g" maxlength="500" value="${esc(e ? e.gravacao_url || '' : '')}" placeholder="https://youtu.be/…"></div>
+    <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:14px"><input type="checkbox" id="ev-p" ${!e || e.publicado ? 'checked' : ''}> Publicado (os mentorados veem)</label>
+    <button class="btn btn-primary" type="submit">Salvar evento</button></form>`, true);
+}
+ACT['ev-novo'] = () => modalEvento(null);
+ACT['ev-editar'] = el => modalEvento(EVS.find(x => x.id === Number(el.dataset.id)));
+SUB['ev'] = async f => {
+  const id = Number(f.id.value) || null, sala = $('#ev-s').value.trim(), grav = $('#ev-g').value.trim();
+  if (sala && !urlSegura(sala)) { toast('O link da sala precisa começar com https://', true); return; }
+  if (grav && !urlSegura(grav)) { toast('O link da gravação precisa começar com https://', true); return; }
+  const ini = new Date(`${$('#ev-d').value}T${$('#ev-h').value}`); if (isNaN(ini)) { toast('Confira a data e a hora.', true); return; }
+  const d = { titulo: $('#ev-t').value.trim(), tipo: $('#ev-tp').value, inicio: ini.toISOString(), duracao_min: Math.max(5, Math.min(1440, parseInt($('#ev-du').value) || 60)),
+    sala_url: sala || null, descricao: $('#ev-ds').value.trim() || null, gravacao_url: grav || null, publicado: $('#ev-p').checked };
+  if (id) { const { error } = await sb.from('cli_eventos').update(d).eq('id', id); if (error) throw error; }
+  else { const { error } = await sb.from('cli_eventos').insert(d); if (error) throw error; }
+  fecharModal(); toast('Evento salvo.'); await render();
+};
+ACT['ev-excluir'] = async el => {
+  const e = EVS.find(x => x.id === Number(el.dataset.id)); if (!confirm(`Excluir “${e.titulo}”?`)) return;
+  const { error } = await sb.from('cli_eventos').delete().eq('id', e.id); if (error) throw error; await render();
+};
+const MOD_GRAVACOES = 'Gravações dos encontros';
+ACT['ev-virar-aula'] = async el => {
+  const e = EVS.find(x => x.id === Number(el.dataset.id)); if (!e || !urlSegura(e.gravacao_url)) return;
+  await ocupado(el, async () => {
+    let [m] = await q(sb.from('cli_aula_modulos').select('id').eq('titulo', MOD_GRAVACOES).limit(1));
+    if (!m) { const mods = await q(sb.from('cli_aula_modulos').select('ordem')); const { data, error } = await sb.from('cli_aula_modulos').insert({ titulo: MOD_GRAVACOES, descricao: 'Os encontros ao vivo, gravados.', ordem: mods.reduce((x, y) => Math.max(x, y.ordem), 0) + 1 }).select('id').single(); if (error) throw error; m = data; }
+    const ord = await q(sb.from('cli_aulas').select('ordem').eq('modulo_id', m.id));
+    const { data: a, error } = await sb.from('cli_aulas').insert({ modulo_id: m.id, titulo: `${e.titulo} · ${fmtData(isoLocal(new Date(e.inicio)))}`, descricao: e.descricao, video_url: e.gravacao_url, ordem: ord.reduce((x, y) => Math.max(x, y.ordem), 0) + 1 }).select('id').single();
+    if (error) throw error;
+    const { error: e2 } = await sb.from('cli_eventos').update({ aula_id: a.id }).eq('id', e.id); if (e2) throw e2;
+  });
+  toast(`Gravação publicada em Aulas › ${MOD_GRAVACOES}.`); await render();
+};
+
+/* =====================================================================
+   PROGRAMA DE INDICAÇÃO — indica, ganha pontos, sobe no ranking; fechou, recebe 10% da mentoria.
+   Pontos (a conta oficial mora na RPC cli_ranking_indicacao; aqui é só a vitrine das regras):
+   indicação 10 · virou reunião +20 · fechou +100 · repost do conteúdo do Igor 3 (até 20 por mês) · bônus do nível do mês.
+   ===================================================================== */
+const PONTOS = { indicacao: 10, reuniao: 20, fechou: 100, repost: 3, repostMes: 20 };
+const ST_IND = { nova: 'Recebida', contato: 'Em contato', reuniao: 'Reunião marcada', fechou: 'Fechou', perdida: 'Não fechou' };
+const ST_IND_CHIP = { nova: 'neutro', contato: 'alerta', reuniao: 'aguardando', fechou: 'ok', perdida: 'critico' };
+const ETAPAS_IND = ['nova', 'contato', 'reuniao', 'fechou'];
+const brl = v => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const inicioMes = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); };
+const nomeMes = () => MESES[new Date().getMonth()];
+const waLink = tel => { let d = String(tel || '').replace(/\D/g, ''); if (d.length <= 11) d = '55' + d; return `https://wa.me/${d}`; };
+let IND = { periodo: 'mes' };
+ACT['ind-periodo'] = el => { IND.periodo = el.dataset.p; render(); };
+
+function nivelDoMes(n, niveis) {
+  const ord = [...niveis].sort((a, b) => a.meta_mes - b.meta_mes);
+  const atual = [...ord].reverse().find(x => n >= x.meta_mes) || null, prox = ord.find(x => n < x.meta_mes) || null;
+  return { atual, prox, ord };
+}
+function trilhaNiveis(n, niveis) {
+  const { atual, prox, ord } = nivelDoMes(n, niveis); if (!ord.length) return '';
+  const max = ord[ord.length - 1].meta_mes, pos = v => Math.min(100, v / max * 100);
+  return `<div class="ind-trilha"><div class="ind-trilha-cab"><b>${atual ? `Nível ${esc(atual.nome)}` : 'Sem nível ainda'} em ${esc(nomeMes())}</b><span>${prox ? `faltam ${prox.meta_mes - n} ${prox.meta_mes - n === 1 ? 'indicação' : 'indicações'} para ${esc(prox.nome)}` : 'nível máximo do mês. Lenda.'}</span></div>
+    <div class="ind-barra"><i style="width:${pos(n)}%"></i>${ord.map(x => `<span class="ind-marco ${n >= x.meta_mes ? 'ok' : ''}" style="left:${pos(x.meta_mes)}%"><em>${esc(x.nome)}</em><small>${x.meta_mes}</small></span>`).join('')}</div>
+    <div class="ind-niveis">${ord.map(x => `<div class="ind-nivel ${n >= x.meta_mes ? 'ok' : ''} nv-${esc(x.nome.toLowerCase())}"><div class="ind-medalha">${n >= x.meta_mes ? svg('check', 14) : x.meta_mes}</div><b>${esc(x.nome)}</b><small>${x.meta_mes} ${x.meta_mes === 1 ? 'indicação' : 'indicações'} no mês · +${x.pontos_bonus} pts</small>${x.premio ? `<span class="ind-premio">${esc(x.premio)}</span>` : ''}</div>`).join('')}</div></div>`;
+}
+function rankingHtml(rank, opt = {}) {
+  const lista = rank.filter(r => r.pontos > 0 || r.eu), top = lista.slice(0, opt.limite || 10), eu = lista.find(r => r.eu), posEu = eu ? lista.indexOf(eu) + 1 : 0;
+  const linha = (r, i) => `<div class="ind-rk ${r.eu ? 'eu' : ''} ${i < 3 && r.pontos > 0 ? 'pod p' + (i + 1) : ''}"><span class="ind-rk-pos mono">${i < 3 && r.pontos > 0 ? ['1º', '2º', '3º'][i] : i + 1 + 'º'}</span>
+    <span class="apv-av sm" aria-hidden="true">${esc(iniciais(r.nome))}</span><div class="ind-rk-tx"><b>${esc(r.nome)}${r.eu ? ' <em>você</em>' : ''}</b><small>${r.indicacoes} ${r.indicacoes === 1 ? 'indicação' : 'indicações'}${r.fechadas ? ` · ${r.fechadas} ${r.fechadas === 1 ? 'fechou' : 'fecharam'}` : ''}${r.reposts ? ` · ${r.reposts} ${r.reposts === 1 ? 'repost' : 'reposts'}` : ''}</small></div><b class="ind-rk-pts mono">${r.pontos}<small> pts</small></b></div>`;
+  return `<div class="card ind-ranking"><div class="row-between"><div><h2>Ranking</h2><p class="desc" style="margin:2px 0 0">${IND.periodo === 'mes' ? `Pontos de ${esc(nomeMes())}. Zera todo dia 1º.` : 'Pontos desde o início do programa.'}</p></div>
+    <div class="chips-filtro" style="margin:0"><button class="chip-btn ${IND.periodo === 'mes' ? 'ativo' : ''}" data-act="ind-periodo" data-p="mes">Este mês</button><button class="chip-btn ${IND.periodo === 'geral' ? 'ativo' : ''}" data-act="ind-periodo" data-p="geral">Geral</button></div></div>
+    <div style="margin-top:12px">${top.length ? top.map(linha).join('') : '<div class="vazio">Ninguém pontuou ainda. O primeiro lugar está livre.</div>'}${eu && posEu > top.length ? `<div class="ind-rk-sep">…</div>${linha(eu, posEu - 1)}` : ''}</div></div>`;
+}
+const regrasHtml = () => `<div class="card"><h2>Como ganhar pontos</h2><div class="ind-regras">
+  <div><b>+${PONTOS.indicacao}</b><span>cada indicação</span></div><div><b>+${PONTOS.reuniao}</b><span>se ela virar reunião</span></div>
+  <div><b>+${PONTOS.fechou}</b><span>se fechar a mentoria <em>e você recebe 10% do valor</em></span></div><div><b>+${PONTOS.repost}</b><span>cada repost de um conteúdo do Igor (até ${PONTOS.repostMes} por mês)</span></div></div>
+  <p class="hint" style="margin-top:10px">Bater a meta de indicações do mês dá bônus de nível. Telefone que já tinha sido indicado vale pra quem indicou primeiro.</p></div>`;
+
+async function vIndicacoes(ctx) {
+  const ro = ctx.modo === 'preview';
+  const [inds, acoes, niveis, rank] = await Promise.all([
+    q(sb.from('cli_indicacoes').select('*').eq('cliente_id', ctx.clienteId).order('created_at', { ascending: false })),
+    q(sb.from('cli_acoes').select('*').eq('cliente_id', ctx.clienteId).order('created_at', { ascending: false }).limit(50)),
+    q(sb.from('cli_indicacao_niveis').select('*').order('meta_mes')),
+    rpc('cli_ranking_indicacao', { p_periodo: IND.periodo })]);
+  const rankMes = IND.periodo === 'mes' ? rank : await rpc('cli_ranking_indicacao', { p_periodo: 'mes' });
+  // no "ver como mentorado" o "eu" da RPC é o admin: marca o mentorado visto
+  [rank, rankMes].forEach(r => r.forEach(x => { x.eu = x.cliente_id === ctx.clienteId; }));
+  const ini = inicioMes(), doMes = inds.filter(i => new Date(i.created_at) >= ini && !i.duplicada).length;
+  const eu = rankMes.find(r => r.eu), posEu = eu && eu.pontos > 0 ? rankMes.filter(r => r.pontos > 0 || r.eu).indexOf(eu) + 1 : null;
+  const fechadas = inds.filter(i => i.status === 'fechou'), aReceber = fechadas.filter(i => !i.pago_em).reduce((s, i) => s + Number(i.recompensa || 0), 0), recebido = fechadas.filter(i => i.pago_em).reduce((s, i) => s + Number(i.recompensa || 0), 0);
+  const hero = `<div class="hero ind-hero"><div class="apv-hero-topo"><div><div class="kicker">Programa de indicação</div><h2>Indicou, fechou: 10% da mentoria é seu</h2>
+      <p>Conhece alguém que precisa vender mais pelo LinkedIn? Indique aqui. Se fechar, você recebe 10% do valor. E cada indicação, reunião e repost vale pontos no ranking.</p></div>
+      ${ro ? '' : `<div class="row" style="gap:8px"><button class="btn apv-hero-btn" data-act="ind-nova">${svg('mais', 15)} Indicar alguém</button><button class="btn ind-hero-sec" data-act="ind-repost">${svg('link', 15)} Registrar repost</button></div>`}</div>
+    <div class="hero-metrics apv-metrics"><div><b>${eu ? eu.pontos : 0}<small> pts</small></b><span>seus pontos em ${esc(nomeMes())}</span></div>
+      <div><b>${posEu ? posEu + 'º' : '—'}</b><span>sua posição no mês</span></div><div><b>${doMes}</b><span>indicações no mês</span></div>
+      <div><b>${esc(brl(aReceber))}</b><span>${recebido ? `a receber · ${esc(brl(recebido))} já pago` : 'a receber'}</span></div></div></div>`;
+  const etapa = s => { const k = ETAPAS_IND.indexOf(s); return `<div class="ind-etapas ${s === 'perdida' ? 'perdida' : ''}">${ETAPAS_IND.map((x, j) => `<span class="${s !== 'perdida' && j <= k ? 'ok' : ''}">${esc(ST_IND[x])}</span>`).join('')}</div>`; };
+  const cardInd = i => `<div class="ind-item"><div class="row-between" style="align-items:flex-start"><div style="min-width:0"><b class="ind-nome">${esc(i.nome)}</b><small class="muted">${esc([i.empresa, 'indicado em ' + fmtData(isoLocal(new Date(i.created_at)))].filter(Boolean).join(' · '))}</small></div>
+      <span class="chip ${ST_IND_CHIP[i.status]}">${esc(ST_IND[i.status])}</span></div>
+    ${etapa(i.status)}<p class="ind-dor"><b>Dor:</b> ${esc(i.dor)}</p>
+    ${i.duplicada ? '<p class="hint" style="margin:6px 0 0">Esse telefone já tinha sido indicado antes, então ele não soma pontos pra você.</p>' : ''}
+    ${i.retorno ? `<div class="ind-retorno"><span>Retorno do Igor</span>${esc(i.retorno)}</div>` : ''}
+    ${i.status === 'fechou' ? `<div class="ind-ganho">${svg('check', 16)} <div><b>${esc(brl(i.recompensa))}</b> pra você${i.pago_em ? ` · pago em ${esc(fmtData(isoLocal(new Date(i.pago_em))))}` : ' · a receber'}</div></div>` : ''}
+    ${i.status === 'nova' && !ro ? `<button class="btn-link" style="margin-top:8px;font-size:.8rem" data-act="ind-cancelar" data-id="${i.id}">cancelar indicação</button>` : ''}</div>`;
+  const repMes = acoes.filter(a => new Date(a.created_at) >= ini && a.status === 'valida').length;
+  return { kicker: 'Indique e ganhe', titulo: 'Indicações',
+    html: `${hero}<div class="dash"><div>${trilhaNiveis(doMes, niveis) ? `<div class="card">${trilhaNiveis(doMes, niveis)}</div>` : ''}
+      <div class="card"><div class="row-between"><h2>Suas indicações</h2>${ro ? '' : `<button class="btn btn-primary btn-sm" data-act="ind-nova">${svg('mais', 14)} Indicar</button>`}</div>
+        <div class="ind-lista">${inds.length ? inds.map(cardInd).join('') : '<div class="vazio"><b>Nenhuma indicação ainda.</b><br>Pensa em 3 pessoas que reclamam que não conseguem cliente pelo LinkedIn. Pronto: são as suas 3 primeiras.</div>'}</div></div></div>
+      <div>${rankingHtml(rank)}${regrasHtml()}
+      <div class="card"><div class="row-between"><h2>Seus reposts</h2><span class="chip neutro sem-dot">${repMes}/${PONTOS.repostMes} no mês</span></div><p class="desc">Repostou um conteúdo do Igor? Cole o link do seu repost e ganhe ${PONTOS.repost} pontos.</p>
+        ${acoes.slice(0, 6).map(a => `<div class="item-lista"><div class="txt" style="min-width:0"><a href="${esc(urlSegura(a.link))}" target="_blank" rel="noopener noreferrer" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.link)}</a><small>${esc(fmtData(isoLocal(new Date(a.created_at))))}${a.status === 'recusada' ? ' · não valeu (fale com o Igor)' : ''}</small></div><span class="chip ${a.status === 'valida' ? 'ok' : 'critico'} sem-dot">${a.status === 'valida' ? '+' + PONTOS.repost : '0'}</span></div>`).join('') || '<div class="vazio" style="padding:8px 0">Nenhum repost registrado.</div>'}
+        ${ro ? '' : `<button class="btn btn-sm" style="margin-top:10px" data-act="ind-repost">${svg('link', 14)} Registrar repost</button>`}</div></div></div>` };
+}
+ACT['ind-nova'] = () => abrirModal('Indicar alguém', `<form data-sub="ind-nova"><p class="desc">Quanto mais contexto, mais fácil a conversa. O Igor entra em contato e você acompanha tudo por aqui.</p>
+  <div class="grid2"><div class="campo"><label class="lbl" for="in-n">Nome</label><input type="text" id="in-n" required maxlength="120" placeholder="Ex: João Silva"></div>
+  <div class="campo"><label class="lbl" for="in-t">WhatsApp</label><input type="tel" id="in-t" required maxlength="30" placeholder="(11) 98765-4321"></div></div>
+  <div class="campo"><label class="lbl" for="in-e">Empresa e cargo (opcional)</label><input type="text" id="in-e" maxlength="160" placeholder="Ex: Sócio da Silva Contabilidade"></div>
+  <div class="campo"><label class="lbl" for="in-d">Qual é a dor dele?</label><textarea id="in-d" rows="2" required maxlength="600" placeholder="Ex: depende de indicação e o LinkedIn não traz cliente"></textarea></div>
+  <div class="campo"><label class="lbl" for="in-c">Contexto (opcional)</label><textarea id="in-c" rows="3" maxlength="2000" placeholder="Como vocês se conhecem, se ele já sabe que você indicou, melhor horário pra falar…"></textarea></div>
+  <button class="btn btn-primary" type="submit">Enviar indicação</button></form>`);
+SUB['ind-nova'] = async f => {
+  const r = await ocupado(f.querySelector('button[type=submit]'), () => rpc('cli_indicar', { p_nome: $('#in-n').value, p_telefone: $('#in-t').value, p_empresa: $('#in-e').value, p_dor: $('#in-d').value, p_contexto: $('#in-c').value }));
+  fecharModal(); toast(r && r.duplicada ? 'Indicação enviada. Esse telefone já tinha sido indicado, então não soma pontos.' : `Indicação enviada! +${PONTOS.indicacao} pontos.`); await render();
+};
+ACT['ind-cancelar'] = async el => {
+  if (!confirm('Cancelar esta indicação?')) return;
+  const { error } = await sb.from('cli_indicacoes').delete().eq('id', el.dataset.id); if (error) throw error; toast('Indicação cancelada.'); await render();
+};
+ACT['ind-repost'] = () => abrirModal('Registrar repost', `<form data-sub="ind-repost"><p class="desc">Repostou um conteúdo do Igor no LinkedIn? Cole aqui o link do seu repost.</p>
+  <div class="campo"><label class="lbl" for="rp-l">Link do repost</label><input type="url" id="rp-l" required maxlength="500" placeholder="https://www.linkedin.com/posts/…"></div>
+  <button class="btn btn-primary" type="submit">Registrar (+${PONTOS.repost} pontos)</button></form>`);
+SUB['ind-repost'] = async f => {
+  const l = $('#rp-l').value.trim(); if (!urlSegura(l)) { toast('O link precisa começar com https://', true); return; }
+  const { error } = await sb.from('cli_acoes').insert({ cliente_id: S.ctx.clienteId, tipo: 'repost', link: l }); if (error) throw error;
+  fecharModal(); toast(`Repost registrado. +${PONTOS.repost} pontos.`); await render();
+};
+
+/* ---------- admin ---------- */
+let INDA = { filtro: 'abertas', lista: [] };
+ACT['inda-filtro'] = el => { INDA.filtro = el.dataset.f; render(); };
+async function vAdminIndicacoes() {
+  const [inds, acoes, niveis, rank, cls] = await Promise.all([
+    paginado(() => sb.from('cli_indicacoes').select('*').order('created_at', { ascending: false })),
+    q(sb.from('cli_acoes').select('*').order('created_at', { ascending: false }).limit(30)),
+    q(sb.from('cli_indicacao_niveis').select('*').order('meta_mes')), rpc('cli_ranking_indicacao', { p_periodo: IND.periodo }), clientes()]);
+  INDA.lista = inds; INDA.niveis = niveis;
+  const nome = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado', ini = inicioMes();
+  const abertas = inds.filter(i => ['nova', 'contato', 'reuniao'].includes(i.status)), fech = inds.filter(i => i.status === 'fechou');
+  const receita = fech.reduce((s, i) => s + Number(i.valor_fechado || 0), 0), aPagar = fech.filter(i => !i.pago_em).reduce((s, i) => s + Number(i.recompensa || 0), 0);
+  const vis = INDA.filtro === 'abertas' ? abertas : INDA.filtro === 'fechou' ? fech : INDA.filtro === 'perdida' ? inds.filter(i => i.status === 'perdida') : inds;
+  const linha = i => `<div class="inda-item ${i.status}"><div class="inda-topo"><div style="min-width:0"><b>${esc(i.nome)}</b>${i.duplicada ? ' <span class="chip alerta sem-dot">telefone repetido</span>' : ''}
+        <small>${esc([i.empresa, 'indicado por ' + nome(i.cliente_id), tempoAtras(i.created_at)].filter(Boolean).join(' · '))}</small></div>
+      <div class="row" style="gap:6px;flex-wrap:nowrap"><a class="btn btn-sm" href="${esc(waLink(i.telefone))}" target="_blank" rel="noopener noreferrer">${svg('link', 14)} ${esc(i.telefone)}</a>
+      <select class="inda-st" data-chg="inda-status" data-id="${i.id}" aria-label="Status da indicação">${Object.entries(ST_IND).map(([k, n]) => `<option value="${k}" ${k === i.status ? 'selected' : ''}>${n}</option>`).join('')}</select></div></div>
+    <p class="ind-dor"><b>Dor:</b> ${esc(i.dor)}</p>${i.contexto ? `<p class="ind-dor"><b>Contexto:</b> ${esc(i.contexto)}</p>` : ''}
+    <div class="inda-rod">${i.status === 'fechou' ? `<span>Fechou em <b>${esc(brl(i.valor_fechado))}</b> · indicação: <b>${esc(brl(i.recompensa))}</b></span>${i.pago_em ? `<span class="chip ok">pago em ${esc(fmtData(isoLocal(new Date(i.pago_em))))}</span>` : `<button class="btn btn-sm btn-primary" data-act="inda-pagar" data-id="${i.id}">Marcar 10% como pago</button>`}<button class="btn-link" data-act="inda-valor" data-id="${i.id}">editar valor</button>` : ''}
+      <button class="btn-link" data-act="inda-retorno" data-id="${i.id}">${i.retorno ? 'editar retorno pro mentorado' : 'escrever retorno pro mentorado'}</button></div></div>`;
+  return { kicker: 'Programa de indicação', titulo: 'Indicações',
+    html: `<div class="tiles"><div class="tile"><div class="v">${inds.filter(i => new Date(i.created_at) >= ini).length}</div><div class="l">indicações em ${esc(nomeMes())}</div></div>
+      <div class="tile"><div class="v">${abertas.length}</div><div class="l">em andamento</div></div><div class="tile"><div class="v" style="color:var(--accent-deep)">${fech.length}</div><div class="l">fecharam</div></div>
+      <div class="tile"><div class="v">${esc(brl(receita))}</div><div class="l">receita vinda de indicação</div></div><div class="tile"><div class="v" style="color:var(--warning-text)">${esc(brl(aPagar))}</div><div class="l">10% a pagar</div></div></div>
+      <div class="dash"><div><div class="card"><div class="row-between"><h2>Indicações</h2><div class="chips-filtro" style="margin:0">${[['abertas', `Em andamento (${abertas.length})`], ['fechou', `Fecharam (${fech.length})`], ['perdida', 'Não fecharam'], ['todas', 'Todas']].map(([k, n]) => `<button class="chip-btn ${INDA.filtro === k ? 'ativo' : ''}" data-act="inda-filtro" data-f="${k}">${n}</button>`).join('')}</div></div>
+        <div class="ind-lista" style="margin-top:12px">${vis.map(linha).join('') || '<div class="vazio">Nada por aqui.</div>'}</div></div></div>
+      <div>${rankingHtml(rank, { limite: 15 })}
+      <div class="card"><div class="row-between"><h2>Níveis do mês e prêmios</h2><button class="btn btn-sm" data-act="inda-niveis">${svg('editar', 14)} Editar</button></div><p class="desc">A meta conta as indicações feitas no mês. O prêmio aparece pro mentorado.</p>
+        ${niveis.map(n => `<div class="item-lista"><div class="txt">${esc(n.nome)} · ${n.meta_mes} ${n.meta_mes === 1 ? 'indicação' : 'indicações'}<small>+${n.pontos_bonus} pts${n.premio ? ' · ' + esc(n.premio) : ' · <b style="color:var(--warning-text)">sem prêmio definido</b>'}</small></div></div>`).join('')}</div>
+      <div class="card"><h2>Reposts recentes</h2><p class="desc">Entram valendo. Se algum não for repost de verdade, recuse.</p>
+        ${acoes.map(a => `<div class="item-lista"><div class="txt" style="min-width:0"><a href="${esc(urlSegura(a.link))}" target="_blank" rel="noopener noreferrer" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.link)}</a><small>${esc(nome(a.cliente_id))} · ${esc(tempoAtras(a.created_at))}</small></div>
+          ${a.status === 'valida' ? `<button class="btn btn-sm" data-act="inda-repost" data-id="${a.id}" data-v="recusada">Recusar</button>` : `<button class="btn btn-sm" data-act="inda-repost" data-id="${a.id}" data-v="valida">Validar</button>`}</div>`).join('') || '<div class="vazio" style="padding:8px 0">Nenhum repost ainda.</div>'}</div></div></div>` };
+}
+const indPorId = id => INDA.lista.find(i => i.id === Number(id));
+CHG['inda-status'] = async el => {
+  const i = indPorId(el.dataset.id), st = el.value;
+  if (st === 'fechou' && i.valor_fechado == null) { el.value = i.status; return modalValor(i, true); }
+  const { error } = await sb.from('cli_indicacoes').update({ status: st, atualizado_em: new Date().toISOString() }).eq('id', i.id); if (error) throw error;
+  toast(`Status: ${ST_IND[st]}.`); await render();
+};
+function modalValor(i, fechando) {
+  abrirModal(fechando ? `Fechou! · ${i.nome}` : `Valor fechado · ${i.nome}`, `<form data-sub="inda-valor"><input type="hidden" name="id" value="${i.id}"><input type="hidden" name="fechando" value="${fechando ? 1 : ''}">
+    <div class="campo"><label class="lbl" for="iv-v">Valor da mentoria fechada (R$)</label><input type="number" id="iv-v" required min="0" step="0.01" value="${i.valor_fechado ?? ''}" placeholder="5000"><div class="hint" id="iv-h">O mentorado que indicou recebe 10% desse valor.</div></div>
+    <button class="btn btn-primary" type="submit">${fechando ? 'Marcar como fechada' : 'Salvar'}</button></form>`);
+  $('#iv-v').addEventListener('input', () => { const v = Number($('#iv-v').value) || 0; $('#iv-h').textContent = `O mentorado que indicou recebe ${brl(v * 0.1)} (10%).`; });
+}
+ACT['inda-valor'] = el => modalValor(indPorId(el.dataset.id), false);
+SUB['inda-valor'] = async f => {
+  const v = Number($('#iv-v').value); if (!(v >= 0)) { toast('Valor inválido.', true); return; }
+  const patch = { valor_fechado: v, atualizado_em: new Date().toISOString() }; if (f.fechando.value) patch.status = 'fechou';
+  const { error } = await sb.from('cli_indicacoes').update(patch).eq('id', Number(f.id.value)); if (error) throw error;
+  fecharModal(); toast(f.fechando.value ? 'Fechou! O mentorado vê os 10% na tela dele.' : 'Valor salvo.'); await render();
+};
+ACT['inda-pagar'] = async el => {
+  const i = indPorId(el.dataset.id); if (!confirm(`Confirmar que você pagou ${brl(i.recompensa)} pela indicação de ${i.nome}?`)) return;
+  const { error } = await sb.from('cli_indicacoes').update({ pago_em: new Date().toISOString(), atualizado_em: new Date().toISOString() }).eq('id', i.id); if (error) throw error; toast('Marcado como pago.'); await render();
+};
+ACT['inda-retorno'] = el => { const i = indPorId(el.dataset.id);
+  abrirModal(`Retorno pro mentorado · ${i.nome}`, `<form data-sub="inda-retorno"><input type="hidden" name="id" value="${i.id}"><div class="campo"><label class="lbl" for="ir-t">O que aconteceu com essa indicação</label><textarea id="ir-t" rows="3" maxlength="600" placeholder="Ex: Falei com o João, reunião marcada pra quinta.">${esc(i.retorno || '')}</textarea><div class="hint">Aparece na tela de quem indicou.</div></div><button class="btn btn-primary" type="submit">Salvar</button></form>`); };
+SUB['inda-retorno'] = async f => {
+  const { error } = await sb.from('cli_indicacoes').update({ retorno: $('#ir-t').value.trim() || null, atualizado_em: new Date().toISOString() }).eq('id', Number(f.id.value)); if (error) throw error;
+  fecharModal(); toast('Retorno salvo.'); await render();
+};
+ACT['inda-repost'] = async el => { const { error } = await sb.from('cli_acoes').update({ status: el.dataset.v }).eq('id', el.dataset.id); if (error) throw error; await render(); };
+ACT['inda-niveis'] = () => abrirModal('Níveis do mês e prêmios', `<form data-sub="inda-niveis">${INDA.niveis.map(n => `<div class="grid2" style="grid-template-columns:1fr 90px 90px"><div class="campo"><label class="lbl" for="nv-p-${n.id}">${esc(n.nome)}: prêmio</label><input type="text" id="nv-p-${n.id}" maxlength="200" value="${esc(n.premio || '')}" placeholder="Ex: 1 sessão extra de revisão do perfil"></div>
+    <div class="campo"><label class="lbl" for="nv-m-${n.id}">Meta/mês</label><input type="number" id="nv-m-${n.id}" min="1" max="1000" required value="${n.meta_mes}"></div><div class="campo"><label class="lbl" for="nv-b-${n.id}">Bônus pts</label><input type="number" id="nv-b-${n.id}" min="0" max="100000" required value="${n.pontos_bonus}"></div></div>`).join('')}
+  <button class="btn btn-primary" type="submit">Salvar níveis</button></form>`, true);
+SUB['inda-niveis'] = async () => {
+  const metas = INDA.niveis.map(n => Number($('#nv-m-' + n.id).value)); if (new Set(metas).size !== metas.length) { toast('Cada nível precisa de uma meta diferente.', true); return; }
+  // troca as metas em duas passadas (a meta é única: evita colisão no meio do caminho)
+  for (const [k, n] of INDA.niveis.entries()) { const { error } = await sb.from('cli_indicacao_niveis').update({ meta_mes: 1000 - k }).eq('id', n.id); if (error) throw error; }
+  for (const n of INDA.niveis) { const { error } = await sb.from('cli_indicacao_niveis').update({ premio: $('#nv-p-' + n.id).value.trim() || null, meta_mes: Number($('#nv-m-' + n.id).value), pontos_bonus: Number($('#nv-b-' + n.id).value) || 0 }).eq('id', n.id); if (error) throw error; }
+  fecharModal(); toast('Níveis salvos.'); await render();
+};
+
+/* ---------- sino ---------- */
+async function notifsIndicacaoAdmin(out, nomeDe) {
+  const desde = new Date(Date.now() - 7 * 864e5).toISOString();
+  const r = await q(sb.from('cli_indicacoes').select('id,cliente_id,nome,created_at').eq('status', 'nova').gte('created_at', desde).order('created_at', { ascending: false }).limit(20));
+  S.contIndicacoes = (await q(sb.from('cli_indicacoes').select('id').eq('status', 'nova'))).length;
+  r.forEach(i => out.push({ chave: `ind-${i.id}-nova`, sec: 'Indicações', titulo: `${nomeDe(i.cliente_id)} indicou alguém`, desc: i.nome, quando: new Date(i.created_at), href: '#/admin/indicacoes' }));
+}
+async function notifsIndicacaoCliente(out, clienteId) {
+  const desde = new Date(Date.now() - 14 * 864e5).toISOString();
+  const r = await q(sb.from('cli_indicacoes').select('id,nome,status,atualizado_em,pago_em').eq('cliente_id', clienteId).neq('status', 'nova').gte('atualizado_em', desde));
+  const T = { contato: 'O Igor já está falando com', reuniao: 'Reunião marcada com', fechou: 'Fechou! 10% pra você pela indicação de', perdida: 'Não fechou desta vez:' };
+  r.forEach(i => out.push({ chave: `ind-${i.id}-${i.status}${i.pago_em ? '-pago' : ''}`, sec: 'Indicações', titulo: i.pago_em ? 'Sua recompensa foi paga' : `${T[i.status]} ${i.nome}`, desc: i.pago_em ? `Indicação de ${i.nome}` : '', quando: new Date(i.atualizado_em), href: '#/indicacoes' }));
+}
+
+/* =====================================================================
    REGISTRO DE TELAS + partida (sempre o último arquivo)
    ===================================================================== */
-const VIEWS_CLIENTE = { inicio: vInicio, plano: vPlano, posts: vPosts, calendario: vCalendario, drive: vDrive, tutorial: vTutorial };
-const VIEWS_ADMIN = { dashboard: vDashboard, aprovacoes: vAprovacoes, post: vPostAdmin, mentorados: vMentorados, mentorado: vMentorado, modelos: vModelos, modelo: vModelo, lancamento: vLancamento, config: vConfig };
+const VIEWS_CLIENTE = { inicio: vInicio, plano: vPlano, posts: vPosts, calendario: vCalendario, drive: vDrive, tutorial: vTutorial, aulas: vAulas, eventos: vEventos, indicacoes: vIndicacoes };
+const VIEWS_ADMIN = { dashboard: vDashboard, aprovacoes: vAprovacoes, post: vPostAdmin, mentorados: vMentorados, mentorado: vMentorado, modelos: vModelos, modelo: vModelo, lancamento: vLancamento, config: vConfig, aulas: vAdminAulas, eventos: vAdminEventos, indicacoes: vAdminIndicacoes };
 boot();
 
 </script>
