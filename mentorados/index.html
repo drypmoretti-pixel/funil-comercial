@@ -760,7 +760,10 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .nv-ouro .ind-medalha{background:linear-gradient(135deg,#F0C75E,#B8860B)}.nv-diamante .ind-medalha{background:linear-gradient(135deg,#7FD4F5,#2F7FB8)}
 .ind-nivel:not(.ok) .ind-medalha{opacity:.45}
 .ind-nivel.ok{border-color:rgba(0,142,67,.45);background:var(--destaque-bg)}
-.ind-premio{display:block;margin-top:6px;font-size:.72rem;font-weight:700;color:var(--accent-deep)}
+.ind-premio{display:block;margin-top:6px;font-size:.76rem;font-weight:700;color:var(--accent-deep)}
+.ind-conquistado{display:inline-block;margin-top:7px;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;background:var(--accent-fill);color:#fff;border-radius:99px;padding:2px 8px}
+.ind-trilha-cab .kicker{margin-bottom:3px}
+.ind-niveis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .ind-lista{display:flex;flex-direction:column;gap:10px;margin-top:10px}
 .ind-item,.inda-item{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface-2)}
 .ind-nome{display:block;font-family:var(--f-title);font-size:.96rem}
@@ -800,7 +803,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .adm-aula-th img{width:100%;height:100%;object-fit:cover}
 .adm-aula-tx{min-width:0;flex:1}.adm-aula-tx b{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.adm-aula-tx small{color:var(--muted);font-size:.74rem}
 .menu-movel{display:none}
-@media (max-width:1100px){.cine-aula-grid{grid-template-columns:1fr}.cine-eps{max-height:none}.ind-niveis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1100px){.cine-aula-grid{grid-template-columns:1fr}.cine-eps{max-height:none}}
 @media (max-width:780px){
   .nav-item[data-to="tutorial"],.nav-item[data-to="calendario"],.nav-item[data-to="eventos"],.nav-item[data-to="modelos"]{display:none}
   .menu-movel:not([hidden]){display:block}
@@ -808,7 +811,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
   .cine-setas{display:none}.cine-curso{width:100%}.cine-aula{padding:14px 12px 18px}
   .ev-hero{padding:22px 18px}.ev-cont{min-width:0;flex-direction:row;gap:8px;padding:10px 14px}.ev-cont b{font-size:1.8rem}
   .ev-item{flex-wrap:wrap}.ev-item-bt{width:100%;justify-content:flex-start;padding-left:66px}
-  .ind-regras{grid-template-columns:1fr}.ind-niveis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ind-regras{grid-template-columns:1fr}.ind-niveis{grid-template-columns:1fr}
 }
 
 .tut-check{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
@@ -3328,7 +3331,7 @@ const TOUR_PASSOS = [
   { rota: 'plano', alvo: ['.pi-more', '.plano-cab', '#view .card'], lado: 'baixo', titulo: 'O plano é um manual de instruções', texto: 'Cada item tem **“Ver o passo a passo”**: como fazer, o que entregar e quanto tempo leva. Marcou, a barra anda.\nDá pra exportar o plano em PDF. Sim, até a tarefa que você ia adiar tem manual.' },
   { rota: 'aulas', alvo: ['.cine-hero', '.cine'], lado: 'baixo', titulo: 'Aulas: a sua Netflix do método', texto: 'As aulas gravadas do funil, em módulos. O portal lembra **onde você parou** e marca a aula como assistida quando você chega no fim.\nPipoca opcional, anotação obrigatória.' },
   { rota: 'eventos', alvo: ['.ev-hero'], lado: 'baixo', titulo: 'Eventos: nunca mais “qual era o link mesmo?”', texto: 'O próximo encontro com **contagem regressiva**, o botão de entrar na sala e o de salvar na sua agenda.\nPassou o encontro? A gravação aparece aqui.' },
-  { rota: 'indicacoes', alvo: ['.ind-hero'], lado: 'baixo', titulo: 'Indique e ganhe 10%', texto: 'Indicou alguém e fechou? **10% da mentoria é seu.** Cada indicação, reunião e repost vale pontos no ranking do mês.\nSim, dá pra ganhar dinheiro sendo gente boa.' },
+  { rota: 'indicacoes', alvo: ['.ind-hero'], lado: 'baixo', titulo: 'Indique e ganhe 10%', texto: 'Indicou alguém e fechou? **10% da mentoria é seu.** Com 2, 5 e 8 vendas indicadas você sobe pra Bronze, Prata e Ouro: encontros extras, mês extra e até **6 meses de mentoria grátis**.\nIndicação, reunião e repost também valem pontos no ranking.' },
   { rota: 'drive', alvo: ['.dr-pastas', '.dr-doc'], lado: 'baixo', titulo: 'O Drive: sua pasta com chave', texto: 'Prints, materiais, vídeos. Só você e o Igor enxergam.\nSe o Igor pedir um material, ele aparece no Início em “O que falta você me enviar”.' },
   { rota: 'inicio', alvo: '.topbar .tema-btn', lado: 'baixo', titulo: 'Modo escuro: pra quem trabalha de madrugada', texto: 'O botão lua/sol troca o tema e a escolha fica salva. Seus olhos (e o seu sono) agradecem.' },
   { rota: 'inicio', alvo: '#userchip', abre: 'menu', lado: 'esquerda', titulo: 'Seu menu: senha, tour e tutorial', texto: 'Aqui você **troca a senha** (recomendo trocar a que veio na mensagem), revê este tour e abre o vídeo “Como funciona” quando quiser.' },
@@ -3958,7 +3961,8 @@ ACT['ev-virar-aula'] = async el => {
 /* =====================================================================
    PROGRAMA DE INDICAÇÃO — indica, ganha pontos, sobe no ranking; fechou, recebe 10% da mentoria.
    Pontos (a conta oficial mora na RPC cli_ranking_indicacao; aqui é só a vitrine das regras):
-   indicação 10 · virou reunião +20 · fechou +100 · repost do conteúdo do Igor 3 (até 20 por mês) · bônus do nível do mês.
+   indicação 10 · virou reunião +20 · fechou +100 · repost do conteúdo do Igor 3 (até 20 por mês).
+   Níveis (prêmio, não ponto) contam as VENDAS fechadas por indicação, somadas desde o início: Bronze 2 · Prata 5 · Ouro 8.
    ===================================================================== */
 const PONTOS = { indicacao: 10, reuniao: 20, fechou: 100, repost: 3, repostMes: 20 };
 const ST_IND = { nova: 'Recebida', contato: 'Em contato', reuniao: 'Reunião marcada', fechou: 'Fechou', perdida: 'Não fechou' };
@@ -3971,17 +3975,20 @@ const waLink = tel => { let d = String(tel || '').replace(/\D/g, ''); if (d.leng
 let IND = { periodo: 'mes' };
 ACT['ind-periodo'] = el => { IND.periodo = el.dataset.p; render(); };
 
-function nivelDoMes(n, niveis) {
-  const ord = [...niveis].sort((a, b) => a.meta_mes - b.meta_mes);
-  const atual = [...ord].reverse().find(x => n >= x.meta_mes) || null, prox = ord.find(x => n < x.meta_mes) || null;
+function nivelPorVendas(n, niveis) {
+  const ord = [...niveis].sort((a, b) => a.meta_vendas - b.meta_vendas);
+  const atual = [...ord].reverse().find(x => n >= x.meta_vendas) || null, prox = ord.find(x => n < x.meta_vendas) || null;
   return { atual, prox, ord };
 }
+const vendasTxt = n => `${n} ${n === 1 ? 'venda' : 'vendas'}`;
 function trilhaNiveis(n, niveis) {
-  const { atual, prox, ord } = nivelDoMes(n, niveis); if (!ord.length) return '';
-  const max = ord[ord.length - 1].meta_mes, pos = v => Math.min(100, v / max * 100);
-  return `<div class="ind-trilha"><div class="ind-trilha-cab"><b>${atual ? `Nível ${esc(atual.nome)}` : 'Sem nível ainda'} em ${esc(nomeMes())}</b><span>${prox ? `faltam ${prox.meta_mes - n} ${prox.meta_mes - n === 1 ? 'indicação' : 'indicações'} para ${esc(prox.nome)}` : 'nível máximo do mês. Lenda.'}</span></div>
-    <div class="ind-barra"><i style="width:${pos(n)}%"></i>${ord.map(x => `<span class="ind-marco ${n >= x.meta_mes ? 'ok' : ''}" style="left:${pos(x.meta_mes)}%"><em>${esc(x.nome)}</em><small>${x.meta_mes}</small></span>`).join('')}</div>
-    <div class="ind-niveis">${ord.map(x => `<div class="ind-nivel ${n >= x.meta_mes ? 'ok' : ''} nv-${esc(x.nome.toLowerCase())}"><div class="ind-medalha">${n >= x.meta_mes ? svg('check', 14) : x.meta_mes}</div><b>${esc(x.nome)}</b><small>${x.meta_mes} ${x.meta_mes === 1 ? 'indicação' : 'indicações'} no mês · +${x.pontos_bonus} pts</small>${x.premio ? `<span class="ind-premio">${esc(x.premio)}</span>` : ''}</div>`).join('')}</div></div>`;
+  const { atual, prox, ord } = nivelPorVendas(n, niveis); if (!ord.length) return '';
+  const max = ord[ord.length - 1].meta_vendas, pos = v => Math.min(100, v / max * 100);
+  return `<div class="ind-trilha"><div class="ind-trilha-cab"><div><div class="kicker">Prêmios por vendas indicadas</div><b>${atual ? `Você é ${esc(atual.nome)}` : 'Sua primeira venda indicada está a uma indicação de distância'}</b></div>
+      <span>${prox ? `${n ? `${vendasTxt(n)} até agora · ` : ''}faltam <b>${vendasTxt(prox.meta_vendas - n)}</b> para ${esc(prox.nome)}` : 'nível máximo. Lenda.'}</span></div>
+    <div class="ind-barra"><i style="width:${pos(n)}%"></i>${ord.map(x => `<span class="ind-marco ${n >= x.meta_vendas ? 'ok' : ''}" style="left:${pos(x.meta_vendas)}%"><em>${esc(x.nome)}</em><small>${x.meta_vendas}</small></span>`).join('')}</div>
+    <div class="ind-niveis">${ord.map(x => `<div class="ind-nivel ${n >= x.meta_vendas ? 'ok' : ''} nv-${esc(x.nome.toLowerCase())}"><div class="ind-medalha">${n >= x.meta_vendas ? svg('check', 14) : x.meta_vendas}</div><b>${esc(x.nome)}</b><small>${esc(vendasTxt(x.meta_vendas))} fechadas por indicação</small>${x.premio ? `<span class="ind-premio">${esc(x.premio)}</span>` : ''}${n >= x.meta_vendas ? '<span class="ind-conquistado">conquistado</span>' : ''}</div>`).join('')}</div>
+    <p class="hint" style="margin-top:12px">Conta toda indicação sua que virou mentoria, desde o começo do programa. E cada uma ainda te paga 10%.</p></div>`;
 }
 function rankingHtml(rank, opt = {}) {
   const lista = rank.filter(r => r.pontos > 0 || r.eu), top = lista.slice(0, opt.limite || 10), eu = lista.find(r => r.eu), posEu = eu ? lista.indexOf(eu) + 1 : 0;
@@ -3994,14 +4001,14 @@ function rankingHtml(rank, opt = {}) {
 const regrasHtml = () => `<div class="card"><h2>Como ganhar pontos</h2><div class="ind-regras">
   <div><b>+${PONTOS.indicacao}</b><span>cada indicação</span></div><div><b>+${PONTOS.reuniao}</b><span>se ela virar reunião</span></div>
   <div><b>+${PONTOS.fechou}</b><span>se fechar a mentoria <em>e você recebe 10% do valor</em></span></div><div><b>+${PONTOS.repost}</b><span>cada repost de um conteúdo do Igor (até ${PONTOS.repostMes} por mês)</span></div></div>
-  <p class="hint" style="margin-top:10px">Bater a meta de indicações do mês dá bônus de nível. Telefone que já tinha sido indicado vale pra quem indicou primeiro.</p></div>`;
+  <p class="hint" style="margin-top:10px">Os pontos valem pro ranking. Os prêmios (Bronze, Prata e Ouro) vêm das vendas fechadas. Telefone que já tinha sido indicado vale pra quem indicou primeiro.</p></div>`;
 
 async function vIndicacoes(ctx) {
   const ro = ctx.modo === 'preview';
   const [inds, acoes, niveis, rank] = await Promise.all([
     q(sb.from('cli_indicacoes').select('*').eq('cliente_id', ctx.clienteId).order('created_at', { ascending: false })),
     q(sb.from('cli_acoes').select('*').eq('cliente_id', ctx.clienteId).order('created_at', { ascending: false }).limit(50)),
-    q(sb.from('cli_indicacao_niveis').select('*').order('meta_mes')),
+    q(sb.from('cli_indicacao_niveis').select('*').order('meta_vendas')),
     rpc('cli_ranking_indicacao', { p_periodo: IND.periodo })]);
   const rankMes = IND.periodo === 'mes' ? rank : await rpc('cli_ranking_indicacao', { p_periodo: 'mes' });
   // no "ver como mentorado" o "eu" da RPC é o admin: marca o mentorado visto
@@ -4025,7 +4032,7 @@ async function vIndicacoes(ctx) {
     ${i.status === 'nova' && !ro ? `<button class="btn-link" style="margin-top:8px;font-size:.8rem" data-act="ind-cancelar" data-id="${i.id}">cancelar indicação</button>` : ''}</div>`;
   const repMes = acoes.filter(a => new Date(a.created_at) >= ini && a.status === 'valida').length;
   return { kicker: 'Indique e ganhe', titulo: 'Indicações', refrescavel: false,
-    html: `${hero}<div class="dash"><div>${trilhaNiveis(doMes, niveis) ? `<div class="card">${trilhaNiveis(doMes, niveis)}</div>` : ''}
+    html: `${hero}<div class="dash"><div>${trilhaNiveis(inds.filter(i => i.status === 'fechou').length, niveis) ? `<div class="card">${trilhaNiveis(inds.filter(i => i.status === 'fechou').length, niveis)}</div>` : ''}
       <div class="card"><div class="row-between"><h2>Suas indicações</h2>${ro ? '' : `<button class="btn btn-primary btn-sm" data-act="ind-nova">${svg('mais', 14)} Indicar</button>`}</div>
         <div class="ind-lista">${inds.length ? inds.map(cardInd).join('') : '<div class="vazio"><b>Nenhuma indicação ainda.</b><br>Pensa em 3 pessoas que reclamam que não conseguem cliente pelo LinkedIn. Pronto: são as suas 3 primeiras.</div>'}</div></div></div>
       <div>${rankingHtml(rank)}${regrasHtml()}
@@ -4064,11 +4071,13 @@ async function vAdminIndicacoes() {
   const [inds, acoes, niveis, rank, cls] = await Promise.all([
     paginado(() => sb.from('cli_indicacoes').select('*').order('created_at', { ascending: false })),
     q(sb.from('cli_acoes').select('*').order('created_at', { ascending: false }).limit(30)),
-    q(sb.from('cli_indicacao_niveis').select('*').order('meta_mes')), rpc('cli_ranking_indicacao', { p_periodo: IND.periodo }), clientes()]);
+    q(sb.from('cli_indicacao_niveis').select('*').order('meta_vendas')), rpc('cli_ranking_indicacao', { p_periodo: IND.periodo }), clientes()]);
   INDA.lista = inds; INDA.niveis = niveis;
   const nome = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado', ini = inicioMes();
   const abertas = inds.filter(i => ['nova', 'contato', 'reuniao'].includes(i.status)), fech = inds.filter(i => i.status === 'fechou');
   const receita = fech.reduce((s, i) => s + Number(i.valor_fechado || 0), 0), aPagar = fech.filter(i => !i.pago_em).reduce((s, i) => s + Number(i.recompensa || 0), 0);
+  const vendasPor = {}; fech.forEach(i => { vendasPor[i.cliente_id] = (vendasPor[i.cliente_id] || 0) + 1; });
+  const conquistas = Object.entries(vendasPor).map(([c, n]) => ({ cli: Number(c), n, nivel: nivelPorVendas(n, niveis).atual })).filter(x => x.nivel).sort((a, b) => b.n - a.n);
   const vis = INDA.filtro === 'abertas' ? abertas : INDA.filtro === 'fechou' ? fech : INDA.filtro === 'perdida' ? inds.filter(i => i.status === 'perdida') : inds;
   const linha = i => `<div class="inda-item ${i.status}"><div class="inda-topo"><div style="min-width:0"><b>${esc(i.nome)}</b>${i.duplicada ? ' <span class="chip alerta sem-dot">telefone repetido</span>' : ''}
         <small>${esc([i.empresa, 'indicado por ' + nome(i.cliente_id), tempoAtras(i.created_at)].filter(Boolean).join(' · '))}</small></div>
@@ -4084,8 +4093,9 @@ async function vAdminIndicacoes() {
       <div class="dash"><div><div class="card"><div class="row-between"><h2>Indicações</h2><div class="chips-filtro" style="margin:0">${[['abertas', `Em andamento (${abertas.length})`], ['fechou', `Fecharam (${fech.length})`], ['perdida', 'Não fecharam'], ['todas', 'Todas']].map(([k, n]) => `<button class="chip-btn ${INDA.filtro === k ? 'ativo' : ''}" data-act="inda-filtro" data-f="${k}">${n}</button>`).join('')}</div></div>
         <div class="ind-lista" style="margin-top:12px">${vis.map(linha).join('') || '<div class="vazio">Nada por aqui.</div>'}</div></div></div>
       <div>${rankingHtml(rank, { limite: 15 })}
-      <div class="card"><div class="row-between"><h2>Níveis do mês e prêmios</h2><button class="btn btn-sm" data-act="inda-niveis">${svg('editar', 14)} Editar</button></div><p class="desc">A meta conta as indicações feitas no mês. O prêmio aparece pro mentorado.</p>
-        ${niveis.map(n => `<div class="item-lista"><div class="txt">${esc(n.nome)} · ${n.meta_mes} ${n.meta_mes === 1 ? 'indicação' : 'indicações'}<small>+${n.pontos_bonus} pts${n.premio ? ' · ' + esc(n.premio) : ' · <b style="color:var(--warning-text)">sem prêmio definido</b>'}</small></div></div>`).join('')}</div>
+      ${conquistas.length ? `<div class="card destaque"><h2>Prêmios conquistados</h2><p class="desc">Quem bateu um nível. É você quem entrega o prêmio.</p>${conquistas.map(x => `<div class="item-lista"><div class="txt">${esc(nome(x.cli))}<small>${esc(vendasTxt(x.n))} fechadas por indicação · ${esc(x.nivel.premio || 'prêmio a definir')}</small></div><span class="chip ok sem-dot nv-chip nv-${esc(x.nivel.nome.toLowerCase())}">${esc(x.nivel.nome)}</span></div>`).join('')}</div>` : ''}
+      <div class="card"><div class="row-between"><h2>Níveis e prêmios</h2><button class="btn btn-sm" data-act="inda-niveis">${svg('editar', 14)} Editar</button></div><p class="desc">Contam as vendas fechadas por indicação, somadas desde o início. O prêmio aparece pro mentorado.</p>
+        ${niveis.map(n => `<div class="item-lista"><div class="txt">${esc(n.nome)} · ${esc(vendasTxt(n.meta_vendas))}<small>${n.premio ? esc(n.premio) : '<b style="color:var(--warning-text)">sem prêmio definido</b>'}</small></div></div>`).join('')}</div>
       <div class="card"><h2>Reposts recentes</h2><p class="desc">Entram valendo. Se algum não for repost de verdade, recuse.</p>
         ${acoes.map(a => `<div class="item-lista"><div class="txt" style="min-width:0"><a href="${esc(urlSegura(a.link))}" target="_blank" rel="noopener noreferrer" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.link)}</a><small>${esc(nome(a.cliente_id))} · ${esc(tempoAtras(a.created_at))}</small></div>
           ${a.status === 'valida' ? `<button class="btn btn-sm" data-act="inda-repost" data-id="${a.id}" data-v="recusada">Recusar</button>` : `<button class="btn btn-sm" data-act="inda-repost" data-id="${a.id}" data-v="valida">Validar</button>`}</div>`).join('') || '<div class="vazio" style="padding:8px 0">Nenhum repost ainda.</div>'}</div></div></div>` };
@@ -4121,14 +4131,14 @@ SUB['inda-retorno'] = async f => {
   fecharModal(); toast('Retorno salvo.'); await render();
 };
 ACT['inda-repost'] = async el => { const { error } = await sb.from('cli_acoes').update({ status: el.dataset.v }).eq('id', el.dataset.id); if (error) throw error; await render(); };
-ACT['inda-niveis'] = () => abrirModal('Níveis do mês e prêmios', `<form data-sub="inda-niveis">${INDA.niveis.map(n => `<div class="grid2" style="grid-template-columns:1fr 90px 90px"><div class="campo"><label class="lbl" for="nv-p-${n.id}">${esc(n.nome)}: prêmio</label><input type="text" id="nv-p-${n.id}" maxlength="200" value="${esc(n.premio || '')}" placeholder="Ex: 1 sessão extra de revisão do perfil"></div>
-    <div class="campo"><label class="lbl" for="nv-m-${n.id}">Meta/mês</label><input type="number" id="nv-m-${n.id}" min="1" max="1000" required value="${n.meta_mes}"></div><div class="campo"><label class="lbl" for="nv-b-${n.id}">Bônus pts</label><input type="number" id="nv-b-${n.id}" min="0" max="100000" required value="${n.pontos_bonus}"></div></div>`).join('')}
+ACT['inda-niveis'] = () => abrirModal('Níveis e prêmios', `<form data-sub="inda-niveis"><p class="desc">Meta = vendas fechadas por indicação, somadas desde o início do programa.</p>${INDA.niveis.map(n => `<div class="grid2" style="grid-template-columns:1fr 110px"><div class="campo"><label class="lbl" for="nv-p-${n.id}">${esc(n.nome)}: prêmio</label><input type="text" id="nv-p-${n.id}" maxlength="200" value="${esc(n.premio || '')}" placeholder="Ex: 2 encontros extras comigo"></div>
+    <div class="campo"><label class="lbl" for="nv-m-${n.id}">Vendas</label><input type="number" id="nv-m-${n.id}" min="1" max="1000" required value="${n.meta_vendas}"></div></div>`).join('')}
   <button class="btn btn-primary" type="submit">Salvar níveis</button></form>`, true);
 SUB['inda-niveis'] = async () => {
   const metas = INDA.niveis.map(n => Number($('#nv-m-' + n.id).value)); if (new Set(metas).size !== metas.length) { toast('Cada nível precisa de uma meta diferente.', true); return; }
   // troca as metas em duas passadas (a meta é única: evita colisão no meio do caminho)
-  for (const [k, n] of INDA.niveis.entries()) { const { error } = await sb.from('cli_indicacao_niveis').update({ meta_mes: 1000 - k }).eq('id', n.id); if (error) throw error; }
-  for (const n of INDA.niveis) { const { error } = await sb.from('cli_indicacao_niveis').update({ premio: $('#nv-p-' + n.id).value.trim() || null, meta_mes: Number($('#nv-m-' + n.id).value), pontos_bonus: Number($('#nv-b-' + n.id).value) || 0 }).eq('id', n.id); if (error) throw error; }
+  for (const [k, n] of INDA.niveis.entries()) { const { error } = await sb.from('cli_indicacao_niveis').update({ meta_vendas: 1000 - k }).eq('id', n.id); if (error) throw error; }
+  for (const n of INDA.niveis) { const { error } = await sb.from('cli_indicacao_niveis').update({ premio: $('#nv-p-' + n.id).value.trim() || null, meta_vendas: Number($('#nv-m-' + n.id).value) }).eq('id', n.id); if (error) throw error; }
   fecharModal(); toast('Níveis salvos.'); await render();
 };
 
