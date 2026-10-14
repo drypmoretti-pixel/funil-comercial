@@ -432,6 +432,59 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .hero-metrics span{display:block;font-family:var(--f-mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.58);margin-top:3px}
 .hero .bar{background:rgba(255,255,255,.14);margin-top:9px;height:6px}
 .hero .bar > i{background:var(--accent-light)}
+/* ---------- Aprovações: fila em cartões + pipeline ---------- */
+.apv-hero-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.apv-hero-btn{background:#fff;color:#0F1A14;border-color:transparent;font-weight:800;box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+.apv-hero-btn:hover{background:#E3F1E8}
+.apv-metrics{grid-template-columns:repeat(4,1fr)}
+.apv-sec-cab{display:flex;align-items:baseline;gap:4px 10px;flex-wrap:wrap;margin:22px 2px 12px}
+.apv-sec-cab h2{font-size:1.02rem}.apv-sec-cab .muted{font-size:.8rem}
+.apv-fila{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:14px}
+.apv-card{display:flex;flex-direction:column;gap:12px;text-decoration:none;color:inherit;background:var(--surface-1);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--sombra-1);transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;position:relative;min-width:0}
+.apv-card:hover{transform:translateY(-2px);box-shadow:var(--sombra-3);border-color:rgba(0,142,67,.45)}
+.apv-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.apv-card.primeiro{border-color:rgba(0,142,67,.45);background:linear-gradient(180deg,var(--destaque-bg),var(--surface-1) 60%);box-shadow:0 0 0 3px var(--accent-glow),var(--sombra-1)}
+.apv-topo{display:flex;align-items:center;gap:10px;min-width:0}
+.apv-pos{font-size:.66rem;font-weight:700;color:var(--muted);letter-spacing:.06em;font-family:var(--f-mono)}
+.apv-av{flex:0 0 auto;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--accent-wash);color:var(--on-wash);font-family:var(--f-title);font-weight:800;font-size:.78rem;border:1px solid rgba(0,142,67,.25)}
+.apv-av.sm{width:30px;height:30px;font-size:.68rem}
+.apv-quem{min-width:0;flex:1}
+.apv-quem b{display:block;font-family:var(--f-title);font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.apv-quem small{display:block;color:var(--muted);font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.apv-espera{gap:4px}.apv-espera::before{display:none}.apv-espera svg{flex:0 0 auto}
+.apv-corpo{display:flex;gap:14px;align-items:flex-start;min-width:0}
+.apv-txt{min-width:0;flex:1}
+.apv-txt h3{font-size:1rem;font-weight:800;line-height:1.3;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.apv-txt p{color:var(--text-secondary);font-size:.84rem;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.apv-thumb{flex:0 0 88px;width:88px;height:88px;border-radius:12px;overflow:hidden;position:relative;background:var(--field-bg);border:1px solid var(--line)}
+.apv-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.apv-thumb span{position:absolute;right:5px;bottom:5px;background:rgba(15,26,20,.82);color:#fff;font-size:.66rem;font-weight:800;border-radius:99px;padding:1px 7px}
+.apv-thumb-ic{display:flex;align-items:center;justify-content:center}
+.apv-thumb-ic b{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;color:var(--muted)}
+.apv-rodape{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--grid);padding-top:11px;margin-top:auto}
+.apv-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-width:0}
+.apv-n{font-size:.72rem;color:var(--muted)}
+.apv-cta{display:inline-flex;align-items:center;gap:3px;font-family:var(--f-title);font-weight:800;font-size:.84rem;color:var(--accent-deep);white-space:nowrap;transition:gap .16s ease}
+.apv-card:hover .apv-cta{gap:7px}
+.apv-zerada{text-align:center;padding:30px 20px}
+.apv-zerada-ic{width:52px;height:52px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;background:var(--accent-wash);color:var(--accent-deep)}
+.apv-pipe{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start;margin-bottom:16px}
+.apv-col{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:14px 12px 10px;min-width:0}
+.apv-col-cab{display:flex;align-items:center;gap:8px;padding:0 4px}
+.apv-col-cab h3{font-size:.86rem;flex:1;min-width:0}
+.apv-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.apv-col.aprovado .apv-dot{background:var(--st-aprovado-tx)}.apv-col.ajustes .apv-dot{background:var(--st-ajustes-tx)}.apv-col.publicado .apv-dot{background:var(--st-publicado-tx)}
+.apv-col-n{font-size:.74rem;font-weight:700;border-radius:99px;padding:1px 9px}
+.apv-col.aprovado .apv-col-n{background:var(--st-aprovado-bg);color:var(--st-aprovado-tx)}.apv-col.ajustes .apv-col-n{background:var(--st-ajustes-bg);color:var(--st-ajustes-tx)}.apv-col.publicado .apv-col-n{background:var(--st-publicado-bg);color:var(--st-publicado-tx)}
+.apv-col-ajuda{font-size:.74rem;color:var(--muted);margin:4px 4px 10px}
+.apv-mini{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--surface-1);border:1px solid var(--grid);text-decoration:none;color:inherit;margin-bottom:8px;transition:border-color .15s ease,box-shadow .15s ease}
+.apv-mini:hover{border-color:rgba(0,142,67,.4);box-shadow:var(--sombra-2)}
+.apv-mini-tx{min-width:0;flex:1}
+.apv-mini-tx b{display:block;font-size:.84rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.apv-mini-tx small{display:block;font-size:.72rem;color:var(--muted)}
+.apv-col-vazio{font-size:.8rem;color:var(--muted);text-align:center;padding:14px 0 12px}
+@media (max-width:1100px){.apv-pipe{grid-template-columns:1fr}}
+@media (max-width:780px){.apv-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.apv-fila{grid-template-columns:minmax(0,1fr)}.apv-espera{font-size:.68rem;padding:3px 8px}.apv-thumb{flex-basis:68px;width:68px;height:68px}.apv-hero-btn{width:100%}.apv-card{padding:14px}}
 .dash{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
 .dash > div{display:flex;flex-direction:column;gap:16px;min-width:0}
 .dash .card{margin-bottom:0}
@@ -1718,24 +1771,73 @@ async function vPostAdmin(ctx) {
   const p = await carregarPost(ctx.args[0]); if (!p) throw new Error('Post não encontrado.');
   return detalhePost({ ...ctx, clienteId: p.cliente_id }, p);
 }
+// fila de aprovação: cabeçalho com o pulso da fila + cartões dos que esperam + pipeline do resto
+const horasDesde = ts => ts ? (Date.now() - new Date(ts).getTime()) / 36e5 : 0;
+const fmtDuracao = h => { if (h < 1) return `${Math.max(1, Math.round(h * 60))} min`; if (h < 24) return `${Math.round(h)} h`; const d = Math.round(h / 24); return d === 1 ? '1 dia' : `${d} dias`; };
+const nivelEspera = h => h >= 48 ? 'critico' : h >= 24 ? 'alerta' : 'neutro';
+const corpoPrevia = p => { const linhas = (p.texto || '').split('\n').map(l => l.trim()).filter(Boolean); return (p.titulo ? linhas : linhas.slice(1)).join(' ').slice(0, 320); };
 async function vAprovacoes() {
   const [posts, cls] = await Promise.all([
-    paginado(() => sb.from('cli_posts').select('id,cliente_id,titulo,texto,status,versao,enviado_em,decidido_em,publicado_em').neq('status', 'rascunho').order('id', { ascending: false })), clientes()]);
-  const nome = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
-  const linha = (p, extra) => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/post/${p.id}"><div class="txt">${esc(postTitulo(p))}
-    <small>${esc(nome(p.cliente_id))}${p.versao > 1 ? ` · versão ${p.versao}` : ''} · ${esc(extra)}</small></div>${chipSt(p.status)}</a>`;
+    paginado(() => sb.from('cli_posts').select('id,cliente_id,titulo,texto,status,versao,data_prevista,enviado_em,decidido_em,publicado_em').neq('status', 'rascunho').order('id', { ascending: false })), clientes()]);
+  const cliDe = id => cls.find(c => c.id === id) || { nome: 'Mentorado' };
   const ag = posts.filter(p => p.status === 'aguardando').sort((a, b) => new Date(a.enviado_em) - new Date(b.enviado_em));
-  const ap = posts.filter(p => p.status === 'aprovado'), aj = posts.filter(p => p.status === 'ajustes');
-  const pub = posts.filter(p => p.status === 'publicado').slice(0, 10);
-  return { kicker: 'Fila de aprovação', titulo: 'Aprovações',
-    html: `<div class="card ${ag.length ? 'destaque' : ''}"><div class="row-between"><h2>Aguardando sua decisão</h2><span class="chip aguardando">${ag.length}</span></div><p class="desc">Do mais antigo pro mais novo. Quem espera mais, posta menos.</p>
-      ${ag.length ? ag.map(p => linha(p, 'enviado ' + tempoAtras(p.enviado_em))).join('') : '<div class="vazio">Nada esperando por você.</div>'}
-      ${ag.length ? `<div style="margin-top:12px"><a class="btn btn-primary btn-sm" href="#/admin/post/${ag[0].id}">Revisar o primeiro da fila</a></div>` : ''}</div>
-      <div class="card"><div class="row-between"><h2>Aprovados, esperando publicar</h2><span class="chip aprovado">${ap.length}</span></div>
-      ${ap.length ? ap.map(p => linha(p, 'aprovado ' + tempoAtras(p.decidido_em))).join('') : '<div class="vazio">Nenhum.</div>'}</div>
-      <div class="card"><div class="row-between"><h2>Com o mentorado ajustando</h2><span class="chip ajustes">${aj.length}</span></div>
-      ${aj.length ? aj.map(p => linha(p, 'ajustes pedidos ' + tempoAtras(p.decidido_em))).join('') : '<div class="vazio">Nenhum.</div>'}</div>
-      <div class="card"><h2>Publicados recentemente</h2>${pub.length ? pub.map(p => linha(p, 'publicado ' + tempoAtras(p.publicado_em))).join('') : '<div class="vazio">Nenhum ainda.</div>'}</div>` };
+  const ap = posts.filter(p => p.status === 'aprovado').sort((a, b) => new Date(a.decidido_em) - new Date(b.decidido_em));
+  const aj = posts.filter(p => p.status === 'ajustes').sort((a, b) => new Date(b.decidido_em) - new Date(a.decidido_em));
+  const desde30 = Date.now() - 30 * 864e5;
+  const pub30 = posts.filter(p => p.status === 'publicado' && p.publicado_em && new Date(p.publicado_em) >= desde30);
+  const pub = posts.filter(p => p.status === 'publicado').sort((a, b) => new Date(b.publicado_em) - new Date(a.publicado_em)).slice(0, 8);
+  // tempo de resposta: do último envio até a decisão, nos últimos 30 dias
+  const resp = posts.filter(p => p.enviado_em && p.decidido_em && new Date(p.decidido_em) >= desde30 && new Date(p.decidido_em) > new Date(p.enviado_em)).map(p => (new Date(p.decidido_em) - new Date(p.enviado_em)) / 36e5).sort((a, b) => a - b);
+  const mediana = resp.length ? resp[Math.floor(resp.length / 2)] : null;
+
+  // anexos dos que esperam: miniatura da primeira imagem + contagem por tipo
+  const anexos = ag.length ? await q(sb.from('cli_arquivos').select('post_id,path,nome,mime').in('post_id', ag.map(p => p.id)).order('id')) : [];
+  const imgs = ag.map(p => anexos.find(a => a.post_id === p.id && tipoMidia(a) === 'img')).filter(Boolean);
+  const faltam = imgs.filter(a => !urlCache(PREV.urls, a.path)).map(a => a.path);
+  if (faltam.length) { try { const { data } = await sb.storage.from(BUCKET).createSignedUrls(faltam, 3600); (data || []).forEach(r => { if (r.signedUrl) urlGuardar(PREV.urls, r.path, r.signedUrl, 3600); }); } catch (e) { /* segue sem miniatura */ } }
+
+  const av = (nome, sm) => `<span class="apv-av${sm ? ' sm' : ''}" aria-hidden="true">${esc(iniciais(nome))}</span>`;
+  const midiaDe = p => {
+    const ax = anexos.filter(a => a.post_id === p.id); if (!ax.length) return { thumb: '', rot: '' };
+    const im = ax.find(a => tipoMidia(a) === 'img'), u = im && urlCache(PREV.urls, im.path), k = tipoMidia(ax[0]);
+    const rot = { img: ax.length > 1 ? `${ax.length} imagens` : 'imagem', pdf: 'carrossel em PDF', video: 'vídeo' }[k] || `${ax.length} ${ax.length === 1 ? 'anexo' : 'anexos'}`;
+    const thumb = u ? `<div class="apv-thumb"><img src="${esc(u)}" alt="">${ax.length > 1 ? `<span>+${ax.length - 1}</span>` : ''}</div>`
+      : `<div class="apv-thumb apv-thumb-ic"><b>${esc(k === 'pdf' ? 'PDF' : k === 'video' ? 'VÍDEO' : 'ARQ')}</b></div>`;
+    return { thumb, rot };
+  };
+  const cartao = (p, n) => {
+    const c = cliDe(p.cliente_id), h = horasDesde(p.enviado_em), m = midiaDe(p), corpo = corpoPrevia(p), hoje = hojeISO();
+    const prazo = p.data_prevista ? (p.data_prevista < hoje ? ['critico', `queria publicar em ${fmtCurta(p.data_prevista)}`] : p.data_prevista === hoje ? ['critico', 'quer publicar hoje'] : p.data_prevista === addDias(hoje, 1) ? ['alerta', 'quer publicar amanhã'] : ['neutro', `publica em ${fmtCurta(p.data_prevista)}`]) : null;
+    return `<a class="apv-card ${n === 0 ? 'primeiro' : ''}" href="#/admin/post/${p.id}" data-post="${p.id}">
+      <div class="apv-topo"><span class="apv-pos mono">${n + 1}º</span>${av(c.nome)}<div class="apv-quem"><b>${esc(c.nome)}</b><small>${esc([c.empresa, p.versao > 1 ? `versão ${p.versao}` : 'primeira versão'].filter(Boolean).join(' · '))}</small></div>
+        <span class="chip ${nivelEspera(h)} apv-espera" title="Enviado em ${esc(new Date(p.enviado_em).toLocaleString('pt-BR'))}">${svg('relogio', 12)} ${esc(h < 1.5 / 60 ? 'agora' : 'há ' + fmtDuracao(h))}</span></div>
+      <div class="apv-corpo"><div class="apv-txt"><h3>${esc(postTitulo(p))}</h3>${corpo ? `<p>${esc(corpo)}</p>` : ''}</div>${m.thumb}</div>
+      <div class="apv-rodape"><div class="apv-tags">${prazo ? `<span class="chip ${prazo[0]} sem-dot">${esc(prazo[1])}</span>` : ''}${m.rot ? `<span class="chip neutro sem-dot">${svg('clip', 12)} ${esc(m.rot)}</span>` : ''}<span class="apv-n mono">${(p.texto || '').length.toLocaleString('pt-BR')} caracteres</span></div>
+        <span class="apv-cta">Revisar ${svg('seta', 15)}</span></div></a>`;
+  };
+  const mini = (p, quando, extra) => { const c = cliDe(p.cliente_id);
+    return `<a class="apv-mini" href="#/admin/post/${p.id}">${av(c.nome, true)}<div class="apv-mini-tx"><b>${esc(postTitulo(p))}</b><small>${esc(primeiroNome(c.nome))} · ${esc(quando)}</small></div>${extra || ''}</a>`; };
+  const coluna = (cls, titulo, ajuda, lista, html) => `<section class="apv-col ${cls}"><div class="apv-col-cab"><span class="apv-dot"></span><h3>${titulo}</h3><span class="apv-col-n mono">${lista.length}</span></div><p class="apv-col-ajuda">${ajuda}</p>
+    ${lista.length ? lista.map(html).join('') : '<div class="apv-col-vazio">Nenhum por aqui.</div>'}</section>`;
+
+  const maisAntigo = ag[0] ? horasDesde(ag[0].enviado_em) : 0;
+  const manchete = ag.length ? `${ag.length} ${ag.length === 1 ? 'post esperando' : 'posts esperando'} você` : 'Fila zerada';
+  const sub = ag.length ? `O mais antigo espera há ${fmtDuracao(maisAntigo)}. Quem espera mais, posta menos.` : 'Nenhum post esperando decisão. Bom trabalho.';
+  const hero = `<div class="hero apv-hero"><div class="apv-hero-topo"><div><div class="kicker">${esc(fmtDiaSem(hojeISO()))} · resumo da fila</div><h2>${esc(manchete)}</h2><p>${esc(sub)}</p></div>
+      ${ag.length ? `<a class="btn apv-hero-btn" href="#/admin/post/${ag[0].id}">Revisar o primeiro da fila ${svg('seta', 15)}</a>` : ''}</div>
+    <div class="hero-metrics apv-metrics">
+      <div><b>${ag.length}</b><span>aguardando você</span></div>
+      <div><b>${ap.length}</b><span>aprovados sem publicar</span></div>
+      <div><b>${pub30.length}</b><span>publicados em 30 dias</span></div>
+      <div><b>${mediana == null ? '—' : esc(fmtDuracao(mediana))}</b><span>seu tempo de resposta</span></div></div></div>`;
+
+  const fila = ag.length ? `<div class="apv-sec-cab"><h2>Aguardando sua decisão</h2><span class="muted">do mais antigo pro mais novo</span></div><div class="apv-fila">${ag.map(cartao).join('')}</div>`
+    : `<div class="card apv-zerada"><div class="apv-zerada-ic">${svg('check', 26)}</div><h2>Nada esperando por você</h2><p class="desc" style="margin:4px 0 0">Quando um mentorado enviar um post, ele aparece aqui e o sino avisa.</p></div>`;
+  const pipeline = `<div class="apv-sec-cab"><h2>Depois da sua decisão</h2></div><div class="apv-pipe">
+    ${coluna('aprovado', 'Aprovados, falta publicar', 'Aprovado há mais de 3 dias fica em destaque: vale um toque no mentorado.', ap, p => { const h = horasDesde(p.decidido_em); return mini(p, 'aprovado há ' + fmtDuracao(h), h >= 72 ? '<span class="chip critico sem-dot">parado</span>' : ''); })}
+    ${coluna('ajustes', 'Com o mentorado ajustando', 'Volta pra fila quando ele reenviar.', aj, p => mini(p, 'ajuste pedido há ' + fmtDuracao(horasDesde(p.decidido_em)), p.versao > 1 ? `<span class="chip neutro sem-dot">v${p.versao}</span>` : ''))}
+    ${coluna('publicado', 'Publicados recentemente', 'Os últimos que foram ao ar.', pub, p => mini(p, 'publicado há ' + fmtDuracao(horasDesde(p.publicado_em)), ''))}</div>`;
+  return { kicker: 'Fila de aprovação', titulo: 'Aprovações', html: hero + fila + pipeline };
 }
 
 /* =====================================================================
