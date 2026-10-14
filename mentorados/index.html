@@ -3584,7 +3584,7 @@ async function vAulas(ctx) {
   if (andamento.length) rows.push(fileira(ctx, 'Continue assistindo', '', andamento.map(a => cartaoAula(ctx, a, prog[a.id], idx(a), modDe(a))), 'cont'));
   mods.forEach(m => { const v = m.aulas.filter(a => prog[a.id] && prog[a.id].assistida_em).length;
     rows.push(fileira(ctx, m.titulo, `${v}/${m.aulas.length} assistidas${m.descricao ? ' · ' + m.descricao : ''}`, m.aulas.map((a, i) => cartaoAula(ctx, a, prog[a.id], i, m)), 'm' + m.id)); });
-  return { kicker: 'Biblioteca do método', titulo: 'Aulas', html: `<div class="cine">${hero}${rows.join('')}</div>`, depois: () => $$('.cine-trilho').forEach(atualizarSetas) };
+  return { kicker: 'Biblioteca do método', titulo: 'Aulas', refrescavel: false, html: `<div class="cine">${hero}${rows.join('')}</div>`, depois: () => $$('.cine-trilho').forEach(atualizarSetas) };
 }
 function atualizarSetas(t) {
   const row = t.closest('.cine-row'); if (!row) return;
@@ -3747,7 +3747,7 @@ async function vEventos(ctx) {
   const passHtml = pass.length ? `<div class="apv-sec-cab"><h2>Já aconteceram</h2><span class="muted">com a gravação, quando houver</span></div><div class="ev-lista">${pass.map(e => { const g = gravacaoHref(ctx, e);
       return `<div class="ev-item passado">${dataBloco(e)}<div class="ev-item-tx"><span class="chip neutro sem-dot">${esc(TIPO_EVENTO[e.tipo] || 'Evento')}</span><b>${esc(e.titulo)}</b><small>${esc(fmtData(isoLocal(new Date(e.inicio))))}</small></div>
       <div class="ev-item-bt">${g ? `<a class="btn btn-sm btn-primary" href="${esc(g)}" ${e.aula_id ? '' : 'target="_blank" rel="noopener noreferrer"'}>${svg('tutorial', 14)} Assistir a gravação</a>` : '<span class="muted" style="font-size:.8rem">gravação em breve</span>'}</div></div>`; }).join('')}</div>` : '';
-  return { kicker: 'Agenda', titulo: 'Eventos', html: hero + proxHtml + passHtml };
+  return { kicker: 'Agenda', titulo: 'Eventos', refrescavel: false, html: hero + proxHtml + passHtml };
 }
 
 /* ---------- Início: próximo encontro + continue assistindo ---------- */
@@ -3814,7 +3814,7 @@ async function vAdminAulas() {
     <div style="margin-top:12px">${m.aulas.map((a, i) => linhaAula(a, i, m)).join('') || '<div class="vazio" style="padding:10px 0">Nenhuma aula neste módulo.</div>'}</div>
     <button class="btn btn-sm" style="margin-top:10px" data-act="adm-aula-nova" data-mod="${m.id}">${svg('mais', 14)} Aula neste módulo</button></div>`).join('');
   const ranking = alvos.map(x => ({ x, n: vistas.filter(v => v.perfil_id === x.perfil && pub.some(a => a.id === v.aula_id)).length })).sort((a, b) => b.n - a.n || a.x.cli.nome.localeCompare(b.x.cli.nome, 'pt-BR'));
-  return { kicker: 'Biblioteca', titulo: 'Aulas',
+  return { kicker: 'Biblioteca', titulo: 'Aulas', refrescavel: false,
     html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">As aulas gravadas do método, em módulos. Cole o link do YouTube (não listado), Vimeo, Loom ou de um arquivo .mp4.</p>
       <div class="row">${prev ? `<a class="btn" href="#/ver/${prev.cli.id}/aulas">${svg('olho', 16)} Ver como mentorado</a>` : ''}<button class="btn" data-act="adm-mod-novo">${svg('mais', 16)} Novo módulo</button><button class="btn btn-primary" data-act="adm-aula-nova">${svg('mais', 16)} Nova aula</button></div></div>
       <div class="tiles"><div class="tile"><div class="v">${bib.modulos.length}</div><div class="l">módulos</div></div><div class="tile"><div class="v">${pub.length}</div><div class="l">aulas publicadas</div></div>
@@ -3904,7 +3904,7 @@ async function vAdminEventos() {
         <small>${esc(passado ? fmtData(isoLocal(d)) + ' · ' + hora(d) : quandoEvento(e))} · ${e.duracao_min} min${e.sala_url ? ' · com link da sala' : passado ? '' : ' · <b style="color:var(--warning-text)">sem link da sala</b>'}</small></div>
       <div class="ev-item-bt">${passado ? (e.aula_id ? `<a class="btn btn-sm" href="#/admin/aulas">${svg('check', 14)} virou aula</a>` : e.gravacao_url ? `<button class="btn btn-sm btn-primary" data-act="ev-virar-aula" data-id="${e.id}">${svg('tutorial', 14)} Virar aula</button>` : `<button class="btn btn-sm" data-act="ev-editar" data-id="${e.id}">+ gravação</button>`) : ''}
         <button class="ic-btn" data-act="ev-editar" data-id="${e.id}" aria-label="Editar evento">${svg('editar', 16)}</button><button class="ic-btn" data-act="ev-excluir" data-id="${e.id}" aria-label="Excluir evento">${svg('lixo', 16)}</button></div></div>`; };
-  return { kicker: 'Agenda', titulo: 'Eventos',
+  return { kicker: 'Agenda', titulo: 'Eventos', refrescavel: false,
     html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">Encontros da mentoria, eventos e aulas ao vivo. O mentorado vê a contagem regressiva, entra na sala por aqui e salva na agenda dele. Depois, a gravação vira aula com um clique.</p>
       <button class="btn btn-primary" data-act="ev-novo">${svg('mais', 16)} Novo evento</button></div>
       <div class="card"><h2>Próximos</h2><div class="ev-lista" style="margin-top:10px">${prox.map(linha).join('') || '<div class="vazio">Nenhum evento marcado.</div>'}</div></div>
@@ -4024,7 +4024,7 @@ async function vIndicacoes(ctx) {
     ${i.status === 'fechou' ? `<div class="ind-ganho">${svg('check', 16)} <div><b>${esc(brl(i.recompensa))}</b> pra você${i.pago_em ? ` · pago em ${esc(fmtData(isoLocal(new Date(i.pago_em))))}` : ' · a receber'}</div></div>` : ''}
     ${i.status === 'nova' && !ro ? `<button class="btn-link" style="margin-top:8px;font-size:.8rem" data-act="ind-cancelar" data-id="${i.id}">cancelar indicação</button>` : ''}</div>`;
   const repMes = acoes.filter(a => new Date(a.created_at) >= ini && a.status === 'valida').length;
-  return { kicker: 'Indique e ganhe', titulo: 'Indicações',
+  return { kicker: 'Indique e ganhe', titulo: 'Indicações', refrescavel: false,
     html: `${hero}<div class="dash"><div>${trilhaNiveis(doMes, niveis) ? `<div class="card">${trilhaNiveis(doMes, niveis)}</div>` : ''}
       <div class="card"><div class="row-between"><h2>Suas indicações</h2>${ro ? '' : `<button class="btn btn-primary btn-sm" data-act="ind-nova">${svg('mais', 14)} Indicar</button>`}</div>
         <div class="ind-lista">${inds.length ? inds.map(cardInd).join('') : '<div class="vazio"><b>Nenhuma indicação ainda.</b><br>Pensa em 3 pessoas que reclamam que não conseguem cliente pelo LinkedIn. Pronto: são as suas 3 primeiras.</div>'}</div></div></div>
@@ -4077,7 +4077,7 @@ async function vAdminIndicacoes() {
     <p class="ind-dor"><b>Dor:</b> ${esc(i.dor)}</p>${i.contexto ? `<p class="ind-dor"><b>Contexto:</b> ${esc(i.contexto)}</p>` : ''}
     <div class="inda-rod">${i.status === 'fechou' ? `<span>Fechou em <b>${esc(brl(i.valor_fechado))}</b> · indicação: <b>${esc(brl(i.recompensa))}</b></span>${i.pago_em ? `<span class="chip ok">pago em ${esc(fmtData(isoLocal(new Date(i.pago_em))))}</span>` : `<button class="btn btn-sm btn-primary" data-act="inda-pagar" data-id="${i.id}">Marcar 10% como pago</button>`}<button class="btn-link" data-act="inda-valor" data-id="${i.id}">editar valor</button>` : ''}
       <button class="btn-link" data-act="inda-retorno" data-id="${i.id}">${i.retorno ? 'editar retorno pro mentorado' : 'escrever retorno pro mentorado'}</button></div></div>`;
-  return { kicker: 'Programa de indicação', titulo: 'Indicações',
+  return { kicker: 'Programa de indicação', titulo: 'Indicações', refrescavel: false,
     html: `<div class="tiles"><div class="tile"><div class="v">${inds.filter(i => new Date(i.created_at) >= ini).length}</div><div class="l">indicações em ${esc(nomeMes())}</div></div>
       <div class="tile"><div class="v">${abertas.length}</div><div class="l">em andamento</div></div><div class="tile"><div class="v" style="color:var(--accent-deep)">${fech.length}</div><div class="l">fecharam</div></div>
       <div class="tile"><div class="v">${esc(brl(receita))}</div><div class="l">receita vinda de indicação</div></div><div class="tile"><div class="v" style="color:var(--warning-text)">${esc(brl(aPagar))}</div><div class="l">10% a pagar</div></div></div>
