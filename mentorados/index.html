@@ -837,6 +837,9 @@ const fmtQuando = ts => { const d = new Date(ts); return d.toDateString() === ne
 const msgErro = e => (e && (e.message || e.error_description)) || 'Algo deu errado. Tente de novo.';
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+// link assinado do storage vence: guarda com validade e só reaproveita enquanto ainda falta 1 min pra vencer
+const urlCache = (m, k) => { const x = m[k]; return x && x.ate > Date.now() ? x.u : null; };
+const urlGuardar = (m, k, u, seg) => { m[k] = { u, ate: Date.now() + (seg - 60) * 1000 }; };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* modo privado */ } };
 
 let toastT;
@@ -981,7 +984,7 @@ async function render(opt = {}) {
   } else faixa.hidden = true;
 
   const tabela = ctx.modo === 'admin' ? VIEWS_ADMIN : VIEWS_CLIENTE;
-  const fn = tabela[ctx.tela];
+  const fn = Object.hasOwn(tabela, ctx.tela) ? tabela[ctx.tela] : null;
   if (!fn) { ir(ctx.modo === 'admin' ? 'admin/dashboard' : (ctx.base ? ctx.base + '/' : '') + 'inicio'); return; }
   const view = $('#view');
   if (!silencioso) view.innerHTML = '<div class="vazio">carregando…</div>';
@@ -2184,12 +2187,12 @@ function arquivosHtml(arqs, comPasta) {
 async function carregarMiniaturas() {
   const alvos = $$('.dr-thumb[data-img="1"]'); if (!alvos.length) return;
   const arq = id => DR.arquivos.find(a => a.id === Number(id));
-  const faltam = alvos.map(el => arq(el.dataset.id)).filter(a => a && !DR.urls[a.path]);
+  const faltam = alvos.map(el => arq(el.dataset.id)).filter(a => a && !urlCache(DR.urls, a.path));
   if (faltam.length) {
     const { data } = await sb.storage.from(BUCKET).createSignedUrls(faltam.map(a => a.path), 900);
-    (data || []).forEach(r => { if (r.signedUrl) DR.urls[r.path] = r.signedUrl; });
+    (data || []).forEach(r => { if (r.signedUrl) urlGuardar(DR.urls, r.path, r.signedUrl, 900); });
   }
-  alvos.forEach(el => { const a = arq(el.dataset.id); if (a && DR.urls[a.path]) el.innerHTML = `<img src="${esc(DR.urls[a.path])}" alt="" loading="lazy">`; });
+  alvos.forEach(el => { const a = arq(el.dataset.id); if (a && urlCache(DR.urls, a.path)) el.innerHTML = `<img src="${esc(urlCache(DR.urls, a.path))}" alt="" loading="lazy">`; });
 }
 ACT['dr-ir'] = el => { DR.caminho = el.dataset.p; DR.busca = ''; desenharDrive(); };
 ACT['dr-vista'] = el => { DR.vista = el.dataset.v; lsSet('drive-vista', DR.vista); desenharDrive(); };
@@ -2557,7 +2560,8 @@ ACT['lanc-gerar'] = async el => {
   $('#lanc-saida').scrollIntoView({ behavior: 'smooth' });
 };
 ACT['lanc-copiar-tudo'] = async () => {
-  const txt = (LANC || []).filter(r => !r.erro).map(r => `=== ${r.nome} ===\n${mensagemBoasVindas(r.nome, r.email, r.senha)}`).join('\n\n\n');
+  const cls = await clientes(), nomeDe = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
+  const txt = (LANC || []).filter(r => !r.erro).map(r => { const n = r.nome || nomeDe(r.cliente_id); return `=== ${n} ===\n${mensagemBoasVindas(n, r.email, r.senha)}`; }).join('\n\n\n');
   if (await copiarTexto(txt)) toast('Todas as mensagens copiadas.'); else toast('Não consegui copiar tudo. Use o botão de cada mentorado.', true);
 };
 
@@ -2894,10 +2898,10 @@ async function prepararPrevia(ctx, anexos, texto) {
   await assinarMidias();
 }
 async function assinarMidias() {
-  const faltam = PREV.anexos.filter(a => !PREV.urls[a.path]).map(a => a.path);
+  const faltam = PREV.anexos.filter(a => !urlCache(PREV.urls, a.path)).map(a => a.path);
   if (!faltam.length) return;
   const { data } = await sb.storage.from(BUCKET).createSignedUrls(faltam, 3600);
-  (data || []).forEach(r => { if (r.signedUrl) PREV.urls[r.path] = r.signedUrl; });
+  (data || []).forEach(r => { if (r.signedUrl) urlGuardar(PREV.urls, r.path, r.signedUrl, 3600); });
 }
 
 // hashtags e links em azul, como no LinkedIn. Quebra o texto CRU em pedaços e escapa cada um (nunca mexe em texto já escapado).
@@ -2927,9 +2931,9 @@ function liMidiaHtml() {
       <button class="nav ant" data-act="li-pag" data-d="-1" aria-label="Página anterior" hidden>‹</button><button class="nav prox" data-act="li-pag" data-d="1" aria-label="Próxima página" hidden>›</button><span class="pag" hidden></span></div>
       <div class="li-doc-rodape"><span>${esc(d.nome)}</span><span>Documento</span></div>`;
   } else if (vids.length) {
-    const u = PREV.urls[vids[0].path]; corpo = u ? `<div class="li-video"><video src="${esc(u)}" controls preload="metadata"></video></div>` : '';
+    const u = urlCache(PREV.urls, vids[0].path); corpo = u ? `<div class="li-video"><video src="${esc(u)}" controls preload="metadata"></video></div>` : '';
   } else if (imgs.length) {
-    const us = imgs.map(a => PREV.urls[a.path]).filter(Boolean), n = us.length;
+    const us = imgs.map(a => urlCache(PREV.urls, a.path)).filter(Boolean), n = us.length;
     if (n === 1) corpo = `<div class="li-img1"><img src="${esc(us[0])}" alt="Imagem do post"></div>`;
     else if (n >= 2) { const m = us.slice(0, 4); corpo = `<div class="li-grade g${m.length}">${m.map((u, i) => `<div class="${i === 0 ? 'a' : ''} ${i === 3 && n > 4 ? 'li-mais' : ''}" ${i === 3 && n > 4 ? `data-mais="+${n - 4}"` : ''}><img src="${esc(u)}" alt="Imagem ${i + 1} do post"></div>`).join('')}</div>`; }
   }
@@ -2986,7 +2990,7 @@ function carregarPdfJs() {
 }
 async function montarCarrosseis() {
   for (const box of $$('.li-doc')) {
-    const path = box.dataset.path, url = PREV.urls[path];
+    const path = box.dataset.path, url = urlCache(PREV.urls, path);
     try {
       if (!url) throw new Error('sem url');
       let st = PREV.pdfs[path];
@@ -3026,7 +3030,7 @@ ACT['anexo-baixar'] = async el => {
    ===================================================================== */
 const TOUR_PASSOS = [
   { rota: 'inicio', centro: true, titulo: 'Opa, bem-vindo ao seu portal!', texto: 'Aqui mora o seu plano, os seus posts, o checklist do dia e os seus arquivos. Chega de material perdido no WhatsApp.\nO tour dura uns 2 minutos, menos que um café coado. Bora?' },
-  { rota: 'inicio', alvo: '#nav', lado: 'direita', titulo: 'O menu: cinco portas', texto: 'Início, Plano de ação, Posts, Calendário e Drive. Sem labirinto, sem 47 abas abertas.\nO número vermelho que aparece ao lado é “tem coisa esperando você”.' },
+  { rota: 'inicio', alvo: '#nav', lado: 'direita', titulo: 'O menu: tudo a um toque', texto: 'Início, Plano de ação, Posts, Calendário e Drive, mais o vídeo “Como funciona” (no celular ele mora no seu menu, lá em cima). Sem labirinto, sem 47 abas abertas.\nO número vermelho que aparece ao lado é “tem coisa esperando você”.' },
   { rota: 'inicio', alvo: '.hero', lado: 'baixo', titulo: 'O painel de bordo', texto: 'O portal abre dizendo o que fazer agora: post aprovado esperando, ajuste pedido ou checklist em aberto.\nEmbaixo, 3 números: **quanto do plano** você já fez, sua **sequência** de dias úteis fechados e os **dias completos** da semana.' },
   { rota: 'inicio', alvo: '.semana', lado: 'baixo', titulo: 'A semana em 7 bolinhas', texto: 'Bolinha verde com visto é dia fechado. Meio preenchida é “quase”.\nFim de semana não quebra a sua sequência: até a gente descansa.' },
   { rota: 'inicio', alvo: '.hoje-grid', lado: 'cima', titulo: 'O checklist: 3 coisas por dia', texto: '**Conectar, postar e comentar.** Toque no + e no −, marque o post e pronto: salva sozinho.\nMenos itens que a sua lista do mercado. Na dúvida de como cumprir cada um, o “Como cumprir cada um dos três” logo abaixo explica.' },
@@ -3187,7 +3191,7 @@ async function vTutorial(ctx) {
         const t = v.currentTime; if (VID.ultimo != null && !v.paused && t > VID.ultimo && t - VID.ultimo < 1.5 * Math.max(1, v.playbackRate)) VID.assistido += t - VID.ultimo;
         VID.ultimo = t;   // vale assistir acelerado; pulo (seeking) não conta
         if (v.duration && VID.assistido >= v.duration * 0.85 && t >= v.duration - 3) liberar();
-        else if (v.duration) { const f = Math.round(VID.assistido / v.duration * 100); txtCheck(`Você já assistiu ${f}% do vídeo. Vai até o fim pra liberar a confirmação.`); }
+        else if (v.duration && $('#tut-confirmar') && $('#tut-confirmar').disabled) { const f = Math.round(VID.assistido / v.duration * 100); txtCheck(`Você já assistiu ${f}% do vídeo. Vai até o fim pra liberar a confirmação.`); }
       });
       v.addEventListener('seeking', () => { VID.ultimo = null; });
       v.addEventListener('ended', () => { if (v.duration && VID.assistido >= v.duration * 0.85) liberar(); });
