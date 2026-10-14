@@ -538,6 +538,56 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .li-acoes span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 2px;color:rgba(0,0,0,.6);font-size:13px;font-weight:600}
 .li-card.celular .li-acoes span{font-size:11.5px;gap:4px}
 
+/* ---------- tour interativo ---------- */
+.tour2{position:fixed;inset:0;z-index:350}
+.tour2[hidden]{display:none}
+.tour2-mask{position:absolute;inset:0}
+.tour2-mask.escuro{background:var(--overlay)}
+.tour2-foco{position:fixed;z-index:1;border-radius:14px;box-shadow:0 0 0 9999px var(--overlay);pointer-events:none;opacity:0;
+  transition:left .35s cubic-bezier(.3,.8,.3,1),top .35s cubic-bezier(.3,.8,.3,1),width .35s cubic-bezier(.3,.8,.3,1),height .35s cubic-bezier(.3,.8,.3,1),opacity .2s}
+.tour2-foco::after{content:"";position:absolute;inset:-4px;border-radius:18px;border:2px solid var(--accent-light);animation:tour2pulso 1.6s ease-out infinite}
+@keyframes tour2pulso{0%{transform:scale(.97);opacity:1}100%{transform:scale(1.06);opacity:0}}
+.tour2-card{position:fixed;z-index:2;background:var(--surface-1);border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.32);padding:16px 18px 14px;width:400px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);overflow:auto}
+.tour2-card.centro{left:50%;top:50%;width:440px;transform:translate(-50%,-50%)}
+.tour2-card.movel{left:12px;right:12px;bottom:12px;top:auto;width:auto;max-height:62vh}
+.tour2-card.entra{animation:tour2entra .3s cubic-bezier(.2,.9,.3,1.1)}
+.tour2-card.centro.entra{animation-name:tour2entraC}
+@keyframes tour2entra{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes tour2entraC{from{opacity:0;transform:translate(-50%,-47%) scale(.97)}to{opacity:1;transform:translate(-50%,-50%)}}
+.tour2-topo{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.tour2-cont{font-family:var(--f-mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);font-weight:700}
+.tour2-x{border:0;background:none;color:var(--muted);font-size:1rem;padding:2px 6px;border-radius:6px}.tour2-x:hover{background:var(--field-bg);color:var(--text-primary)}
+.tour2-barra{height:4px;border-radius:99px;background:var(--grid);overflow:hidden;margin-bottom:12px}
+.tour2-barra i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .35s}
+.tour2-tit{font-size:1.12rem;line-height:1.25;margin-bottom:6px}
+.tour2-txt{font-size:.88rem;line-height:1.6;color:var(--text-secondary)}
+.tour2-txt b{color:var(--text-primary)}
+.tour2-avisos{display:grid;gap:6px;margin:10px 0 6px}
+.tour2-avisos div{background:var(--surface-2);border:1px solid var(--grid);border-radius:10px;padding:7px 10px;font-size:.8rem;line-height:1.35}
+.tour2-avisos b{display:block;color:var(--text-primary)}.tour2-avisos span{color:var(--text-secondary)}
+.tour2-nota{font-size:.78rem;color:var(--muted);margin:8px 0 0;line-height:1.5}
+.tour2-rodape{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.tour2-pular{border:0;background:none;color:var(--muted);font-size:.8rem;padding:4px}.tour2-pular:hover{color:var(--text-primary);text-decoration:underline}
+
+/* ---------- página "Como funciona" ---------- */
+.tut-moldura{position:relative;border-radius:14px;overflow:hidden;background:#0F1A14;aspect-ratio:16/9}
+.tut-moldura video{width:100%;height:100%;display:block;background:#000}
+.tut-sem{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cfe6d8;padding:24px;text-align:center;font-size:.92rem}
+.tut-caps{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.tut-caps .mono{font-family:var(--f-mono);font-size:.72rem;color:var(--accent-deep);margin-right:4px}
+.tut-rotina{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.tut-rotina .card{margin:0}.tut-rotina h3{margin:4px 0 4px}
+.tut-avisos{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+.tut-aviso{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface-2)}
+.tut-aviso-t{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.tut-aviso-q{font-size:.84rem;color:var(--text-secondary)}
+.tut-aviso-f{margin-top:8px;font-size:.84rem}
+.tut-aviso-f span{display:block;font-family:var(--f-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);font-weight:700;margin-bottom:2px}
+.faq{border-top:1px solid var(--grid);padding:10px 0}.faq:first-of-type{margin-top:10px}
+.faq summary{cursor:pointer;font-weight:700;font-size:.9rem}
+.faq p{margin:8px 0 0;font-size:.86rem;color:var(--text-secondary);line-height:1.6}
+@media (max-width:900px){.tut-rotina,.tut-avisos{grid-template-columns:1fr}}
+@media (max-width:780px){.nav-item[data-to="tutorial"]{display:none}}
+
 /* ---------- drive ---------- */
 .ic-btn{font-size:1.1rem;font-weight:800}
 .dr-doc{position:relative;min-height:50vh;border-radius:14px}
@@ -709,6 +759,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
         <div class="user-wrap">
           <button class="userchip" id="userchip" data-act="user-toggle" aria-haspopup="true"><span class="av" id="user-av"></span><span class="nm" id="user-nome"></span></button>
           <div class="menu-pop" id="user-menu">
+            <button data-act="ir-tutorial" id="menu-tutorial" hidden>Como funciona (vídeo)</button>
             <button data-act="tour-abrir" id="menu-tour" hidden>Ver o tour de novo</button>
             <button data-act="tema-alternar"><span class="t-claro">Tema escuro</span><span class="t-escuro">Tema claro</span></button>
             <button data-act="trocar-senha">Trocar minha senha</button>
@@ -729,6 +780,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
   </div>
 </div>
 <div class="tour-fundo" id="tour" role="dialog" aria-modal="true"></div>
+<div class="tour2" id="tour2" hidden role="dialog" aria-modal="true" aria-label="Tour do portal"><div class="tour2-mask"></div><div class="tour2-foco"></div><div class="tour2-card" id="tour2-card"></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -829,6 +881,7 @@ const ICO = {
   chama: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5Z"/>',
   alvo: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
   usuario: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  tutorial: '<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>',
 };
 const svg = (n, w = 20) => `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[n] || ''}</svg>`;
 
@@ -873,7 +926,7 @@ const rota = () => location.hash.replace(/^#\/?/, '').split('?')[0].split('/').f
 const ir = caminho => { const alvo = '#/' + caminho; if (location.hash === alvo) render(); else location.hash = alvo; };
 window.addEventListener('hashchange', () => render());
 
-const NAV_CLIENTE = [['inicio', 'Início'], ['plano', 'Plano de ação'], ['posts', 'Posts'], ['calendario', 'Calendário'], ['drive', 'Drive']];
+const NAV_CLIENTE = [['inicio', 'Início'], ['plano', 'Plano de ação'], ['posts', 'Posts'], ['calendario', 'Calendário'], ['drive', 'Drive'], ['tutorial', 'Como funciona']];
 const NAV_ADMIN = [['dashboard', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['mentorados', 'Mentorados'], ['modelos', 'Modelos de plano'], ['config', 'Configurações']];
 const ADMIN_ATIVA = { post: 'aprovacoes', mentorado: 'mentorados', modelo: 'modelos', lancamento: 'config' };
 
@@ -1001,7 +1054,7 @@ async function iniciar() {
   }
   const nome = perfil.nome || user.email;
   $('#user-nome').textContent = primeiroNome(nome); $('#user-av').textContent = iniciais(nome);
-  $('#menu-tour').hidden = S.admin;
+  $('#menu-tour').hidden = S.admin; $('#menu-tutorial').hidden = S.admin;
   $('#carregando').style.display = 'none'; $('#app').style.display = 'flex';
   if (!location.hash) history.replaceState(null, '', S.admin ? '#/admin/dashboard' : '#/inicio');   // replaceState não dispara hashchange (evita render duplicado)
   await carregarNotifs();
@@ -1115,54 +1168,13 @@ function assinarRealtime() {
     .subscribe();
 }
 
-/* ---------- tour de primeiro acesso (versionado, igual ao painel) ---------- */
-// Para soltar tour novo: mude NOVIDADES.versao e reescreva os passos. Corrigiu só um texto? Não mexa na versão.
-const NOVIDADES = { versao: '2026-10-13', passos: [
-  { ico: 'inicio', titulo: 'Bem-vindo ao seu portal', texto: 'Aqui fica **tudo** da sua mentoria: plano de ação, posts, arquivos e o checklist do dia. Chega de material perdido no WhatsApp.' },
-  { ico: 'check', titulo: 'O checklist de hoje', texto: 'Todo dia, três coisas: **conectar, postar e comentar**. Leva um minuto pra marcar, e é o que mostra pra nós onde você está.', aba: 'inicio' },
-  { ico: 'posts', titulo: 'Post com aprovação', texto: 'Escreveu um post? Mande em **Posts → Novo post**. O Igor aprova ou pede ajuste e o aviso chega aqui no sino. Aprovado, é só publicar e colar o link: o checklist do dia se preenche sozinho.', aba: 'posts' },
-  { ico: 'plano', titulo: 'Seu plano de ação', texto: 'Cada passo mostra **como fazer, o que entregar e quanto tempo leva**. Marque ao concluir e, quando quiser, baixe o plano em PDF.', aba: 'plano' },
-  { ico: 'drive', titulo: 'Seu drive', texto: 'Materiais, prints, vídeos: tudo na sua pasta. Só você e o Igor enxergam.', aba: 'drive' },
-] };
-let tourI = 0;
-async function verificarTour() {
-  let vistas = [];
-  try { vistas = await q(sb.from('cli_novidades_vistas').select('versao,vista_em').eq('perfil_id', S.user.id).order('vista_em')); } catch (e) { return; }
-  const primeira = vistas[0];
-  S.tourVistoEm = primeira ? primeira.vista_em : null;
-  if (!vistas.some(v => v.versao === NOVIDADES.versao)) tourAbrir(0);
-}
-function tourAbrir(i) {
-  tourI = i; const p = NOVIDADES.passos[i], ultimo = i === NOVIDADES.passos.length - 1;
-  $$('.nav-item.piscando').forEach(b => b.classList.remove('piscando'));
-  if (p.aba) { const b = $(`.nav-item[data-to="${p.aba}"]`); if (b) b.classList.add('piscando'); }
-  const t = $('#tour'); t.classList.add('aberto');
-  t.innerHTML = `<div class="tour-card"><button class="tour-fechar" data-act="tour-fechar" aria-label="Fechar">✕</button>
-    <div class="tour-passo"><div class="tour-ico">${svg(p.ico, 26)}</div><div class="tour-titulo">${esc(p.titulo)}</div><div class="tour-texto">${md(p.texto)}</div></div>
-    <div class="tour-rodape"><div class="tour-pontos">${NOVIDADES.passos.map((_, k) => `<i class="${k === i ? 'ativo' : ''}"></i>`).join('')}</div>
-    <div class="tour-botoes">${ultimo ? '' : '<button class="tour-pular" data-act="tour-fechar">pular tour</button>'}
-    ${p.aba && !ultimo ? `<button class="btn btn-sm" data-act="tour-ir" data-aba="${p.aba}">me leva lá</button>` : ''}
-    <button class="btn btn-primary btn-sm" data-act="${ultimo ? 'tour-fechar' : 'tour-prox'}">${ultimo ? 'Começar' : 'Próximo'}</button></div></div></div>`;
-}
-async function tourFechar() {
-  $('#tour').classList.remove('aberto'); $('#tour').innerHTML = '';
-  $$('.nav-item.piscando').forEach(b => b.classList.remove('piscando'));
-  try { await sb.from('cli_novidades_vistas').upsert({ perfil_id: S.user.id, versao: NOVIDADES.versao }, { onConflict: 'perfil_id,versao' }); } catch (e) { /* tudo bem */ }
-}
-ACT['tour-fechar'] = tourFechar;
-ACT['tour-prox'] = () => tourAbrir(Math.min(tourI + 1, NOVIDADES.passos.length - 1));
-ACT['tour-abrir'] = () => { $('#user-menu').classList.remove('aberto'); tourAbrir(0); };
-ACT['tour-ir'] = el => { const aba = el.dataset.aba; tourFechar(); ir(aba); };
-document.addEventListener('keydown', ev => {
-  if (!$('#tour').classList.contains('aberto')) return;
-  if (ev.key === 'ArrowRight') ACT['tour-prox']();
-  if (ev.key === 'ArrowLeft') tourAbrir(Math.max(0, tourI - 1));
-  if (ev.key === 'Escape') tourFechar();
-});
+/* ---------- tour de primeiro acesso: versão (o tour interativo mora em 12_tour.js) ---------- */
+// Para soltar tour novo pra todo mundo: mude a versão. Corrigiu só um texto? Não mexa na versão.
+const NOVIDADES = { versao: '2026-10-14' };
 
 /* ---------- lembrete bloqueante (dentro do sistema, texto curto) ---------- */
 async function lembreteChecklist() {
-  if (S.admin || $('#tour').classList.contains('aberto')) return;
+  if (S.admin || $('#tour').classList.contains('aberto') || TOUR.on) return;
   const hoje = hojeISO(), ontem = diaUtilAnterior(hoje), quando = ontem === addDias(hoje, -1) ? 'ontem' : 'sexta';
   if (fimDeSemana(hoje)) return;                                // fim de semana não cobra; segunda cobra a sexta
   if (lsGet('lembrete-' + hoje)) return;                         // uma vez por dia
@@ -1219,7 +1231,7 @@ function formChecklist(dia, a, cli, opt = {}) {
       <div class="hoje-item ${(a.conexoes || 0) >= mC ? 'feito' : ''}" data-box="conexoes"><div class="tt">Conexões</div><div class="meta">meta: ${mC} por dia</div>${numCtl('conexoes', a.conexoes, 'conexões')}</div>
       <div class="hoje-item ${a.post_feito ? 'feito' : ''}" data-box="post"><div class="tt">Post</div><div class="meta">meta: ${cli.meta_semanal || 4} por semana</div>
         <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-weight:700;font-size:.88rem"><input type="checkbox" name="post_feito" ${a.post_feito ? 'checked' : ''} data-chg="ck" ${dis}> Postei neste dia</label>
-        <input type="url" name="post_link" value="${esc(a.post_link || '')}" placeholder="Link, depois de publicar" data-chg="ck" ${dis} style="margin-top:8px"></div>
+        <input type="url" name="post_link" value="${esc(a.post_link || '')}" placeholder="Link, após postar" data-chg="ck" ${dis} style="margin-top:8px"></div>
       <div class="hoje-item ${(a.comentarios || 0) >= mMin ? 'feito' : ''}" data-box="comentarios"><div class="tt">Comentários</div><div class="meta">meta: ${mMin} a ${mMax} em posts do seu público</div>${numCtl('comentarios', a.comentarios, 'comentários')}</div>
     </div>
     <div class="row-between" style="margin-top:12px"><span class="hint" data-ckstatus>${opt.auto && !opt.somenteLeitura ? 'Salva sozinho a cada mudança.' : ''}</span>
@@ -2992,9 +3004,164 @@ ACT['anexo-baixar'] = async el => {
 };
 
 /* =====================================================================
+   TOUR INTERATIVO (spotlight nas telas de verdade) + PÁGINA "COMO FUNCIONA"
+   O tour roda no primeiro acesso e quando o mentorado pede ("Ver o tour de novo"). Texto leve de propósito:
+   ninguém lê manual sério, todo mundo lê manual engraçado.
+   ===================================================================== */
+const TOUR_PASSOS = [
+  { rota: 'inicio', centro: true, titulo: 'Opa, bem-vindo ao seu portal!', texto: 'Aqui mora o seu plano, os seus posts, o checklist do dia e os seus arquivos. Chega de material perdido no WhatsApp.\nO tour dura uns 2 minutos, menos que um café coado. Bora?' },
+  { rota: 'inicio', alvo: '#nav', lado: 'direita', titulo: 'O menu: cinco portas', texto: 'Início, Plano de ação, Posts, Calendário e Drive. Sem labirinto, sem 47 abas abertas.\nO número vermelho que aparece ao lado é “tem coisa esperando você”.' },
+  { rota: 'inicio', alvo: '.hero', lado: 'baixo', titulo: 'O painel de bordo', texto: 'O portal abre dizendo o que fazer agora: post aprovado esperando, ajuste pedido ou checklist em aberto.\nEmbaixo, 3 números: **quanto do plano** você já fez, sua **sequência** de dias úteis fechados e os **dias completos** da semana.' },
+  { rota: 'inicio', alvo: '.semana', lado: 'baixo', titulo: 'A semana em 7 bolinhas', texto: 'Bolinha verde com visto é dia fechado. Meio preenchida é “quase”.\nFim de semana não quebra a sua sequência: até a gente descansa.' },
+  { rota: 'inicio', alvo: '.hoje-grid', lado: 'cima', titulo: 'O checklist: 3 coisas por dia', texto: '**Conectar, postar e comentar.** Toque no + e no −, marque o post e pronto: salva sozinho.\nMenos itens que a sua lista do mercado. Na dúvida de como cumprir cada um, o “Como cumprir cada um dos três” logo abaixo explica.' },
+  { rota: 'posts/novo', alvo: '#li-previa', lado: 'esquerda', titulo: 'Seu post, do jeito que vai aparecer', texto: 'Você escreve o texto, anexa a imagem (ou o carrossel em PDF, ou o vídeo) e vê a **prévia igual ao LinkedIn**: corte do “ver mais”, hashtag azul, tudo.\nDá pra alternar entre computador e celular. Daqui você manda pra aprovação.' },
+  { rota: 'posts', centro: true, titulo: 'O vai e volta da aprovação', texto: '**1.** Você envia o texto e a imagem.\n**2.** O Igor aprova ou pede ajuste, com comentário.\n**3.** Aprovado, o portal te dá o atalho: copiar o texto, baixar a imagem, abrir o LinkedIn.\n**4.** Só **depois de publicar** você cola o link aqui. A gente ainda não lê mente.' },
+  { rota: 'inicio', alvo: '#notif-bell', abre: 'sino', lado: 'esquerda', titulo: 'O sininho: o único aviso que você precisa ouvir',
+    texto: 'Tudo que depende de você aparece aqui, e cada aviso te leva direto pro lugar certo:',
+    extra: `<div class="tour2-avisos">${[
+      ['Seu post foi aprovado', 'Copie, publique e cole o link.'], ['Pediram ajustes no seu post', 'Leia o comentário, ajuste e reenvie.'],
+      ['Nova mensagem no seu post', 'Responda por lá.'], ['Itens do plano estão atrasados', 'Abra o plano e marque o que já fez.'],
+      ['Falta você enviar um material', 'Mande pelo Drive e marque como enviado.']].map(([t, d]) => `<div><b>${t}</b><span>${d}</span></div>`).join('')}</div>
+      <p class="tour2-nota">Esqueceu o checklist de ontem? O portal dá um toque no dia útil seguinte. Os avisos são só aqui dentro: sua caixa de entrada agradece.</p>` },
+  { rota: 'plano', alvo: ['.pi-more', '.plano-cab', '#view .card'], lado: 'baixo', titulo: 'O plano é um manual de instruções', texto: 'Cada item tem **“Ver o passo a passo”**: como fazer, o que entregar e quanto tempo leva. Marcou, a barra anda.\nDá pra exportar o plano em PDF. Sim, até a tarefa que você ia adiar tem manual.' },
+  { rota: 'drive', alvo: ['.dr-pastas', '.dr-doc'], lado: 'baixo', titulo: 'O Drive: sua pasta com chave', texto: 'Prints, materiais, vídeos. Só você e o Igor enxergam.\nSe o Igor pedir um material, ele aparece no Início em “O que falta você me enviar”.' },
+  { rota: 'inicio', alvo: '.topbar .tema-btn', lado: 'baixo', titulo: 'Modo escuro: pra quem trabalha de madrugada', texto: 'O botão lua/sol troca o tema e a escolha fica salva. Seus olhos (e o seu sono) agradecem.' },
+  { rota: 'inicio', alvo: '#userchip', abre: 'menu', lado: 'esquerda', titulo: 'Seu menu: senha, tour e tutorial', texto: 'Aqui você **troca a senha** (recomendo trocar a que veio na mensagem), revê este tour e abre o vídeo “Como funciona” quando quiser.' },
+  { rota: 'inicio', centro: true, final: true, titulo: 'Pronto. Agora é com você.', texto: 'Primeira missão: **fechar o checklist de hoje.**\nSe travar, o vídeo “Como funciona” está no menu e o Igor está a uma mensagem de distância.' },
+];
+const TOUR = { i: 0, on: false, rid: 0, carregando: false };
+const tourTxt = t => md(t).replace(/\n/g, '<br>');
+const esperar = ms => new Promise(r => setTimeout(r, ms));
+async function esperarRenderTour(antes) {
+  for (let k = 0; k < 120; k++) { if (S.tk > antes && !/^carregando…$/.test($('#view').textContent.trim())) return; await esperar(50); }
+}
+const achaAlvo = a => { for (const s of [].concat(a || [])) { const e = $(s); if (e && e.getClientRects().length) return e; } return null; };
+function fechaPopsTour() { $('#notif-panel').classList.remove('aberto'); $('#user-menu').classList.remove('aberto'); }
+
+async function tour2Abrir(i = 0) {
+  fechaPopsTour(); const t = $('#tour2'); t.hidden = false; TOUR.on = true; document.body.classList.add('tour2-on');
+  await tour2Passo(i);
+}
+async function tour2Passo(i) {
+  i = Math.max(0, Math.min(TOUR_PASSOS.length - 1, i)); const id = ++TOUR.rid; TOUR.i = i; const p = TOUR_PASSOS[i];
+  fechaPopsTour();
+  const navega = p.rota && location.hash !== '#/' + p.rota;
+  if (navega) {   // mostra o passo novo JÁ (centralizado, botão travado) enquanto a tela carrega, pra ninguém clicar no cartão velho
+    TOUR.carregando = true; desenhaCard(p, i, true); posicionaTour(null, { centro: true });
+    const antes = S.tk; location.hash = '#/' + p.rota; await esperarRenderTour(antes); await esperar(150);
+  }
+  if (id !== TOUR.rid) return;
+  if (p.abre === 'sino') $('#notif-panel').classList.add('aberto');
+  if (p.abre === 'menu') $('#user-menu').classList.add('aberto');
+  const el = p.centro ? null : achaAlvo(p.alvo);
+  if (el && !p.abre) { const r0 = el.getBoundingClientRect(); if (r0.top < 70 || r0.bottom > innerHeight - 20) { el.scrollIntoView({ block: 'center', behavior: 'instant' }); await esperar(60); } }
+  desenhaCard(p, i); posicionaTour(el, p); TOUR.carregando = false;
+}
+function desenhaCard(p, i, carregando = false) {
+  const n = TOUR_PASSOS.length;
+  $('#tour2-card').innerHTML = `<div class="tour2-topo"><span class="tour2-cont">Passo ${i + 1} de ${n}</span><button class="tour2-x" data-act="tour2-pular" aria-label="Fechar o tour">✕</button></div>
+    <div class="tour2-barra"><i style="width:${(i + 1) / n * 100}%"></i></div>
+    <h3 class="tour2-tit">${esc(p.titulo)}</h3><div class="tour2-txt">${tourTxt(p.texto)}</div>${p.extra || ''}
+    <div class="tour2-rodape">${i === 0 ? '<span></span>' : '<button class="btn btn-sm" data-act="tour2-volta">Voltar</button>'}
+      <div class="row" style="gap:10px">${p.final ? '<button class="btn btn-sm" data-act="tour2-video">Ver o vídeo</button>' : '<button class="tour2-pular" data-act="tour2-pular">pular o tour</button>'}
+      <button class="btn btn-primary btn-sm" data-act="${p.final ? 'tour2-fim' : 'tour2-prox'}" id="tour2-ok" ${carregando ? 'disabled' : ''}>${p.final ? 'Começar' : i === 0 ? 'Bora' : 'Próximo'}</button></div></div>`;
+  const c = $('#tour2-card'); c.classList.remove('entra'); void c.offsetWidth; c.classList.add('entra'); $('#tour2-ok').focus({ preventScroll: true });
+}
+function posicionaTour(el, p) {
+  const foco = $('.tour2-foco'), card = $('#tour2-card'), m = 8, vw = innerWidth, vh = innerHeight, movel = vw <= 780;
+  card.style.cssText = ''; card.classList.remove('centro', 'movel');
+  const sem = !el;
+  foco.style.opacity = sem ? 0 : 1; $('.tour2-mask').classList.toggle('escuro', sem);
+  const rect = e => { const r = e.getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }; };
+  const uniao = () => { const extra = p.abre === 'sino' ? $('#notif-panel') : p.abre === 'menu' ? $('#user-menu') : null; if (!extra) return rect(el); const a = rect(el), b = rect(extra); const l = Math.min(a.left, b.left), t = Math.min(a.top, b.top), rr = Math.max(a.right, b.right), bb = Math.max(a.bottom, b.bottom); return { left: l, top: t, right: rr, bottom: bb, width: rr - l, height: bb - t }; };
+  if (!sem) { const r = uniao(); foco.style.cssText = `opacity:1;left:${r.left - m}px;top:${r.top - m}px;width:${r.width + m * 2}px;height:${r.height + m * 2}px`; }
+  if (sem) { card.classList.add('centro'); return; }
+  const r = uniao();
+  if (movel) {   // celular: o cartão encosta embaixo (ou em cima, se o alvo estiver na metade de baixo, como a barra do menu)
+    card.classList.add('movel'); if (r.top + r.height / 2 > vh * 0.52) card.style.cssText = 'top:12px;bottom:auto'; return;
+  }
+  const w = Math.min(400, vw - 24), h = card.offsetHeight, gap = 18;
+  const pos = {
+    direita: { l: r.right + gap, t: r.top }, esquerda: { l: r.left - gap - w, t: r.top },
+    baixo: { l: r.left + r.width / 2 - w / 2, t: r.bottom + gap }, cima: { l: r.left + r.width / 2 - w / 2, t: r.top - gap - h },
+  };
+  const cabe = q => q.l >= 12 && q.l + w <= vw - 12 && q.t >= 12 && q.t + h <= vh - 12;
+  const ordem = [p.lado, 'baixo', 'cima', 'direita', 'esquerda'].filter(Boolean);
+  let alvoPos = ordem.map(k => pos[k]).find(cabe);
+  if (!alvoPos) { const q = pos[ordem[0]]; alvoPos = { l: Math.max(12, Math.min(vw - w - 12, q.l)), t: Math.max(12, Math.min(vh - h - 12, q.t)) }; }
+  card.style.left = alvoPos.l + 'px'; card.style.top = alvoPos.t + 'px'; card.style.width = w + 'px';
+}
+async function tour2Fechar(gravar = true) {
+  TOUR.rid++; TOUR.on = false; $('#tour2').hidden = true; document.body.classList.remove('tour2-on'); fechaPopsTour();
+  if (gravar && S.user) { try { await sb.from('cli_novidades_vistas').upsert({ perfil_id: S.user.id, versao: NOVIDADES.versao }, { onConflict: 'perfil_id,versao' }); } catch (e) { /* tudo bem */ } }
+}
+ACT['tour2-prox'] = () => { if (!TOUR.carregando) tour2Passo(TOUR.i + 1); };
+ACT['tour2-volta'] = () => { if (!TOUR.carregando) tour2Passo(TOUR.i - 1); };
+ACT['tour2-pular'] = () => tour2Fechar(true);
+ACT['tour2-fim'] = async () => { await tour2Fechar(true); if (location.hash !== '#/inicio') ir('inicio'); toast('Tour concluído. Primeira missão: o checklist de hoje.'); };
+ACT['tour2-video'] = async () => { await tour2Fechar(true); ir('tutorial'); };
+ACT['tour-abrir'] = () => { $('#user-menu').classList.remove('aberto'); tour2Abrir(0); };
+ACT['ir-tutorial'] = () => { $('#user-menu').classList.remove('aberto'); ir('tutorial'); };
+document.addEventListener('keydown', ev => {
+  if (!TOUR.on) return;
+  if (ev.key === 'ArrowRight' || ev.key === 'Enter') { ev.preventDefault(); if (TOUR_PASSOS[TOUR.i].final) ACT['tour2-fim'](); else ACT['tour2-prox'](); }
+  if (ev.key === 'ArrowLeft') ACT['tour2-volta']();
+  if (ev.key === 'Escape') tour2Fechar(true);
+}, true);
+window.addEventListener('resize', debounce(() => { if (TOUR.on) { const p = TOUR_PASSOS[TOUR.i]; posicionaTour(p.centro ? null : achaAlvo(p.alvo), p); } }, 120));
+async function verificarTour() {
+  let vistas = [];
+  try { vistas = await q(sb.from('cli_novidades_vistas').select('versao,vista_em').eq('perfil_id', S.user.id).order('vista_em')); } catch (e) { return; }
+  S.tourVistoEm = vistas[0] ? vistas[0].vista_em : null;
+  if (!vistas.some(v => v.versao === NOVIDADES.versao)) await tour2Abrir(0);
+}
+
+/* =====================================================================
+   PÁGINA "COMO FUNCIONA": vídeo, rotina, avisos explicados e dúvidas rápidas
+   ===================================================================== */
+const TUTORIAL_VIDEO = 'tutorial/tutorial.mp4';
+const TUTORIAL_CAPITULOS = [[0, 'Abertura'], [9, 'Entrar'], [29, 'O Início'], [50, 'Checklist diário'], [76, 'Escrever o post'], [112, 'Aprovar e publicar'], [140, 'Avisos do sino'], [172, 'Plano de ação'], [197, 'Drive e modo escuro'], [212, 'Resumo']];   // [segundo, título] do vídeo tutorial
+const AVISOS = [
+  ['Seu post foi aprovado', 'O Igor aprovou. É a sua deixa.', 'Abre o post, copia o texto, baixa a imagem, publica no LinkedIn e cola o link aqui. O item “post” do checklist fecha sozinho.', 'Posts'],
+  ['Pediram ajustes no seu post', 'Tem comentário do Igor esperando.', 'Abre o post, lê o comentário, ajusta o texto (ou a imagem) e envia de novo. Vira a versão 2.', 'Posts'],
+  ['Nova mensagem no seu post', 'O Igor escreveu na conversa do post.', 'Responde por lá mesmo, no campo “Escrever pro Igor”. Fica tudo registrado no post.', 'Posts'],
+  ['Itens do plano estão atrasados', 'Passou do prazo e o item ainda está aberto.', 'Abre o plano. O que você já fez, marca. O que travou, fala com o Igor antes de virar bola de neve.', 'Plano'],
+  ['Falta você enviar um material', 'O Igor pediu um arquivo ou informação.', 'Manda pelo Drive e, no Início, toca em “Marquei como enviado”. O Igor recebe o aviso.', 'Início'],
+  ['Você fechou o checklist de ontem?', 'Um lembrete que aparece uma vez por dia útil.', 'Toca em “Preencher agora” e ajusta o dia. Fim de semana não cobra; na segunda ele cobra a sexta.', 'Calendário'],
+];
+const FAQ = [
+  ['Esqueci a senha. E agora?', 'Fala com o Igor: ele gera uma nova em segundos. Dentro do portal você troca a senha pelo menu do canto superior direito (seu nome).'],
+  ['Posso editar o post depois de enviar?', 'Só se o Igor pedir ajustes. Enviou, está nas mãos dele. Por isso vale reler antes de apertar “Enviar para aprovação”.'],
+  ['Cadê o botão de publicar?', 'Ele só aparece depois que o post é aprovado. Antes disso, a tela mostra “Aguardando aprovação”.'],
+  ['Onde coloco o link do post?', 'Depois de publicar no LinkedIn, na tela do post aprovado (“Já publicou?”). Antes de postar não existe link, então não tem o que colar.'],
+  ['O que conta como dia “completo” no checklist?', 'Bater a meta de conexões, marcar o post do dia e bater o mínimo de comentários. As metas aparecem em cada caixinha.'],
+  ['Funciona no celular?', 'Funciona. O menu vira uma barra embaixo da tela e o simulador do LinkedIn tem a visão “Celular”.'],
+  ['Quem vê meus posts e arquivos?', 'Só você e o Igor. Nenhum outro mentorado enxerga nada seu.'],
+];
+const fmtTempoVideo = s => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
+function vTutorial() {
+  const caps = TUTORIAL_CAPITULOS.length ? `<div class="tut-caps">${TUTORIAL_CAPITULOS.map(([t, n]) => `<button class="chip-btn" data-act="tut-ir" data-t="${t}"><span class="mono">${fmtTempoVideo(t)}</span> ${esc(n)}</button>`).join('')}</div>` : '';
+  return { kicker: 'Passo a passo', titulo: 'Como funciona', refrescavel: false,
+    html: `<div class="card tut-topo"><div class="row-between" style="align-items:flex-start"><div style="max-width:620px"><div class="kicker">Tutorial</div><h2 style="font-size:1.3rem;margin-top:3px">Em 3 minutos você aprende o portal inteiro</h2>
+        <p class="desc" style="margin:6px 0 0">Assista ao vídeo, faça o tour com as telas de verdade ou vá direto pro que interessa. Prometemos zero jargão e uma piada ruim.</p></div>
+        <button class="btn btn-primary" data-act="tour-abrir">${svg('tutorial', 16)} Fazer o tour interativo</button></div></div>
+      <div class="card tut-video"><div class="tut-moldura"><video id="tut-video" controls preload="metadata" playsinline poster="tutorial/poster.jpg" src="${esc(TUTORIAL_VIDEO)}"></video>
+        <div class="tut-sem" id="tut-sem" hidden>O vídeo ainda não está no ar por aqui. Enquanto isso, o tour interativo mostra tudo.</div></div>${caps}</div>
+      <div class="tut-rotina"><div class="card"><div class="kicker">Todo dia útil</div><h3>Checklist</h3><p class="desc">Conectar, postar e comentar. Leva um minuto pra marcar e é o que mostra pro Igor onde você está.</p></div>
+        <div class="card"><div class="kicker">A cada post</div><h3>Escrever, aprovar, publicar</h3><p class="desc">Texto e imagem pra aprovação. Aprovado, você publica no LinkedIn e cola o link aqui.</p></div>
+        <div class="card"><div class="kicker">Toda semana</div><h3>Plano de ação</h3><p class="desc">Marque o que concluiu. Cada item tem o passo a passo, o que entregar e o tempo estimado.</p></div></div>
+      <div class="card"><h2>Os avisos do sininho, um por um</h2><p class="desc">O aviso é só aqui dentro (sem WhatsApp, sem e-mail). Tocou no aviso, o portal leva você direto ao lugar certo.</p>
+        <div class="tut-avisos">${AVISOS.map(([t, quando, fazer, onde]) => `<div class="tut-aviso"><div class="tut-aviso-t"><span class="chip neutro sem-dot">${esc(onde)}</span><b>${esc(t)}</b></div><div class="tut-aviso-q">${esc(quando)}</div><div class="tut-aviso-f"><span>O que fazer</span>${esc(fazer)}</div></div>`).join('')}</div></div>
+      <div class="card"><h2>Dúvidas rápidas</h2>${FAQ.map(([p, r]) => `<details class="faq"><summary>${esc(p)}</summary><p>${esc(r)}</p></details>`).join('')}</div>`,
+    depois: () => { const v = $('#tut-video'); if (v) v.addEventListener('error', () => { v.hidden = true; $('#tut-sem').hidden = false; }, { once: true }); },
+  };
+}
+ACT['tut-ir'] = el => { const v = $('#tut-video'); if (v) { v.currentTime = Number(el.dataset.t); v.play().catch(() => {}); v.scrollIntoView({ behavior: 'smooth', block: 'center' }); } };
+
+/* =====================================================================
    REGISTRO DE TELAS + partida (sempre o último arquivo)
    ===================================================================== */
-const VIEWS_CLIENTE = { inicio: vInicio, plano: vPlano, posts: vPosts, calendario: vCalendario, drive: vDrive };
+const VIEWS_CLIENTE = { inicio: vInicio, plano: vPlano, posts: vPosts, calendario: vCalendario, drive: vDrive, tutorial: vTutorial };
 const VIEWS_ADMIN = { dashboard: vDashboard, aprovacoes: vAprovacoes, post: vPostAdmin, mentorados: vMentorados, mentorado: vMentorado, modelos: vModelos, modelo: vModelo, lancamento: vLancamento, config: vConfig };
 boot();
 
