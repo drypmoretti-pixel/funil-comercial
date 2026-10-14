@@ -588,6 +588,15 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 @media (max-width:900px){.tut-rotina,.tut-avisos{grid-template-columns:1fr}}
 @media (max-width:780px){.nav-item[data-to="tutorial"]{display:none}}
 
+.tut-check{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.tut-check b{display:block;font-family:var(--f-title);font-size:.95rem}.tut-check span{font-size:.84rem;color:var(--text-secondary)}
+.tut-check.ok{justify-content:flex-start;background:var(--accent-wash);border-color:rgba(0,142,67,.35)}
+.tut-check-ic{width:34px;height:34px;border-radius:50%;background:var(--accent-fill);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tut-check-ic svg{stroke-width:3}
+.btn.pulsa{animation:tutpulsa 1.4s ease-in-out infinite}
+@keyframes tutpulsa{0%,100%{box-shadow:0 0 0 0 rgba(0,142,67,.45)}50%{box-shadow:0 0 0 8px rgba(0,142,67,0)}}
+.tut-convite{border-color:rgba(0,142,67,.45);background:linear-gradient(180deg,var(--destaque-bg),var(--surface-1))}
+
 /* ---------- drive ---------- */
 .ic-btn{font-size:1.1rem;font-weight:800}
 .dr-doc{position:relative;min-height:50vh;border-radius:14px}
@@ -1337,6 +1346,7 @@ async function vInicio(ctx) {
     q(sb.from('cli_materiais_pendentes').select('*').eq('cliente_id', cli.id).eq('status', 'pendente').order('pedido_em')),
   ]);
   const plano = planos[0] || null;
+  const videoOk = ctx.modo !== 'cliente' || !!(await videoConfirmado(S.user.id));
   const itens = plano ? await q(sb.from('cli_plano_itens').select('*').eq('plano_id', plano.id).order('fase_ordem').order('ordem').order('id')) : [];
   const mapa = {}; ativ.forEach(a => { mapa[a.data] = a; });
   const aHoje = mapa[hoje], stHoje = statusAtividade(aHoje, cli);
@@ -1397,7 +1407,7 @@ async function vInicio(ctx) {
       <a class="btn-link" href="${lnk(ctx, 'calendario')}">ver calendário</a></div>
       ${sem.html}${formChecklist(hoje, aHoje, cli, { auto: !ro, somenteLeitura: ro })}${rotina}</div>
       ${planoCard}</div>
-      <div>${postsCard}${cardPendencias(pend, !ro)}<div class="card"><h2>Etapas da mentoria</h2><p class="desc">Onde você está no onboarding.</p>${renderStepper(prog)}</div></div></div>`,
+      <div>${videoOk ? '' : `<div class="card tut-convite"><div class="kicker">3 minutinhos</div><h2>Assista ao vídeo do portal</h2><p class="desc" style="margin:4px 0 12px">Mostra tudo o que você vai usar aqui. No fim, confirme que assistiu.</p><a class="btn btn-primary btn-sm" href="${lnk(ctx, 'tutorial')}">${svg('tutorial', 15)} Assistir agora</a></div>`}${postsCard}${cardPendencias(pend, !ro)}<div class="card"><h2>Etapas da mentoria</h2><p class="desc">Onde você está no onboarding.</p>${renderStepper(prog)}</div></div></div>`,
   };
 }
 
@@ -2341,6 +2351,8 @@ async function vDashboard() {
     q(sb.from('cli_posts').select('id,cliente_id,titulo,versao,enviado_em').eq('status', 'aguardando').order('enviado_em').order('id')),
     q(sb.from('cli_planos').select('id,cliente_id').eq('status', 'ativo').not('cliente_id', 'is', null)),
     acessos()]);
+  const [perfisV, videos] = await Promise.all([q(sb.from('cli_perfis').select('id,cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), q(sb.from('cli_novidades_vistas').select('perfil_id,vista_em').eq('versao', VIDEO_VISTO))]);
+  const viuVideo = new Set(perfisV.filter(p => videos.some(v => v.perfil_id === p.id)).map(p => p.cliente_id));
   const itensAtras = planos.length ? await paginado(() => sb.from('cli_plano_itens').select('id,plano_id').in('plano_id', planos.map(p => p.id)).eq('concluido', false).lt('prazo', hoje).order('id')) : [];
   const comLogin = new Set(perfis.map(p => p.cliente_id)), ativos = cls.filter(c => c.status === 'ativo');
   const ativosLogin = ativos.filter(c => comLogin.has(c.id));
@@ -2367,6 +2379,8 @@ async function vDashboard() {
       ${nunca.length || semLogin.length ? `<div class="card alerta"><h2>Acesso</h2><p class="desc">${nunca.length ? `<b>${nunca.length}</b> com login que nunca entraram` : ''}${nunca.length && semLogin.length ? ' · ' : ''}${semLogin.length ? `<b>${semLogin.length}</b> ativos sem login` : ''}</p>
         ${[...nunca.map(c => [c, 'nunca entrou']), ...semLogin.map(c => [c, 'sem login'])].map(([c, t]) => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${c.id}/acesso"><div class="txt">${esc(c.nome)}</div><span class="chip alerta">${t}</span></a>`).join('')}
         <div style="margin-top:10px"><a class="btn btn-sm" href="#/admin/lancamento">Gerar acessos</a></div></div>` : ''}
+      ${ativosLogin.length ? `<div class="card"><div class="row-between"><div><h2>Vídeo tutorial</h2><p class="desc" style="margin:2px 0 0">Quem confirmou que assistiu até o fim.</p></div><span class="chip ${ativosLogin.every(c => viuVideo.has(c.id)) ? 'ok' : 'alerta'}">${ativosLogin.filter(c => viuVideo.has(c.id)).length} de ${ativosLogin.length} assistiram</span></div>
+        ${ativosLogin.filter(c => !viuVideo.has(c.id)).map(c => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${c.id}"><div class="txt">${esc(c.nome)}</div><span class="chip neutro">ainda não assistiu</span></a>`).join('') || '<div class="vazio" style="padding:10px 0">Todo mundo assistiu.</div>'}</div>` : ''}
       <div class="card"><h2>Precisam de atenção hoje</h2><p class="desc">Ainda não fecharam o checklist de hoje.</p>
         ${atencao.length ? atencao.map(({ c, st }) => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${c.id}"><div class="txt">${esc(c.nome)}</div><span class="chip ${st === 'vazio' ? 'critico' : 'alerta'}">${st === 'vazio' ? 'parado hoje' : 'parcial hoje'}</span></a>`).join('') : '<div class="vazio">Todo mundo em dia hoje.</div>'}</div>
       ${rankAtraso.length ? `<div class="card"><h2>Planos com itens atrasados</h2><p class="desc">Quem mais está devendo no plano de ação.</p>${rankAtraso.map(x => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${x.c.id}/plano"><div class="txt">${esc(x.c.nome)}</div><span class="chip critico">${x.n} ${x.n === 1 ? 'atrasado' : 'atrasados'}</span></a>`).join('')}</div>` : ''}
@@ -2385,6 +2399,8 @@ async function vMentorados() {
     q(sb.from('cli_posts').select('cliente_id').eq('status', 'aguardando')),
     q(sb.from('cli_planos').select('id,cliente_id').eq('status', 'ativo').not('cliente_id', 'is', null)),
     acessos()]);
+  const [perfisV, videos] = await Promise.all([q(sb.from('cli_perfis').select('id,cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), q(sb.from('cli_novidades_vistas').select('perfil_id').eq('versao', VIDEO_VISTO))]);
+  const viuVideo = new Set(perfisV.filter(p => videos.some(v => v.perfil_id === p.id)).map(p => p.cliente_id));
   const itens = planos.length ? await paginado(() => sb.from('cli_plano_itens').select('plano_id,concluido').in('plano_id', planos.map(p => p.id)).order('id')) : [];
   const comLogin = new Set(perfis.map(p => p.cliente_id));
   const linha = c => {
@@ -2398,7 +2414,7 @@ async function vMentorados() {
       <div class="meta">${esc([c.empresa, c.nivel].filter(Boolean).join(' · ') || 'sem empresa/nível')} · ${esc(c.status)}</div></div>
       <div class="row">${ag ? `<span class="chip aguardando">${ag} ${ag === 1 ? 'post' : 'posts'} na fila</span>` : ''}${c.status === 'ativo' ? `<span class="chip ${badge[0]}">${badge[1]}</span>` : `<span class="chip neutro">${esc(c.status)}</span>`}</div></div>
       <div class="stats"><span>Etapa: <b>${esc(etapaAtualDe(c.id, prog).nome)}</b></span><span>Plano: <b>${pct == null ? 'sem plano' : pct + '%'}</b></span>
-      <span>Hoje: <b>${a0 ? a0.conexoes : 0}/${c.meta_conexoes || 5}</b> con · <b>${a0 ? a0.comentarios : 0}/${c.meta_comentarios_min || 5}</b> com</span><span>Pendências: <b>${pe}</b></span>
+      <span>Hoje: <b>${a0 ? a0.conexoes : 0}/${c.meta_conexoes || 5}</b> con · <b>${a0 ? a0.comentarios : 0}/${c.meta_comentarios_min || 5}</b> com</span><span>Pendências: <b>${pe}</b></span><span>Vídeo: <b>${!comLogin.has(c.id) ? '—' : viuVideo.has(c.id) ? 'assistiu ✓' : 'não assistiu'}</b></span>
       <span>Último acesso: <b>${!comLogin.has(c.id) ? '—' : ac && ac.ultimo_login ? esc(tempoAtras(ac.ultimo_login)) : 'nunca entrou'}</b></span></div></a>`;
   };
   const ativos = cls.filter(c => c.status === 'ativo'), outros = cls.filter(c => c.status !== 'ativo');
@@ -3120,6 +3136,10 @@ async function verificarTour() {
    PÁGINA "COMO FUNCIONA": vídeo, rotina, avisos explicados e dúvidas rápidas
    ===================================================================== */
 const TUTORIAL_VIDEO = 'tutorial/tutorial.mp4';
+// confirmação de que assistiu: fica em cli_novidades_vistas (o admin já lê essa tabela). Mudou o vídeo? Troque a versão e todos confirmam de novo.
+const VIDEO_VISTO = 'video-tutorial-1';
+const VID = { assistido: 0, ultimo: null };   // segundos realmente reproduzidos (pular pro fim não conta)
+async function videoConfirmado(perfilId) { const r = await q(sb.from('cli_novidades_vistas').select('vista_em').eq('perfil_id', perfilId).eq('versao', VIDEO_VISTO).limit(1)); return r[0] ? r[0].vista_em : null; }
 const TUTORIAL_CAPITULOS = [[0, 'Abertura'], [9, 'Entrar'], [29, 'O Início'], [50, 'Checklist diário'], [76, 'Escrever o post'], [112, 'Aprovar e publicar'], [140, 'Avisos do sino'], [172, 'Plano de ação'], [197, 'Drive e modo escuro'], [212, 'Resumo']];   // [segundo, título] do vídeo tutorial
 const AVISOS = [
   ['Seu post foi aprovado', 'O Igor aprovou. É a sua deixa.', 'Abre o post, copia o texto, baixa a imagem, publica no LinkedIn e cola o link aqui. O item “post” do checklist fecha sozinho.', 'Posts'],
@@ -3139,23 +3159,43 @@ const FAQ = [
   ['Quem vê meus posts e arquivos?', 'Só você e o Igor. Nenhum outro mentorado enxerga nada seu.'],
 ];
 const fmtTempoVideo = s => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
-function vTutorial() {
+async function vTutorial(ctx) {
+  const cliente = ctx.modo === 'cliente', visto = cliente ? await videoConfirmado(S.user.id) : null; VID.assistido = 0; VID.ultimo = null;
   const caps = TUTORIAL_CAPITULOS.length ? `<div class="tut-caps">${TUTORIAL_CAPITULOS.map(([t, n]) => `<button class="chip-btn" data-act="tut-ir" data-t="${t}"><span class="mono">${fmtTempoVideo(t)}</span> ${esc(n)}</button>`).join('')}</div>` : '';
   return { kicker: 'Passo a passo', titulo: 'Como funciona', refrescavel: false,
     html: `<div class="card tut-topo"><div class="row-between" style="align-items:flex-start"><div style="max-width:620px"><div class="kicker">Tutorial</div><h2 style="font-size:1.3rem;margin-top:3px">Em 3 minutos você aprende o portal inteiro</h2>
         <p class="desc" style="margin:6px 0 0">Assista ao vídeo, faça o tour com as telas de verdade ou vá direto pro que interessa. Prometemos zero jargão e uma piada ruim.</p></div>
         <button class="btn btn-primary" data-act="tour-abrir">${svg('tutorial', 16)} Fazer o tour interativo</button></div></div>
       <div class="card tut-video"><div class="tut-moldura"><video id="tut-video" controls preload="metadata" playsinline poster="tutorial/poster.jpg" src="${esc(TUTORIAL_VIDEO)}"></video>
-        <div class="tut-sem" id="tut-sem" hidden>O vídeo ainda não está no ar por aqui. Enquanto isso, o tour interativo mostra tudo.</div></div>${caps}</div>
+        <div class="tut-sem" id="tut-sem" hidden>O vídeo ainda não está no ar por aqui. Enquanto isso, o tour interativo mostra tudo.</div></div>${caps}
+        <div class="tut-check ${visto ? 'ok' : ''}" id="tut-check">${visto ? `<span class="tut-check-ic">${svg('check', 18)}</span><div><b>Você confirmou que assistiu</b><span>em ${esc(new Date(visto).toLocaleDateString('pt-BR'))}. Valeu!</span></div>`
+          : cliente ? `<div><b>Assistiu até o fim?</b><span id="tut-check-txt">Assista ao vídeo inteiro pra liberar a confirmação. O Igor vê quem já assistiu.</span></div><button class="btn btn-primary" data-act="tut-confirmar" id="tut-confirmar" disabled>${svg('check', 16)} Assisti ao vídeo</button>`
+          : '<div><b>Confirmação do mentorado</b><span>No portal dele, o botão “Assisti ao vídeo” só libera depois que o vídeo termina.</span></div>'}</div></div>
       <div class="tut-rotina"><div class="card"><div class="kicker">Todo dia útil</div><h3>Checklist</h3><p class="desc">Conectar, postar e comentar. Leva um minuto pra marcar e é o que mostra pro Igor onde você está.</p></div>
         <div class="card"><div class="kicker">A cada post</div><h3>Escrever, aprovar, publicar</h3><p class="desc">Texto e imagem pra aprovação. Aprovado, você publica no LinkedIn e cola o link aqui.</p></div>
         <div class="card"><div class="kicker">Toda semana</div><h3>Plano de ação</h3><p class="desc">Marque o que concluiu. Cada item tem o passo a passo, o que entregar e o tempo estimado.</p></div></div>
       <div class="card"><h2>Os avisos do sininho, um por um</h2><p class="desc">O aviso é só aqui dentro (sem WhatsApp, sem e-mail). Tocou no aviso, o portal leva você direto ao lugar certo.</p>
         <div class="tut-avisos">${AVISOS.map(([t, quando, fazer, onde]) => `<div class="tut-aviso"><div class="tut-aviso-t"><span class="chip neutro sem-dot">${esc(onde)}</span><b>${esc(t)}</b></div><div class="tut-aviso-q">${esc(quando)}</div><div class="tut-aviso-f"><span>O que fazer</span>${esc(fazer)}</div></div>`).join('')}</div></div>
       <div class="card"><h2>Dúvidas rápidas</h2>${FAQ.map(([p, r]) => `<details class="faq"><summary>${esc(p)}</summary><p>${esc(r)}</p></details>`).join('')}</div>`,
-    depois: () => { const v = $('#tut-video'); if (v) v.addEventListener('error', () => { v.hidden = true; $('#tut-sem').hidden = false; }, { once: true }); },
+    depois: () => {
+      const v = $('#tut-video'); if (!v) return;
+      v.addEventListener('error', () => { v.hidden = true; $('#tut-sem').hidden = false; }, { once: true });
+      if (!cliente || visto) return;
+      const liberar = () => { const b = $('#tut-confirmar'); if (!b || !b.disabled) return; b.disabled = false; b.classList.add('pulsa'); setText($('#tut-check-txt'), 'Pronto! Agora é só confirmar.'); };
+      v.addEventListener('timeupdate', () => {   // soma só o tempo assistido de verdade (pulos não contam)
+        const t = v.currentTime; if (VID.ultimo != null && !v.paused && t > VID.ultimo && t - VID.ultimo < 1.5) VID.assistido += t - VID.ultimo; VID.ultimo = t;
+        if (v.duration && VID.assistido >= v.duration * 0.85 && t >= v.duration - 3) liberar();
+        else if (v.duration) { const f = Math.round(VID.assistido / v.duration * 100); setText($('#tut-check-txt'), `Você já assistiu ${f}% do vídeo. Vai até o fim pra liberar a confirmação.`); }
+      });
+      v.addEventListener('seeking', () => { VID.ultimo = null; });
+      v.addEventListener('ended', () => { if (v.duration && VID.assistido >= v.duration * 0.85) liberar(); });
+    },
   };
 }
+ACT['tut-confirmar'] = async el => {
+  await ocupado(el, async () => { const { error } = await sb.from('cli_novidades_vistas').upsert({ perfil_id: S.user.id, versao: VIDEO_VISTO }, { onConflict: 'perfil_id,versao' }); if (error) throw error; });
+  toast('Confirmado. O Igor já sabe que você assistiu.'); await render();
+};
 ACT['tut-ir'] = el => { const v = $('#tut-video'); if (v) { v.currentTime = Number(el.dataset.t); v.play().catch(() => {}); v.scrollIntoView({ behavior: 'smooth', block: 'center' }); } };
 
 /* =====================================================================
