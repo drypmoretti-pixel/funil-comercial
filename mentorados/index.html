@@ -3183,7 +3183,8 @@ async function vTutorial(ctx) {
       if (!cliente || visto) return;
       const liberar = () => { const b = $('#tut-confirmar'); if (!b || !b.disabled) return; b.disabled = false; b.classList.add('pulsa'); setText($('#tut-check-txt'), 'Pronto! Agora é só confirmar.'); };
       v.addEventListener('timeupdate', () => {   // soma só o tempo assistido de verdade (pulos não contam)
-        const t = v.currentTime; if (VID.ultimo != null && !v.paused && t > VID.ultimo && t - VID.ultimo < 1.5 * Math.max(1, v.playbackRate)) VID.assistido += t - VID.ultimo;   // vale assistir acelerado; pulo (seeking) não conta VID.ultimo = t;
+        const t = v.currentTime; if (VID.ultimo != null && !v.paused && t > VID.ultimo && t - VID.ultimo < 1.5 * Math.max(1, v.playbackRate)) VID.assistido += t - VID.ultimo;
+        VID.ultimo = t;   // vale assistir acelerado; pulo (seeking) não conta
         if (v.duration && VID.assistido >= v.duration * 0.85 && t >= v.duration - 3) liberar();
         else if (v.duration) { const f = Math.round(VID.assistido / v.duration * 100); setText($('#tut-check-txt'), `Você já assistiu ${f}% do vídeo. Vai até o fim pra liberar a confirmação.`); }
       });
