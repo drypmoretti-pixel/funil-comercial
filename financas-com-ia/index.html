@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seu sistema financeiro com o Claude | Método Demanda Infinita®</title>
+<meta name="description" content="Assista ao vídeo e use esta página como mapa: como o Claude edita, o caderno de regras que ele aprende e os pedidos prontos pra copiar.">
+<meta property="og:title" content="O Claude virou meu editor de vídeo">
+<meta property="og:description" content="Assista ao vídeo e use esta página como mapa: como o Claude edita, o caderno de regras que ele aprende e os pedidos prontos pra copiar.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://demandainfinita.com/claude-editor/">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+  @page{size:A4; margin:16mm 15mm 16mm 15mm;}
+  :root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE;--warn:#C2410C;}
+  *{box-sizing:border-box;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact; scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.55;}
+  h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:600;}
+  .pb{break-before:page;}
+  .avoid{break-inside:avoid;}
+
+  /* capa */
+  .cover{min-height:255mm;display:flex;flex-direction:column;justify-content:center;text-align:center;}
+  .cover img.logo{width:84px;height:84px;margin:0 auto 22px;}
+  .kicker{font-size:11px;font-weight:700;letter-spacing:1.6px;color:var(--green);text-transform:uppercase;}
+  .cover h1{font-size:40px;font-weight:800;line-height:1.12;margin:12px 0 14px;}
+  .cover .sub{font-size:15px;color:var(--gray);max-width:420px;margin:0 auto;}
+  .badge{display:inline-block;margin:24px auto 0;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px;}
+
+  /* vídeo */
+  .video{margin:8px auto 8px;max-width:860px;}
+  .video .kv{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);text-align:center;margin-bottom:6px;}
+  .video h2{font-size:24px;text-align:center;margin-bottom:16px;line-height:1.25;}
+  .video .frame{position:relative;padding-top:56.25%;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 14px 40px rgba(0,0,0,.18);border:1px solid var(--line);}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .jump{display:block;width:fit-content;margin:18px auto 0;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13.5px;color:var(--green);text-decoration:none;border:1.5px solid var(--green);background:#fff;border-radius:999px;padding:9px 20px;}
+  .jump:hover{background:var(--green);color:#fff;}
+
+  h2.sec{font-size:22px;font-weight:800;padding-bottom:8px;border-bottom:2px solid var(--green);margin-bottom:14px;}
+  h2.sec .tag{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+  h3{font-size:15px;font-weight:800;margin:16px 0 6px;}
+  .lead{font-size:13.5px;}
+  .lead strong{color:var(--green);}
+  .analogy{font-size:13.5px;border-left:4px solid var(--green-light);padding:2px 0 2px 13px;margin:0 0 12px;}
+  .analogy strong{color:var(--green);}
+
+  .card{background:var(--card);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+  .white{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  .f{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;break-inside:avoid;}
+  .f .n{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--green);}
+  .f .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;margin:2px 0;}
+  .f .d{font-size:11.5px;color:var(--gray);line-height:1.4;}
+  a.f{display:block;color:inherit;text-decoration:none;transition:border-color .15s, transform .15s;}
+  a.f:hover{border-color:var(--green);transform:translateY(-2px);}
+
+  /* ícones desenhados */
+  svg.ic{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block;}
+  .f svg.ic{width:24px;height:24px;margin-bottom:5px;}
+  .term svg.ic{margin:0 auto 7px;width:28px;height:28px;}
+
+  /* termos / glossário */
+  .term{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 12px;text-align:center;break-inside:avoid;}
+  .term .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13.5px;}
+  .term .d{font-size:11px;color:var(--gray);margin-top:3px;line-height:1.35;}
+
+  /* diagrama */
+  .dg{margin:16px 0;text-align:center;break-inside:avoid;}
+  .dg svg{width:100%;height:auto;max-width:620px;}
+  .dg figcaption{font-size:10.5px;color:var(--gray);margin-top:8px;font-style:italic;}
+
+  .prompt{background:#0A0F0C;border:1px solid rgba(18,184,94,.3);border-radius:12px;padding:11px 14px 10px;margin:10px 0;break-inside:avoid;}
+  .prompt .l{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--green-light);margin-bottom:6px;}
+  .prompt pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:'JetBrains Mono',monospace;font-size:10.8px;line-height:1.55;color:#E8F3EC;}
+  .prompt.master{border:2px solid var(--green-light);box-shadow:0 0 0 4px rgba(18,184,94,.12);}
+  .prompt.master .l{display:inline-block;background:var(--green-light);color:#06130b;padding:3px 10px;border-radius:999px;font-weight:800;}
+
+  .tip,.alert{border-left:4px solid var(--green);background:var(--card);border-radius:8px;padding:9px 13px;margin:11px 0;font-size:12px;break-inside:avoid;}
+  .tip b,.alert b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--green);margin-bottom:2px;font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert b{color:var(--warn);}
+
+  table{border-collapse:collapse;width:100%;font-size:11.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0;}
+  th{background:var(--card);text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid var(--line);}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+  tr:last-child td{border-bottom:0;}
+  tr{break-inside:avoid;}
+
+  .steps{display:flex;flex-direction:column;gap:9px;margin:10px 0;}
+  .step{display:flex;gap:11px;align-items:flex-start;break-inside:avoid;}
+  .step .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px;}
+  .step .t b{font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;}
+  code{font-family:'JetBrains Mono',monospace;background:var(--card);padding:1px 5px;border-radius:4px;font-size:11px;}
+
+  .quest{border:2px solid var(--green);background:#fff;border-radius:16px;padding:20px 24px;margin:16px 0;text-align:center;break-inside:avoid;}
+  .quest .e{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+  .quest .q{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:18px;line-height:1.35;max-width:520px;margin:0 auto;}
+  .quest .s{font-size:11.5px;color:var(--gray);margin-top:10px;}
+
+  .behind{font-size:11.5px;color:var(--gray);margin:-4px 0 10px;padding-left:2px;}
+  .behind b{color:var(--green);font-weight:700;}
+  .when{font-size:12px;color:var(--gray);margin:0 0 -2px;}
+  .when b{color:var(--text);font-weight:700;}
+
+  /* bloco técnico que abre sob demanda */
+  details.dev{border:1.5px dashed var(--line);border-radius:12px;background:#fff;margin:14px 0;padding:0;}
+  details.dev summary{cursor:pointer;list-style:none;padding:11px 15px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:10px;}
+  details.dev summary::-webkit-details-marker{display:none;}
+  details.dev summary::before{content:"+";flex:0 0 22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;}
+  details.dev[open] summary::before{content:"–";}
+  details.dev summary small{display:block;font-weight:500;font-size:11px;color:var(--gray);font-family:'Inter',sans-serif;}
+  details.dev .in{padding:0 15px 12px;}
+  details.dev table{margin:4px 0 0;}
+
+  /* comparação visual bad/good */
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+  .cmp .col{border-radius:12px;padding:12px 14px;background:#fff;}
+  .cmp .bad{border:2px solid var(--warn);}
+  .cmp .good{border:2px solid var(--green);}
+  .cmp .h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;text-align:center;margin-bottom:8px;}
+  .cmp .bad .h{color:var(--warn);}
+  .cmp .good .h{color:var(--green);}
+  .cmp .row{display:flex;align-items:center;gap:8px;font-size:11.5px;padding:7px 0;border-top:1px solid var(--line);}
+  .cmp .row:first-of-type{border-top:0;}
+
+  /* impacto visual */
+  .impact{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0;text-align:center;}
+  .impact .v{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 10px;}
+  .impact .v.ok{border:2px solid var(--green);}
+  .impact .lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:var(--gray);letter-spacing:1px;}
+  .impact .ico{width:64px;height:auto;margin:8px auto;display:block;}
+  .impact .cap{font-size:10.5px;color:var(--gray);}
+  .impact .v.ok .cap{color:var(--green);font-weight:700;}
+
+  /* conversa de exemplo */
+  .convo{margin:12px 0;}
+  .msg{max-width:82%;padding:9px 13px;border-radius:13px;margin-bottom:8px;font-size:11.3px;line-height:1.5;break-inside:avoid;}
+  .msg .who{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:9px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
+  .msg.you{background:#fff;border:1px solid var(--line);margin-left:auto;border-bottom-right-radius:3px;}
+  .msg.you .who{color:var(--gray);text-align:right;}
+  .msg.ai{background:#0A0F0C;color:#E8F3EC;margin-right:auto;border-bottom-left-radius:3px;font-family:'JetBrains Mono',monospace;font-size:10.6px;}
+  .msg.ai .who{color:var(--green-light);}
+  .msg.save{background:var(--card);border:2px dashed var(--green);margin:0 auto 8px;max-width:92%;text-align:center;font-weight:700;color:var(--green);border-radius:10px;}
+
+  .cta{margin-top:18px;padding:26px 24px;border-radius:18px;text-align:center;background:radial-gradient(circle at 50% 0%,#163825 0%,#0A0F0C 62%);border:1px solid rgba(18,184,94,.35);color:#fff;break-inside:avoid;}
+  .cta img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--green-light);margin:0 auto 12px;display:block;}
+  .cta .e{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--green-light);margin-bottom:8px;}
+  .cta .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;line-height:1.3;max-width:420px;margin:0 auto 6px;}
+  .cta .s{font-size:12px;color:#a9b3ad;}
+  footer{text-align:center;font-size:10px;color:var(--gray);margin-top:16px;line-height:1.5;}
+  .cta a.btn{display:inline-block;margin-top:12px;background:#12B85E;color:#06130b;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;text-decoration:none;padding:10px 22px;border-radius:999px;}
+  @media screen{
+    body{font-size:16px;line-height:1.65;padding:0 18px;}
+    section{max-width:860px;margin-left:auto;margin-right:auto;}
+    .cover{min-height:auto;padding:72px 0 40px;}
+    .pb{margin-top:56px;scroll-margin-top:20px;}
+    pre{white-space:pre-wrap;word-break:break-word;}
+    .cta{padding:40px 28px;margin:48px 0 24px;} .cta .t{font-size:24px;max-width:540px;} .cta .s{font-size:15px;}
+    .cta a.btn{font-size:17px;padding:15px 30px;}
+    .quest .q{font-size:24px;}
+    .dg figcaption{font-size:13px;}
+    .f .d,.term .d{font-size:13px;}
+    .f .t,.term .t{font-size:15.5px;}
+    .cmp .row{font-size:14px;}
+    td,th{font-size:13.5px;}
+    .behind,.when{font-size:13.5px;}
+    .tip,.alert{font-size:14px;}
+    details.dev summary{font-size:14.5px;} details.dev summary small{font-size:12.5px;}
+    .impact .cap{font-size:12.5px;}
+    .msg{font-size:13.5px;} .msg.ai{font-size:12.5px;}
+    .prompt pre{font-size:12.5px;}
+    .step .t b{font-size:inherit;}
+    .step .t{font-size:15px;}
+  }
+  @media screen and (max-width:640px){
+    .grid3,.grid2,.grid4{grid-template-columns:1fr 1fr !important;}
+    table{display:block;overflow-x:auto;}
+    .only-d{display:none !important;}
+    .only-m{display:block !important;}
+    .cover h1{font-size:32px;}
+    .video h2{font-size:20px;}
+    .msg{max-width:94%;}
+    .cmp{grid-template-columns:1fr;}
+  }
+  .prompt .l{padding-right:78px;}
+  .prompt.master .l{padding-right:10px;}
+
+  /* versão vertical dos diagramas (só celular) */
+  .only-m{display:none;}
+  .mflow{display:flex;flex-direction:column;margin:14px 0 4px;text-align:left;}
+  .ms{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--text);border-radius:12px;padding:11px 14px;}
+  .ms .mn{flex:0 0 26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font:800 13px 'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;}
+  .ms b{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;line-height:1.3;}
+  .ms small{display:block;font-size:13px;color:var(--gray);line-height:1.35;}
+  .ms.done{justify-content:center;border-radius:999px;border-width:2px;text-align:center;}
+  .ms.boss{background:var(--green);border-color:var(--green);color:#fff;justify-content:center;text-align:center;}
+  .ms.boss small{color:#e6f6ec;}
+  .ma{display:block;width:0;height:0;margin:3px auto;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--text);}
+  .ma.g{border-top-color:var(--green);}
+  .mloop{margin-top:12px;background:rgba(18,184,94,.12);border:1.5px solid var(--green);color:var(--green);border-radius:12px;padding:10px 13px;text-align:center;font:800 13.5px/1.35 'Plus Jakarta Sans',sans-serif;}
+  .mlabel{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;letter-spacing:.3px;color:var(--green);margin:16px 0 8px;text-align:left;}
+  .prompt{position:relative;}
+  .copy{position:absolute;top:8px;right:10px;background:rgba(18,184,94,.16);color:#7be3a6;border:1px solid rgba(18,184,94,.4);border-radius:999px;font:600 11px 'JetBrains Mono',monospace;padding:4px 12px;cursor:pointer;}
+  .copy:hover{background:rgba(18,184,94,.3);}
+  .prompt.master .copy{top:9px;}
+  @media print{.copy,.video,.jump{display:none;} a.f{transform:none;}}
+
+  figure.print{margin:14px 0;break-inside:avoid;}
+  figure.print img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.10);}
+  figure.print figcaption{font-size:11px;color:var(--gray);margin-top:7px;text-align:center;}
+  @media screen{figure.print figcaption{font-size:13.5px;}}
+  @media screen and (max-width:640px){.grid2 figure.print{grid-column:1/-1;}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+<symbol id="i-screen" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h4M7 12h7"/></symbol>
+<symbol id="i-agent" viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1.2"/><circle cx="9.5" cy="13" r="1" fill="currentColor"/><circle cx="14.5" cy="13" r="1" fill="currentColor"/><path d="M9.5 16.2h5"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+</defs></svg>
+<!-- CAPA -->
+<section class="cover">
+  <img class="logo" src="logo-demanda-infinita.png" alt="">
+  <div class="kicker">Coisas que eu construí com o Claude · 3 de 3</div>
+  <h1>Sua planilha vira um sistema financeiro, feito com o Claude</h1>
+  <p class="sub">O passo a passo e os prompts pra transformar a planilha da sua casa num sistema que avisa a conta que vence, mostra pra onde foi o dinheiro e te puxa pra meta. Sem programar.</p>
+  <span class="badge">Material do vídeo · passo a passo</span>
+</section>
+
+<!--VIDEO-->
+
+<section>
+  <p class="lead">No vídeo eu mostrei o sistema que organiza as finanças da minha casa. Ele nasceu de uma planilha de 22 abas, cada uma num formato diferente. Aqui está <strong>o caminho, na ordem</strong>, com o prompt de cada etapa pra você copiar, trocar os colchetes e colar no Claude.</p>
+  <p class="lead">A regra que guia tudo: <strong>planilha guarda número; sistema te avisa</strong>.</p>
+
+  <div class="grid4">
+    <a class="f" href="#p0"><div class="n">00</div><div class="t">As perguntas</div><div class="d">O que você quer saber do seu dinheiro</div></a>
+    <a class="f" href="#p1"><div class="n">01</div><div class="t">A base</div><div class="d">Banco, login e o painel</div></a>
+    <a class="f" href="#p2"><div class="n">02</div><div class="t">Sua planilha</div><div class="d">O histórico pra dentro</div></a>
+    <a class="f" href="#p3"><div class="n">03</div><div class="t">Contas sozinhas</div><div class="d">Fixas, a pagar e a receber</div></a>
+    <a class="f" href="#p4"><div class="n">04</div><div class="t">Pra onde foi</div><div class="d">Categorias e comparativo</div></a>
+    <a class="f" href="#p5"><div class="n">05</div><div class="t">A meta que se mexe</div><div class="d">Reserva em marcos</div></a>
+    <a class="f" href="#p6"><div class="n">06</div><div class="t">Ele te avisa</div><div class="d">Patrimônio e dicas</div></a>
+    <a class="f" href="#p7"><div class="n">07</div><div class="t">O cofre</div><div class="d">Login e segurança</div></a>
+  </div>
+</section>
+
+<!-- PEÇAS -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Antes de abrir o Claude</span>Planilha x sistema</h2>
+  <div class="cmp">
+    <div class="col bad">
+      <div class="h">A planilha</div>
+      <div class="row">Guarda o número</div>
+      <div class="row">Não avisa que a conta vence amanhã</div>
+      <div class="row">Não percebe 3 meses no vermelho</div>
+      <div class="row">Não diz quanto falta pra meta</div>
+    </div>
+    <div class="col good">
+      <div class="h">O sistema</div>
+      <div class="row">Gera as contas do mês sozinho</div>
+      <div class="row">Mostra o que está atrasado em vermelho</div>
+      <div class="row">Compara com o mês passado</div>
+      <div class="row">Te puxa pro próximo marco</div>
+    </div>
+  </div>
+  <figure class="print"><img src="tela-planilha.jpg" alt="Planilha bagunçada com várias abas"><figcaption>O ponto de partida: abas em formatos diferentes, "#REF!" e "conferir" espalhados. <em>Ilustração com dados fictícios.</em></figcaption></figure>
+
+  <h3>As peças, em linguagem simples</h3>
+  <div class="grid3">
+    <div class="term"><svg class="ic"><use href="#i-db"/></svg><div class="t">Banco de dados</div><div class="d">O caderno onde ficam as contas, entradas e metas.</div></div>
+    <div class="term"><svg class="ic"><use href="#i-screen"/></svg><div class="t">Painel</div><div class="d">A tela que você abre no celular ou no computador.</div></div>
+    <div class="term"><svg class="ic"><use href="#i-agent"/></svg><div class="t">Claude Code</div><div class="d">Quem constrói. Você descreve e aprova.</div></div>
+    <div class="term"><svg class="ic"><use href="#i-key"/></svg><div class="t">O cofre</div><div class="d">Login e a regra de que só vocês dois veem os dados.</div></div>
+    <div class="term"><svg class="ic"><use href="#i-pin"/></svg><div class="t">Endereço</div><div class="d">Onde o painel fica no ar, com senha.</div></div>
+    <div class="term"><svg class="ic"><use href="#i-bell"/></svg><div class="t">Os avisos</div><div class="d">Conta atrasada, mês no vermelho, meta perto.</div></div>
+  </div>
+</section>
+
+<!-- 00 PERGUNTAS -->
+<section class="pb" id="p0">
+  <h2 class="sec"><span class="tag">Etapa 00</span>Comece pelas perguntas, não pela tela</h2>
+  <p>Cada tela do sistema precisa responder uma pergunta sua. <strong>Se uma tela não responde nenhuma pergunta, ela não precisa existir.</strong> Escreva as suas antes de tudo.</p>
+  <div class="prompt"><div class="l">Folha das perguntas · preencha antes de tudo</div><pre>O QUE EU QUERO SABER DO MEU DINHEIRO
+
+1. Quanto ainda falta pagar este mês?
+2. Quanto ainda falta receber?
+3. Pra onde o dinheiro foi (por categoria)?
+4. Estou gastando mais ou menos que no mês passado?
+5. Quanto falta pra minha meta de [reserva de R$ ___]?
+6. [outra pergunta sua]
+
+Minhas contas fixas (nome, valor, dia do vencimento): [...]
+Minhas entradas do mês (de onde vem, quanto, quando): [...]
+Quem usa: [só eu / eu e meu parceiro(a)]</pre></div>
+</section>
+
+<!-- 01 BASE -->
+<section class="pb" id="p1">
+  <h2 class="sec"><span class="tag">Etapa 01</span>A base: banco, login e painel</h2>
+  <p>No Claude Code, abra uma pasta nova chamada <code>minhas-financas</code> e ligue o <strong>Plan Mode</strong> (<code>Shift + Tab</code> até aparecer "plan mode"). Nesse modo ele planeja e pergunta antes de criar qualquer coisa.</p>
+  <div class="prompt"><div class="l">Prompt 1 · o briefing do sistema</div><pre>Quero transformar a planilha financeira da minha casa num sistema. Antes de criar qualquer arquivo, leia a minha folha de perguntas abaixo, me faça as perguntas que faltam e proponha um plano.
+
+[cole aqui a sua folha das perguntas]
+
+Tecnologia:
+- Banco e login: Supabase (plano gratuito)
+- Painel: uma página só, publicada no GitHub Pages
+- Só [eu / nós dois] entramos, com e-mail e senha; sem cadastro aberto
+
+Me entregue:
+1. As perguntas que faltam
+2. As tabelas (categorias, contas fixas, lançamentos do mês, metas, investimentos) explicadas em português simples
+3. As telas: painel do mês, investimentos, dicas, histórico, ajustes
+4. Os riscos de segurança e como você evita cada um</pre></div>
+  <p class="behind"><b>Por trás:</b> o Claude monta a planta antes da obra. Você corrige, tira o que não vai usar e aprova com "Aprovado, pode seguir".</p>
+  <figure class="print"><img src="tela-dashboard.jpg" alt="Painel do mês com recebido, pago, saldo e reserva"><figcaption>O painel do mês: recebido, pago, saldo, a reserva com os marcos e as contas a pagar e a receber. <em>Valores fictícios.</em></figcaption></figure>
+</section>
+
+<!-- 02 PLANILHA -->
+<section class="pb" id="p2">
+  <h2 class="sec"><span class="tag">Etapa 02</span>Traga a sua planilha (do jeito que ela está)</h2>
+  <p>Eu não comecei do zero. Mandei a minha planilha bagunçada, com 22 abas em formatos diferentes, e o Claude leu tudo e trouxe o histórico pra dentro. Exporte a sua (Excel ou Google Planilhas) e coloque o arquivo na pasta.</p>
+  <div class="prompt"><div class="l">Prompt 2 · importar o histórico</div><pre>O arquivo [minha-planilha.xlsx] está na pasta. Cada aba é um mês e os formatos mudaram com o tempo.
+
+Antes de importar qualquer coisa, me mostre:
+1. quais abas você entendeu e quais ficaram confusas
+2. o total de entradas e saídas de cada mês que você calculou
+3. quais linhas parecem ser contas fixas (aparecem todo mês)
+
+Quando eu aprovar, use os totais que eu mesmo calculei em cada aba (são mais confiáveis que re-somar linha por linha) e monte o histórico mês a mês.</pre></div>
+  <div class="tip"><b>Por que pedir pra mostrar antes</b>Importar errado é pior do que não importar. Se uma aba tem um formato muito diferente das outras, pode valer mais a pena deixar ela de fora do que confiar num número torto.</div>
+</section>
+
+<!-- 03 CONTAS -->
+<section class="pb" id="p3">
+  <h2 class="sec"><span class="tag">Etapa 03</span>As contas aparecem sozinhas</h2>
+  <p>Todo mês, aluguel, internet, luz e academia aparecem sozinhos. Você só dá baixa quando paga. Em cima, o que ainda falta pagar e o que falta receber: atrasou, fica vermelho; vence essa semana, sobe pro topo.</p>
+  <div class="prompt"><div class="l">Prompt 3 · contas do mês</div><pre>Quero que as minhas contas fixas apareçam sozinhas todo mês, com o valor e o dia de vencimento de cada uma. Eu só clico em "Dar baixa" quando pagar.
+
+No topo do painel:
+- "Contas a pagar": tudo que falta pagar no mês. Atrasada em vermelho com quantos dias, as que vencem em até 7 dias em destaque.
+- "Contas a receber": o espelho, com "Marcar recebido".
+
+Cuidado: se a página carregar duas vezes seguidas, as contas do mês NÃO podem duplicar. E se eu excluir uma conta fixa de um mês, ela não pode voltar sozinha.</pre></div>
+  <p class="behind"><b>Por trás:</b> as duas regras do fim vêm de erros reais. No meu, as 17 contas fixas chegaram a duplicar num recarregamento rápido, e conta excluída voltava no dia seguinte. Pedindo antes, você não passa por isso.</p>
+</section>
+
+<!-- 04 PRA ONDE FOI -->
+<section class="pb" id="p4">
+  <h2 class="sec"><span class="tag">Etapa 04</span>Pra onde foi o dinheiro</h2>
+  <figure class="print"><img src="tela-mosaico.jpg" alt="Mosaico de gastos por categoria"><figcaption>O mosaico: cada quadradinho é 1% de tudo que saiu no mês. Você bate o olho e vê. <em>Valores fictícios.</em></figcaption></figure>
+  <div class="prompt"><div class="l">Prompt 4 · gastos por categoria e comparativo</div><pre>Quero um bloco "Gastos por categoria" com duas formas de ver:
+- barras, da categoria que mais gastou pra que menos gastou, com valor e %
+- mosaico de 100 quadradinhos, cada um 1% do total (categoria pequena ganha pelo menos 1)
+Com filtro: mensal, trimestral, anual e personalizado.
+
+E em cada número do topo, a comparação com o mês anterior em %. A cor segue o que é bom pra mim, não o sinal: gasto subindo é vermelho, entrada subindo é verde.</pre></div>
+</section>
+
+<!-- 05 META -->
+<section class="pb" id="p5">
+  <h2 class="sec"><span class="tag">Etapa 05</span>A meta que se mexe</h2>
+  <p>Uma barra até R$ 100 mil quase não se mexe, e barra que não se mexe desanima. Divida em marcos. A barra mostra só o próximo, e cada marco batido ganha o check verde. <strong>Meta grande desanima; meta próxima puxa.</strong></p>
+  <div class="cmp">
+    <div class="col bad"><div class="h">Meta única</div><div class="row">R$ 17 mil de R$ 100 mil · 17%</div></div>
+    <div class="col good"><div class="h">Meta em marcos</div><div class="row">Próximo: R$ 20 mil · faltam R$ 3 mil · 85%</div></div>
+  </div>
+  <div class="prompt"><div class="l">Prompt 5 · reserva em marcos</div><pre>A minha meta é uma reserva de R$ [100.000]. Divida em marcos: [5 mil, 10 mil, 20 mil, 50 mil, 80 mil, 100 mil].
+
+- a barra mostra o progresso só até o PRÓXIMO marco, não até o final
+- embaixo, os marcos em fileira, com check verde nos que eu já bati
+- a reserva conta tudo que eu paguei na categoria "Reserva", em qualquer mês
+- quero poder mudar os marcos e o aporte mensal numa tela de Ajustes</pre></div>
+</section>
+
+<!-- 06 AVISA -->
+<section class="pb" id="p6">
+  <h2 class="sec"><span class="tag">Etapa 06</span>Patrimônio e o sistema que te avisa</h2>
+  <div class="grid2">
+    <figure class="print"><img src="tela-investimentos.jpg" alt="Investimentos com patrimônio e projeção"><figcaption>Patrimônio, rentabilidade e a projeção dos próximos 12 meses. <em>Valores fictícios.</em></figcaption></figure>
+    <figure class="print"><img src="tela-dicas.jpg" alt="Dicas automáticas"><figcaption>As dicas: categoria que mais pesou, quanto falta pro próximo marco. <em>Valores fictícios.</em></figcaption></figure>
+  </div>
+  <div class="prompt"><div class="l">Prompt 6 · investimentos e dicas</div><pre>Quero uma aba "Investimentos": cada aporte da reserva vai pra um investimento (Tesouro, CDB, fundo...). Mostre o patrimônio total, quanto rendeu e uma projeção dos próximos 12 meses no ritmo do meu aporte mensal. Eu atualizo o valor atual de cada um à mão.
+
+E uma aba "Dicas", calculada com os meus números:
+- 3 meses seguidos no vermelho: me avisa
+- qual categoria mais pesou no mês
+- no ritmo atual, quantos meses faltam pro próximo marco
+- se sobrou dinheiro, sugira quanto mandar pra reserva</pre></div>
+  <div class="prompt"><div class="l">Bônus · o visual de corretora</div><pre>Deixe o painel com cara de corretora: menu lateral escuro, conteúdo claro, números grandes e sérios, sem emoji. Se é pra cuidar do dinheiro, que pareça sério.</pre></div>
+  <div class="tip"><b>O plano de ação com IA</b>Como o Claude tem acesso a tudo, você pode perguntar direto pra ele: "olha meus últimos 3 meses e me diz onde dá pra cortar R$ 500". Ele responde com os seus números, não com dica genérica.</div>
+</section>
+
+<!-- 07 COFRE -->
+<section class="pb" id="p7">
+  <h2 class="sec"><span class="tag">Etapa 07</span>Proteja como se fosse o seu banco</h2>
+  <p>É o dado mais sensível da sua vida. Login e senha, e a garantia de que ninguém além de vocês consegue ver.</p>
+  <div class="prompt"><div class="l">Prompt 7 · o cofre</div><pre>Revisa a segurança do meu sistema financeiro como se alguém estivesse tentando ver as minhas contas. Me responde:
+- alguém sem login consegue ler alguma tabela?
+- tem alguma chave secreta no código da página?
+- o cadastro está fechado (só nós dois)?
+Me entrega a lista do que corrigir, do mais grave pro menos grave, em português simples, e corrige comigo um por um.</pre></div>
+
+  <h3>Você não precisa conectar no banco</h3>
+  <p>O meu é manual: eu pago e dou baixa. Leva dois segundos e me obriga a olhar pro meu dinheiro toda vez que ele sai. É o oposto da planilha que você preenche uma vez por mês e esquece.</p>
+
+  <h3>Erros comuns</h3>
+  <table><tr><th>Erro</th><th>Como evitar</th></tr>
+    <tr><td>Começar pela tela bonita</td><td>Folha das perguntas primeiro</td></tr>
+    <tr><td>Importar a planilha sem conferir</td><td>Pedir pro Claude mostrar os totais antes</td></tr>
+    <tr><td>Contas do mês duplicando</td><td>Pedir a trava contra duplicação no Prompt 3</td></tr>
+    <tr><td>Meta grande que desanima</td><td>Dividir em marcos</td></tr>
+    <tr><td>Dados abertos na internet</td><td>Prompt 7 antes de colocar valor real</td></tr>
+  </table>
+
+  <div class="cta">
+    <img src="igor-miguel.png" alt="">
+    <div class="e">Método Demanda Infinita®</div>
+    <div class="t">Quer sistemas assim rodando no seu negócio?</div>
+    <div class="s">Em 30 minutos eu olho o seu caso e te mostro por onde começar.</div>
+    <a class="btn" href="https://cal.com/igor-miguel/demanda-infinita?overlayCalendar=true" target="_blank" rel="noopener">Falar comigo →</a>
+  </div>
+
+  <footer>Ferramentas de terceiros (Claude, Supabase, GitHub) mudam com frequência. Nomes de botões e atalhos refletem o uso em outubro de 2026.<br>Os prints são do meu sistema com valores fictícios. Os prompts foram reescritos a partir das conversas em que ele foi construído.<br>Demanda Infinita®</footer>
+</section>
+
+<script>
+document.querySelectorAll('.prompt').forEach(function(p){
+  var pre = p.querySelector('pre'); if(!pre) return;
+  var b = document.createElement('button'); b.className = 'copy'; b.type = 'button'; b.textContent = 'Copiar';
+  b.addEventListener('click', function(){
+    var t = pre.innerText;
+    function ok(){ b.textContent = 'Copiado!'; setTimeout(function(){ b.textContent = 'Copiar'; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, fallback); } else { fallback(); }
+    function fallback(){ var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try{ document.execCommand('copy'); ok(); }catch(e){} document.body.removeChild(a); }
+  });
+  p.appendChild(b);
+});
+// na impressão/PDF, os blocos opcionais saem abertos
+window.addEventListener('beforeprint', function(){
+  document.querySelectorAll('details.dev').forEach(function(d){ d.open = true; });
+});
+</script>
+</body>
+</html>
