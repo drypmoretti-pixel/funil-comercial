@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano 30 Dias · Altus</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root{
+    --green:#008E43; --green-light:#12B85E; --green-soft:#E3F1E8;
+    --bg:#F8F7F4; --card:#ECEAE5; --text:#111111; --gray:#6B6B6B; --line:#D8D5CE;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; background:var(--bg); color:var(--text);}
+  body{font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.55;}
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:700;}
+  .wrap{max-width:860px; margin:0 auto; padding:0 16px;}
+
+  /* capa */
+  .cover{min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover img{width:76px; height:76px; margin-bottom:34px;}
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  .cover h1{font-size:44px; line-height:1.08; font-weight:800; margin:12px 0 14px; letter-spacing:-.5px;}
+  .cover .sub{font-size:17px; color:var(--gray); max-width:560px;}
+  .cover .who{margin-top:46px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:40px; flex-wrap:wrap;}
+  .cover .who div span{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray);}
+  .cover .who div b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px;}
+
+  /* seções */
+  .sec{padding:40px 0 8px;}
+  .part-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  h2.section-title{font-size:25px; font-weight:800; margin:6px 0 6px; letter-spacing:-.3px;}
+  .lead{font-size:14.5px; color:#333; margin-bottom:16px; max-width:720px;}
+  h3{font-size:15px; font-weight:800; margin:0 0 8px;}
+
+  .card{background:var(--card); border-radius:12px; padding:16px 18px; margin-bottom:12px; break-inside:avoid;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .grid2 .card{margin-bottom:0;}
+  ul.clean{margin:0; padding-left:18px;}
+  ul.clean li{margin-bottom:5px;}
+
+  .reframe{border-left:4px solid var(--green); padding:6px 0 6px 16px; margin:18px 0; font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; line-height:1.35; break-inside:avoid;}
+  .tip{background:var(--green-soft); border-radius:12px; padding:14px 18px; margin:12px 0; break-inside:avoid;}
+  .tip b.t{display:block; color:var(--green); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:4px;}
+  .ssi{display:flex; gap:16px; align-items:center; background:var(--text); color:#fff; border-radius:12px; padding:14px 18px; margin-top:12px; break-inside:avoid;}
+  .ssi .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:22px; color:var(--green-light); white-space:nowrap;}
+  .ssi span{font-size:12.5px; color:#d6d6d6;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.8px; break-inside:avoid;}
+  th,td{border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top;}
+  th{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); font-weight:700;}
+  td:first-child{font-weight:700; width:28%;}
+
+  .opt{background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-top:8px; font-weight:600;}
+  .opt small{display:block; font-weight:500; color:var(--gray); font-size:11.5px; margin-top:2px;}
+  .label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray); font-weight:700; margin-bottom:6px; display:block;}
+
+  .banner{background:linear-gradient(120deg,#0d0d0d 0%,#1d1d1d 55%,#0c3d22 100%); color:#fff; border-radius:10px; aspect-ratio:1584/396; display:flex; flex-direction:column; justify-content:center; padding:0 6% 0 34%; margin-top:8px;}
+  .banner b{font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(14px,2.6vw,22px); line-height:1.2;}
+  .banner span{font-size:clamp(10px,1.5vw,12.5px); color:#bfe6cf; margin-top:6px;}
+
+  /* checklist */
+  .check{display:flex; gap:12px; align-items:flex-start; background:var(--card); border-radius:10px; padding:11px 14px; margin-bottom:8px; break-inside:avoid;}
+  .check .box{flex:0 0 17px; height:17px; border:2px solid var(--green); border-radius:4px; margin-top:2px; background:#fff;}
+  .check strong{display:block; font-size:13.5px;}
+  .check span{font-size:12.5px; color:#444;}
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; break-inside:avoid;}
+  .vs div{border-radius:10px; padding:10px 14px; font-size:12.5px;}
+  .vs .bad{background:#fff; border:1px solid var(--line); color:#555;}
+  .vs .good{background:var(--green-soft); border:1px solid #bfdcc9;}
+  .vs b{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px;}
+  .vs .bad b{color:#9a3b3b;} .vs .good b{color:var(--green);}
+
+  .metas{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; break-inside:avoid;}
+  .metas div{background:var(--text); color:#fff; border-radius:10px; padding:12px; }
+  .metas b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; color:var(--green-light);}
+  .metas span{font-size:11.5px; color:#d0d0d0;}
+
+  /* semanas */
+  .week{border:1px solid var(--line); background:#fff; border-radius:12px; padding:14px 18px; margin-bottom:12px; break-inside:avoid;}
+  .week .wh{display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:10px;}
+  .week .wh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:800;}
+  .week .wh span{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--green); font-weight:700; letter-spacing:1px; text-transform:uppercase; white-space:nowrap;}
+  .week ul{list-style:none; margin:0; padding:0;}
+  .week li{position:relative; padding-left:24px; margin-bottom:6px;}
+  .week li:before{content:''; position:absolute; left:0; top:3px; width:13px; height:13px; border:2px solid var(--green); border-radius:3px;}
+
+  /* moldes */
+  .molde{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:14px; background:#fff; break-inside:avoid;}
+  .molde .mh{background:var(--text); color:#fff; padding:11px 18px; display:flex; justify-content:space-between; gap:10px; align-items:baseline;}
+  .molde .mh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px;}
+  .molde .mh span{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--green-light); white-space:nowrap;}
+  .molde .mb{padding:14px 18px;}
+  .skel{font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.65; background:var(--bg); border-radius:8px; padding:12px 14px; white-space:pre-wrap; margin:8px 0;}
+  .ex{font-size:12.8px; border-left:3px solid var(--green); padding:2px 0 2px 12px; color:#333; margin-top:8px;}
+  .ex i{font-style:normal; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); display:block;}
+
+  /* diagrama base */
+  .flow{display:flex; align-items:stretch; gap:8px; margin:14px 0; flex-wrap:wrap; break-inside:avoid;}
+  .flow .node{flex:1 1 120px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px;}
+  .flow .node b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:13.5px; margin-bottom:2px;}
+  .flow .node.hl{background:var(--green); color:#fff; border-color:var(--green);}
+  .flow .arrow{align-self:center; color:var(--green); font-weight:800;}
+  .flow.tight{gap:5px;} .flow.tight .node{flex:1 1 72px; padding:8px 9px; font-size:11.2px;} .flow.tight .node b{font-size:12.5px;}
+
+  .prompt{background:#141414; color:#e9e9e9; border-radius:10px; padding:12px 16px; font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.6; margin:8px 0 12px; white-space:pre-wrap; break-inside:avoid;}
+  .prompt b{color:var(--green-light); font-weight:700; display:block; margin-bottom:4px; font-size:10px; letter-spacing:1px; text-transform:uppercase;}
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0;}
+  ol.steps li{counter-increment:s; position:relative; padding:0 0 10px 40px; break-inside:avoid;}
+  ol.steps li:before{content:counter(s); position:absolute; left:0; top:0; width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-weight:800; font-size:12.5px; display:flex; align-items:center; justify-content:center;}
+
+  .paulo{background:var(--text); color:#eee; border-radius:14px; padding:20px 22px; break-inside:avoid;}
+  .paulo h3{color:#fff; font-size:17px;}
+  .paulo .part-tag{color:var(--green-light);}
+  .paulo ul{margin:8px 0 0; padding-left:18px;} .paulo li{margin-bottom:7px;}
+  .paulo b{color:#fff;}
+  .paulo .opt{background:#222; border-color:#333; color:#fff;}
+
+  .foot{margin-top:36px; padding:16px 0 40px; border-top:1px solid var(--line); font-size:11px; color:var(--gray); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+  /* web: downloads + checklist interativo */
+  .dl{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; background:var(--green); color:#fff; text-decoration:none; font-weight:700; font-size:13.5px; padding:12px 18px; border-radius:10px; border:0; cursor:pointer; font-family:'Inter',sans-serif;}
+  .btn:hover{background:var(--green-light);}
+  .btn.ghost{background:#fff; color:var(--text); border:1px solid var(--line);}
+  .btn.ghost:hover{border-color:var(--green); color:var(--green);}
+  .btn svg{width:16px; height:16px; flex:0 0 16px;}
+  .dlbox{background:var(--text); color:#fff; border-radius:14px; padding:18px 20px; margin:16px 0; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .dlbox b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; display:block;}
+  .dlbox span{font-size:12.5px; color:#cfcfcf;}
+  .check,.week li{cursor:pointer; user-select:none; transition:opacity .15s;}
+  .check:hover .box{background:var(--green-soft);}
+  .check.done .box,.week li.done:before{background:var(--green); border-color:var(--green);}
+  .check .box{position:relative;}
+  .check.done .box:after,.week li.done:after{content:''; position:absolute; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);}
+  .check.done .box:after{left:4px; top:1px;}
+  .week li.done:after{left:5px; top:5px;}
+  .check.done strong,.week li.done{text-decoration:line-through; text-decoration-color:rgba(0,0,0,.35); opacity:.6;}
+  .progress{position:sticky; top:0; z-index:5; background:rgba(248,247,244,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line);}
+  .progress .in{max-width:860px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; gap:12px; font-size:12px;}
+  .progress .bar{flex:1; height:6px; background:var(--card); border-radius:99px; overflow:hidden;}
+  .progress .bar i{display:block; height:100%; width:0; background:var(--green); transition:width .25s;}
+  .progress b{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green); white-space:nowrap;}
+  .progress button{background:none; border:0; color:var(--gray); font-size:11px; cursor:pointer; text-decoration:underline;}
+
+  @media (max-width:640px){
+    .grid2,.vs{grid-template-columns:1fr;}
+    .metas{grid-template-columns:1fr 1fr;}
+    .cover h1{font-size:34px;}
+    td:first-child{width:36%;}
+  }
+
+  @media print{
+    .no-print{display:none !important;}
+    @page{size:A4; margin:13mm 14mm 14mm;}
+    html,body{background:#fff; font-size:12.6px;}
+    .wrap{max-width:none; padding:0;}
+    .cover{min-height:268mm; padding:0;}
+    .sec{padding-top:0; break-before:page;}
+    .sec.cont{break-before:auto; padding-top:22px;}
+    .grid2{grid-template-columns:1fr 1fr;}
+    .vs{grid-template-columns:1fr 1fr;}
+    .metas{grid-template-columns:repeat(4,1fr);}
+    .banner{padding-left:34%;}
+    .banner b{font-size:17px;} .banner span{font-size:11px;}
+    .card,.week,.molde,.check,.tip,.prompt,.paulo{break-inside:avoid;}
+    table{break-inside:auto;} tr{break-inside:avoid;}
+    h2.section-title,h3{break-after:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="progress no-print"><div class="in"><span>Seu progresso</span><div class="bar"><i id="pbar"></i></div><b id="pnum">0/0</b><button id="preset" type="button">zerar</button></div></div>
+<div class="wrap">
+
+  <!-- CAPA -->
+  <section class="cover">
+    <img src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>Plano de ação:<br>30 dias no LinkedIn</h1>
+    <div class="sub">De agência que manda orçamento no WhatsApp a dona de um método que o cliente assina todo mês. E o LinkedIn trazendo empresas que podem pagar por ele.</div>
+    <div class="who">
+      <div><span>Preparado para</span><b>Kennedy e Cecília</b></div>
+      <div><span>Empresa</span><b>Altus Design Art</b></div>
+      <div><span>Data</span><b>Outubro de 2026</b></div>
+    </div>
+    <div class="dl no-print">
+      <a class="btn" href="skill-conteudo-linkedin-altus.txt" download="skill-conteudo-linkedin-altus.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill de conteúdo</a>
+      <a class="btn ghost" href="plano-30-dias-altus.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar o plano em PDF</a>
+    </div>
+  </section>
+
+  <!-- 01 DIAGNÓSTICO -->
+  <section class="sec">
+    <div class="part-tag">Parte 01</div>
+    <h2 class="section-title">Onde vocês estão hoje</h2>
+    <p class="lead">Cecília e Kennedy, vocês já fazem o que o cliente precisa: página, anúncio e atendimento. O que falta é empacotar isso como um método e levar até quem pode pagar por ele.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O que vocês já têm</h3>
+        <ul class="clean">
+          <li>Cerca de 5 anos de mercado: de identidade visual pra sites, e agora tráfego pago</li>
+          <li>Uma dupla completa: a Cecília em publicidade e criação, o Kennedy em gestão comercial e tráfego (com formação no método do Pedro Sobral)</li>
+          <li>Centenas de páginas entregues e um portfólio com 84 projetos no ar</li>
+          <li>Clientes de tráfego em setores diferentes: imóveis, advocacia, editora, agronegócio</li>
+          <li>Resultado muito bom com dois corretores de imóveis</li>
+          <li>Vídeos de depoimento de clientes e uma página da própria Altus bem estruturada</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>O que travou até aqui</h3>
+        <ul class="clean">
+          <li>Quase 100% dos clientes vêm do Instagram, e de lá chega muito negócio começando, sem dinheiro pra investir</li>
+          <li>O tráfego sai a R$ 600 a 800 por mês: barato pro tanto que vocês entregam</li>
+          <li>O orçamento vai pelo WhatsApp, e a pessoa some sem dizer se foi o preço</li>
+          <li>2 a 3 meses de prospecção automática no LinkedIn, e nenhum fechamento</li>
+          <li>Os posts no LinkedIn são os mesmos do Instagram: mostram o portfólio, mas não entregam nada</li>
+          <li>Os melhores clientes vieram de indicação, e não dá pra controlar quando ela vem</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="reframe">Não é vender mais página.<br>É vender um método, pra quem pode pagar por ele.</div>
+
+    <div class="tip"><b class="t">Sobre a prospecção que não deu certo</b>Mensagem automática pra quem nunca ouviu falar de vocês é como bater na porta de um desconhecido com o orçamento na mão. Neste plano é o contrário: o post faz a pessoa levantar a mão (comentando), o material mostra que vocês sabem o que fazem, e só então vem a conversa. Quem chega assim já chega querendo ouvir.</div>
+
+    <div class="ssi"><div class="n">SSI: ?</div><span>Ainda não temos o SSI do Kennedy, a nota de 0 a 100 que o LinkedIn dá pro uso da rede. É a tarefa do Dia 1: abrir <b>linkedin.com/sales/ssi</b>, tirar um print e mandar no WhatsApp. No Dia 30 a gente compara.</span></div>
+  </section>
+
+  <!-- 02 ICP -->
+  <section class="sec">
+    <div class="part-tag">Parte 02</div>
+    <h2 class="section-title">Pra quem vocês vão falar</h2>
+    <p class="lead">Este é o retrato que tiramos da conversa. Ajustem o que não bater com a realidade de vocês.</p>
+    <table>
+      <tr><th>O quê</th><th>Quem é</th></tr>
+      <tr><td>Empresa</td><td>Negócio local que já fatura e quer previsibilidade, de preferência em Brasília: imobiliárias e corretores, clínicas (odontologia, estética), escritórios de advocacia. No LinkedIn, também empresas médias.</td></tr>
+      <tr><td>Quem decide</td><td>O dono ou o sócio.</td></tr>
+      <tr><td>O que ele sente</td><td>“Já fiz anúncio e só veio curioso.” “Tenho site, mas ninguém liga por ele.” “Dependo de indicação: tem mês que enche, tem mês que não vem ninguém.” “Gasto em anúncio e não sei quanto voltou.”</td></tr>
+      <tr><td>O que ele quer</td><td>Cliente chegando todo mês, sem depender de indicação.</td></tr>
+      <tr><td>Por que Brasília</td><td>Como a Cecília disse: pra virar contrato mensal, muita gente quer conversar cara a cara. E o comércio de Brasília é forte.</td></tr>
+      <tr><td>Fora do foco agora</td><td>Quem está começando agora e não tem dinheiro pra investir em anúncio todo mês. É o público que o Instagram já traz.</td></tr>
+    </table>
+
+    <div class="tip"><b class="t">Designer ou dono de negócio?</b>Post sobre Figma, Elementor ou o curso pra designers vai trazer designer, e vai trazer muito. Isso pode virar uma frente de produto no futuro, mas não é quem assina o tráfego mensal. Nos 30 dias, todo post fala com o dono do negócio. O infoproduto pode ficar nos Destaques, como prova de autoridade.</div>
+    <div class="reframe">O conteúdo amplo atrai.<br>O formulário qualifica. A reunião vende.</div>
+  </section>
+
+  <!-- 03 VITRINE -->
+  <section class="sec">
+    <div class="part-tag">Parte 03 · Semana 1</div>
+    <h2 class="section-title">Arrumar a vitrine (perfil do Kennedy)</h2>
+    <p class="lead">Combinamos seguir no perfil pessoal do Kennedy: pessoa gera mais conexão que página de empresa. Quem lê um post clica no perfil e, em 5 segundos, precisa entender pra quem vocês trabalham, o que fazem e como fazem.</p>
+
+    <div class="card">
+      <h3>Headline (a frase embaixo do nome)</h3>
+      <p>A atual é uma lista de ferramentas (“Designer | Web Designer | WordPress | Figma | ...”). Quem lê isso pensa em contratar um executor, não em assinar um método. Escolham uma e ajustem:</p>
+      <div class="opt">Ajudo negócios locais a ter cliente chegando todo mês, com página e anúncio trabalhando juntos | +187 páginas criadas | Altus Design Art<small>A mais direta: o resultado vem primeiro.</small></div>
+      <div class="opt">Criador do Método A.L.T.U.S. | Página + tráfego + atendimento pra corretores, clínicas e escritórios | Brasília · Altus Design Art<small>Pra quando o método tiver nome (Parte 05).</small></div>
+      <div class="opt">Sites e tráfego pago que viram cliente, não só clique | 5 anos, centenas de páginas | Altus Design Art<small>A mais curta.</small></div>
+    </div>
+
+    <div class="card">
+      <h3>Capa (a imagem atrás da foto)</h3>
+      <p>Hoje é só o logo. Bonito, mas não diz nada pra quem não conhece. Uma promessa, uma prova e o logo. Lado esquerdo livre, porque a foto cobre. Tamanho: 1584 × 396 px.</p>
+      <div class="banner"><b>Página e anúncio trabalhando juntos.<br>Cliente chegando todo mês.</b><span>Altus Design Art · 5 anos · centenas de páginas entregues · Brasília</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Sobre (o texto do perfil), em 5 blocos</h3>
+      <div class="skel">1. A dor, na língua do cliente
+   "Você já fez anúncio, veio um monte de curioso e ninguém fechou."
+2. Quem somos, com prova
+   Kennedy (gestão comercial e tráfego) e Cecília (publicidade e criação).
+   5 anos, centenas de páginas, clientes de imóveis a advocacia.
+3. Como a gente trabalha
+   O método em 1 linha por etapa (Parte 05).
+4. Pra quem é
+   Negócio local que já fatura e quer previsibilidade.
+5. Como falar com a gente
+   "O link pra marcar uma conversa de 30 minutos está nos Destaques."</div>
+    </div>
+
+    <h3 style="margin-top:18px">Checklist da vitrine</h3>
+    <div class="check"><div class="box"></div><div><strong>Headline, capa e “Sobre”</strong><span>Os três ajustes acima.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Um número só, em todo lugar</strong><span>O perfil diz +187 páginas; o site diz 88 páginas, 723 clientes em 6 países e, mais abaixo, mais de 720 e mais de 600 em 5 países. Escolham os números certos e usem os mesmos no perfil, no site e nos posts. Número que não bate tira a confiança.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Destaques: 3 itens</strong><span>1) O link pra marcar uma conversa de 30 minutos. 2) Um vídeo de depoimento de cliente (vocês já têm na landing page). 3) O portfólio. O infoproduto pode entrar como 4º.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Experiência: Altus Design Art</strong><span>2 ou 3 linhas do que vocês fazem e pra quem, não só o cargo.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Desligar a prospecção automática</strong><span>Mensagem em massa pode marcar o perfil como spam justo quando ele começar a postar.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Print do SSI no Dia 1</strong><span>linkedin.com/sales/ssi. Mandar no WhatsApp.</span></div></div>
+  </section>
+
+  <!-- 04 FUNIL -->
+  <section class="sec">
+    <div class="part-tag">Parte 04</div>
+    <h2 class="section-title">O caminho do post até a reunião</h2>
+    <p class="lead">Vocês decidiram parar de mandar orçamento pelo WhatsApp e passar a fazer reunião. Este é o caminho que leva até ela, o mesmo que a gente usa na Demanda Infinita.</p>
+
+    <div class="flow tight">
+      <div class="node"><b>Post</b>com isca; o pedido está na imagem</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Comentário</b>a pessoa comenta a palavra</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Mensagem</b>vocês mandam o link do formulário</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Formulário</b>a pessoa diz a dor e o momento</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Material</b>abre na hora</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>Contato</b>ligação → WhatsApp → LinkedIn</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O formulário (a peça mais importante)</h3>
+        <p>O material quase não importa. O que importa é a pessoa dizer, por escrito, qual é a dor dela. Pode ser no Tally, que é gratuito. Campos:</p>
+        <ul class="clean">
+          <li>Nome, WhatsApp, empresa e cargo</li>
+          <li><b>Maior dor hoje</b> (escolha): anúncio que só traz curioso · site que não gera contato · dependo de indicação · não sei quanto investir · o lead chega e ninguém atende a tempo</li>
+          <li><b>Já investe em anúncio?</b> não · até R$ 1.000 por mês · mais de R$ 1.000 por mês</li>
+          <li><b>Momento</b>: só pesquisando · quero resolver nos próximos 3 meses · preciso resolver agora</li>
+        </ul>
+        <p style="margin:8px 0 0">A pergunta do investimento separa quem está começando de quem pode assinar o método.</p>
+      </div>
+      <div class="card">
+        <h3>Por que perguntar a dor</h3>
+        <p>A pessoa pode chegar pela isca da landing page e marcar que a dor é atendimento. Na conversa, é do atendimento que vocês vão falar.</p>
+        <p>Na Demanda Infinita, já fechamos com gente que nem abriu o material. A pessoa baixou, a gente ligou falando da dor que ela marcou, e a reunião saiu dali.</p>
+        <p style="margin:0">O material é a desculpa pra começar a conversa. O lead na mão é o que vale.</p>
+      </div>
+    </div>
+
+    <div class="prompt"><b>Mensagem pra quem comentou</b>Oi, [nome]! Aqui está o link pra pegar o [material]: [link do formulário]. É só preencher rapidinho que ele abre na hora.</div>
+    <div class="prompt"><b>Contato com quem preencheu (primeiro ligação; se não atender, WhatsApp; depois, LinkedIn)</b>Oi, [nome], tudo bem? Aqui é o Kennedy, da Altus.
+Vi que você pegou o [material]. Conseguiu dar uma olhada?
+Uma coisa me chamou atenção: você marcou que a sua maior dor hoje é [dor].
+Como você está resolvendo isso hoje?</div>
+    <div class="tip"><b class="t">A regra nova: orçamento só depois da conversa</b>Quando alguém pedir preço pelo WhatsApp: “Consigo te passar, sim. Antes, preciso entender 3 coisas do seu negócio pra não te mandar um pacote que não serve. Tem 30 minutos amanhã ou quinta?” Na conversa, o Kennedy entende a dor; o preço vem com a proposta.</div>
+  </section>
+
+  <!-- 05 MÉTODO -->
+  <section class="sec">
+    <div class="part-tag">Parte 05</div>
+    <h2 class="section-title">O método: o que vocês vão vender</h2>
+    <p class="lead">Na call, a Cecília disse que vocês querem parar de vender site e montar um ecossistema de vendas. É isso. Os entregáveis são os mesmos; o que muda é como o cliente enxerga. Na minha agência, quando a página e o tráfego viraram “Máquina de Visitas”, o ticket saiu de R$ 1.500 a 2.000 pra R$ 4.000 a 5.000.</p>
+
+    <div class="card">
+      <h3>Uma sugestão de nome: Método A.L.T.U.S.</h3>
+      <p>Cada letra do nome da empresa é uma etapa do que vocês já fazem:</p>
+      <table>
+        <tr><th>Etapa</th><th>O que é</th></tr>
+        <tr><td>A · Atrair</td><td>O anúncio certo pro público certo (tráfego pago).</td></tr>
+        <tr><td>L · Landing</td><td>A página que transforma clique em contato.</td></tr>
+        <tr><td>T · Tratar o lead</td><td>O atendimento e o follow-up: script, tempo de resposta, CRM. É onde a gestão comercial do Kennedy entra.</td></tr>
+        <tr><td>U · Usar os números</td><td>Quanto custou cada cliente, o que ajustar no mês seguinte.</td></tr>
+        <tr><td>S · Segunda venda</td><td>Fazer o cliente voltar e indicar. Como a Cecília disse: não só atrair, mas fazer o cliente retornar.</td></tr>
+      </table>
+      <p style="margin:10px 0 0;font-size:12.5px;color:#444">É só uma sugestão. Se preferirem outro nome (“Ecossistema Altus”, “Máquina de Clientes Locais”), a lógica é a mesma: um nome próprio, com etapas que o cliente entende.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card"><h3>Plano de entrada</h3><p style="margin:0"><b>A partir de R$ 1.500 por mês.</b> Atrair + Landing + Usar os números: a campanha, a página e o relatório do mês. Pra quem está começando a investir.</p></div>
+      <div class="card"><h3>Plano completo</h3><p style="margin:0"><b>R$ 2.500 a R$ 3.000 por mês.</b> As 5 etapas, incluindo o script de atendimento, o CRM e a recorrência. É esse que o LinkedIn vai vender.</p></div>
+    </div>
+    <div class="tip"><b class="t">Por que o preço sobe</b>R$ 600 a 800 é preço de quem vende anúncio. Quem vende um método com 5 etapas, que cuida do lead até ele voltar a comprar, está em outra prateleira. A página com IA de R$ 600 continua existindo, mas como produto de entrada, não como o que vocês anunciam no LinkedIn.</div>
+  </section>
+
+  <!-- 06 ISCAS -->
+  <section class="sec">
+    <div class="part-tag">Parte 06</div>
+    <h2 class="section-title">As iscas: um pedacinho de cada etapa</h2>
+    <p class="lead">Na call, a Cecília disse que a maior dificuldade é transformar os problemas do cliente em materiais pequenos. O jeito é este: cada isca é uma etapa do método, entregue de graça. A pessoa prova o remédio, não só vê a dor.</p>
+
+    <div class="molde">
+      <div class="mh"><b>PÁGINA · Raio-X da landing page</b><span>Semana 2 · etapa L</span></div>
+      <div class="mb">
+        <p>Um vídeo de 10 minutos comparando uma página que vende e uma que só enfeita, com o checklist dos critérios que vocês usam. Pode partir de um projeto real: por que a ProEnglish Way tem a Estátua da Liberdade, o que vocês perguntaram ao cliente antes de desenhar.</p>
+        <div class="ex"><i>Ideia de começo</i>Todo mundo acha que precisa de um site mais bonito. Quase nunca é isso.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>CORRETOR · Anúncio pra corretor de imóveis</b><span>Semana 3 · etapa A</span></div>
+      <div class="mb">
+        <p>Público, faixa etária, criativo e orçamento inicial da primeira campanha. É o nicho em que vocês já têm resultado, e fala direto com o mercado imobiliário de Brasília.</p>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>SCRIPT · Script de atendimento do lead</b><span>Semana 3 · etapa T</span></div>
+      <div class="mb">
+        <p>O que falar no primeiro contato com quem veio do anúncio, e um prompt que monta a cadência de follow-up. Mostra que vocês cuidam do que acontece depois do clique, coisa que quase nenhuma agência faz.</p>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>QUANTO · Quanto investir em anúncio</b><span>Semana 4 · etapa U</span></div>
+      <div class="mb">
+        <p>A calculadora que a Cecília pensou: a faixa de investimento pelo faturamento. Com um vídeo curto explicando a conta, ela deixa de ser só “você está deixando dinheiro na mesa” e vira uma dose do remédio.</p>
+      </div>
+    </div>
+
+    <div class="tip"><b class="t">“Vou entregar meu produto de graça?”</b>A Cecília perguntou isso na call, e a resposta é não. Mesmo com o passo a passo, quase ninguém implementa: falta tempo, paciência ou o olho de quem já fez centenas de páginas. Quem tenta e não consegue lembra de quem ensinou. Quem consegue pensa: “se o gratuito é assim, imagina o pago”.</div>
+  </section>
+
+  <!-- 07 CADÊNCIA + ROTINA -->
+  <section class="sec">
+    <div class="part-tag">Parte 07</div>
+    <h2 class="section-title">A cadência e a rotina diária</h2>
+    <p class="lead">Segunda, quarta e sexta são dias de isca. Nos outros dias, se der, um bastidor sem pedido nenhum.</p>
+
+    <table>
+      <tr><th>Dia</th><th>O que sai</th></tr>
+      <tr><td>Segunda</td><td>Isca</td></tr>
+      <tr><td>Terça</td><td>Bastidor de projeto (opcional)</td></tr>
+      <tr><td>Quarta</td><td>Isca</td></tr>
+      <tr><td>Quinta</td><td>Opinião ou novidade (opcional)</td></tr>
+      <tr><td>Sexta</td><td>Isca</td></tr>
+    </table>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><h3>A regra das 48 horas</h3><p style="margin:0">Entre uma isca e outra, no mínimo 24 a 48 horas. Isca em cima de isca: a de hoje derruba a de ontem.</p></div>
+      <div class="card"><h3>Do Instagram pro LinkedIn</h3><p style="margin:0">No Instagram, a imagem é o post. No LinkedIn, o texto é o post e a imagem só faz parar. O post “Design que converte” da ProEnglish Way ficou com cara de Instagram: mostra o projeto, mas não entrega nada. No LinkedIn, o mesmo projeto vira isca contando o porquê de cada decisão.</p></div>
+    </div>
+
+    <h3 style="margin-top:18px">Todo dia útil: 20 a 30 minutos</h3>
+    <div class="check"><div class="box"></div><div><strong>Comentar em 5 a 10 posts de donos de negócio</strong><span>Corretores, donos de clínica, advogados, de preferência de Brasília. 2 ou 3 linhas com a experiência de vocês, não “parabéns”.</span></div></div>
+    <div class="vs">
+      <div class="bad"><b>Comentário que some</b>“Excelente conteúdo, parabéns!”</div>
+      <div class="good"><b>Comentário que traz visita ao perfil</b>“Vemos muito isso nos corretores que atendemos: o anúncio traz o contato, mas a página não responde a dúvida principal. Aí o lead chega frio no WhatsApp.”</div>
+    </div>
+    <div class="check" style="margin-top:10px"><div class="box"></div><div><strong>Conectar com 5 a 10 donos de negócio</strong><span>Na busca: “corretor de imóveis Brasília”, “clínica odontológica Brasília”, “advogado Brasília”. Filtrar por Pessoas. Convite com uma linha, sem vender, e sem automação.</span></div></div>
+    <div class="prompt"><b>Modelo de nota de convite</b>Olá, [nome]. Sou o Kennedy, da Altus: a gente cria páginas e anúncios pra negócios locais venderem todo mês. Acompanho o mercado de [setor] em Brasília e gostaria de ter você na minha rede.</div>
+    <div class="check"><div class="box"></div><div><strong>Responder todo comentário na primeira hora do post</strong><span>E mandar o link do formulário a quem comentou a palavra da isca no mesmo dia.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Ligar no mesmo dia pra quem preencheu o formulário</strong><span>Se não atender, WhatsApp. Se não responder, LinkedIn.</span></div></div>
+
+    <h3 style="margin-top:18px">Metas do mês (de esforço, que dependem só de vocês)</h3>
+    <div class="metas">
+      <div><b>110 a 220</b><span>donos de negócio novos na rede</span></div>
+      <div><b>110 a 220</b><span>comentários em posts do público</span></div>
+      <div><b>10</b><span>posts publicados</span></div>
+      <div><b>4</b><span>iscas no ar</span></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--gray);margin-top:8px">Anotem, por post, quantos comentários, formulários e conversas ele trouxe. No Dia 30, é com esses números que a gente vê o que repetir.</p>
+  </section>
+
+  <!-- 08 CALENDÁRIO -->
+  <section class="sec">
+    <div class="part-tag">Parte 08</div>
+    <h2 class="section-title">O mês, semana a semana</h2>
+    <p class="lead">Marquem cada item quando fizerem. A rotina diária da Parte 07 vale todas as semanas.</p>
+
+    <div class="week">
+      <div class="wh"><b>Semana 1 · Vitrine, método e caminho</b><span>Dias 1 a 7</span></div>
+      <ul>
+        <li>Dia 1: print do SSI do Kennedy, enviado no WhatsApp</li>
+        <li>Desligar a prospecção automática</li>
+        <li>Decidir o nome do método e os dois planos (Parte 05)</li>
+        <li>Trocar headline, capa, “Sobre” e Destaques (Parte 03)</li>
+        <li>Montar o formulário no Tally (Parte 04)</li>
+        <li>1 post de apresentação (Estrutura B): de identidade visual a sites e tráfego, e por que vocês decidiram vender o caminho inteiro. Sem isca</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 2 · Primeira isca</b><span>Dias 8 a 14</span></div>
+      <ul>
+        <li>Gravar o vídeo e montar o checklist da isca PÁGINA</li>
+        <li>Segunda: post de isca PÁGINA, com a imagem “Comente PÁGINA”</li>
+        <li>Quarta ou quinta: 1 bastidor de projeto (Estrutura B)</li>
+        <li>Mandar o link do formulário pra todo mundo que comentou e ligar pra quem preencheu</li>
+        <li>Começar a regra nova: orçamento só depois da conversa</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 3 · Cadência cheia</b><span>Dias 15 a 21</span></div>
+      <ul>
+        <li>Segunda: isca CORRETOR</li>
+        <li>Quarta: bastidor ou opinião (Estrutura B ou C)</li>
+        <li>Sexta: isca SCRIPT</li>
+        <li>Criar no LinkedIn o evento do workshop da Semana 4</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 4 · Workshop e reuniões</b><span>Dias 22 a 30</span></div>
+      <ul>
+        <li>Segunda: isca QUANTO</li>
+        <li>Workshop ao vivo sobre funil de vendas, primeiro pros clientes atuais (como a Cecília quis), pedindo que cada um convide alguém. Depois, aberto no LinkedIn</li>
+        <li>Sexta: repetir o formato de isca que trouxe mais formulário</li>
+        <li>Chamar pra conversa de 30 minutos quem marcou “3 meses” ou “agora” e já investe em anúncio</li>
+        <li>Dia 30: novo print do SSI e a tabela de cada post (comentários, formulários, conversas)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 09 ESTRUTURAS -->
+  <section class="sec">
+    <div class="part-tag">Parte 09</div>
+    <h2 class="section-title">Como escrever cada post</h2>
+    <p class="lead">A Cecília sente que o LinkedIn pede um conteúdo mais profundo que o Instagram. Profundidade aqui não é linguagem técnica: é mostrar o raciocínio. A skill (Parte 10) já sabe as três estruturas abaixo.</p>
+
+    <div class="tip"><b class="t">Regras que valem pra todas</b>Começo de no máximo 2 linhas, porque é o que aparece antes do “ver mais”. Parágrafos de 1 a 3 linhas. Uma ideia por post. Termo técnico explicado (CPL, landing page). Link nunca no texto. De 1 a 3 hashtags. E nada de “comente”, “curta” ou “compartilhe” no texto: o LinkedIn derruba o alcance de post que pede interação. O pedido vai na imagem, e a imagem pode ser simples: fundo limpo e uma frase grande.</div>
+
+    <div class="molde">
+      <div class="mh"><b>Estrutura A · Post de isca</b><span>Segunda · quarta · sexta</span></div>
+      <div class="mb">
+        <p><b>Começo → dor → como resolver → o que a pessoa recebe.</b></p>
+        <div class="skel">[Começo: a dor em até 2 linhas]
+[A dor: o que o dono vive hoje, sem julgar]
+[Como resolver: 3 a 5 itens que já ajudam sozinhos]
+Montei [o material] e estou liberando de graça 👇
+[O que a pessoa recebe: 1 a 3 linhas]
+[Fecho seco: "Não é X. É Y."]
+
+IMAGEM: título do material + "Comente [PALAVRA]"</div>
+        <div class="ex"><i>Exemplo de começo (CORRETOR)</i>O anúncio trouxe 40 contatos. Nenhum virou visita. E o corretor culpou o anúncio.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura B · Bastidor de projeto</b><span>O post de portfólio que entrega</span></div>
+      <div class="mb">
+        <div class="skel">[O cliente/segmento e o problema que ele trouxe]
+[O que a gente perguntou antes de desenhar]
+[As 3 decisões da página e o porquê de cada uma]
+[O que mudou, com número só se for real e autorizado]
+[A lição pro dono de negócio em 1 linha]</div>
+        <div class="ex"><i>Exemplo de começo</i>Antes de desenhar a página de uma escola de inglês, a gente fez 5 perguntas. Nenhuma era sobre cor.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura C · Opinião ou novidade</b><span>Dia sem isca</span></div>
+      <div class="mb">
+        <div class="skel">[A opinião ou a novidade em 1 linha]
+[Por que importa pro dono de negócio local]
+[O que a gente faria primeiro]</div>
+        <div class="ex"><i>Exemplo de começo</i>Todo dia aparece um web designer novo vendendo site com IA. O problema nunca foi o site.</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:18px">10 temas pra começar</h3>
+    <table>
+      <tr><th>Estrutura</th><th>Tema</th></tr>
+      <tr><td>B · Bastidor</td><td>De identidade visual a tráfego: por que a gente decidiu vender o caminho inteiro (apresentação)</td></tr>
+      <tr><td>A · Isca</td><td>Página que vende vs. página que só enfeita (PÁGINA)</td></tr>
+      <tr><td>B · Bastidor</td><td>As 3 decisões por trás da página da ProEnglish Way</td></tr>
+      <tr><td>A · Isca</td><td>A primeira campanha de um corretor de imóveis (CORRETOR)</td></tr>
+      <tr><td>C · Opinião</td><td>Por que a gente parou de mandar orçamento pelo WhatsApp</td></tr>
+      <tr><td>A · Isca</td><td>O lead chegou. E agora? O script do primeiro contato (SCRIPT)</td></tr>
+      <tr><td>C · Opinião</td><td>Site com IA por R$ 600: o que ele resolve e o que não resolve</td></tr>
+      <tr><td>A · Isca</td><td>Quanto investir em anúncio pelo seu faturamento (QUANTO)</td></tr>
+      <tr><td>C · Novidade</td><td>IA pra fazer criativo que não parece IA</td></tr>
+      <tr><td>B · Bastidor</td><td>O que dois corretores fizeram diferente pra o anúncio dar certo (com autorização)</td></tr>
+    </table>
+  </section>
+
+  <!-- 10 SKILL -->
+  <section class="sec">
+    <div class="part-tag">Parte 10</div>
+    <h2 class="section-title">A skill: o manual da IA</h2>
+    <p class="lead">Vocês já usam IA pra imagem, copy e site. A skill ensina a IA a escrever pro LinkedIn no jeito de vocês, sem começar do zero toda vez.</p>
+
+    <div class="grid2">
+      <div class="card"><h3>O que tem dentro</h3><p style="margin:0">A ficha de vocês já preenchida (quem são, o que vendem, o cliente ideal, as 4 iscas), as três estruturas de post, as regras do LinkedIn e como adaptar o que já funciona no Instagram. O que ficou em aberto está marcado [A CONFIRMAR].</p></div>
+      <div class="card"><h3>Como montar no Claude</h3><p style="margin:0">Em claude.ai: Projetos → Criar projeto “LinkedIn · Altus” → cole a skill inteira nas instruções → suba nos arquivos o portfólio, os depoimentos e o que mais tiver. Leva uns 15 minutos.</p></div>
+    </div>
+
+    <div class="dlbox no-print"><div><b>Skill de conteúdo LinkedIn · Altus</b><span>Arquivo .md, já com a ficha de vocês. Cole nas instruções do projeto no Claude (ou no ChatGPT).</span></div><a class="btn" href="skill-conteudo-linkedin-altus.txt" download="skill-conteudo-linkedin-altus.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill</a></div>
+
+    <div class="prompt"><b>Prompt 1 · Completar a ficha</b>Leia a seção "Ficha" desta skill. Para cada campo marcado [A CONFIRMAR], me faça uma pergunta curta, uma de cada vez. No final, me devolva a ficha completa pra eu colar no lugar.</div>
+    <div class="prompt"><b>Prompt 2 · Post do Instagram → LinkedIn</b>Aqui está um post nosso do Instagram: [colar legenda + descrever a imagem]. Reescreva pro LinkedIn na Estrutura B: explique o problema do cliente e o porquê de cada decisão. Não repita a legenda.</div>
+    <div class="prompt"><b>Prompt 3 · Post da semana</b>Escreva o post de [segunda] na Estrutura A pra isca [PÁGINA]. Depois me dê o texto da imagem (título do material + "Comente PÁGINA") e confira o checklist de captura antes de entregar.</div>
+    <div class="prompt"><b>Prompt 4 · Comentários do dia</b>Vou colar 5 posts de donos de negócio. Sugira um comentário de 2 a 3 linhas pra cada um, com a experiência da Altus. Nada de elogio vazio.</div>
+  </section>
+
+  <!-- 11 PRÓXIMOS -->
+  <section class="sec">
+    <div class="part-tag">Parte 11</div>
+    <h2 class="section-title">Próximos passos</h2>
+    <ol class="steps" style="margin-top:12px">
+      <li><b>Mandar no WhatsApp o print do SSI do Kennedy.</b> É com ele que a gente compara o Dia 1 e o Dia 30.</li>
+      <li><b>Escolher o nome do método e os dois planos.</b> É a decisão que muda todo o resto: a headline, o “Sobre”, os posts e a proposta.</li>
+      <li><b>Começar a Semana 1 já.</b> A vitrine, o formulário e a rotina diária não dependem de nada.</li>
+      <li><b>Na nossa próxima conversa</b>, a gente vê como acompanhar esse plano junto com vocês na consultoria.</li>
+    </ol>
+
+    <div class="foot"><span>Plano de Ação · 30 dias no LinkedIn · Kennedy e Cecília · Altus Design Art</span><span>Demanda Infinita® · Outubro de 2026</span></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var KEY='plano30-altus-v1', st={};
+  try{ st=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ st={}; }
+  var items=[].slice.call(document.querySelectorAll('.check, .week li'));
+  var bar=document.getElementById('pbar'), num=document.getElementById('pnum');
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+  function render(){
+    var n=0;
+    items.forEach(function(el,i){ var on=!!st[i]; el.classList.toggle('done',on); el.setAttribute('aria-checked',on); if(on) n++; });
+    num.textContent=n+'/'+items.length;
+    bar.style.width=(items.length? n/items.length*100 : 0)+'%';
+  }
+  items.forEach(function(el,i){
+    el.setAttribute('role','checkbox'); el.setAttribute('tabindex','0');
+    function t(){ st[i]=!st[i]; save(); render(); }
+    el.addEventListener('click',t);
+    el.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); t(); } });
+  });
+  document.getElementById('preset').addEventListener('click',function(){ if(confirm('Desmarcar todos os itens?')){ st={}; save(); render(); } });
+  render();
+})();
+</script>
+<script type="text/plain" id="skill-src">---
+name: conteudo-linkedin-altus-design-art
+description: "Skill de produção de conteúdo LinkedIn da Altus Design Art (Kennedy Alves e Cecília Rodrigues), no Método Demanda Infinita®. Use sempre que for escrever post, post de captura com material gratuito, comentário, convite de conexão ou mensagem pra quem pegou um material, no perfil do Kennedy. Contém a ficha já preenchida, a estrutura de post de isca, as regras do LinkedIn, como adaptar conteúdo do Instagram e o checklist antes de entregar."
+---
+
+# Skill de Conteúdo LinkedIn: Altus Design Art
+**Método Demanda Infinita® · versão personalizada · perfil do Kennedy Alves**
+
+Você é o redator de LinkedIn da Altus Design Art. Os posts saem no perfil pessoal do Kennedy Alves, mas falam pela dupla (Kennedy e Cecília). O seu trabalho é fazer o dono de negócio certo pensar "isso é comigo" e preencher o formulário pra pegar um material.
+
+**Regra de ouro:** você só escreve o que está nesta ficha e nos arquivos do projeto. Nunca invente cliente, número, resultado ou depoimento. Se faltar matéria-prima, pergunte antes de escrever. Se um dado for necessário e não existir, escreva `[A CONFIRMAR]`.
+
+---
+
+## 0. Ficha
+
+> Preenchida a partir da reunião de 09/10/2026 (com a Cecília), do perfil do Kennedy e do site altusdesignart.com.br. O que está como [A CONFIRMAR] eles completam.
+
+**Quem:** Kennedy Alves e Cecília Rodrigues, casal, sócios da Altus Design Art, em Brasília (DF).
+- **Kennedy:** gestão comercial; faz as campanhas de tráfego pago (formação com Pedro Sobral) e as reuniões de venda; sites, sistemas e identidade visual.
+- **Cecília:** formada em Publicidade e Propaganda; criação, sites, materiais e marketing.
+**Como se apresentam (1 linha):** [A CONFIRMAR, depois de escolher o nome do método] Sugestão: "A gente junta página e anúncio pra negócio local vender todo mês, não só no mês da campanha."
+**Trajetória:** cerca de 5 anos empreendendo. Começaram com identidade visual, migraram pra criação de sites e landing pages e hoje fazem também tráfego pago (e um pouco de social media). Já lançaram 4 a 5 infoprodutos pra designers e já deram consultoria de tráfego pra empresários e pra designers.
+**Especialidade:** sites e landing pages (WordPress/Elementor, Figma, e agora sites feitos com IA), tráfego pago (Meta Ads), copy, identidade visual.
+**Provas concretas:**
+- Páginas criadas: o perfil diz "+ de 187"; o site diz "88 páginas entregues" e o portfólio lista 84 projetos. [A CONFIRMAR qual número usar]
+- Clientes atendidos: o site diz 723 em 6 países, mais de 720 em 5 países e mais de 600 em 5 países. [A CONFIRMAR um número só]
+- Clientes de tráfego hoje: empresa de produtos bioorgânicos pra fazendas, editora de livros, advogado, corretores de imóveis.
+- Resultado "muito bom" com dois corretores de imóveis. [A CONFIRMAR os números e a autorização pra contar]
+- Projeto de sistema fechado pra uma editora de livros.
+- Vídeos de depoimento de clientes (estão na landing page deles).
+- Projeto ProEnglish Way: landing page com o post "Design que converte".
+**Opiniões firmes:**
+- Página bonita sem anúncio fica parada; anúncio pra página fraca queima dinheiro.
+- Todo dia surgem 10, 20, 30 web designers vendendo a mesma coisa, e com IA ficou mais fácil ainda. Quem vende só a página vai ser engolido; quem vende a solução completa fica.
+- Orçamento por WhatsApp vira leilão de preço. Reunião vira conversa sobre resultado.
+- O cliente não precisa só ser atraído: precisa voltar.
+**Frases que eles costumam dizer:** [A CONFIRMAR]
+**Palavras que eles NUNCA usariam:** [A CONFIRMAR]
+
+### Oferta
+**O que vendem hoje:** sites e landing pages (3 pacotes; o mais em conta, feito com IA, sai por volta de R$ 600), loja virtual, tráfego pago (R$ 600 a R$ 1.000 por mês hoje), identidade visual, social media, produtos digitais pra designers.
+**Pra onde querem ir:** cliente recorrente de tráfego pago, com ticket de R$ 1.500 a R$ 3.000 por mês, vendendo um método (página + anúncio + atendimento + recorrência), e não peças soltas.
+**Nome do método:** [A CONFIRMAR] (ver o plano de 30 dias, Parte 05).
+**Porta de entrada:** conversa de 30 minutos (diagnóstico do funil), nunca orçamento pelo WhatsApp.
+> O preço serve só pra você entender o porte. Nunca vai pro post.
+
+### Cliente ideal (ICP)
+**Empresa:** negócio local com faturamento estabelecido, de preferência em Brasília: imobiliárias e corretores, clínicas (odontologia, estética), escritórios de advocacia. Também empresas médias que o LinkedIn alcança.
+**Quem decide:** o dono ou sócio.
+**Dores, nas palavras do cliente:**
+- "Já fiz anúncio e só veio curioso."
+- "Tenho site, mas ninguém liga por ele."
+- "Dependo de indicação: tem mês que enche, tem mês que não vem ninguém."
+- "Gasto em anúncio e não sei quanto voltou."
+- "O lead chega e ninguém responde a tempo."
+**O que ele quer:** cliente chegando todo mês, previsível, sem depender de indicação.
+**Quem NÃO é cliente agora:** quem está começando agora e ainda não tem dinheiro pra investir em anúncio todo mês.
+
+### Materiais gratuitos (iscas)
+| Palavra-chave | Material | Pra quem | O que entrega |
+|---|---|---|---|
+| PÁGINA | Raio-X da landing page (vídeo + checklist) | Dono que tem site ou página e não vende | Página que vende vs. página que só enfeita, com os critérios que a Altus usa |
+| CORRETOR | Anúncio pra corretor de imóveis | Corretores e imobiliárias | Público, faixa etária, criativo e orçamento inicial pra primeira campanha |
+| SCRIPT | Script de atendimento do lead + prompt de follow-up | Quem já recebe lead e perde no atendimento | O que falar no primeiro contato e a cadência de follow-up |
+| QUANTO | Calculadora: quanto investir em anúncio | Dono que não sabe quanto pôr em tráfego | Faixa de investimento pelo faturamento + vídeo curto explicando |
+
+---
+
+## 1. Como o LinkedIn distribui hoje (regras de todo post)
+
+- **Tempo de leitura é o que mais pesa.** O LinkedIn é texto: a imagem chama, o texto segura. Parágrafos curtos, uma ideia por post.
+- **O post pesa mais que o número de seguidores.** Perfil pequeno pode ter alcance grande.
+- **Comentário vale muito mais que curtida.** Responder todos, de preferência na primeira hora.
+- **Pedido de interação no texto derruba o alcance.** Nunca escrever "comente", "curta", "compartilhe" no texto do post.
+- **Link externo no texto reduz alcance.** Link vai na mensagem.
+- **De 1 a 3 hashtags.**
+- **Carrossel/documento (PDF) segura leitura.** Enquete está praticamente morta.
+
+---
+
+## 2. Mix e calendário
+
+| Dia | O que sai |
+|---|---|
+| Segunda | Isca |
+| Terça | Bastidor de projeto (sem isca, opcional) |
+| Quarta | Isca |
+| Quinta | Opinião ou novidade (sem isca, opcional) |
+| Sexta | Isca |
+
+**Regra das 48 horas:** entre uma isca e outra, no mínimo 24 a 48 horas. Isca em cima de isca: uma derruba a outra.
+**Horário:** entre 7h e 9h ou 17h e 19h.
+**Conteúdo amplo atrai, o formulário qualifica:** os temas podem ser abertos (marketing, anúncio, IA pra criativo, página, atendimento). Quem não é cliente fica no formulário.
+
+---
+
+## 3. As estruturas
+
+### Estrutura A: post de isca (o principal)
+**Começo → dor → como resolver → o que a pessoa recebe.** O texto é conteúdo. **O pedido mora na imagem.**
+```
+[Começo: a dor em até 2 linhas]
+[A dor: o que o dono vive hoje, sem julgar, 2 a 4 linhas]
+[Como resolver: 3 a 5 itens que já ajudam sozinhos]
+Montei [o material] e estou liberando de graça 👇
+[O que a pessoa recebe: 1 a 3 linhas]
+[Fecho seco: "Não é X. É Y."]
+```
+**Imagem:** título do material + "Comente [PALAVRA]". Simples: fundo limpo, frase grande. Tem que parecer conteúdo, não anúncio.
+
+**Checklist de captura:**
+- [ ] O texto não contém "comenta", "comente", "conecta", "curte", "compartilha"?
+- [ ] Tem exatamente 1 linha de aviso (com 👇)?
+- [ ] A palavra-chave aparece só na imagem?
+- [ ] Quem só ler o texto já sai com algo útil?
+- [ ] Nenhum link no corpo do post?
+
+### Estrutura B: bastidor de projeto (o post de portfólio que entrega)
+```
+[O cliente/segmento e o problema que ele trouxe, em 1 a 2 linhas]
+[O que a gente perguntou antes de desenhar]
+[As 3 decisões da página e o porquê de cada uma]
+[O que mudou, com número só se for real e autorizado]
+[A lição pro dono de negócio em 1 linha]
+```
+Nunca só "olha que bonito ficou". Todo projeto mostrado explica o porquê.
+
+### Estrutura C: opinião ou novidade
+```
+[A opinião ou a novidade em 1 linha]
+[Por que importa pro dono de negócio local]
+[O que a gente faria primeiro]
+```
+
+---
+
+## 4. Começos que param a rolagem
+
+- **Cena:** "O anúncio trouxe 40 contatos. Nenhum virou cliente. E o dono culpou o anúncio."
+- **Contradição:** "Todo mundo acha que precisa de um site mais bonito. Quase nunca é isso."
+- **Bastidor:** "Antes de desenhar a página de um corretor, a gente faz 5 perguntas. Nenhuma é sobre cor."
+- **Pergunta que dói:** "Quanto você gastou em anúncio no último mês? E quanto voltou?"
+
+Regras do começo: no máximo 2 linhas; nunca começar com "Eu" ou "Olá"; sem ponto de exclamação; no máximo 1 emoji.
+
+---
+
+## 5. Do Instagram pro LinkedIn
+
+- **No Instagram, a imagem é o post. No LinkedIn, o texto é o post.** A imagem só faz a pessoa parar.
+- **Não repostar a legenda do Instagram.** Pegar o mesmo projeto e explicar o porquê (Estrutura B).
+- **Profundidade não é linguagem técnica.** É mostrar o raciocínio: por que essa decisão e não outra.
+- **Falar com o dono, não com o designer.** Post sobre Figma ou Elementor atrai designer; post sobre cliente que não liga atrai dono.
+
+---
+
+## 6. Tom e estilo
+
+**Sempre:** linguagem simples, direta, de quem já fez muito; parágrafos de 1 a 3 linhas; termo técnico explicado (CTR, CPL, landing page); fechos secos ("Não é o anúncio. É a página.").
+**Nunca:** inventar resultado ou depoimento; prometer resultado garantido; pedir interação no texto; listar ferramenta como argumento de venda.
+
+---
+
+## 7. Rotina fora dos posts
+
+### Comentários (5 a 10 por dia) em posts de donos de negócio
+```
+[Concordo/discordo em 1 linha] + [o que a gente vê acontecendo com os clientes] + [o que olhar primeiro]
+```
+
+### Convite de conexão (5 a 10 por dia)
+```
+Olá, [nome]. Sou o Kennedy, da Altus: a gente cria páginas e anúncios pra negócios locais venderem todo mês. Acompanho o mercado de [setor] em Brasília e gostaria de ter você na minha rede.
+```
+
+### Mensagem pra quem comentou a isca
+```
+Oi, [nome]! Aqui está o link pra pegar o [material]: [link do formulário]. É só preencher rapidinho que ele abre na hora.
+```
+
+### Contato com quem preencheu (ligação → WhatsApp → LinkedIn)
+```
+Oi, [nome], tudo bem? Aqui é o Kennedy, da Altus.
+Vi que você pegou o [material]. Conseguiu dar uma olhada?
+Uma coisa me chamou atenção: você marcou que a sua maior dor hoje é [dor].
+Como você está resolvendo isso hoje?
+```
+O próximo passo é a conversa de 30 minutos. **Nunca mandar orçamento por mensagem.**
+
+---
+
+## 8. Formato de entrega
+
+1. **O post pronto**, com as quebras de linha.
+2. **Estrutura usada** (A, B ou C) e **de onde saiu a matéria-prima**.
+3. **Dia sugerido** (respeitando a regra das 48 horas).
+4. **Hashtags** (1 a 3).
+5. Se for isca: **texto da imagem** e o checklist de captura conferido.
+6. **Perguntas**, se algum dado ficou como `[A CONFIRMAR]`.
+
+---
+
+## 9. Checklist final
+
+- [ ] O começo cabe em 2 linhas e faz o dono de negócio pensar "isso é comigo"?
+- [ ] Todo fato está na ficha ou nos arquivos?
+- [ ] Fala com o dono, não com o designer?
+- [ ] Não tem pedido de interação no texto nem link no corpo?
+- [ ] Soa como o Kennedy falando, lido em voz alta?
+</script>
+<script>
+(function(){
+  var src=document.getElementById('skill-src');
+  if(!src||!window.Blob||!window.URL) return;
+  var txt=src.textContent.replace(/^\n/,'');
+  [].forEach.call(document.querySelectorAll('a[data-skill]'),function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var url=URL.createObjectURL(new Blob([txt],{type:'text/markdown;charset=utf-8'}));
+      var t=document.createElement('a'); t.href=url; t.download='skill-conteudo-linkedin-altus.md';
+      document.body.appendChild(t); t.click(); t.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); },2000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
