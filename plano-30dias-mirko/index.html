@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano 30 Dias · Mirko</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root{
+    --green:#008E43; --green-light:#12B85E; --green-soft:#E3F1E8;
+    --bg:#F8F7F4; --card:#ECEAE5; --text:#111111; --gray:#6B6B6B; --line:#D8D5CE;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; background:var(--bg); color:var(--text);}
+  body{font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.55;}
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:700;}
+  .wrap{max-width:860px; margin:0 auto; padding:0 16px;}
+
+  /* capa */
+  .cover{min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover img{width:76px; height:76px; margin-bottom:34px;}
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  .cover h1{font-size:44px; line-height:1.08; font-weight:800; margin:12px 0 14px; letter-spacing:-.5px;}
+  .cover .sub{font-size:17px; color:var(--gray); max-width:560px;}
+  .cover .who{margin-top:46px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:40px; flex-wrap:wrap;}
+  .cover .who div span{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray);}
+  .cover .who div b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px;}
+
+  /* seções */
+  .sec{padding:40px 0 8px;}
+  .part-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  h2.section-title{font-size:25px; font-weight:800; margin:6px 0 6px; letter-spacing:-.3px;}
+  .lead{font-size:14.5px; color:#333; margin-bottom:16px; max-width:720px;}
+  h3{font-size:15px; font-weight:800; margin:0 0 8px;}
+
+  .card{background:var(--card); border-radius:12px; padding:16px 18px; margin-bottom:12px; break-inside:avoid;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .grid2 .card{margin-bottom:0;}
+  ul.clean{margin:0; padding-left:18px;}
+  ul.clean li{margin-bottom:5px;}
+
+  .reframe{border-left:4px solid var(--green); padding:6px 0 6px 16px; margin:18px 0; font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; line-height:1.35; break-inside:avoid;}
+  .tip{background:var(--green-soft); border-radius:12px; padding:14px 18px; margin:12px 0; break-inside:avoid;}
+  .tip b.t{display:block; color:var(--green); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:4px;}
+  .ssi{display:flex; gap:16px; align-items:center; background:var(--text); color:#fff; border-radius:12px; padding:14px 18px; margin-top:12px; break-inside:avoid;}
+  .ssi .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:22px; color:var(--green-light); white-space:nowrap;}
+  .ssi span{font-size:12.5px; color:#d6d6d6;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.8px; break-inside:avoid;}
+  th,td{border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top;}
+  th{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); font-weight:700;}
+  td:first-child{font-weight:700; width:28%;}
+
+  .opt{background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-top:8px; font-weight:600;}
+  .opt small{display:block; font-weight:500; color:var(--gray); font-size:11.5px; margin-top:2px;}
+  .label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray); font-weight:700; margin-bottom:6px; display:block;}
+
+  .banner{background:linear-gradient(120deg,#0d0d0d 0%,#1d1d1d 55%,#0c3d22 100%); color:#fff; border-radius:10px; aspect-ratio:1584/396; display:flex; flex-direction:column; justify-content:center; padding:0 6% 0 34%; margin-top:8px;}
+  .banner b{font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(14px,2.6vw,22px); line-height:1.2;}
+  .banner span{font-size:clamp(10px,1.5vw,12.5px); color:#bfe6cf; margin-top:6px;}
+
+  /* checklist */
+  .check{display:flex; gap:12px; align-items:flex-start; background:var(--card); border-radius:10px; padding:11px 14px; margin-bottom:8px; break-inside:avoid;}
+  .check .box{flex:0 0 17px; height:17px; border:2px solid var(--green); border-radius:4px; margin-top:2px; background:#fff;}
+  .check strong{display:block; font-size:13.5px;}
+  .check span{font-size:12.5px; color:#444;}
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; break-inside:avoid;}
+  .vs div{border-radius:10px; padding:10px 14px; font-size:12.5px;}
+  .vs .bad{background:#fff; border:1px solid var(--line); color:#555;}
+  .vs .good{background:var(--green-soft); border:1px solid #bfdcc9;}
+  .vs b{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px;}
+  .vs .bad b{color:#9a3b3b;} .vs .good b{color:var(--green);}
+
+  .metas{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; break-inside:avoid;}
+  .metas div{background:var(--text); color:#fff; border-radius:10px; padding:12px; }
+  .metas b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; color:var(--green-light);}
+  .metas span{font-size:11.5px; color:#d0d0d0;}
+
+  /* semanas */
+  .week{border:1px solid var(--line); background:#fff; border-radius:12px; padding:14px 18px; margin-bottom:12px; break-inside:avoid;}
+  .week .wh{display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:10px;}
+  .week .wh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:800;}
+  .week .wh span{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--green); font-weight:700; letter-spacing:1px; text-transform:uppercase; white-space:nowrap;}
+  .week ul{list-style:none; margin:0; padding:0;}
+  .week li{position:relative; padding-left:24px; margin-bottom:6px;}
+  .week li:before{content:''; position:absolute; left:0; top:3px; width:13px; height:13px; border:2px solid var(--green); border-radius:3px;}
+
+  /* moldes */
+  .molde{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:14px; background:#fff; break-inside:avoid;}
+  .molde .mh{background:var(--text); color:#fff; padding:11px 18px; display:flex; justify-content:space-between; gap:10px; align-items:baseline;}
+  .molde .mh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px;}
+  .molde .mh span{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--green-light); white-space:nowrap;}
+  .molde .mb{padding:14px 18px;}
+  .skel{font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.65; background:var(--bg); border-radius:8px; padding:12px 14px; white-space:pre-wrap; margin:8px 0;}
+  .ex{font-size:12.8px; border-left:3px solid var(--green); padding:2px 0 2px 12px; color:#333; margin-top:8px;}
+  .ex i{font-style:normal; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); display:block;}
+
+  /* diagrama base */
+  .flow{display:flex; align-items:stretch; gap:8px; margin:14px 0; flex-wrap:wrap; break-inside:avoid;}
+  .flow .node{flex:1 1 120px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px;}
+  .flow .node b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:13.5px; margin-bottom:2px;}
+  .flow .node.hl{background:var(--green); color:#fff; border-color:var(--green);}
+  .flow .arrow{align-self:center; color:var(--green); font-weight:800;}
+  .flow.tight{gap:5px;} .flow.tight .node{flex:1 1 72px; padding:8px 9px; font-size:11.2px;} .flow.tight .node b{font-size:12.5px;}
+
+  .prompt{background:#141414; color:#e9e9e9; border-radius:10px; padding:12px 16px; font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.6; margin:8px 0 12px; white-space:pre-wrap; break-inside:avoid;}
+  .prompt b{color:var(--green-light); font-weight:700; display:block; margin-bottom:4px; font-size:10px; letter-spacing:1px; text-transform:uppercase;}
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0;}
+  ol.steps li{counter-increment:s; position:relative; padding:0 0 10px 40px; break-inside:avoid;}
+  ol.steps li:before{content:counter(s); position:absolute; left:0; top:0; width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-weight:800; font-size:12.5px; display:flex; align-items:center; justify-content:center;}
+
+  .paulo{background:var(--text); color:#eee; border-radius:14px; padding:20px 22px; break-inside:avoid;}
+  .paulo h3{color:#fff; font-size:17px;}
+  .paulo .part-tag{color:var(--green-light);}
+  .paulo ul{margin:8px 0 0; padding-left:18px;} .paulo li{margin-bottom:7px;}
+  .paulo b{color:#fff;}
+  .paulo .opt{background:#222; border-color:#333; color:#fff;}
+
+  .foot{margin-top:36px; padding:16px 0 40px; border-top:1px solid var(--line); font-size:11px; color:var(--gray); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+  /* web: downloads + checklist interativo */
+  .dl{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; background:var(--green); color:#fff; text-decoration:none; font-weight:700; font-size:13.5px; padding:12px 18px; border-radius:10px; border:0; cursor:pointer; font-family:'Inter',sans-serif;}
+  .btn:hover{background:var(--green-light);}
+  .btn.ghost{background:#fff; color:var(--text); border:1px solid var(--line);}
+  .btn.ghost:hover{border-color:var(--green); color:var(--green);}
+  .btn svg{width:16px; height:16px; flex:0 0 16px;}
+  .dlbox{background:var(--text); color:#fff; border-radius:14px; padding:18px 20px; margin:16px 0; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .dlbox b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; display:block;}
+  .dlbox span{font-size:12.5px; color:#cfcfcf;}
+  .check,.week li{cursor:pointer; user-select:none; transition:opacity .15s;}
+  .check:hover .box{background:var(--green-soft);}
+  .check.done .box,.week li.done:before{background:var(--green); border-color:var(--green);}
+  .check .box{position:relative;}
+  .check.done .box:after,.week li.done:after{content:''; position:absolute; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);}
+  .check.done .box:after{left:4px; top:1px;}
+  .week li.done:after{left:5px; top:5px;}
+  .check.done strong,.week li.done{text-decoration:line-through; text-decoration-color:rgba(0,0,0,.35); opacity:.6;}
+  .progress{position:sticky; top:0; z-index:5; background:rgba(248,247,244,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line);}
+  .progress .in{max-width:860px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; gap:12px; font-size:12px;}
+  .progress .bar{flex:1; height:6px; background:var(--card); border-radius:99px; overflow:hidden;}
+  .progress .bar i{display:block; height:100%; width:0; background:var(--green); transition:width .25s;}
+  .progress b{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green); white-space:nowrap;}
+  .progress button{background:none; border:0; color:var(--gray); font-size:11px; cursor:pointer; text-decoration:underline;}
+
+  @media (max-width:640px){
+    .grid2,.vs{grid-template-columns:1fr;}
+    .metas{grid-template-columns:1fr 1fr;}
+    .cover h1{font-size:34px;}
+    td:first-child{width:36%;}
+  }
+
+  @media print{
+    .no-print{display:none !important;}
+    @page{size:A4; margin:13mm 14mm 14mm;}
+    html,body{background:#fff; font-size:12.6px;}
+    .wrap{max-width:none; padding:0;}
+    .cover{min-height:268mm; padding:0;}
+    .sec{padding-top:0; break-before:page;}
+    .sec.cont{break-before:auto; padding-top:22px;}
+    .grid2{grid-template-columns:1fr 1fr;}
+    .vs{grid-template-columns:1fr 1fr;}
+    .metas{grid-template-columns:repeat(4,1fr);}
+    .banner{padding-left:34%;}
+    .banner b{font-size:17px;} .banner span{font-size:11px;}
+    .card,.week,.molde,.check,.tip,.prompt,.paulo{break-inside:avoid;}
+    table{break-inside:auto;} tr{break-inside:avoid;}
+    h2.section-title,h3{break-after:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="progress no-print"><div class="in"><span>Seu progresso</span><div class="bar"><i id="pbar"></i></div><b id="pnum">0/0</b><button id="preset" type="button">zerar</button></div></div>
+<div class="wrap">
+
+  <!-- CAPA -->
+  <section class="cover">
+    <img src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>Plano de ação:<br>30 dias no LinkedIn</h1>
+    <div class="sub">Você já montou os bastidores: site, diagnóstico gratuito, método, blog e esteira de conteúdo. Este plano liga tudo isso a uma reunião marcada, no Brasil e na Itália.</div>
+    <div class="who">
+      <div><span>Preparado para</span><b>Mirko Lamberti</b></div>
+      <div><span>Empresa</span><b>KIVEMAR</b></div>
+      <div><span>Data</span><b>Outubro de 2026</b></div>
+    </div>
+    <div class="dl no-print">
+      <a class="btn" href="skill-conteudo-linkedin-mirko.txt" download="skill-conteudo-linkedin-mirko.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a sua skill de conteúdo</a>
+      <a class="btn ghost" href="plano-30-dias-mirko.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar o plano em PDF</a>
+    </div>
+  </section>
+
+  <!-- 01 DIAGNÓSTICO -->
+  <section class="sec">
+    <div class="part-tag">Parte 01</div>
+    <h2 class="section-title">Onde você está hoje</h2>
+    <p class="lead">Mirko, você mesmo resumiu na nossa conversa: “desta vez eu comecei ao contrário”. Primeiro o blog, os bastidores e o produto; agora o LinkedIn. É a ordem certa. A peça que falta é o caminho entre o post e a reunião.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O que você já tem</h3>
+        <ul class="clean">
+          <li>Prova que pouca gente tem: Mestre em Inovação (UFRN), mais de R$ 300 mil captados em editais de inovação, 20+ anos entre Brasil e Itália</li>
+          <li>Clientes e parceiros com nome: Cerveira Advogados, Binar Construtora, Faculdade Soberana, Longitude Topografia, Café Rede, Incubadora IFRN</li>
+          <li>Um método com nome e entrega clara: o C.O.R.E., com 3 sessões, Dossiê Executivo e checkpoint no Dia +30</li>
+          <li>Um diagnóstico gratuito já no ar: 12 perguntas, 4 eixos, scorecard com radar, e ele já pede nome, e-mail e WhatsApp</li>
+          <li>O kivemar.com em PT e IT, com nota de 98 a 100 no PageSpeed, e um blog pesquisado com fontes de cada país</li>
+          <li>Uma esteira de conteúdo própria: você grava a ideia e o agente entrevista, confere a marca e escreve</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>O que travou até aqui</h3>
+        <ul class="clean">
+          <li>O perfil está parado: o último post é de 7 de junho; o anterior, de janeiro de 2025</li>
+          <li>A página da KIVEMAR também está parada</li>
+          <li>O perfil ainda aponta pro site da marca antiga (Kestrategia)</li>
+          <li>Ainda não há case contado com número, e o site não tem depoimento</li>
+          <li>Depois do scorecard do diagnóstico gratuito, não há botão pra marcar conversa: o lead para ali</li>
+          <li>Há dois anos, você pagou pra deixar o perfil bonito, mas não tinha funil: ninguém chegava à reunião</li>
+          <li>Boa parte da rede veio da época da startup (RH, associações) e não é o seu cliente de hoje</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="reframe">Não falta conteúdo, nem método, nem isca.<br>Falta o caminho do post até a reunião.</div>
+
+    <div class="tip"><b class="t">Sobre não ter case ainda</b>Você tem mais prova do que disse na call: os logos do site, os R$ 300 mil em fomento auditados por banca e o mestrado. O que falta é contar. Uma história de cliente (o problema, o que o C.O.R.E. achou, o que mudou) já é case, mesmo sem número; peça autorização antes de citar o nome. E tem um case sendo construído agora: o seu próprio LinkedIn. Anote os números do Dia 1 ao Dia 30 e esse vira um case com número de verdade.</div>
+
+    <div class="ssi"><div class="n">SSI: ?</div><span>Ainda não temos o seu SSI, a nota de 0 a 100 que o LinkedIn dá pro seu uso da rede. É a tarefa do Dia 1: abra <b>linkedin.com/sales/ssi</b>, tire um print e mande no WhatsApp. No Dia 30 a gente compara.</span></div>
+
+    <!-- 02 ICP -->
+    <div class="sec">
+      <div class="part-tag">Parte 02</div>
+      <h2 class="section-title">Pra quem você vai falar</h2>
+      <p class="lead">Este é o retrato que tiramos da conversa, do seu “Sobre” e do kivemar.com. Ajuste o que não bater com a sua realidade.</p>
+      <table>
+        <tr><th>O quê</th><th>Quem é</th></tr>
+        <tr><td>Empresa</td><td>Profissional liberal premium (médico, advogado, engenheiro) e pequena e média empresa de serviços, sem time interno de tecnologia, no Brasil e na Itália.</td></tr>
+        <tr><td>Quem decide</td><td>O dono, o sócio, o CEO. Gente mais de estratégia do que de operação.</td></tr>
+        <tr><td>O que ele sente</td><td>“A empresa trava quando eu saio.” “Tudo está na minha cabeça.” “Os dados estão em planilha, WhatsApp e ferramenta que não conversa.” “Perco lead e não sei em que etapa.” “Cada post da empresa sai com uma cara.” “Quero usar IA, mas não sei onde ela dá retorno.”</td></tr>
+        <tr><td>O que ele quer</td><td>Uma operação previsível, que funcione sem ele no meio de tudo.</td></tr>
+        <tr><td>Fora do foco agora</td><td>O empreendedor bem iniciante, que ainda precisa aprender o básico. Como você disse: “o pessoal faz, depois muda de ideia, depois vai embora”.</td></tr>
+      </table>
+
+      <div class="tip"><b class="t">Boutique no atendimento, amplo no conteúdo</b>Você vende como boutique, e é isso mesmo. Mas o post não precisa ser de nicho. Conteúdo amplo (IA, novidade de ferramenta, marketing, produtividade) traz o dono de empresa pra perto, junto com gente que não compra. Quem filtra é o formulário: é nele que a pessoa diz qual é a dor e em que momento a empresa está. Não precisa limpar a rede antiga; a rede nova vai diluindo.</div>
+      <div class="reframe">O conteúdo amplo atrai.<br>O formulário qualifica. A reunião vende.</div>
+    </div>
+  </section>
+
+  <!-- 03 VITRINE -->
+  <section class="sec">
+    <div class="part-tag">Parte 03 · Semana 1</div>
+    <h2 class="section-title">Arrumar a vitrine</h2>
+    <p class="lead">Quem lê um post seu clica no perfil antes de qualquer coisa. Em 5 segundos ele precisa entender três coisas: pra quem você trabalha, o que você faz e como faz.</p>
+
+    <div class="card">
+      <h3>Headline (a frase embaixo do seu nome)</h3>
+      <p>A atual (“Arquiteto de Operações & Fundador na KIVEMAR | Projetos executivos para PMEs...”) diz <b>quem você é</b>, mas não <b>o que muda pro cliente</b>. Escolha uma e ajuste com as suas palavras:</p>
+      <div class="opt">Ajudo empresas de serviço a rodar sem depender do fundador | Processos + IA onde ela resolve | Framework C.O.R.E. | Mestre em Inovação (UFRN)<small>A mais direta: o resultado vem primeiro, com a mesma promessa do seu site.</small></div>
+      <div class="opt">Arquiteto de Operações | Desenho os processos e coloco IA onde ela dá retorno | PMEs e serviços de alto valor | Brasil · Itália<small>Mantém o seu título e soma o como e o onde.</small></div>
+      <div class="opt">Processos claros e IA com governança para empresas de serviço | Do diagnóstico ao plano de 90 dias | R$ 300 mil+ em fomento à inovação | Brasil · Itália<small>Usa a frase da sua capa e soma a prova mais forte.</small></div>
+    </div>
+
+    <div class="card">
+      <h3>Capa (a imagem atrás da sua foto)</h3>
+      <p>A sua capa já é boa: tem promessa e método. Dois ajustes: <b>a sua prova</b> (mestrado, fomento, Brasil e Itália) e <b>o logo da KIVEMAR</b>. A pergunta do seu site funciona bem como título. O lado esquerdo fica livre, porque a foto cobre. Tamanho: 1584 × 396 px.</p>
+      <div class="banner"><b>A sua empresa consegue rodar sem você?<br>IA onde ela resolve, não onde impressiona.</b><span>Mestre em Inovação (UFRN) · R$ 300 mil+ em fomento · Brasil e Itália · KIVEMAR</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Sobre: o seu texto fica, com 3 ajustes</h3>
+      <p>O seu “Sobre” já conta a história, o método e o diferencial. Não reescreva: mexa só nisto.</p>
+      <ul class="clean">
+        <li><b>Traga a dor pro começo.</b> A frase “Se você sente que a sua empresa trava quando você se ausenta...” está no fim e é a mais forte. Ela pode abrir o texto, antes da frase do machado. Só as 3 primeiras linhas aparecem antes do “ver mais”.</li>
+        <li><b>Deixe o C.O.R.E. mais visível.</b> Uma linha pra cada letra: o que acontece em Contexto, Objetivo, Recursos e Estratégia. Quem lê entende o que vai receber.</li>
+        <li><b>Some a prova e troque o fim.</b> Mestrado, R$ 300 mil em fomento e 2 ou 3 clientes com nome. E, em vez de “Conecte-se comigo”: “O Diagnóstico de Maturidade gratuito (4 minutos) está nos Destaques, logo acima.”</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top:18px">Checklist da vitrine</h3>
+    <div class="check"><div class="box"></div><div><strong>Trocar o link “Kestrategia” por kivemar.com</strong><span>Está no topo do perfil, embaixo da sua cidade. É a primeira coisa que alguém clica.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Headline, capa e “Sobre”</strong><span>Os três ajustes acima.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Serviços: conferir as palavras-chave</strong><span>Use as palavras que o seu cliente digitaria: consultoria de processos, automação, IA para empresas, gestão.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Destaques: 3 itens</strong><span>1) O Diagnóstico de Maturidade gratuito. 2) O Diagnóstico C.O.R.E. (a página do site ou um carrossel das 3 sessões). 3) Palestras, ou o link pra marcar conversa. Quando tiver depoimento, ele entra aqui.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Experiência: KIVEMAR com os clientes</strong><span>Na experiência da KIVEMAR, cite os setores e os clientes que já estão no site (advocacia, construtora, faculdade, topografia) e os editais de inovação.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Perfil em italiano</strong><span>O LinkedIn permite criar o perfil em outro idioma (no perfil: “Adicionar perfil em outro idioma”). Headline e “Sobre” em italiano, com a mesma lógica.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Página da KIVEMAR</strong><span>Não precisa de rotina própria agora. Atualize o logo, a descrição e o link e, a cada post seu, repostar pela página já basta.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Print do SSI no Dia 1</strong><span>linkedin.com/sales/ssi. Mande no WhatsApp.</span></div></div>
+  </section>
+
+  <!-- 04 FUNIL -->
+  <section class="sec">
+    <div class="part-tag">Parte 04</div>
+    <h2 class="section-title">O caminho do post até a reunião</h2>
+    <p class="lead">Foi isso que faltou há dois anos: o perfil ficou bonito, mas não havia caminho. Este é o mesmo caminho que a gente usa na Demanda Infinita, do jeito que eu te mostrei na call.</p>
+
+    <div class="flow tight">
+      <div class="node"><b>Post</b>com isca; o pedido está na imagem</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Comentário</b>a pessoa comenta a palavra</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Mensagem</b>você manda o link do formulário</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Formulário</b>a pessoa diz a dor e o momento</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Material</b>abre na hora</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>Contato</b>ligação → WhatsApp → LinkedIn</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O formulário (a peça mais importante)</h3>
+        <p>O material quase não importa. O que importa é a pessoa dizer, por escrito, qual é a dor dela. <b>Você já tem o melhor formulário possível:</b> o Diagnóstico de Maturidade, que pede nome, e-mail e WhatsApp e ainda mostra em qual dos 4 eixos a empresa está pior. Pras outras iscas, um formulário curto no Tally (gratuito):</p>
+        <ul class="clean">
+          <li>Nome e WhatsApp</li>
+          <li>Empresa e cargo</li>
+          <li><b>Maior dor hoje</b> (escolha): processos que dependem de mim · retrabalho manual · ferramentas que não conversam · comunicação sem padrão · quero usar IA e não sei onde</li>
+          <li><b>Momento</b> (escolha): só pesquisando · quero resolver nos próximos 3 meses · preciso resolver agora</li>
+        </ul>
+        <p style="margin:8px 0 0">Depois de enviar, a pessoa vai direto pro material. E todo material termina com o convite pro Diagnóstico de Maturidade: assim todas as iscas desembocam no mesmo lugar.</p>
+      </div>
+      <div class="card">
+        <h3>Por que perguntar a dor</h3>
+        <p>A pessoa pode chegar por uma isca de marca e marcar que a dor é retrabalho. Ótimo: na conversa, é do retrabalho que você vai falar.</p>
+        <p>Na Demanda Infinita, uma diretora comercial de uma empresa grande baixou um material de prospecção. Ligamos falando da dor que ela tinha marcado, e não do material. A reunião saiu dali.</p>
+        <p style="margin:0">No diagnóstico, o eixo com a pior nota e a resposta sobre “onde mais se perde cliente” são o seu roteiro da ligação. Com alguns meses de dados, você vê quais dores mais aparecem e afina a oferta.</p>
+      </div>
+    </div>
+
+    <div class="prompt"><b>Mensagem pra quem comentou (à mão no começo; passou de 30 comentários por post, vale uma ferramenta que responde sozinha)</b>Oi, [nome]! Aqui está o link pra pegar o [material]: [link do formulário]. É só preencher rapidinho que ele abre na hora.</div>
+    <div class="prompt"><b>Contato com quem preencheu (ligação; se não atender, WhatsApp; depois, LinkedIn)</b>Oi, [nome], tudo bem? Aqui é o Mirko, da KIVEMAR.
+Vi que você fez o diagnóstico / pegou o [material]. Conseguiu dar uma olhada?
+Uma coisa me chamou atenção: [o eixo com a pior nota / a dor que você marcou].
+Como você está resolvendo isso hoje?</div>
+
+    <div class="tip"><b class="t">Na conversa de 40 minutos: segure a solução</b>Você mesmo disse: “às vezes tenho que parar de falar, senão entrego a solução e o cara vai embora com ela na mão”. Na conversa, faça o diagnóstico: entenda a dor, o tamanho dela e o que já tentaram. A solução entra na proposta do Diagnóstico C.O.R.E. A conversa mostra que você entendeu. A proposta mostra como resolver.</div>
+  </section>
+
+  <!-- 05 ISCAS -->
+  <section class="sec">
+    <div class="part-tag">Parte 05</div>
+    <h2 class="section-title">As iscas: pedacinhos do seu produto</h2>
+    <p class="lead">Uma boa isca é uma micro-solução: um pedaço pequeno do que você vende, que a pessoa consegue usar sozinha. Se ela baixou, é porque tem interesse naquele tipo de solução. A primeira já está pronta no seu site; as outras três saem da sua escada de produtos.</p>
+
+    <div class="molde">
+      <div class="mh"><b>DIAGNÓSTICO · Diagnóstico de Maturidade Operacional</b><span>Semana 2 · já pronto</span></div>
+      <div class="mb">
+        <p>O seu diagnóstico gratuito: 12 perguntas, 4 eixos, scorecard com radar. Não precisa construir nada, só escrever o post. É a isca mais perto da venda, porque leva direto ao C.O.R.E.</p>
+        <div class="ex"><i>Ideia de começo (usando a sua própria pergunta 10)</i>Se você ficar 15 dias fora, o que acontece com as vendas da sua empresa?</div>
+      </div>
+    </div>
+
+    <div class="molde">
+      <div class="mh"><b>MARCA · Agente DNA da Marca</b><span>Semana 3 · topo</span></div>
+      <div class="mb">
+        <p>Um prompt ou projeto no Claude que guarda as cores, o tom de voz e as palavras da empresa e revisa qualquer post antes de sair. É um pedaço do seu produto de DNA da marca, e conversa com o Eixo A do seu diagnóstico (Marca e Posicionamento).</p>
+        <div class="ex"><i>Ideia de imagem</i>Logos de marcas gigantes com as cores trocadas (uma de rosa, outra de verde-limão). Você não reconheceria. “É o que acontece com a sua empresa quando cada post sai com uma cor.”</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>PROPOSTA · Proposta com a cara da empresa</b><span>Semana 3 · topo</span></div>
+      <div class="mb">
+        <p>Um prompt que monta proposta comercial com a identidade visual da empresa. Esse tema já foi testado: um post meu com material parecido (o Claude montando apresentação de vendas), de 24 de junho, reuniu 653 pessoas pedindo o material.</p>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>SHADOW · Checklist Shadow AI</b><span>Semana 4 · meio</span></div>
+      <div class="mb">
+        <p>Os riscos de o time usar IA sem a empresa saber e as regras mínimas pra pôr ordem. Você já tem o artigo no blog: o material é o artigo virando checklist. Fala direto com a sua bandeira de “IA com governança”.</p>
+      </div>
+    </div>
+
+    <div class="tip"><b class="t">Reserva: a novidade da semana</b>Quando sair algo grande (o Claude editando vídeo, uma atualização do ChatGPT ou do NotebookLM), teste a ferramenta, faça um passo a passo curto e transforme em isca. É assunto que o dono de empresa quer receber, e você é exatamente quem testa essas coisas.</div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>No site: 3 ajustes que fazem diferença</h3>
+      <table>
+        <tr><th>Ajuste</th><th>Por quê</th></tr>
+        <tr><td>Botão de agendar depois do scorecard</td><td>Hoje o resultado aparece e o lead não tem pra onde ir. Um “Conversar 30 minutos sobre o meu resultado” (Cal.com ou WhatsApp) logo abaixo do radar. O mesmo botão na página do C.O.R.E.</td></tr>
+        <tr><td>Um Dossiê de exemplo</td><td>A página do C.O.R.E. descreve o Dossiê, mas não mostra. 3 ou 4 páginas de um Dossiê com uma empresa fictícia, marcado como exemplo, pra pessoa ver o que vai receber, como você mesmo sugeriu na call.</td></tr>
+        <tr><td>Exemplos do que sai da planta</td><td>“Arquitetura operacional” ainda é amplo. 4 exemplos de gargalo → o que a planta define (atendimento espalhado em 5 canais → um canal com dono; proposta feita do zero → modelo padrão; lead que some → etapa com responsável). Mostra o ponto final antes do diagnóstico.</td></tr>
+      </table>
+      <p style="margin:10px 0 0;font-size:12.5px;color:#444">Dois detalhes de revisão: a avaliação aparece como “4 minutos” num bloco e “3 a 5 minutos” em outro; e o 4º quadrante da Matriz Estratégica Cruzada aparece como “Defesa” na página inicial e como “Sobrevivência” na do C.O.R.E.</p>
+    </div>
+  </section>
+
+  <!-- 06 ROTINA -->
+  <section class="sec">
+    <div class="part-tag">Parte 06</div>
+    <h2 class="section-title">A cadência: Brasil e Itália</h2>
+    <p class="lead">Segunda, quarta e sexta são dias de isca. Nos dias entre elas, conteúdo sem pedido. Você propôs usar esses dias pra Itália, e é um bom teste.</p>
+
+    <table>
+      <tr><th>Dia</th><th>O que sai</th></tr>
+      <tr><td>Segunda</td><td>Brasil · isca</td></tr>
+      <tr><td>Terça</td><td>Itália · conteúdo sem isca (a partir da Semana 3)</td></tr>
+      <tr><td>Quarta</td><td>Brasil · isca ou bastidor</td></tr>
+      <tr><td>Quinta</td><td>Itália · conteúdo sem isca (a partir da Semana 3)</td></tr>
+      <tr><td>Sexta</td><td>Brasil · isca</td></tr>
+    </table>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><h3>A regra das 48 horas</h3><p style="margin:0">Entre uma isca e outra, no mínimo 24 a 48 horas, mesmo que a outra seja em italiano. Isca em cima de isca: a de hoje derruba a de ontem. Por isso a Itália começa sem isca, e a primeira isca italiana é um teste na Semana 4.</p></div>
+      <div class="card"><h3>Itália: o mesmo tema, outro post</h3><p style="margin:0">Igual você já faz no blog: o mesmo assunto, escrito como se fosse na Itália, com dados, fontes e exemplos de lá. Nunca a tradução do post brasileiro. Agende pelo próprio LinkedIn pra sair entre 8h e 9h da Itália.</p></div>
+    </div>
+
+    <h3 style="margin-top:18px">Todo dia útil: 20 a 30 minutos</h3>
+    <div class="check"><div class="box"></div><div><strong>Comentar em 5 a 10 posts de donos de empresa</strong><span>2 ou 3 linhas com a sua experiência, não “parabéns”. Cada comentário leva o seu nome pra rede daquela pessoa.</span></div></div>
+    <div class="vs">
+      <div class="bad"><b>Comentário que some</b>“Excelente reflexão, parabéns!”</div>
+      <div class="good"><b>Comentário que traz visita ao perfil</b>“Vejo muito isso: a empresa assina a ferramenta antes de desenhar o processo. Aí a automação só acelera a bagunça. O primeiro passo é [o que você olha primeiro].”</div>
+    </div>
+    <div class="check" style="margin-top:10px"><div class="box"></div><div><strong>Conectar com 5 a 10 donos de PME e de serviço</strong><span>Na busca, digite “sócio”, “CEO” ou “fundador” e filtre por Pessoas, local e setor. Convite com uma linha, sem vender.</span></div></div>
+    <div class="prompt"><b>Modelo de nota de convite</b>Olá, [nome]. Sou arquiteto de operações: ajudo PMEs a organizar processos e usar IA com critério, entre Brasil e Itália. Acompanho o setor de [setor] e gostaria de ter você na minha rede.</div>
+    <div class="check"><div class="box"></div><div><strong>Responder todo comentário na primeira hora do post</strong><span>E mandar o link do formulário a quem comentou a palavra da isca no mesmo dia.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Ligar no mesmo dia pra quem preencheu o formulário</strong><span>Se não atender, WhatsApp. Se não responder, LinkedIn.</span></div></div>
+
+    <h3 style="margin-top:18px">Metas do mês (de esforço, que dependem só de você)</h3>
+    <div class="metas">
+      <div><b>110 a 220</b><span>donos de empresa novos na rede</span></div>
+      <div><b>110 a 220</b><span>comentários em posts do seu público</span></div>
+      <div><b>12</b><span>posts: 8 no Brasil e 4 na Itália</span></div>
+      <div><b>4</b><span>iscas no ar (1 já pronta)</span></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--gray);margin-top:8px">Você falou em 100 leads por mês. Essa é a meta do mês 2 em diante. Neste primeiro mês, a meta é deixar a máquina rodando e anotar, por post, quantos comentários, formulários e conversas ele trouxe. É com esses números que a gente calcula quanto falta pros 100.</p>
+  </section>
+
+  <!-- 07 CALENDÁRIO -->
+  <section class="sec">
+    <div class="part-tag">Parte 07</div>
+    <h2 class="section-title">O mês, semana a semana</h2>
+    <p class="lead">Você quis começar com calma, 1 ou 2 posts por semana, e ir acelerando. O plano respeita isso. Marque cada item quando fizer. A rotina diária da Parte 06 vale todas as semanas.</p>
+
+    <div class="week">
+      <div class="wh"><b>Semana 1 · Vitrine e caminho</b><span>Dias 1 a 7</span></div>
+      <ul>
+        <li>Dia 1: print do SSI, enviado no WhatsApp</li>
+        <li>Trocar o link do perfil, a headline, a capa e o “Sobre” (Parte 03)</li>
+        <li>Pôr o botão de agendar depois do scorecard do diagnóstico (Parte 05)</li>
+        <li>Começar a rotina diária: comentar e conectar</li>
+        <li>1 post de retomada (Estrutura B): por que você parou, o que construiu nesse tempo e por que voltou. Sem isca</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 2 · Primeira isca (a que já está pronta)</b><span>Dias 8 a 14</span></div>
+      <ul>
+        <li>Segunda: post de isca DIAGNÓSTICO (Estrutura A), com a imagem “Comente DIAGNÓSTICO”</li>
+        <li>Montar o formulário curto no Tally pras próximas iscas, com a dor e o momento (Parte 04)</li>
+        <li>Quarta ou quinta: 1 bastidor, a sua esteira de conteúdo (da ideia gravada ao artigo em dois idiomas)</li>
+        <li>Mandar o link do formulário pra todo mundo que comentou e ligar pra quem preencheu</li>
+        <li>Destaques no ar: diagnóstico gratuito, C.O.R.E. e palestras</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 3 · Cadência cheia + Itália</b><span>Dias 15 a 21</span></div>
+      <ul>
+        <li>Segunda: isca MARCA</li>
+        <li>Quarta: bastidor ou novidade comentada (Estrutura B ou C)</li>
+        <li>Sexta: isca PROPOSTA</li>
+        <li>Terça e quinta: 2 posts em italiano, sem isca, com fontes italianas</li>
+        <li>Perfil em italiano no ar</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 4 · Do formulário à reunião</b><span>Dias 22 a 30</span></div>
+      <ul>
+        <li>Segunda: isca SHADOW</li>
+        <li>Quarta: teste da primeira isca em italiano: o diagnóstico em italiano, ou a isca que mais funcionou no Brasil refeita com dados de lá</li>
+        <li>Terça: 1 post em italiano, sem isca</li>
+        <li>Sexta: repetir o formato de isca que trouxe mais formulário</li>
+        <li>Chamar pra conversa de 40 minutos quem fez o diagnóstico ou marcou “quero resolver nos próximos 3 meses” ou “agora”</li>
+        <li>Dia 30: novo print do SSI e a tabela de cada post (comentários, formulários, conversas)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 08 ESTRUTURAS -->
+  <section class="sec">
+    <div class="part-tag">Parte 08</div>
+    <h2 class="section-title">Como escrever cada post</h2>
+    <p class="lead">Na call você perguntou sobre tamanho, palavras e gancho. O tamanho quase não muda o resultado. O que muda é a estrutura. A sua skill (Parte 09) já sabe as três abaixo.</p>
+
+    <div class="tip"><b class="t">Regras que valem pra todas</b>Começo de no máximo 2 linhas, porque é o que aparece antes do “ver mais”. Parágrafos de 1 a 3 linhas. Uma ideia por post. Todo termo técnico explicado (MVP, SMART, governança). Link nunca no texto. De 1 a 3 hashtags. E nada de “comente”, “curta” ou “compartilhe” no texto: o LinkedIn derruba o alcance de post que pede interação na legenda. O pedido vai na imagem.</div>
+
+    <div class="molde">
+      <div class="mh"><b>Estrutura A · Post de isca</b><span>Segunda · quarta · sexta</span></div>
+      <div class="mb">
+        <p>É a estrutura que eu uso em todos os meus posts de isca: <b>começo → dor → como resolver → o que a pessoa recebe</b>.</p>
+        <div class="skel">[Começo: a dor ou a novidade em até 2 linhas]
+[A dor: o que o dono vive hoje, sem julgar]
+[Como resolver: 3 a 5 itens que já ajudam sozinhos]
+Montei [o material] e estou liberando de graça 👇
+[O que a pessoa recebe: 1 a 3 linhas]
+[Fecho seco: "Não é X. É Y."]
+
+IMAGEM: título do material + "Comente [PALAVRA]"</div>
+        <div class="ex"><i>Exemplo de começo (DIAGNÓSTICO)</i>Se você ficar 15 dias fora, o que acontece com as vendas da sua empresa?</div>
+        <div class="ex"><i>Exemplo de começo (MARCA)</i>Se a Apple trocasse de cor a cada post, ninguém confiaria nela. A sua empresa faz isso toda semana.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura B · Bastidor</b><span>Dia sem isca</span></div>
+      <div class="mb">
+        <p>O que você está construindo. Mostra que você usa no seu negócio o que vende.</p>
+        <div class="skel">[O que eu estou construindo/testando agora]
+[O problema que isso resolve]
+[O que deu certo e o que não deu]
+[A lição pro dono de empresa em 1 linha]</div>
+        <div class="ex"><i>Exemplo de começo</i>Eu gravo uma ideia no celular. Uma hora depois ela é um artigo em português e outro em italiano, e não é tradução.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura C · Novidade comentada</b><span>Topo · qualquer dia sem isca</span></div>
+      <div class="mb">
+        <div class="skel">[A novidade em 1 linha: o que saiu]
+[Por que importa pro dono de PME, não pro técnico]
+[Onde dá retorno e onde é só brilho]
+[O que eu faria primeiro]</div>
+        <div class="ex"><i>Exemplo de começo</i>Todo mundo está mostrando o que a IA nova faz. Pouca gente está dizendo onde ela não dá retorno nenhum.</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:18px">13 temas pra começar</h3>
+    <table>
+      <tr><th>Estrutura</th><th>Tema</th></tr>
+      <tr><td>B · Bastidor</td><td>Por que eu parei de postar e o que construí nesse tempo (retomada)</td></tr>
+      <tr><td>A · Isca</td><td>Se você ficar 15 dias fora, o que acontece com as vendas? (DIAGNÓSTICO)</td></tr>
+      <tr><td>A · Isca</td><td>A sua empresa muda de cor a cada post (MARCA)</td></tr>
+      <tr><td>B · Bastidor</td><td>Da ideia gravada no celular ao artigo em dois idiomas</td></tr>
+      <tr><td>A · Isca</td><td>A proposta que parece da sua empresa, não de um modelo da internet (PROPOSTA)</td></tr>
+      <tr><td>C · Novidade</td><td>A novidade de IA da semana: onde dá retorno e onde é só brilho</td></tr>
+      <tr><td>A · Isca</td><td>O seu time já usa IA. Você sabe com quais dados? (SHADOW)</td></tr>
+      <tr><td>B · Bastidor</td><td>Italiano radicado no Brasil: o que os dois países erram igual na hora de organizar a empresa</td></tr>
+      <tr><td>B · Bastidor</td><td>Automatizar processo quebrado: o erro que eu vejo há 20 anos</td></tr>
+      <tr><td>B · Bastidor</td><td>O que eu aprendi captando R$ 300 mil em editais de inovação</td></tr>
+      <tr><td>Itália · B ou C</td><td>Shadow AI nelle PMI italiane, com dados italianos</td></tr>
+      <tr><td>Itália · B ou C</td><td>Il manuale del marchio che la grande azienda ha e la PMI no</td></tr>
+
+      <tr><td>Itália · A (teste)</td><td>A isca que mais funcionou no Brasil, refeita pra Itália (Semana 4)</td></tr>
+    </table>
+  </section>
+
+  <!-- 09 ESTEIRA + SKILL -->
+  <section class="sec">
+    <div class="part-tag">Parte 09</div>
+    <h2 class="section-title">A sua esteira + a skill</h2>
+    <p class="lead">Você já tem o que quase ninguém tem: um agente que conhece a sua marca e escreve com você. Não precisa montar outro. É só ensinar a esteira a escrever pro LinkedIn.</p>
+
+    <div class="grid2">
+      <div class="card"><h3>A esteira é a fábrica</h3><p style="margin:0">Você grava a ideia, o agente entrevista você, confere a marca e escreve o artigo. Ela continua igual.</p></div>
+      <div class="card"><h3>A skill é o manual do LinkedIn</h3><p style="margin:0">É o arquivo da skill do evento, que você já baixou, agora com a sua ficha preenchida: a sua história, as provas do site, o C.O.R.E., a escada de produtos, o cliente ideal, as 4 iscas e as regras dos posts em italiano. Os campos que ainda faltam estão marcados como [A CONFIRMAR].</p></div>
+    </div>
+
+    <div class="dlbox no-print"><div><b>Skill de conteúdo LinkedIn · Mirko</b><span>Arquivo .md, já com a sua ficha. Cole nas instruções do projeto no Claude (ou do seu agente).</span></div><a class="btn" href="skill-conteudo-linkedin-mirko.txt" download="skill-conteudo-linkedin-mirko.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill</a></div>
+
+    <div class="flow">
+      <div class="node"><b>Ideia</b>áudio gravado</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Sua esteira</b>artigo PT + artigo IT</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>Skill LinkedIn</b>posts no formato certo</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Você</b>revisa e agenda na sexta</div>
+    </div>
+
+    <div class="prompt"><b>Prompt 1 · Completar a ficha</b>Leia a seção "Ficha do especialista" desta skill. Para cada campo marcado [A CONFIRMAR], me faça uma pergunta curta, uma de cada vez. No final, me devolva a ficha completa pra eu colar no lugar.</div>
+    <div class="prompt"><b>Prompt 2 · Artigo → posts (a ideia que você teve na call)</b>Aqui está um artigo do meu blog: [colar]. Transforme em 5 posts de LinkedIn: 1 de isca (Estrutura A) e 4 sem isca (Estruturas B e C). Cada um com um começo diferente. Diga qual material gratuito combina com a isca.</div>
+    <div class="prompt"><b>Prompt 3 · Post da semana</b>Escreva o post de [segunda] na Estrutura A pra isca [MARCA]. Depois me dê o texto da imagem (título do material + "Comente MARCA") e confira o checklist de captura antes de entregar.</div>
+    <div class="prompt"><b>Prompt 4 · Versão italiana</b>Escreva um post em italiano sobre [tema], sem isca (Estrutura B ou C). Não traduza o post brasileiro: pesquise dados e fontes italianas e escreva como se tivesse sido escrito na Itália.</div>
+    <p style="font-size:12.5px;color:#444">Uma hora por semana basta: na sexta, você produz e agenda os posts da semana seguinte no próprio LinkedIn. Durante a semana, sobra só a rotina diária e as conversas.</p>
+  </section>
+
+  <!-- 10 OFERTA + PRÓXIMOS -->
+  <section class="sec">
+    <div class="part-tag">Parte 10</div>
+    <h2 class="section-title">A oferta por trás das iscas</h2>
+    <p class="lead">A isca leva à conversa, e a conversa leva a uma oferta. A sua escada já está no site; o que a call somou foram os produtos de marca e conteúdo.</p>
+
+    <div class="flow">
+      <div class="node"><b>0 · Diagnóstico de Maturidade</b>gratuito, 4 minutos</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>1 · Diagnóstico C.O.R.E.</b>3 sessões + Dossiê + Dia +30</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>2 · Acompanhamento</b>Direção de Obra Tecnológica (Fractional AI Officer)</div>
+    </div>
+    <p style="font-size:12.5px;color:#444">E em paralelo, a linha de marca e conteúdo que você contou na call: o <b>DNA da marca</b> (os documentos da marca virando projeto no Claude) e o <b>conteúdo com IA</b>, com a sua plataforma por trás.</p>
+
+    <div class="tip"><b class="t">A plataforma: primeiro serviço, depois SaaS</b>Como SaaS, o ticket fica baixo (R$ 100 a R$ 300 por mês) e você precisa de muito cliente e de manter cada um usando. Como serviço, com a plataforma por trás pra facilitar a sua entrega, o ticket fica entre R$ 1.500 e R$ 3.000 por mês. Com 10 a 20 clientes nesse modelo, você valida o que o mercado quer e junta caixa pra, aí sim, abrir a plataforma como SaaS.</div>
+
+    <!-- PRÓXIMOS PASSOS -->
+    <div class="sec cont">
+      <div class="part-tag">Parte 11</div>
+      <h2 class="section-title">Próximos passos</h2>
+      <ol class="steps" style="margin-top:12px">
+        <li><b>Mandar no WhatsApp o print do SSI.</b> É com ele que a gente compara o Dia 1 e o Dia 30.</li>
+        <li><b>Começar a Semana 1 já.</b> A vitrine, o formulário e a rotina diária não dependem de nada.</li>
+        <li><b>Mandar os primeiros posts pra eu revisar.</b> Como combinamos: escreveu, manda no WhatsApp que eu dou uma olhada, com ou sem mentoria.</li>
+        <li><b>Quando a máquina estiver rodando</b> e você quiser acelerar, a gente conversa sobre a mentoria. Pode ser agora ou daqui a um ou dois meses.</li>
+      </ol>
+    </div>
+
+    <div class="foot"><span>Plano de Ação · 30 dias no LinkedIn · Mirko Lamberti · KIVEMAR</span><span>Demanda Infinita® · Outubro de 2026</span></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var KEY='plano30-mirko-v1', st={};
+  try{ st=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ st={}; }
+  var items=[].slice.call(document.querySelectorAll('.check, .week li'));
+  var bar=document.getElementById('pbar'), num=document.getElementById('pnum');
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+  function render(){
+    var n=0;
+    items.forEach(function(el,i){ var on=!!st[i]; el.classList.toggle('done',on); el.setAttribute('aria-checked',on); if(on) n++; });
+    num.textContent=n+'/'+items.length;
+    bar.style.width=(items.length? n/items.length*100 : 0)+'%';
+  }
+  items.forEach(function(el,i){
+    el.setAttribute('role','checkbox'); el.setAttribute('tabindex','0');
+    function t(){ st[i]=!st[i]; save(); render(); }
+    el.addEventListener('click',t);
+    el.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); t(); } });
+  });
+  document.getElementById('preset').addEventListener('click',function(){ if(confirm('Desmarcar todos os itens?')){ st={}; save(); render(); } });
+  render();
+})();
+</script>
+<script type="text/plain" id="skill-src">---
+name: conteudo-linkedin-mirko-kivemar
+description: "Skill de produção de conteúdo LinkedIn do Mirko Lamberti (KIVEMAR), no Método Demanda Infinita®. Use sempre que for escrever post (Brasil ou Itália), post de captura com material gratuito, comentário, convite de conexão ou mensagem pra quem pegou um material. Contém a ficha do especialista já preenchida, a estrutura de post de isca, as regras do LinkedIn, as regras dos posts em italiano e o checklist antes de entregar."
+---
+
+# Skill de Conteúdo LinkedIn: Mirko Lamberti · KIVEMAR
+**Método Demanda Infinita® · versão personalizada**
+
+Você é o redator de LinkedIn do Mirko Lamberti. O seu trabalho é transformar a experiência real dele em posts que façam o dono de empresa certo pensar "isso é comigo" e preencher o formulário pra pegar um material.
+
+**Regra de ouro:** você só escreve o que está nesta ficha e nos arquivos do projeto. Nunca invente história, cliente, número, empresa ou resultado. O Mirko ainda não tem case com número publicado: não crie um. Se faltar matéria-prima, pergunte antes de escrever. Se um dado for necessário e não existir, escreva `[A CONFIRMAR]`.
+
+---
+
+## 0. Ficha do especialista
+
+> Preenchida a partir da reunião de 12/10/2026, do texto "Sobre" do perfil e do site kivemar.com. O que está como [A CONFIRMAR] o Mirko completa.
+
+**Nome:** Mirko Lamberti
+**Como se apresenta (1 linha):** Arquiteto de Operações e fundador da KIVEMAR. Desenho a planta dos processos e coloco IA onde ela dá retorno, pra empresa funcionar sem depender do dono o tempo todo.
+**Onde está:** italiano radicado no Brasil, em Natal (RN), atendendo Brasil e Itália.
+**Trajetória:** duas décadas entre o Brasil e a Itália, na intersecção entre tecnologia, engenharia de sistemas e negócios. Programador e analista de banco de dados. Criação de sites e gestão de campanhas "desde o comecinho da internet". Consultor de empresas e professor. Fundou uma startup social com um chatbot que ensinava empreendedorismo a comunidades. Atuou na gestão de varejo físico (equipe, fornecedores, fluxo de caixa). Hoje é fundador e consultor sênior da KIVEMAR (Kivemar Consultoria e Treinamento, marca registrada no INPI). Formação: Mestre em Inovação pela UFRN, com base técnica no ecossistema de software na Europa.
+**Especialidade técnica:** arquitetura operacional (mapear o fluxo real do negócio e os gargalos de atendimento e vendas), eliminação de retrabalho manual, integração de IA com governança, esteira de conteúdo com IA, sites e blogs otimizados (PageSpeed 98 a 100) pensados pra aparecer na busca das IAs.
+**Provas concretas:**
+- Mais de R$ 300 mil captados em editais públicos de fomento à inovação, com projetos auditados por bancas independentes.
+- Mestre em Inovação (UFRN). 20+ anos na interseção entre tecnologia, pessoas e processos.
+- Clientes e parceiros citados no site: Longitude Topografia, Incubadora Tecnológica IFRN (IT-NC), Café Rede, Binar Construtora, Faculdade Soberana, Cerveira Advogados Associados. [A CONFIRMAR o que foi feito em cada um e se pode contar a história no post]
+- O site kivemar.com, com nota de 98 a 100 no PageSpeed em todas as páginas (celular e computador).
+- O blog em português e italiano, em que cada artigo é pesquisado com fontes do próprio país, não traduzido.
+- Uma esteira própria de conteúdo: ele grava a ideia, um agente o entrevista, confere os parâmetros da marca e escreve o artigo.
+- Um piloto de criação de conteúdo com IA em andamento pra um cliente [A CONFIRMAR se pode citar e como].
+- Cases com número: [A CONFIRMAR]. Ainda não há. Não inventar.
+- O site afirma que "mais de 60% do tempo de sócios e diretores vai para rotinas manuais". [A CONFIRMAR a fonte antes de usar em post]
+**História de origem:** ao longo da carreira, viu o mesmo erro se repetir: o empresário contrata ferramenta e assinatura de software sem planejamento, achando que a tecnologia sozinha arruma a desordem interna. Fundou a KIVEMAR pra resolver a causa raiz.
+**O que ele faz que quase ninguém faz (diferencial):** traduz tecnologia e processos complexos em arquitetura clara pra quem decide e não é técnico. Desenha a planta e fiscaliza a obra: não vende software, não recebe comissão de ferramenta e não implementa (a execução fica com o time do cliente ou integradores). Atua nos dois mercados (Brasil e Itália) com pesquisa local de cada um.
+**Opiniões firmes:**
+- Automatizar um processo quebrado só escala o caos mais rápido.
+- "Inteligência artificial onde ela resolve, e não onde ela impressiona."
+- Comprar software por modismo gera silo de dados, risco de LGPD e baixa adoção.
+- IA vai onde gera alavancagem econômica e governança, não onde só impressiona.
+- O primeiro passo não é instalar ferramenta: é desenhar a planta dos processos.
+- A PME não tem manual de marca, por isso cada post sai com uma cara. O CEO de uma grande varejista não fala o que quer na entrevista: ele segue o manual.
+- Tradução não é localização: o mesmo tema na Itália tem outra dor, outro dado e outra fonte.
+**Frases que ele costuma dizer:**
+- "Se eu tivesse oito horas para derrubar uma árvore, passaria seis afiando o machado."
+- "Sem a direção correta, você vai mais rápido e mais longe... do seu real objetivo."
+- "Não é uma agência de marketing nem vende automações avulsas de prateleira."
+- "A sua empresa consegue rodar sem você?"
+- "Sem venda de ferramenta no escuro."
+**Palavras que ele NUNCA usaria:** [A CONFIRMAR]
+
+### Oferta
+**Escada de produtos:**
+0. **Diagnóstico de Maturidade Operacional** (gratuito, kivemar.com/pt/diagnostico-maturidade-digital/): 12 perguntas, ~4 minutos, 4 eixos (A Marca e Posicionamento · B Atendimento e Relacionamento · C Vendas, Funil e Conversão · D Estrutura Operacional, Dados e Governança), scorecard com gráfico radar e enquadramento em 5 níveis (BARS). Pede nome, e-mail e WhatsApp.
+1. **Diagnóstico C.O.R.E.**, conduzido pelo Mirko, em 3 sessões de 90 minutos (videoconferência ou presencial), com 5 a 7 dias entre elas:
+   - Sessão 1 · Contexto & Gargalos: entrevista com o decisor, mapeamento de rotinas, Matriz Ponderada de Gargalos (1 a 10).
+   - Sessão 2 · Objetivo & Recursos: Meta SMART de 90 dias, inventário de tempo, equipe, ferramentas e caixa, Matriz Estratégica Cruzada (Crescimento, Otimização, Proteção, Defesa).
+   - Sessão 3 · Estratégia & Planta: Dossiê Executivo em PDF com 6 Fichas Operacionais quinzenais e checklists.
+   - Dia +30: sessão de calibração incluída.
+   Limite de 10 diagnósticos por mês (Brasil + Itália).
+2. **Direção de Obra Tecnológica (Fractional AI Officer):** acompanhamento contínuo, opcional.
+**Linha de marca e conteúdo (da call):** DNA da marca (documentos de marca virando projeto no Claude) e conteúdo com IA (a plataforma própria, usada na entrega).
+**Ciclo:** primeiros SOPs a partir da 2ª semana, alívio perceptível em menos de 30 dias, maturidade em 90 dias.
+**Porta de entrada:** Diagnóstico de Maturidade gratuito → conversa de 40 minutos → Diagnóstico C.O.R.E.
+**Faixa de preço:** [A CONFIRMAR]
+> O preço serve só pra você entender o porte. Nunca vai pro post.
+
+### Cliente ideal (ICP)
+**Empresa:** profissional liberal premium (médico, advogado, engenheiro) e pequena e média empresa de serviços, sem time interno de tecnologia, no Brasil e na Itália.
+**Quem decide:** o dono, o sócio ou o CEO.
+**Dores, nas palavras do cliente:**
+- "A empresa trava quando eu saio."
+- "Tudo está na minha cabeça."
+- "Os dados estão em planilha, WhatsApp e ferramenta que não conversa."
+- "Perco lead e não sei em que etapa."
+- "Assinei um monte de ferramenta e nada conversa com nada."
+- "Eu e meus sócios vivemos apagando incêndio e refazendo trabalho manual."
+- "Cada post da empresa sai com uma cara diferente."
+- "Quero usar IA, mas não sei onde ela dá retorno."
+**O que ele quer que aconteça:** uma operação previsível, que funcione sem ele no meio de tudo.
+**Quem NÃO é cliente agora:** o empreendedor bem iniciante, que ainda precisa aprender o básico, aplica pela metade e muda de ideia no meio do caminho.
+
+### Materiais gratuitos (iscas)
+| Palavra-chave | Material | Pra quem | O que entrega |
+|---|---|---|---|
+| DIAGNÓSTICO | Diagnóstico de Maturidade Operacional (já no site) | Dono que sente que a empresa trava sem ele | Scorecard com radar dos 4 eixos e o nível de maturidade, em 4 minutos |
+| MARCA | Agente DNA da Marca | Dono de PME que posta sem padrão | Prompt/projeto no Claude que guarda cores, tom de voz e palavras da empresa e revisa qualquer post antes de sair |
+| PROPOSTA | Proposta com a cara da empresa | Quem vende serviço e manda proposta | Prompt que monta proposta comercial com a identidade visual da empresa |
+| SHADOW | Checklist Shadow AI | Dono de empresa com time usando IA | Os riscos de o time usar IA sem a empresa saber e as regras mínimas pra pôr ordem |
+
+---
+
+## 1. Como o LinkedIn distribui hoje (regras de todo post)
+
+- **Tempo de leitura é o que mais pesa.** Post que segura a pessoa lendo vai mais longe. Parágrafos curtos, uma ideia por post.
+- **O post pesa mais que o número de seguidores.** O LinkedIn testa o post com gente de fora da rede. Perfil pequeno ou parado pode ter alcance grande.
+- **Comentário vale muito mais que curtida.** E conversa nos comentários vale mais ainda. Responder todos, de preferência na primeira hora.
+- **Pedido de interação no texto derruba o alcance.** Nunca escrever "comente", "curta", "compartilhe", "conecte-se" no texto do post.
+- **Link externo no texto reduz alcance.** Link vai no primeiro comentário ou na mensagem.
+- **De 1 a 3 hashtags.**
+- **Carrossel/documento (PDF) segura leitura.** Enquete está praticamente morta.
+
+---
+
+## 2. Mix e calendário
+
+| Dia | Brasil (português) | Itália (italiano) |
+|---|---|---|
+| Segunda | Isca | — |
+| Terça | — | Conteúdo (sem isca) |
+| Quarta | Isca ou bastidor | — |
+| Quinta | — | Conteúdo (sem isca) |
+| Sexta | Isca | — |
+
+**Regra das 48 horas:** entre uma isca e outra, no mínimo 24 a 48 horas, mesmo que seja em outro idioma. Isca em cima de isca: uma derruba a outra.
+**Horário:** Brasil entre 7h e 9h ou 17h e 19h (horário de Brasília). Itália entre 8h e 9h de lá: agendar pelo próprio LinkedIn.
+**Conteúdo amplo atrai, o formulário qualifica:** os temas podem ser mais abertos (IA no geral, novidade de ferramenta, marketing, produtividade). Quem não é cliente fica pelo caminho no formulário e na conversa.
+
+---
+
+## 3. As estruturas
+
+### Estrutura A: post de isca (o principal)
+A ordem que funciona: **começo → dor → como resolver → o que a pessoa recebe**. O texto é conteúdo. **O pedido mora na imagem.**
+```
+[Começo: a dor ou a novidade em até 2 linhas]
+[A dor: o que o dono vive hoje, sem julgar, 2 a 4 linhas]
+[Como resolver: 3 a 5 itens que já ajudam sozinhos]
+Montei [o material] e estou liberando de graça 👇
+[O que a pessoa recebe: 1 a 3 linhas]
+[Fecho seco: "Não é X. É Y."]
+```
+**Imagem (criativo):** título do material + "Comente [PALAVRA]". Tem que parecer conteúdo, não anúncio.
+
+**Checklist de captura (rodar antes de entregar):**
+- [ ] O texto não contém "comenta", "comente", "conecta", "curte", "compartilha"?
+- [ ] Tem exatamente 1 linha de aviso (com 👇)?
+- [ ] A palavra-chave aparece só na imagem?
+- [ ] Quem só ler o texto já sai com algo útil?
+- [ ] Nenhum link no corpo do post?
+
+### Estrutura B: bastidor (dia sem isca)
+```
+[O que eu estou construindo/testando agora, em 1 a 2 linhas]
+[O problema que isso resolve]
+[O que deu certo e o que não deu]
+[A lição pro dono de empresa em 1 linha]
+```
+Fontes de bastidor: a esteira de conteúdo, o blog em dois idiomas, os editais de inovação (R$ 300 mil+), ser italiano no Brasil, os clientes do site (se autorizado), o piloto com cliente (se autorizado), a reconstrução do próprio LinkedIn.
+
+### Estrutura C: novidade comentada (topo)
+```
+[A novidade em 1 linha: o que saiu]
+[Por que importa pro dono de PME, não pro técnico]
+[Onde dá retorno e onde é só brilho]
+[O que eu faria primeiro]
+```
+
+---
+
+## 4. Começos que param a rolagem
+
+- **Cena:** "Se você ficar 15 dias fora, o que acontece com as vendas da sua empresa?"
+- **Contradição:** "Todo mundo acha que falta ferramenta. Não falta."
+- **Bastidor:** "Eu gravo uma ideia no celular. Uma hora depois ela é um artigo em português e outro em italiano."
+- **Pergunta que dói:** "Quantas assinaturas de software a sua empresa paga e ninguém usa?"
+- **Comparação:** "Se a Apple trocasse de cor a cada post, ninguém confiaria nela. A sua empresa faz isso toda semana."
+
+Regras do começo: no máximo 2 linhas; nunca começar com "Eu" ou "Olá"; sem ponto de exclamação; no máximo 1 emoji.
+
+---
+
+## 5. Posts em italiano
+
+- **Mesmo tema, outro post.** Nunca traduzir o post brasileiro. Escrever como se tivesse sido escrito na Itália.
+- **Dados, fontes e exemplos italianos** (instituições, pesquisas e empresas de lá), igual o blog já faz.
+- **A dor pode mudar de país pra país.** Antes de escrever, perguntar: essa dor existe do mesmo jeito na Itália?
+- **Sem isca em italiano nas duas primeiras semanas.** Primeiro o público italiano conhece o Mirko; a primeira isca em italiano é teste, depois de ver qual isca funcionou no Brasil.
+
+---
+
+## 6. Tom e estilo
+
+**Sempre:**
+- Escrever como o Mirko fala: didático, com analogia (o machado, a planta da casa, o manual da marca de empresa grande).
+- Parágrafos de 1 a 3 linhas. Uma ideia por post.
+- Todo termo técnico explicado na primeira vez (MVP, SMART, governança, shadow AI).
+- Falar com o dono de empresa, não com o técnico: o que muda no caixa, no tempo e na rotina dele.
+- Fechos secos e firmes. Ex.: "Não é ferramenta. É a planta."
+
+**Nunca:**
+- Inventar história, número, cliente ou resultado.
+- Prometer resultado garantido.
+- Pedir interação no texto do post.
+- Apresentar a KIVEMAR como agência ou como venda de automação avulsa.
+
+---
+
+## 7. Rotina fora dos posts
+
+### Comentários (5 a 10 por dia) em posts de donos de empresa
+```
+[Concordo/discordo em 1 linha] + [o que eu vejo acontecer nas empresas] + [o que olhar primeiro]
+```
+
+### Convite de conexão (5 a 10 por dia)
+```
+Olá, [nome]. Sou arquiteto de operações: ajudo PMEs a organizar processos e usar IA com critério, entre Brasil e Itália. Acompanho o setor de [setor] e gostaria de ter você na minha rede.
+```
+
+**Todo material termina com o convite pro Diagnóstico de Maturidade gratuito.**
+
+### Mensagem pra quem comentou a isca
+```
+Oi, [nome]! Aqui está o link pra pegar o [material]: [link do formulário].
+É só preencher rapidinho que ele abre na hora.
+```
+
+### Contato com quem preencheu o formulário (ligação → WhatsApp → LinkedIn)
+```
+Oi, [nome], tudo bem? Aqui é o Mirko, da KIVEMAR.
+Vi que você fez o diagnóstico / pegou o [material]. Conseguiu dar uma olhada?
+Uma coisa me chamou atenção: [o eixo com a pior nota / a dor que você marcou].
+Como você está resolvendo isso hoje?
+```
+Se a resposta mostrar a dor, o próximo passo é o convite pra conversa de 40 minutos. Sem proposta por mensagem.
+
+---
+
+## 8. Formato de entrega
+
+Pra cada post pedido, entregue:
+1. **O post pronto**, com as quebras de linha.
+2. **Estrutura usada** (A, B ou C) e **de onde saiu a matéria-prima**.
+3. **Idioma e dia sugerido** (respeitando a regra das 48 horas).
+4. **Hashtags** (1 a 3).
+5. Se for isca: **texto da imagem** (título + "Comente [PALAVRA]") e o checklist de captura conferido.
+6. **Perguntas**, se algum dado ficou como `[A CONFIRMAR]`.
+
+---
+
+## 9. Checklist final (todo post)
+
+- [ ] O começo cabe em 2 linhas e faz o dono de empresa pensar "isso é comigo"?
+- [ ] Todo fato do post está na ficha ou nos arquivos?
+- [ ] Todo termo técnico está explicado?
+- [ ] Não tem pedido de interação no texto nem link no corpo?
+- [ ] Se for em italiano, os dados e fontes são italianos?
+- [ ] Soa como o Mirko falando, lido em voz alta?
+</script>
+<script>
+(function(){
+  var src=document.getElementById('skill-src');
+  if(!src||!window.Blob||!window.URL) return;
+  var txt=src.textContent.replace(/^\n/,'');
+  [].forEach.call(document.querySelectorAll('a[data-skill]'),function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var url=URL.createObjectURL(new Blob([txt],{type:'text/markdown;charset=utf-8'}));
+      var t=document.createElement('a'); t.href=url; t.download='skill-conteudo-linkedin-mirko.md';
+      document.body.appendChild(t); t.click(); t.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); },2000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
