@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano 30 Dias · Nauan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root{
+    --green:#008E43; --green-light:#12B85E; --green-soft:#E3F1E8;
+    --bg:#F8F7F4; --card:#ECEAE5; --text:#111111; --gray:#6B6B6B; --line:#D8D5CE;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; background:var(--bg); color:var(--text);}
+  body{font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.55;}
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:700;}
+  .wrap{max-width:860px; margin:0 auto; padding:0 16px;}
+
+  /* capa */
+  .cover{min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover img{width:76px; height:76px; margin-bottom:34px;}
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  .cover h1{font-size:44px; line-height:1.08; font-weight:800; margin:12px 0 14px; letter-spacing:-.5px;}
+  .cover .sub{font-size:17px; color:var(--gray); max-width:560px;}
+  .cover .who{margin-top:46px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:40px; flex-wrap:wrap;}
+  .cover .who div span{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray);}
+  .cover .who div b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px;}
+
+  /* seções */
+  .sec{padding:40px 0 8px;}
+  .part-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  h2.section-title{font-size:25px; font-weight:800; margin:6px 0 6px; letter-spacing:-.3px;}
+  .lead{font-size:14.5px; color:#333; margin-bottom:16px; max-width:720px;}
+  h3{font-size:15px; font-weight:800; margin:0 0 8px;}
+
+  .card{background:var(--card); border-radius:12px; padding:16px 18px; margin-bottom:12px; break-inside:avoid;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .grid2 .card{margin-bottom:0;}
+  ul.clean{margin:0; padding-left:18px;}
+  ul.clean li{margin-bottom:5px;}
+
+  .reframe{border-left:4px solid var(--green); padding:6px 0 6px 16px; margin:18px 0; font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; line-height:1.35; break-inside:avoid;}
+  .tip{background:var(--green-soft); border-radius:12px; padding:14px 18px; margin:12px 0; break-inside:avoid;}
+  .tip b.t{display:block; color:var(--green); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:4px;}
+  .ssi{display:flex; gap:16px; align-items:center; background:var(--text); color:#fff; border-radius:12px; padding:14px 18px; margin-top:12px; break-inside:avoid;}
+  .ssi .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:22px; color:var(--green-light); white-space:nowrap;}
+  .ssi span{font-size:12.5px; color:#d6d6d6;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.8px; break-inside:avoid;}
+  th,td{border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top;}
+  th{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); font-weight:700;}
+  td:first-child{font-weight:700; width:28%;}
+
+  .opt{background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-top:8px; font-weight:600;}
+  .opt small{display:block; font-weight:500; color:var(--gray); font-size:11.5px; margin-top:2px;}
+  .label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray); font-weight:700; margin-bottom:6px; display:block;}
+
+  .banner{background:linear-gradient(120deg,#0d0d0d 0%,#1d1d1d 55%,#0c3d22 100%); color:#fff; border-radius:10px; aspect-ratio:1584/396; display:flex; flex-direction:column; justify-content:center; padding:0 6% 0 34%; margin-top:8px;}
+  .banner b{font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(14px,2.6vw,22px); line-height:1.2;}
+  .banner span{font-size:clamp(10px,1.5vw,12.5px); color:#bfe6cf; margin-top:6px;}
+
+  /* checklist */
+  .check{display:flex; gap:12px; align-items:flex-start; background:var(--card); border-radius:10px; padding:11px 14px; margin-bottom:8px; break-inside:avoid;}
+  .check .box{flex:0 0 17px; height:17px; border:2px solid var(--green); border-radius:4px; margin-top:2px; background:#fff;}
+  .check strong{display:block; font-size:13.5px;}
+  .check span{font-size:12.5px; color:#444;}
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; break-inside:avoid;}
+  .vs div{border-radius:10px; padding:10px 14px; font-size:12.5px;}
+  .vs .bad{background:#fff; border:1px solid var(--line); color:#555;}
+  .vs .good{background:var(--green-soft); border:1px solid #bfdcc9;}
+  .vs b{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px;}
+  .vs .bad b{color:#9a3b3b;} .vs .good b{color:var(--green);}
+
+  .metas{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; break-inside:avoid;}
+  .metas div{background:var(--text); color:#fff; border-radius:10px; padding:12px; }
+  .metas b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; color:var(--green-light);}
+  .metas span{font-size:11.5px; color:#d0d0d0;}
+
+  /* semanas */
+  .week{border:1px solid var(--line); background:#fff; border-radius:12px; padding:14px 18px; margin-bottom:12px; break-inside:avoid;}
+  .week .wh{display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:10px;}
+  .week .wh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:800;}
+  .week .wh span{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--green); font-weight:700; letter-spacing:1px; text-transform:uppercase; white-space:nowrap;}
+  .week ul{list-style:none; margin:0; padding:0;}
+  .week li{position:relative; padding-left:24px; margin-bottom:6px;}
+  .week li:before{content:''; position:absolute; left:0; top:3px; width:13px; height:13px; border:2px solid var(--green); border-radius:3px;}
+
+  /* moldes */
+  .molde{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:14px; background:#fff; break-inside:avoid;}
+  .molde .mh{background:var(--text); color:#fff; padding:11px 18px; display:flex; justify-content:space-between; gap:10px; align-items:baseline;}
+  .molde .mh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px;}
+  .molde .mh span{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--green-light); white-space:nowrap;}
+  .molde .mb{padding:14px 18px;}
+  .skel{font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.65; background:var(--bg); border-radius:8px; padding:12px 14px; white-space:pre-wrap; margin:8px 0;}
+  .ex{font-size:12.8px; border-left:3px solid var(--green); padding:2px 0 2px 12px; color:#333; margin-top:8px;}
+  .ex i{font-style:normal; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); display:block;}
+
+  /* diagrama base */
+  .flow{display:flex; align-items:stretch; gap:8px; margin:14px 0; flex-wrap:wrap; break-inside:avoid;}
+  .flow .node{flex:1 1 120px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px;}
+  .flow .node b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:13.5px; margin-bottom:2px;}
+  .flow .node.hl{background:var(--green); color:#fff; border-color:var(--green);}
+  .flow .arrow{align-self:center; color:var(--green); font-weight:800;}
+  .flow.tight{gap:5px;} .flow.tight .node{flex:1 1 72px; padding:8px 9px; font-size:11.2px;} .flow.tight .node b{font-size:12.5px;}
+
+  .prompt{background:#141414; color:#e9e9e9; border-radius:10px; padding:12px 16px; font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.6; margin:8px 0 12px; white-space:pre-wrap; break-inside:avoid;}
+  .prompt b{color:var(--green-light); font-weight:700; display:block; margin-bottom:4px; font-size:10px; letter-spacing:1px; text-transform:uppercase;}
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0;}
+  ol.steps li{counter-increment:s; position:relative; padding:0 0 10px 40px; break-inside:avoid;}
+  ol.steps li:before{content:counter(s); position:absolute; left:0; top:0; width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-weight:800; font-size:12.5px; display:flex; align-items:center; justify-content:center;}
+
+  .paulo{background:var(--text); color:#eee; border-radius:14px; padding:20px 22px; break-inside:avoid;}
+  .paulo h3{color:#fff; font-size:17px;}
+  .paulo .part-tag{color:var(--green-light);}
+  .paulo ul{margin:8px 0 0; padding-left:18px;} .paulo li{margin-bottom:7px;}
+  .paulo b{color:#fff;}
+  .paulo .opt{background:#222; border-color:#333; color:#fff;}
+
+  .foot{margin-top:36px; padding:16px 0 40px; border-top:1px solid var(--line); font-size:11px; color:var(--gray); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+  /* web: downloads + checklist interativo */
+  .dl{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; background:var(--green); color:#fff; text-decoration:none; font-weight:700; font-size:13.5px; padding:12px 18px; border-radius:10px; border:0; cursor:pointer; font-family:'Inter',sans-serif;}
+  .btn:hover{background:var(--green-light);}
+  .btn.ghost{background:#fff; color:var(--text); border:1px solid var(--line);}
+  .btn.ghost:hover{border-color:var(--green); color:var(--green);}
+  .btn svg{width:16px; height:16px; flex:0 0 16px;}
+  .dlbox{background:var(--text); color:#fff; border-radius:14px; padding:18px 20px; margin:16px 0; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .dlbox b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; display:block;}
+  .dlbox span{font-size:12.5px; color:#cfcfcf;}
+  .check,.week li{cursor:pointer; user-select:none; transition:opacity .15s;}
+  .check:hover .box{background:var(--green-soft);}
+  .check.done .box,.week li.done:before{background:var(--green); border-color:var(--green);}
+  .check .box{position:relative;}
+  .check.done .box:after,.week li.done:after{content:''; position:absolute; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);}
+  .check.done .box:after{left:4px; top:1px;}
+  .week li.done:after{left:5px; top:5px;}
+  .check.done strong,.week li.done{text-decoration:line-through; text-decoration-color:rgba(0,0,0,.35); opacity:.6;}
+  .progress{position:sticky; top:0; z-index:5; background:rgba(248,247,244,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line);}
+  .progress .in{max-width:860px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; gap:12px; font-size:12px;}
+  .progress .bar{flex:1; height:6px; background:var(--card); border-radius:99px; overflow:hidden;}
+  .progress .bar i{display:block; height:100%; width:0; background:var(--green); transition:width .25s;}
+  .progress b{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green); white-space:nowrap;}
+  .progress button{background:none; border:0; color:var(--gray); font-size:11px; cursor:pointer; text-decoration:underline;}
+
+  @media (max-width:640px){
+    .grid2,.vs{grid-template-columns:1fr;}
+    .metas{grid-template-columns:1fr 1fr;}
+    .cover h1{font-size:34px;}
+    td:first-child{width:36%;}
+  }
+
+  @media print{
+    .no-print{display:none !important;}
+    @page{size:A4; margin:13mm 14mm 14mm;}
+    html,body{background:#fff; font-size:12.6px;}
+    .wrap{max-width:none; padding:0;}
+    .cover{min-height:268mm; padding:0;}
+    .sec{padding-top:0; break-before:page;}
+    .sec.cont{break-before:auto; padding-top:22px;}
+    .grid2{grid-template-columns:1fr 1fr;}
+    .vs{grid-template-columns:1fr 1fr;}
+    .metas{grid-template-columns:repeat(4,1fr);}
+    .banner{padding-left:34%;}
+    .banner b{font-size:17px;} .banner span{font-size:11px;}
+    .card,.week,.molde,.check,.tip,.prompt,.paulo{break-inside:avoid;}
+    table{break-inside:auto;} tr{break-inside:avoid;}
+    h2.section-title,h3{break-after:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="progress no-print"><div class="in"><span>Seu progresso</span><div class="bar"><i id="pbar"></i></div><b id="pnum">0/0</b><button id="preset" type="button">zerar</button></div></div>
+<div class="wrap">
+
+  <!-- CAPA -->
+  <section class="cover">
+    <img src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>Plano de ação:<br>30 dias no LinkedIn</h1>
+    <div class="sub">De um perfil em transição de carreira a uma referência comercial. Um perfil, três frentes de negócio, e cada lead indo pra solução certa.</div>
+    <div class="who">
+      <div><span>Preparado para</span><b>Nauan Fornari</b></div>
+      <div><span>Região</span><b>Blumenau · SC</b></div>
+      <div><span>Data</span><b>Outubro de 2026</b></div>
+    </div>
+    <div class="dl no-print">
+      <a class="btn" href="skill-conteudo-linkedin-nauan.txt" download="skill-conteudo-linkedin-nauan.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill de conteúdo</a>
+      <a class="btn ghost" href="plano-30-dias-nauan.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar o plano em PDF</a>
+    </div>
+  </section>
+
+  <!-- 01 DIAGNÓSTICO -->
+  <section class="sec">
+    <div class="part-tag">Parte 01</div>
+    <h2 class="section-title">Onde você está hoje</h2>
+    <p class="lead">Nauan, você tem uma situação rara: três negócios pra vender e uma carreira inteira em vendas consultivas. O LinkedIn é onde isso tudo vira uma coisa só, com o seu nome na frente.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O que você já tem</h3>
+        <ul class="clean">
+          <li>Na área comercial desde 2012: vendas consultivas, negociação, prospecção, recuperação de clientes estratégicos</li>
+          <li>Operações de escalas diferentes, de equipes enxutas faturando na casa dos milhões a estruturas maiores</li>
+          <li>Liderança de uma equipe operacional de cerca de 20 pessoas</li>
+          <li>Formação que sustenta o discurso: Comércio Exterior, pós em Gestão Comercial e Inteligência de Mercado, dois MBAs de consultoria em curso</li>
+          <li>Hoje, dentro de duas empresas: closer numa consultoria de franquias e executivo de vendas numa empresa de treinamentos</li>
+          <li>Uma capa de perfil que já fala de resultado: “receita previsível e crescimento sustentável”</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>O que travou até aqui</h3>
+        <ul class="clean">
+          <li>55 conexões: a rede ainda está começando</li>
+          <li>Você mesmo escreveu: o perfil começou a se movimentar há pouco tempo, sem constância e bem genérico, por causa da transição de carreira</li>
+          <li>A headline é uma lista de competências (“Especialista em... | Estratégia... | Inteligência...”) que muita gente também usa</li>
+          <li>O “Sobre” conta a carreira, mas não diz qual problema você resolve nem pra quem</li>
+          <li>Três negócios pra gerar demanda e a dúvida entre perfil pessoal e página da empresa</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="reframe">Não são três perfis pra três negócios.<br>É um nome que o cliente procura, e três soluções por trás dele.</div>
+
+    <div class="tip"><b class="t">Perfil pessoal ou página da empresa?</b>Perfil pessoal, e só ele nos 30 dias. No LinkedIn, pessoa gera conversa e página de empresa quase não alcança ninguém. Quando a sua consultoria abrir, a página dela entra para repostar o que você publica. E as 55 conexões não são problema: o LinkedIn distribui o post, não o perfil. Aqui na Demanda Infinita, uma pessoa do time com menos de 100 conexões já gerou leads nos primeiros posts.</div>
+
+    <div class="ssi"><div class="n">SSI: ?</div><span>Ainda não temos o seu SSI, a nota de 0 a 100 que o LinkedIn dá pro seu uso da rede. É a tarefa do Dia 1: abra <b>linkedin.com/sales/ssi</b>, tire um print e mande no WhatsApp. No Dia 30 a gente compara.</span></div>
+  </section>
+
+  <!-- 02 ECOSSISTEMA -->
+  <section class="sec">
+    <div class="part-tag">Parte 02</div>
+    <h2 class="section-title">O ecossistema: uma porta, três caminhos</h2>
+    <p class="lead">O dono de empresa não quer saber se a solução é sua ou de um parceiro. Quer saber se você entendeu o problema dele. Por isso, o seu conteúdo fala de crescimento comercial, e a dor que a pessoa marca no formulário decide pra qual frente ela vai.</p>
+
+    <div class="flow">
+      <div class="node hl"><b>Nauan</b>autoridade comercial no LinkedIn</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Formulário</b>a pessoa diz a dor</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Conversa</b>30 minutos de diagnóstico</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Solução certa</b>uma das três frentes</div>
+    </div>
+
+    <table>
+      <tr><th>Frente</th><th>Quando indicar</th></tr>
+      <tr><td>Sua consultoria comercial</td><td>“Não sei onde perco venda.” “As vendas dependem de mim.” “Não tenho processo comercial.”</td></tr>
+      <tr><td>A consultoria de franquias</td><td>“Quero crescer pra outras cidades.” “Será que o meu negócio vira franquia?”</td></tr>
+      <tr><td>A empresa de treinamentos</td><td>“Meu time não bate meta.” “Contrato vendedor e ele não vende.”</td></tr>
+    </table>
+
+    <div class="tip"><b class="t">Transparência com os parceiros</b>No seu “Sobre”, você escreve que acredita em confiança e ética. Então, quando indicar um parceiro, diga que é parceiro. Isso não enfraquece a indicação, fortalece: você vira quem conhece o mercado e sabe pra quem mandar cada problema. E combine antes com cada empresa como você pode falar delas (nome, logo, casos).</div>
+
+    <h3 style="margin-top:18px">Pra quem você vai falar</h3>
+    <table>
+      <tr><th>O quê</th><th>Quem é</th></tr>
+      <tr><td>Empresa</td><td>Pequena e média empresa (indústria, distribuição, serviços B2B), de preferência em Santa Catarina e no Sul, que já fatura o suficiente pra investir em consultoria. <i>Ajuste com o perfil de cliente das três frentes.</i></td></tr>
+      <tr><td>Quem decide</td><td>Dono, sócio, diretor comercial.</td></tr>
+      <tr><td>O que ele sente</td><td>“As vendas dependem de mim.” “Meu time não bate meta e eu não sei por quê.” “Perdi um cliente grande e nem percebi que ele estava indo embora.” “Quero crescer, mas não sei se abro filial, franqueio ou contrato.”</td></tr>
+      <tr><td>O que ele quer</td><td>Vender mais com previsibilidade, sem depender só do dono.</td></tr>
+    </table>
+  </section>
+
+  <!-- 03 VITRINE -->
+  <section class="sec">
+    <div class="part-tag">Parte 03 · Semana 1</div>
+    <h2 class="section-title">Arrumar a vitrine</h2>
+    <p class="lead">Quem lê um post seu clica no perfil antes de qualquer coisa. Em 5 segundos ele precisa entender pra quem você trabalha, o que resolve e por que confiar em você.</p>
+
+    <div class="card">
+      <h3>Headline (a frase embaixo do seu nome)</h3>
+      <p>A atual lista cinco competências. Muita gente usa as mesmas palavras, então elas não diferenciam. Troque competência por resultado e prova:</p>
+      <div class="opt">Ajudo empresas a vender mais sem depender do dono | Estratégia comercial e vendas consultivas | Na área comercial desde 2012<small>A mais direta: o resultado vem primeiro.</small></div>
+      <div class="opt">Crescimento comercial pra PMEs do Sul | Processo de vendas, expansão e time comercial | Vendendo desde 2012<small>Mostra as três frentes sem citar as empresas.</small></div>
+      <div class="opt">Transformo gargalos comerciais em receita previsível | Vendas consultivas desde 2012 | Gestão Comercial e Inteligência de Mercado<small>Usa a frase da sua capa e soma a prova.</small></div>
+    </div>
+
+    <div class="card">
+      <h3>Capa (a imagem atrás da sua foto)</h3>
+      <p>A sua capa já é boa: tem promessa e diz o que você faz. Um ajuste: somar a prova (vendendo desde 2012) e deixar o lado esquerdo livre, porque a foto cobre. Tamanho: 1584 × 396 px.</p>
+      <div class="banner"><b>Estratégia, processo e time comercial<br>pra escalar negócios.</b><span>Vendas consultivas desde 2012 · Blumenau · SC</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Sobre: do currículo pro problema do cliente</h3>
+      <p>O seu texto hoje conta a carreira em ordem. Tudo ali é útil, mas a ordem deve começar pelo cliente. Mantenha as suas frases e reorganize em 5 blocos:</p>
+      <div class="skel">1. A dor, na língua do cliente
+   "A empresa cresce até onde o dono consegue vender. Depois para."
+2. Quem é você, com prova
+   Comercial desde 2012, recuperação de clientes estratégicos,
+   operações faturando milhões, equipe de 20 pessoas.
+3. Como você trabalha
+   Diagnóstico → plano → acompanhamento (e, quando é o caso,
+   os parceiros de franquia e de treinamento).
+4. Pra quem é
+   PMEs que querem vender mais sem depender só do dono.
+5. Como falar com você
+   "O link pra marcar uma conversa está nos Destaques."</div>
+      <p style="margin:8px 0 0">A parte de interesses (IA, investimentos, cripto) pode sair do “Sobre” e virar tema de post.</p>
+    </div>
+
+    <h3 style="margin-top:18px">Checklist da vitrine</h3>
+    <div class="check"><div class="box"></div><div><strong>Headline, capa e “Sobre”</strong><span>Os três ajustes acima.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Experiência: as duas empresas atuais</strong><span>Com 2 ou 3 linhas cada, do que você faz e pra quem. Combine antes com elas como você pode citar.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Destaques: o link pra marcar uma conversa</strong><span>Um Cal.com ou Google Agenda gratuito resolve. Quando tiver depoimento de cliente, ele entra aqui.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Foto</strong><span>A atual está ótima: rosto visível, profissional.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Print do SSI no Dia 1</strong><span>linkedin.com/sales/ssi. Mande no WhatsApp.</span></div></div>
+  </section>
+
+  <!-- 04 FUNIL -->
+  <section class="sec">
+    <div class="part-tag">Parte 04</div>
+    <h2 class="section-title">O caminho do post até a reunião</h2>
+    <p class="lead">Este é o mesmo caminho que a gente usa na Demanda Infinita, com um detalhe a mais pra você: o formulário também decide pra qual frente o lead vai.</p>
+
+    <div class="flow tight">
+      <div class="node"><b>Post</b>com isca; o pedido está na imagem</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Comentário</b>a pessoa comenta a palavra</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Mensagem</b>você manda o link do formulário</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Formulário</b>a pessoa diz a dor e o momento</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Material</b>abre na hora</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>Contato</b>ligação → WhatsApp → LinkedIn</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O formulário</h3>
+        <p>Pode ser no Tally, que é gratuito. Campos:</p>
+        <ul class="clean">
+          <li>Nome, WhatsApp, empresa e cargo</li>
+          <li><b>Maior dor hoje</b> (escolha): as vendas dependem de mim · não sei onde perco venda · meu time não bate meta · quero expandir pra outras cidades · perdi clientes importantes</li>
+          <li><b>Tamanho da empresa</b>: até 10 · 11 a 50 · mais de 50 pessoas</li>
+          <li><b>Momento</b>: só pesquisando · quero resolver nos próximos 3 meses · preciso resolver agora</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>A dor decide a frente</h3>
+        <p><b>Depende de mim / não sei onde perco venda / perdi clientes</b> → a sua consultoria.</p>
+        <p><b>Quero expandir pra outras cidades</b> → a consultoria de franquias.</p>
+        <p><b>Meu time não bate meta</b> → a empresa de treinamentos.</p>
+        <p style="margin:0">Na conversa, você confirma. Muitas vezes a dor marcada é só a ponta: quem marca “time não bate meta” pode estar sem processo nenhum.</p>
+      </div>
+    </div>
+
+    <div class="prompt"><b>Mensagem pra quem comentou</b>Oi, [nome]! Aqui está o link pra pegar o [material]: [link do formulário]. É só preencher rapidinho que ele abre na hora.</div>
+    <div class="prompt"><b>Contato com quem preencheu (primeiro ligação; se não atender, WhatsApp; depois, LinkedIn)</b>Oi, [nome], tudo bem? Aqui é o Nauan.
+Vi que você pegou o [material]. Conseguiu dar uma olhada?
+Uma coisa me chamou atenção: você marcou que a sua maior dor hoje é [dor].
+Como você está resolvendo isso hoje?</div>
+    <div class="tip"><b class="t">Você já sabe fazer a parte difícil</b>Como closer, você vive a conversa de venda todo dia. O que o LinkedIn muda é quem chega nela: em vez de lead frio, chega alguém que já leu você, já pegou um material seu e já disse qual é a dor.</div>
+  </section>
+
+  <!-- 05 ISCAS -->
+  <section class="sec">
+    <div class="part-tag">Parte 05</div>
+    <h2 class="section-title">As iscas: uma pra cada frente</h2>
+    <p class="lead">Uma boa isca é um pedaço pequeno do que você vende, que a pessoa consegue usar sozinha. Duas alimentam a sua consultoria; as outras duas, os parceiros.</p>
+
+    <div class="molde">
+      <div class="mh"><b>VENDA · Raio-X comercial</b><span>Semana 2 · sua consultoria</span></div>
+      <div class="mb">
+        <p>10 perguntas com nota pra descobrir onde a empresa perde venda (prospecção, proposta, negociação, pós-venda), e o primeiro gargalo a atacar. É o seu diagnóstico em versão gratuita.</p>
+        <div class="ex"><i>Ideia de começo</i>Se você sair de férias por um mês, quanto a sua empresa vende?</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>VOLTA · Roteiro pra recuperar cliente</b><span>Semana 3 · sua consultoria</span></div>
+      <div class="mb">
+        <p>Como abordar o cliente que parou de comprar, o que perguntar e o que oferecer. Sai direto da sua experiência com recuperação de clientes estratégicos, coisa que pouca gente sabe fazer bem.</p>
+        <div class="ex"><i>Ideia de começo</i>O cliente que mais comprava parou de ligar. Ninguém percebeu por 3 meses.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>FRANQUIA · O seu negócio está pronto pra virar franquia?</b><span>Semana 3 · parceira de franquias</span></div>
+      <div class="mb">
+        <p>Um checklist dos critérios antes de franquear. Monte com a consultoria de franquias: eles têm os critérios, você tem o texto e o lead.</p>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>TIME · Os sinais de que o seu time precisa de treinamento</b><span>Semana 4 · parceira de treinamentos</span></div>
+      <div class="mb">
+        <p>Um diagnóstico rápido do time comercial. Mesma lógica: monte com a empresa de treinamentos, a partir do que eles já usam com os clientes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 CADÊNCIA + ROTINA -->
+  <section class="sec">
+    <div class="part-tag">Parte 06</div>
+    <h2 class="section-title">A cadência e a rotina diária</h2>
+    <p class="lead">Segunda, quarta e sexta. Com duas empresas e uma consultoria pra abrir, o tempo é curto: produza e agende tudo num bloco de uma hora por semana, e use 20 minutos por dia pra rede.</p>
+
+    <table>
+      <tr><th>Dia</th><th>O que sai</th></tr>
+      <tr><td>Segunda</td><td>Isca</td></tr>
+      <tr><td>Quarta</td><td>História de campo ou isca</td></tr>
+      <tr><td>Sexta</td><td>Isca</td></tr>
+      <tr><td>Terça e quinta</td><td>Opcional: opinião ou novidade, sem isca</td></tr>
+    </table>
+    <div class="tip"><b class="t">A regra das 48 horas</b>Entre uma isca e outra, no mínimo 24 a 48 horas. Isca em cima de isca: a de hoje derruba a de ontem.</div>
+
+    <h3 style="margin-top:18px">Todo dia útil: 20 a 30 minutos</h3>
+    <div class="check"><div class="box"></div><div><strong>Conectar com 10 a 15 donos e diretores por dia</strong><span>Mais do que o normal, porque a rede está começando. Na busca: “diretor comercial”, “sócio”, “CEO”, filtrando por Pessoas e por Santa Catarina. Convite com uma linha, sem vender.</span></div></div>
+    <div class="prompt"><b>Modelo de nota de convite</b>Olá, [nome]. Trabalho com estratégia comercial e crescimento de empresas aqui em Santa Catarina. Acompanho o setor de [setor] e gostaria de ter você na minha rede.</div>
+    <div class="check"><div class="box"></div><div><strong>Comentar em 5 a 10 posts de donos e diretores</strong><span>2 ou 3 linhas com uma situação que você viveu em campo, não “parabéns”.</span></div></div>
+    <div class="vs">
+      <div class="bad"><b>Comentário que some</b>“Excelente reflexão, parabéns pelo post!”</div>
+      <div class="good"><b>Comentário que traz visita ao perfil</b>“Vivi isso vendendo [setor]: o cliente parou de comprar e ninguém percebeu por meses. O que resolveu foi [o que você fez].”</div>
+    </div>
+    <div class="check" style="margin-top:10px"><div class="box"></div><div><strong>Responder todo comentário na primeira hora do post</strong><span>E mandar o link do formulário a quem comentou a palavra da isca no mesmo dia.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Ligar no mesmo dia pra quem preencheu</strong><span>Se não atender, WhatsApp. Se não responder, LinkedIn.</span></div></div>
+
+    <h3 style="margin-top:18px">Metas do mês (de esforço, que dependem só de você)</h3>
+    <div class="metas">
+      <div><b>220 a 330</b><span>donos e diretores novos na rede</span></div>
+      <div><b>110 a 220</b><span>comentários em posts do seu público</span></div>
+      <div><b>10</b><span>posts publicados</span></div>
+      <div><b>4</b><span>iscas no ar</span></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--gray);margin-top:8px">Conta: 10 a 15 conexões × ~22 dias úteis. Anote, por post, quantos comentários, formulários e conversas ele trouxe, e pra qual frente cada lead foi.</p>
+  </section>
+
+  <!-- 07 CALENDÁRIO -->
+  <section class="sec">
+    <div class="part-tag">Parte 07</div>
+    <h2 class="section-title">O mês, semana a semana</h2>
+    <p class="lead">Marque cada item quando fizer. A rotina diária da Parte 06 vale todas as semanas.</p>
+
+    <div class="week">
+      <div class="wh"><b>Semana 1 · Vitrine e combinados</b><span>Dias 1 a 7</span></div>
+      <ul>
+        <li>Dia 1: print do SSI, enviado no WhatsApp</li>
+        <li>Trocar headline, capa e “Sobre” (Parte 03)</li>
+        <li>Combinar com as duas empresas parceiras como você pode citá-las e montar as iscas delas</li>
+        <li>Montar o formulário no Tally (Parte 04)</li>
+        <li>Começar a rotina diária: 10 a 15 conexões por dia</li>
+        <li>1 post de apresentação (Estrutura B): de 2012 até aqui, e por que você está indo pra consultoria. Sem isca</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 2 · Primeira isca</b><span>Dias 8 a 14</span></div>
+      <ul>
+        <li>Montar o Raio-X comercial (isca VENDA)</li>
+        <li>Segunda: post de isca VENDA, com a imagem “Comente VENDA”</li>
+        <li>Quarta: 1 história de campo (Estrutura B)</li>
+        <li>Mandar o link do formulário pra quem comentou e ligar pra quem preencheu</li>
+        <li>Link de agendamento nos Destaques</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 3 · Cadência cheia</b><span>Dias 15 a 21</span></div>
+      <ul>
+        <li>Segunda: isca VOLTA</li>
+        <li>Quarta: história de campo ou opinião</li>
+        <li>Sexta: isca FRANQUIA</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 4 · Do formulário à reunião</b><span>Dias 22 a 30</span></div>
+      <ul>
+        <li>Segunda: isca TIME</li>
+        <li>Quarta: história de campo</li>
+        <li>Sexta: repetir o formato de isca que trouxe mais formulário</li>
+        <li>Chamar pra conversa de 30 minutos quem marcou “3 meses” ou “agora”</li>
+        <li>Dia 30: novo print do SSI e a tabela de cada post (comentários, formulários, conversas, frente)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 08 ESTRUTURAS -->
+  <section class="sec">
+    <div class="part-tag">Parte 08</div>
+    <h2 class="section-title">Como escrever cada post</h2>
+    <p class="lead">Autoridade comercial não vem de dizer que você é especialista. Vem de contar o que você viu em campo. A skill (Parte 09) já sabe as três estruturas abaixo.</p>
+
+    <div class="tip"><b class="t">Regras que valem pra todas</b>Começo de no máximo 2 linhas, porque é o que aparece antes do “ver mais”. Parágrafos de 1 a 3 linhas. Uma ideia por post. Link nunca no texto. De 1 a 3 hashtags. E nada de “comente”, “curta” ou “compartilhe” no texto: o LinkedIn derruba o alcance de post que pede interação. O pedido vai na imagem.</div>
+
+    <div class="molde">
+      <div class="mh"><b>Estrutura A · Post de isca</b><span>Segunda · sexta</span></div>
+      <div class="mb">
+        <p><b>Começo → dor → como resolver → o que a pessoa recebe.</b></p>
+        <div class="skel">[Começo: a dor em até 2 linhas]
+[A dor: o que o dono vive hoje, sem julgar]
+[Como resolver: 3 a 5 itens que já ajudam sozinhos]
+Montei [o material] e estou liberando de graça 👇
+[O que a pessoa recebe: 1 a 3 linhas]
+[Fecho seco: "Não é X. É Y."]
+
+IMAGEM: título do material + "Comente [PALAVRA]"</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura B · História de campo</b><span>Quarta</span></div>
+      <div class="mb">
+        <div class="skel">Na [empresa ou "num cliente de ..."], [o problema].
+Todo mundo achava que era [a causa óbvia].
+Não era. Era [a causa real].
+[O que eu fiz: 3 a 5 linhas]
+[O que mudou, com número só se for real]
+[A lição pro dono de empresa em 1 linha]</div>
+        <div class="ex"><i>Exemplo de começo</i>Vender sistema contra incêndio me ensinou a vender pra quem acha que não precisa.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura C · Opinião ou novidade</b><span>Terça · quinta (opcional)</span></div>
+      <div class="mb">
+        <div class="skel">[A opinião ou a novidade em 1 linha]
+[Por que importa pro dono de empresa]
+[O que eu faria primeiro]</div>
+        <div class="ex"><i>Exemplo de começo</i>Todo mundo acha que o problema é o vendedor. Quase nunca é.</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:18px">10 temas pra começar</h3>
+    <table>
+      <tr><th>Estrutura</th><th>Tema</th></tr>
+      <tr><td>B · História</td><td>De 2012 até aqui: por que estou indo pra consultoria (apresentação)</td></tr>
+      <tr><td>A · Isca</td><td>Se você sair de férias por um mês, quanto a sua empresa vende? (VENDA)</td></tr>
+      <tr><td>B · História</td><td>O que vender proteção contra incêndio me ensinou sobre venda consultiva</td></tr>
+      <tr><td>A · Isca</td><td>O cliente que parou de comprar e ninguém percebeu (VOLTA)</td></tr>
+      <tr><td>C · Opinião</td><td>O problema quase nunca é o vendedor</td></tr>
+      <tr><td>A · Isca</td><td>Abrir filial ou franquear? O que olhar antes (FRANQUIA)</td></tr>
+      <tr><td>B · História</td><td>Liderar 20 pessoas na operação: o que muda quando você deixa de vender sozinho</td></tr>
+      <tr><td>A · Isca</td><td>Contratou vendedor e ele não vende? (TIME)</td></tr>
+      <tr><td>C · Novidade</td><td>IA no comercial: onde ajuda o vendedor e onde não substitui a conversa</td></tr>
+      <tr><td>B · História</td><td>Uma equipe enxuta faturando milhões: o que ela fazia diferente</td></tr>
+    </table>
+  </section>
+
+  <!-- 09 SKILL -->
+  <section class="sec">
+    <div class="part-tag">Parte 09</div>
+    <h2 class="section-title">A skill: o manual da IA</h2>
+    <p class="lead">A IA sozinha escreve o que qualquer pessoa escreveria. O que faz o post soar como o Nauan é o que você dá pra ela ler antes: as suas histórias, os seus números e o seu jeito de falar.</p>
+
+    <div class="grid2">
+      <div class="card"><h3>O que tem dentro</h3><p style="margin:0">A sua ficha já preenchida com o que temos (carreira, formação, o ecossistema, o cliente ideal, as 4 iscas), as três estruturas de post e as regras do LinkedIn. O que só você sabe (números reais, histórias, nomes das empresas) está marcado [A CONFIRMAR].</p></div>
+      <div class="card"><h3>Como montar no Claude</h3><p style="margin:0">Em claude.ai: Projetos → Criar projeto “LinkedIn · Nauan” → cole a skill inteira nas instruções → suba nos arquivos o PDF do seu perfil e 5 histórias de campo gravadas em áudio e transcritas. Leva uns 15 minutos.</p></div>
+    </div>
+
+    <div class="dlbox no-print"><div><b>Skill de conteúdo LinkedIn · Nauan</b><span>Arquivo .md, já com a sua ficha. Cole nas instruções do projeto no Claude (ou no ChatGPT).</span></div><a class="btn" href="skill-conteudo-linkedin-nauan.txt" download="skill-conteudo-linkedin-nauan.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill</a></div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Roteiro pras 5 primeiras histórias (grave em áudio, 3 a 5 minutos cada)</h3>
+      <ol style="margin:0;padding-left:20px">
+        <li>A sua primeira venda difícil: o que você aprendeu?</li>
+        <li>Um cliente estratégico que você recuperou: por que ele estava indo embora e o que trouxe ele de volta?</li>
+        <li>Vender prevenção contra incêndio: como se vende pra quem acha que não precisa?</li>
+        <li>A equipe enxuta que faturava milhões: o que ela fazia diferente?</li>
+        <li>Liderar 20 pessoas: o que mudou quando você deixou de vender sozinho?</li>
+      </ol>
+    </div>
+
+    <div class="prompt"><b>Prompt 1 · Completar a ficha</b>Leia a seção "Ficha" desta skill e as histórias nos arquivos. Para cada campo marcado [A CONFIRMAR] que ainda estiver vazio, me faça uma pergunta curta, uma de cada vez. No final, me devolva a ficha completa pra eu colar no lugar.</div>
+    <div class="prompt"><b>Prompt 2 · Post da semana</b>Escreva o post de [segunda] na Estrutura A pra isca [VENDA]. Depois me dê o texto da imagem (título do material + "Comente VENDA") e confira o checklist de captura antes de entregar.</div>
+    <div class="prompt"><b>Prompt 3 · História de campo</b>Use a história [2] dos arquivos e escreva um post na Estrutura B. Não invente nenhum número: se faltar, me pergunte.</div>
+  </section>
+
+  <!-- 10 PRÓXIMOS -->
+  <section class="sec">
+    <div class="part-tag">Parte 10</div>
+    <h2 class="section-title">Próximos passos</h2>
+    <ol class="steps" style="margin-top:12px">
+      <li><b>Mandar no WhatsApp o print do SSI.</b> É com ele que a gente compara o Dia 1 e o Dia 30.</li>
+      <li><b>Combinar com as duas empresas parceiras</b> como você pode falar delas e montar as iscas FRANQUIA e TIME.</li>
+      <li><b>Começar a Semana 1 já.</b> A vitrine, o formulário e as conexões diárias não dependem de nada.</li>
+      <li><b>Na nossa próxima conversa</b>, a gente mostra como pode acompanhar esse plano junto com você.</li>
+    </ol>
+
+    <div class="foot"><span>Plano de Ação · 30 dias no LinkedIn · Nauan Fornari</span><span>Demanda Infinita® · Outubro de 2026</span></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var KEY='plano30-nauan-v1', st={};
+  try{ st=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ st={}; }
+  var items=[].slice.call(document.querySelectorAll('.check, .week li'));
+  var bar=document.getElementById('pbar'), num=document.getElementById('pnum');
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+  function render(){
+    var n=0;
+    items.forEach(function(el,i){ var on=!!st[i]; el.classList.toggle('done',on); el.setAttribute('aria-checked',on); if(on) n++; });
+    num.textContent=n+'/'+items.length;
+    bar.style.width=(items.length? n/items.length*100 : 0)+'%';
+  }
+  items.forEach(function(el,i){
+    el.setAttribute('role','checkbox'); el.setAttribute('tabindex','0');
+    function t(){ st[i]=!st[i]; save(); render(); }
+    el.addEventListener('click',t);
+    el.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); t(); } });
+  });
+  document.getElementById('preset').addEventListener('click',function(){ if(confirm('Desmarcar todos os itens?')){ st={}; save(); render(); } });
+  render();
+})();
+</script>
+<script type="text/plain" id="skill-src">---
+name: conteudo-linkedin-nauan-fornari
+description: "Skill de produção de conteúdo LinkedIn do Nauan Fornari, no Método Demanda Infinita®. Use sempre que for escrever post, post de captura com material gratuito, comentário, convite de conexão ou mensagem pra quem pegou um material. Contém a ficha já preenchida (com os pontos em aberto marcados), a lógica do ecossistema (consultoria própria + parceiros), a estrutura de post de isca, as regras do LinkedIn e o checklist antes de entregar."
+---
+
+# Skill de Conteúdo LinkedIn: Nauan Fornari
+**Método Demanda Infinita® · versão personalizada**
+
+Você é o redator de LinkedIn do Nauan Fornari. O objetivo do perfil é construir autoridade comercial: fazer o dono de empresa enxergar o Nauan como quem entende de crescimento comercial e chamar ele pra conversar. A partir da conversa, o Nauan leva o cliente pra solução certa do ecossistema dele.
+
+**Regra de ouro:** você só escreve o que está nesta ficha e nos arquivos do projeto. Nunca invente cliente, número, empresa ou resultado. Se faltar matéria-prima, pergunte antes de escrever. Se um dado for necessário e não existir, escreva `[A CONFIRMAR]`.
+
+---
+
+## 0. Ficha
+
+> Preenchida a partir do perfil do LinkedIn, do texto "Sobre" e da anotação do agendamento (call de 07/10/2026). O que está como [A CONFIRMAR] o Nauan completa.
+
+**Nome:** Nauan Fornari
+**Onde está:** Blumenau (SC).
+**Como se apresenta (1 linha):** [A CONFIRMAR] Sugestão: "Ajudo empresas a vender mais com estratégia comercial, e conecto cada uma à solução certa pra crescer."
+**Trajetória:**
+- Na área comercial desde 2012: vendas consultivas, negociação, relacionamento com clientes.
+- Prospecção e desenvolvimento de novos negócios, expansão comercial, recuperação de clientes estratégicos, gestão de carteira.
+- Operações de escalas diferentes, de equipes comerciais enxutas faturando na casa dos milhões a estruturas maiores.
+- Liderou uma equipe operacional de cerca de 20 pessoas.
+- Segmentos: prevenção e combate a incêndio, iluminação.
+- Hoje: closer numa consultoria de franquias e executivo de vendas numa empresa de treinamentos. [A CONFIRMAR os nomes e se pode citar]
+- Em transição pra consultoria empresarial própria. [A CONFIRMAR nome e data]
+**Formação:** graduado em Comércio Exterior; pós-graduado em Gestão Comercial e Inteligência de Mercado; cursando MBAs em Consultoria e Desenvolvimento Organizacional e em Consultoria e Planejamento Empresarial. Faculdade Líbano.
+**Provas concretas:** [A CONFIRMAR] Números reais da carreira (faturamento das operações, clientes recuperados, tamanho de carteira, metas batidas). Não inventar.
+**Histórias pra contar:** [A CONFIRMAR] A primeira venda; um cliente estratégico recuperado; o que vender proteção contra incêndio ensinou sobre venda consultiva; liderar 20 pessoas na operação.
+**Opiniões firmes:**
+- Crescimento sustentável não depende só de vender mais: depende de alinhar estratégia, processos, gestão, pessoas e tecnologia.
+- Mais do que vender produto, é ajudar a empresa a achar onde melhorar.
+- Relação comercial se constrói com confiança, ética e visão de longo prazo.
+**Interesses:** IA aplicada a negócios, inovação, investimentos, mercado financeiro, criptoativos.
+**Frases que ele costuma dizer:** [A CONFIRMAR]
+**Palavras que ele NUNCA usaria:** [A CONFIRMAR]
+
+### O ecossistema (o que ele vende)
+| Frente | Pra quem | Quando indicar |
+|---|---|---|
+| Consultoria comercial própria | Empresa que vende abaixo do que poderia, sem processo comercial | Dor: "não sei onde perco venda", "depende de mim", "sem processo" |
+| Consultoria de franquias (parceira) | Empresa que quer expandir virando franquia | Dor: "quero crescer pra outras cidades", "quero franquear" |
+| Empresa de treinamentos (parceira) | Empresa com time comercial que não entrega | Dor: "meu time não bate meta", "contratei e não vende" |
+
+[A CONFIRMAR: nome de cada frente, o que cada uma entrega, faixa de preço e como o Nauan é remunerado em cada uma]
+**Transparência:** quando indicar um parceiro, deixar claro que é parceiro. Faz parte da confiança que ele defende.
+**Porta de entrada:** conversa de 30 minutos (diagnóstico comercial). [A CONFIRMAR]
+> O preço serve só pra você entender o porte. Nunca vai pro post.
+
+### Cliente ideal (ICP)
+**Empresa:** [A CONFIRMAR] Sugestão: pequena e média empresa (indústria, distribuição, serviços B2B), de preferência em Santa Catarina e no Sul, com faturamento que já permite investir em consultoria.
+**Quem decide:** dono, sócio, diretor comercial.
+**Dores, nas palavras do cliente:**
+- "As vendas dependem de mim."
+- "Meu time não bate meta e eu não sei por quê."
+- "Perdi um cliente grande e nem percebi que ele estava indo embora."
+- "Quero crescer, mas não sei se abro filial, franqueio ou contrato."
+**O que ele quer:** vender mais com previsibilidade, sem depender só do dono.
+
+### Materiais gratuitos (iscas)
+| Palavra-chave | Material | Frente | O que entrega |
+|---|---|---|---|
+| VENDA | Raio-X comercial: onde a sua empresa perde venda | Consultoria própria | 10 perguntas com nota, e o primeiro gargalo a atacar |
+| VOLTA | Roteiro pra recuperar cliente que parou de comprar | Consultoria própria | Como abordar, o que perguntar, o que oferecer |
+| FRANQUIA | Checklist: o seu negócio está pronto pra virar franquia? | Parceira de franquias | Os critérios antes de franquear [A CONFIRMAR com a parceira] |
+| TIME | Os sinais de que o seu time comercial precisa de treinamento | Parceira de treinamentos | Diagnóstico rápido do time [A CONFIRMAR com a parceira] |
+
+---
+
+## 1. Como o LinkedIn distribui hoje (regras de todo post)
+
+- **Tempo de leitura é o que mais pesa.** Parágrafos curtos, uma ideia por post.
+- **O post pesa mais que o número de conexões.** Perfil com poucas conexões pode ter alcance grande se o post for bom.
+- **Comentário vale muito mais que curtida.** Responder todos, de preferência na primeira hora.
+- **Pedido de interação no texto derruba o alcance.** Nunca escrever "comente", "curta", "compartilhe" no texto do post.
+- **Link externo no texto reduz alcance.** Link vai na mensagem.
+- **De 1 a 3 hashtags.**
+- **Carrossel/documento (PDF) segura leitura.** Enquete está praticamente morta.
+
+---
+
+## 2. Mix e calendário
+
+| Dia | O que sai |
+|---|---|
+| Segunda | Isca |
+| Quarta | Isca ou história |
+| Sexta | Isca |
+| Terça e quinta | Opcional: história ou opinião, sem isca |
+
+**Regra das 48 horas:** entre uma isca e outra, no mínimo 24 a 48 horas.
+**Horário:** entre 7h e 9h ou 17h e 19h.
+**Conteúdo amplo atrai, o formulário qualifica e direciona:** os temas podem ser abertos (vendas, gestão, crescimento, IA nos negócios). A dor marcada no formulário diz pra qual frente do ecossistema o lead vai.
+
+---
+
+## 3. As estruturas
+
+### Estrutura A: post de isca
+**Começo → dor → como resolver → o que a pessoa recebe.** O texto é conteúdo. **O pedido mora na imagem.**
+```
+[Começo: a dor em até 2 linhas]
+[A dor: o que o dono vive hoje, sem julgar, 2 a 4 linhas]
+[Como resolver: 3 a 5 itens que já ajudam sozinhos]
+Montei [o material] e estou liberando de graça 👇
+[O que a pessoa recebe: 1 a 3 linhas]
+[Fecho seco: "Não é X. É Y."]
+```
+**Imagem:** título do material + "Comente [PALAVRA]".
+
+**Checklist de captura:**
+- [ ] O texto não contém "comenta", "comente", "conecta", "curte", "compartilha"?
+- [ ] Tem exatamente 1 linha de aviso (com 👇)?
+- [ ] A palavra-chave aparece só na imagem?
+- [ ] Quem só ler o texto já sai com algo útil?
+- [ ] Nenhum link no corpo do post?
+
+### Estrutura B: história de campo
+O que dá autoridade comercial é história vivida, não lista de competências.
+```
+Na [empresa ou "num cliente de ..."], [o problema].
+Todo mundo achava que era [a causa óbvia].
+Não era. Era [a causa real].
+[O que eu fiz: 3 a 5 linhas]
+[O que mudou, com número só se for real]
+[A lição pro dono de empresa em 1 linha]
+```
+
+### Estrutura C: opinião ou novidade
+```
+[A opinião ou a novidade em 1 linha]
+[Por que importa pro dono de empresa]
+[O que eu faria primeiro]
+```
+
+---
+
+## 4. Começos que param a rolagem
+
+- **Cena:** "O cliente que mais comprava parou de ligar. Ninguém percebeu por 3 meses."
+- **Contradição:** "Todo mundo acha que o problema é o vendedor. Quase nunca é."
+- **Bastidor:** "Vender sistema contra incêndio me ensinou a vender pra quem acha que não precisa."
+- **Pergunta que dói:** "Se você sair de férias por um mês, quanto a sua empresa vende?"
+
+Regras do começo: no máximo 2 linhas; nunca começar com "Eu" ou "Olá"; sem ponto de exclamação; no máximo 1 emoji.
+
+---
+
+## 5. Tom e estilo
+
+**Sempre:** primeira pessoa, com história real; linguagem de quem está na rua vendendo, não de quem só estudou; parágrafos de 1 a 3 linhas; fechos secos.
+**Nunca:** lista de competências como post ("sou especialista em..."); inventar número ou cliente; jargão de consultoria sem explicar; pedir interação no texto; esconder que um parceiro é parceiro.
+
+---
+
+## 6. Rotina fora dos posts
+
+### Comentários (5 a 10 por dia) em posts de donos e diretores
+```
+[Concordo/discordo em 1 linha] + [o que eu vi acontecer em campo] + [o que olhar primeiro]
+```
+
+### Convite de conexão (10 a 15 por dia, porque a rede está começando)
+```
+Olá, [nome]. Trabalho com estratégia comercial e crescimento de empresas aqui em [região]. Acompanho o setor de [setor] e gostaria de ter você na minha rede.
+```
+
+### Mensagem pra quem comentou a isca
+```
+Oi, [nome]! Aqui está o link pra pegar o [material]: [link do formulário]. É só preencher rapidinho que ele abre na hora.
+```
+
+### Contato com quem preencheu (ligação → WhatsApp → LinkedIn)
+```
+Oi, [nome], tudo bem? Aqui é o Nauan.
+Vi que você pegou o [material]. Conseguiu dar uma olhada?
+Uma coisa me chamou atenção: você marcou que a sua maior dor hoje é [dor].
+Como você está resolvendo isso hoje?
+```
+O próximo passo é a conversa de 30 minutos. Sem proposta por mensagem.
+
+---
+
+## 7. Formato de entrega
+
+1. **O post pronto**, com as quebras de linha.
+2. **Estrutura usada** (A, B ou C) e **de onde saiu a matéria-prima**.
+3. **Frente do ecossistema** que o post alimenta.
+4. **Hashtags** (1 a 3).
+5. Se for isca: **texto da imagem** e o checklist de captura conferido.
+6. **Perguntas**, se algum dado ficou como `[A CONFIRMAR]`.
+
+---
+
+## 8. Checklist final
+
+- [ ] O começo cabe em 2 linhas e faz o dono de empresa pensar "isso é comigo"?
+- [ ] Todo fato está na ficha ou nos arquivos?
+- [ ] Tem uma história ou caso real, não só opinião genérica?
+- [ ] Não tem pedido de interação no texto nem link no corpo?
+- [ ] Soa como o Nauan falando, lido em voz alta?
+</script>
+<script>
+(function(){
+  var src=document.getElementById('skill-src');
+  if(!src||!window.Blob||!window.URL) return;
+  var txt=src.textContent.replace(/^\n/,'');
+  [].forEach.call(document.querySelectorAll('a[data-skill]'),function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var url=URL.createObjectURL(new Blob([txt],{type:'text/markdown;charset=utf-8'}));
+      var t=document.createElement('a'); t.href=url; t.download='skill-conteudo-linkedin-nauan.md';
+      document.body.appendChild(t); t.click(); t.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); },2000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
