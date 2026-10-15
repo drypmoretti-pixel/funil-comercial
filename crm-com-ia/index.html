@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seu CRM com o Claude | Método Demanda Infinita®</title>
+<meta name="description" content="Assista ao vídeo e use esta página como mapa: como o Claude edita, o caderno de regras que ele aprende e os pedidos prontos pra copiar.">
+<meta property="og:title" content="O Claude virou meu editor de vídeo">
+<meta property="og:description" content="Assista ao vídeo e use esta página como mapa: como o Claude edita, o caderno de regras que ele aprende e os pedidos prontos pra copiar.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://demandainfinita.com/claude-editor/">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+  @page{size:A4; margin:16mm 15mm 16mm 15mm;}
+  :root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE;--warn:#C2410C;}
+  *{box-sizing:border-box;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact; scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.55;}
+  h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:600;}
+  .pb{break-before:page;}
+  .avoid{break-inside:avoid;}
+
+  /* capa */
+  .cover{min-height:255mm;display:flex;flex-direction:column;justify-content:center;text-align:center;}
+  .cover img.logo{width:84px;height:84px;margin:0 auto 22px;}
+  .kicker{font-size:11px;font-weight:700;letter-spacing:1.6px;color:var(--green);text-transform:uppercase;}
+  .cover h1{font-size:40px;font-weight:800;line-height:1.12;margin:12px 0 14px;}
+  .cover .sub{font-size:15px;color:var(--gray);max-width:420px;margin:0 auto;}
+  .badge{display:inline-block;margin:24px auto 0;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px;}
+
+  /* vídeo */
+  .video{margin:8px auto 8px;max-width:860px;}
+  .video .kv{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);text-align:center;margin-bottom:6px;}
+  .video h2{font-size:24px;text-align:center;margin-bottom:16px;line-height:1.25;}
+  .video .frame{position:relative;padding-top:56.25%;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 14px 40px rgba(0,0,0,.18);border:1px solid var(--line);}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .jump{display:block;width:fit-content;margin:18px auto 0;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13.5px;color:var(--green);text-decoration:none;border:1.5px solid var(--green);background:#fff;border-radius:999px;padding:9px 20px;}
+  .jump:hover{background:var(--green);color:#fff;}
+
+  h2.sec{font-size:22px;font-weight:800;padding-bottom:8px;border-bottom:2px solid var(--green);margin-bottom:14px;}
+  h2.sec .tag{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+  h3{font-size:15px;font-weight:800;margin:16px 0 6px;}
+  .lead{font-size:13.5px;}
+  .lead strong{color:var(--green);}
+  .analogy{font-size:13.5px;border-left:4px solid var(--green-light);padding:2px 0 2px 13px;margin:0 0 12px;}
+  .analogy strong{color:var(--green);}
+
+  .card{background:var(--card);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+  .white{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  .f{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;break-inside:avoid;}
+  .f .n{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--green);}
+  .f .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;margin:2px 0;}
+  .f .d{font-size:11.5px;color:var(--gray);line-height:1.4;}
+  a.f{display:block;color:inherit;text-decoration:none;transition:border-color .15s, transform .15s;}
+  a.f:hover{border-color:var(--green);transform:translateY(-2px);}
+
+  /* ícones desenhados */
+  svg.ic{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block;}
+  .f svg.ic{width:24px;height:24px;margin-bottom:5px;}
+  .term svg.ic{margin:0 auto 7px;width:28px;height:28px;}
+
+  /* termos / glossário */
+  .term{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 12px;text-align:center;break-inside:avoid;}
+  .term .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13.5px;}
+  .term .d{font-size:11px;color:var(--gray);margin-top:3px;line-height:1.35;}
+
+  /* diagrama */
+  .dg{margin:16px 0;text-align:center;break-inside:avoid;}
+  .dg svg{width:100%;height:auto;max-width:620px;}
+  .dg figcaption{font-size:10.5px;color:var(--gray);margin-top:8px;font-style:italic;}
+
+  .prompt{background:#0A0F0C;border:1px solid rgba(18,184,94,.3);border-radius:12px;padding:11px 14px 10px;margin:10px 0;break-inside:avoid;}
+  .prompt .l{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--green-light);margin-bottom:6px;}
+  .prompt pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:'JetBrains Mono',monospace;font-size:10.8px;line-height:1.55;color:#E8F3EC;}
+  .prompt.master{border:2px solid var(--green-light);box-shadow:0 0 0 4px rgba(18,184,94,.12);}
+  .prompt.master .l{display:inline-block;background:var(--green-light);color:#06130b;padding:3px 10px;border-radius:999px;font-weight:800;}
+
+  .tip,.alert{border-left:4px solid var(--green);background:var(--card);border-radius:8px;padding:9px 13px;margin:11px 0;font-size:12px;break-inside:avoid;}
+  .tip b,.alert b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--green);margin-bottom:2px;font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert b{color:var(--warn);}
+
+  table{border-collapse:collapse;width:100%;font-size:11.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0;}
+  th{background:var(--card);text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid var(--line);}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+  tr:last-child td{border-bottom:0;}
+  tr{break-inside:avoid;}
+
+  .steps{display:flex;flex-direction:column;gap:9px;margin:10px 0;}
+  .step{display:flex;gap:11px;align-items:flex-start;break-inside:avoid;}
+  .step .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px;}
+  .step .t b{font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;}
+  code{font-family:'JetBrains Mono',monospace;background:var(--card);padding:1px 5px;border-radius:4px;font-size:11px;}
+
+  .quest{border:2px solid var(--green);background:#fff;border-radius:16px;padding:20px 24px;margin:16px 0;text-align:center;break-inside:avoid;}
+  .quest .e{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+  .quest .q{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:18px;line-height:1.35;max-width:520px;margin:0 auto;}
+  .quest .s{font-size:11.5px;color:var(--gray);margin-top:10px;}
+
+  .behind{font-size:11.5px;color:var(--gray);margin:-4px 0 10px;padding-left:2px;}
+  .behind b{color:var(--green);font-weight:700;}
+  .when{font-size:12px;color:var(--gray);margin:0 0 -2px;}
+  .when b{color:var(--text);font-weight:700;}
+
+  /* bloco técnico que abre sob demanda */
+  details.dev{border:1.5px dashed var(--line);border-radius:12px;background:#fff;margin:14px 0;padding:0;}
+  details.dev summary{cursor:pointer;list-style:none;padding:11px 15px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:10px;}
+  details.dev summary::-webkit-details-marker{display:none;}
+  details.dev summary::before{content:"+";flex:0 0 22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;}
+  details.dev[open] summary::before{content:"–";}
+  details.dev summary small{display:block;font-weight:500;font-size:11px;color:var(--gray);font-family:'Inter',sans-serif;}
+  details.dev .in{padding:0 15px 12px;}
+  details.dev table{margin:4px 0 0;}
+
+  /* comparação visual bad/good */
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+  .cmp .col{border-radius:12px;padding:12px 14px;background:#fff;}
+  .cmp .bad{border:2px solid var(--warn);}
+  .cmp .good{border:2px solid var(--green);}
+  .cmp .h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;text-align:center;margin-bottom:8px;}
+  .cmp .bad .h{color:var(--warn);}
+  .cmp .good .h{color:var(--green);}
+  .cmp .row{display:flex;align-items:center;gap:8px;font-size:11.5px;padding:7px 0;border-top:1px solid var(--line);}
+  .cmp .row:first-of-type{border-top:0;}
+
+  /* impacto visual */
+  .impact{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0;text-align:center;}
+  .impact .v{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 10px;}
+  .impact .v.ok{border:2px solid var(--green);}
+  .impact .lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:var(--gray);letter-spacing:1px;}
+  .impact .ico{width:64px;height:auto;margin:8px auto;display:block;}
+  .impact .cap{font-size:10.5px;color:var(--gray);}
+  .impact .v.ok .cap{color:var(--green);font-weight:700;}
+
+  /* conversa de exemplo */
+  .convo{margin:12px 0;}
+  .msg{max-width:82%;padding:9px 13px;border-radius:13px;margin-bottom:8px;font-size:11.3px;line-height:1.5;break-inside:avoid;}
+  .msg .who{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:9px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
+  .msg.you{background:#fff;border:1px solid var(--line);margin-left:auto;border-bottom-right-radius:3px;}
+  .msg.you .who{color:var(--gray);text-align:right;}
+  .msg.ai{background:#0A0F0C;color:#E8F3EC;margin-right:auto;border-bottom-left-radius:3px;font-family:'JetBrains Mono',monospace;font-size:10.6px;}
+  .msg.ai .who{color:var(--green-light);}
+  .msg.save{background:var(--card);border:2px dashed var(--green);margin:0 auto 8px;max-width:92%;text-align:center;font-weight:700;color:var(--green);border-radius:10px;}
+
+  .cta{margin-top:18px;padding:26px 24px;border-radius:18px;text-align:center;background:radial-gradient(circle at 50% 0%,#163825 0%,#0A0F0C 62%);border:1px solid rgba(18,184,94,.35);color:#fff;break-inside:avoid;}
+  .cta img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--green-light);margin:0 auto 12px;display:block;}
+  .cta .e{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--green-light);margin-bottom:8px;}
+  .cta .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;line-height:1.3;max-width:420px;margin:0 auto 6px;}
+  .cta .s{font-size:12px;color:#a9b3ad;}
+  footer{text-align:center;font-size:10px;color:var(--gray);margin-top:16px;line-height:1.5;}
+  .cta a.btn{display:inline-block;margin-top:12px;background:#12B85E;color:#06130b;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;text-decoration:none;padding:10px 22px;border-radius:999px;}
+  @media screen{
+    body{font-size:16px;line-height:1.65;padding:0 18px;}
+    section{max-width:860px;margin-left:auto;margin-right:auto;}
+    .cover{min-height:auto;padding:72px 0 40px;}
+    .pb{margin-top:56px;scroll-margin-top:20px;}
+    pre{white-space:pre-wrap;word-break:break-word;}
+    .cta{padding:40px 28px;margin:48px 0 24px;} .cta .t{font-size:24px;max-width:540px;} .cta .s{font-size:15px;}
+    .cta a.btn{font-size:17px;padding:15px 30px;}
+    .quest .q{font-size:24px;}
+    .dg figcaption{font-size:13px;}
+    .f .d,.term .d{font-size:13px;}
+    .f .t,.term .t{font-size:15.5px;}
+    .cmp .row{font-size:14px;}
+    td,th{font-size:13.5px;}
+    .behind,.when{font-size:13.5px;}
+    .tip,.alert{font-size:14px;}
+    details.dev summary{font-size:14.5px;} details.dev summary small{font-size:12.5px;}
+    .impact .cap{font-size:12.5px;}
+    .msg{font-size:13.5px;} .msg.ai{font-size:12.5px;}
+    .prompt pre{font-size:12.5px;}
+    .step .t b{font-size:inherit;}
+    .step .t{font-size:15px;}
+  }
+  @media screen and (max-width:640px){
+    .grid3,.grid2,.grid4{grid-template-columns:1fr 1fr !important;}
+    table{display:block;overflow-x:auto;}
+    .only-d{display:none !important;}
+    .only-m{display:block !important;}
+    .cover h1{font-size:32px;}
+    .video h2{font-size:20px;}
+    .msg{max-width:94%;}
+    .cmp{grid-template-columns:1fr;}
+  }
+  .prompt .l{padding-right:78px;}
+  .prompt.master .l{padding-right:10px;}
+
+  /* versão vertical dos diagramas (só celular) */
+  .only-m{display:none;}
+  .mflow{display:flex;flex-direction:column;margin:14px 0 4px;text-align:left;}
+  .ms{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--text);border-radius:12px;padding:11px 14px;}
+  .ms .mn{flex:0 0 26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font:800 13px 'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;}
+  .ms b{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;line-height:1.3;}
+  .ms small{display:block;font-size:13px;color:var(--gray);line-height:1.35;}
+  .ms.done{justify-content:center;border-radius:999px;border-width:2px;text-align:center;}
+  .ms.boss{background:var(--green);border-color:var(--green);color:#fff;justify-content:center;text-align:center;}
+  .ms.boss small{color:#e6f6ec;}
+  .ma{display:block;width:0;height:0;margin:3px auto;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--text);}
+  .ma.g{border-top-color:var(--green);}
+  .mloop{margin-top:12px;background:rgba(18,184,94,.12);border:1.5px solid var(--green);color:var(--green);border-radius:12px;padding:10px 13px;text-align:center;font:800 13.5px/1.35 'Plus Jakarta Sans',sans-serif;}
+  .mlabel{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;letter-spacing:.3px;color:var(--green);margin:16px 0 8px;text-align:left;}
+  .prompt{position:relative;}
+  .copy{position:absolute;top:8px;right:10px;background:rgba(18,184,94,.16);color:#7be3a6;border:1px solid rgba(18,184,94,.4);border-radius:999px;font:600 11px 'JetBrains Mono',monospace;padding:4px 12px;cursor:pointer;}
+  .copy:hover{background:rgba(18,184,94,.3);}
+  .prompt.master .copy{top:9px;}
+  @media print{.copy,.video,.jump{display:none;} a.f{transform:none;}}
+
+  figure.print{margin:14px 0;break-inside:avoid;}
+  figure.print img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.10);}
+  figure.print figcaption{font-size:11px;color:var(--gray);margin-top:7px;text-align:center;}
+  @media screen{figure.print figcaption{font-size:13.5px;}}
+  @media screen and (max-width:640px){.grid2 figure.print{grid-column:1/-1;}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+<symbol id="i-screen" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 9h4M7 12h7"/></symbol>
+<symbol id="i-agent" viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1.2"/><circle cx="9.5" cy="13" r="1" fill="currentColor"/><circle cx="14.5" cy="13" r="1" fill="currentColor"/><path d="M9.5 16.2h5"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+</defs></svg>
+<!-- CAPA -->
+<section class="cover">
+  <img class="logo" src="logo-demanda-infinita.png" alt="">
+  <div class="kicker">Método Demanda Infinita® · Coisas que eu construí com o Claude</div>
+  <h1>Seu CRM, do seu jeito, feito com o Claude</h1>
+  <p class="sub">O passo a passo e os prompts de cada etapa do CRM que roda o comercial da Demanda Infinita. Sem programar e sem mensalidade por usuário.</p>
+  <span class="badge">Material do vídeo · passo a passo</span>
+</section>
+
+<!--VIDEO-->
+
+<section>
+  <p class="lead">No vídeo eu abri o CRM da minha empresa: o lead que entra sozinho, a reunião que vira card, a tela que mostra onde o funil trava. Aqui está <strong>o caminho que eu fiz, na ordem</strong>, com o prompt de cada etapa pra você copiar, trocar os colchetes pelas informações do seu negócio e colar no Claude.</p>
+  <p class="lead">Eu levei de 2 a 3 meses, ajustando um incômodo por dia. Com esse mapa, você não precisa repetir os meus tropeços.</p>
+
+  <div class="grid4">
+    <a class="f" href="#p0"><div class="n">00</div><div class="t">Desenhar</div><div class="d">Seu processo em 1 página</div></a>
+    <a class="f" href="#p1"><div class="n">01</div><div class="t">A base</div><div class="d">Banco, funil e cards</div></a>
+    <a class="f" href="#p2"><div class="n">02</div><div class="t">Lead sozinho</div><div class="d">Formulário vira card</div></a>
+    <a class="f" href="#p3"><div class="n">03</div><div class="t">Reunião sozinha</div><div class="d">Agenda vira card</div></a>
+    <a class="f" href="#p4"><div class="n">04</div><div class="t">Funil ideal</div><div class="d">Onde o mês trava</div></a>
+    <a class="f" href="#p5"><div class="n">05</div><div class="t">Dinheiro na mesa</div><div class="d">O que ainda não fechou</div></a>
+    <a class="f" href="#p6"><div class="n">06</div><div class="t">Ele cobra por você</div><div class="d">Sino e checklist</div></a>
+    <a class="f" href="#p7"><div class="n">07</div><div class="t">Testar e proteger</div><div class="d">Antes de usar</div></a>
+  </div>
+</section>
+
+<!-- AS 5 REGRAS -->
+<section class="pb">
+  <h2 class="sec"><span class="tag">Antes de abrir o Claude</span>As 5 regras que eu aprendi construindo</h2>
+  <div class="cmp">
+    <div class="col bad">
+      <div class="h">Como quase todo mundo começa</div>
+      <div class="row">"Faz um CRM bonito pra mim"</div>
+      <div class="row">Pede o sistema inteiro de uma vez</div>
+      <div class="row">Descreve a regra em teoria</div>
+      <div class="row">Coloca no ar e vê o que quebra</div>
+      <div class="row">Esquece quem pode ver o quê</div>
+    </div>
+    <div class="col good">
+      <div class="h">Como dá certo</div>
+      <div class="row">Desenha o processo antes da tela</div>
+      <div class="row">Uma melhoria por vez</div>
+      <div class="row">Conta um caso real</div>
+      <div class="row">Testa com dado de mentira antes</div>
+      <div class="row">Revisa a segurança de propósito</div>
+    </div>
+  </div>
+  <p class="analogy">Pensa no Claude como um <strong>pedreiro muito rápido</strong>. Ele levanta a parede que você pedir, do jeito que você pedir. Se você não tem a planta da casa, ele constrói rápido uma casa que não serve pra você morar.</p>
+
+  <h3>As 5 peças, em linguagem simples</h3>
+  <div class="grid3">
+    <div class="term"><svg class="ic"><use href="#i-db"/></svg><div class="t">Banco de dados</div><div class="d">O arquivo da empresa. Onde moram leads, cards e reuniões.</div></div>
+    <div class="term"><svg class="ic"><use href="#i-screen"/></svg><div class="t">Painel</div><div class="d">A tela do CRM. Uma página que você abre no navegador.</div></div>
+    <div class="term"><svg class="ic"><use href="#i-agent"/></svg><div class="t">Claude Code</div><div class="d">O pedreiro. Escreve tudo; você descreve e aprova.</div></div>
+    <div class="term"><svg class="ic"><use href="#i-bell"/></svg><div class="t">Campainha</div><div class="d">O aviso que o formulário e a agenda tocam no CRM (o nome técnico é webhook).</div></div>
+    <div class="term"><svg class="ic"><use href="#i-key"/></svg><div class="t">Chave de cada sala</div><div class="d">A regra de quem entra em cada tabela (o nome técnico é RLS).</div></div>
+    <div class="term"><svg class="ic"><use href="#i-pin"/></svg><div class="t">Endereço</div><div class="d">Onde o painel fica no ar, com login (GitHub Pages).</div></div>
+  </div>
+</section>
+
+<!-- 00 DESENHO -->
+<section class="pb" id="p0">
+  <h2 class="sec"><span class="tag">Etapa 00 · o erro número 1</span>Desenhe o seu processo antes da tela</h2>
+  <p>O erro número 1 é abrir a IA e pedir a tela. Sai um CRM bonito e inútil, porque a IA não sabe como o seu comercial funciona. <strong>Escreva o seu processo numa página</strong>. Essa página vale mais do que qualquer prompt deste material.</p>
+  <div class="prompt"><div class="l">Folha do processo · preencha antes de tudo</div><pre>MEU PROCESSO COMERCIAL (1 página)
+
+De onde vem o lead: [ex: formulário dos materiais do LinkedIn, indicação, site]
+Quem atende: [ex: eu + 1 SDR + 1 vendedor]
+Etapas do funil, na ordem: [ex: Novo lead → Lead quente → Contato feito → Em conversa → Reunião agendada → Reunião realizada → Proposta → Fechado]
+Quando um lead vira quente: [ex: cargo de dono, diretor ou gerente; baixou 2 materiais; respondeu a mensagem]
+O que conta como reunião realizada, proposta e venda: [...]
+Como funciona o meu follow-up: [quantos contatos, em quantos dias, por qual canal]
+Meta do mês: [leads, reuniões, vendas e faturamento]
+O que mais me irrita hoje na planilha ou no CRM que eu uso: [...]</pre></div>
+  <div class="tip"><b>Dica que vale ouro</b>Guarde a data em que o lead entrou em cada etapa importante (virou quente, marcou reunião, recebeu proposta). Sem isso, quando o card avança, ele some das métricas do mês e você perde a conta de quantos chegaram até ali.</div>
+</section>
+
+<!-- 01 BASE -->
+<section class="pb" id="p1">
+  <h2 class="sec"><span class="tag">Etapa 01</span>A base: banco, funil e cards</h2>
+  <p>No Claude Code, abra uma pasta nova chamada <code>meu-crm</code> e ligue o <strong>Plan Mode</strong> (aperte <code>Shift + Tab</code> até aparecer "plan mode" embaixo da caixa de mensagem). Nesse modo ele pergunta e propõe, mas não cria nada sem a sua aprovação.</p>
+  <div class="prompt"><div class="l">Prompt 1 · o briefing do CRM</div><pre>Quero construir o meu próprio CRM comercial. Antes de criar qualquer arquivo, leia a minha folha do processo abaixo, me faça as perguntas que faltam e proponha um plano.
+
+[cole aqui a sua folha do processo]
+
+Tecnologia:
+- Banco e login: Supabase (plano gratuito)
+- Painel: uma página só, publicada no GitHub Pages
+- Cada pessoa entra com e-mail e senha; sem cadastro aberto
+
+Me entregue:
+1. As perguntas que faltam
+2. As tabelas do banco e o que cada uma guarda, em português simples
+3. As telas: funil em colunas, card do lead, painel com os números do mês
+4. Os riscos de segurança e como você vai evitar cada um</pre></div>
+  <p class="behind"><b>Por trás:</b> ele monta a planta da casa antes de levantar a parede. Você corrige o plano, tira o que não vai usar e aprova com "Aprovado, pode seguir".</p>
+
+  <div class="prompt"><div class="l">Prompt 2 · criar o banco</div><pre>Escreva o SQL completo pra criar no Supabase as tabelas do plano aprovado (funis, etapas, cards, histórico do card, reuniões).
+
+Regras obrigatórias:
+- liga o Row Level Security em TODAS as tabelas
+- só usuário logado lê e escreve; ninguém anônimo acessa nada
+- o histórico do card se preenche sozinho quando ele muda de etapa
+- guarda a data em que o card entrou em cada etapa importante
+- no fim, me explica em português simples o que cada tabela faz
+
+Me entrega o SQL num bloco só, pronto pra colar no SQL Editor.</pre></div>
+
+  <div class="prompt"><div class="l">Prompt 3 · construir o painel</div><pre>Construa o painel do CRM numa página só (index.html), ligada ao meu Supabase. Vou te passar a URL do projeto e a chave pública.
+
+Telas:
+1. Login com e-mail e senha
+2. Funil em colunas: arrastar o card muda a etapa e grava no histórico
+3. Card aberto: campos, próxima ação com data e o histórico
+4. Painel do mês: leads, reuniões agendadas e realizadas, propostas, vendas e faturamento contra a meta
+5. Busca por nome, e-mail, telefone ou cargo (sem diferenciar acento)
+
+Visual limpo, com as cores da minha marca: [cores]. Funciona no celular.
+Só a chave pública vai na página. NUNCA a chave secreta.</pre></div>
+
+  <figure class="print"><img src="tela-funil.jpg" alt="Funil do CRM em colunas, com cards de leads e etiquetas"><figcaption>O funil em colunas do meu CRM. Cada etiqueta colorida é o material que o lead baixou. <em>Dados fictícios.</em></figcaption></figure>
+
+  <details class="dev"><summary>Se você tem alguém técnico, entregue esta parte pra ele<small>Onde ficam as chaves e como publicar</small></summary><div class="in">
+    <table><tr><th>O quê</th><th>Onde</th></tr>
+      <tr><td>URL e chave pública</td><td>Supabase → Project Settings → API. Podem ir na página.</td></tr>
+      <tr><td>Chave secreta (service_role)</td><td>Nunca vai na página nem no chat. Se colou sem querer, gere outra.</td></tr>
+      <tr><td>Cadastro aberto</td><td>Supabase → Authentication → desligar o sign up e criar a equipe na mão.</td></tr>
+      <tr><td>Publicar</td><td>Repositório no GitHub → Settings → Pages → branch main → Save.</td></tr>
+    </table></div></details>
+</section>
+
+<!-- 02 LEAD -->
+<section class="pb" id="p2">
+  <h2 class="sec"><span class="tag">Etapa 02</span>O lead entra sozinho, já classificado</h2>
+  <p>Alguém baixa um material seu, preenche o formulário e, na hora, vira card. O sistema lê o cargo e decide a coluna. Se a mesma pessoa baixar dois materiais, continua sendo um card só, agora com duas etiquetas, e a pontuação dela sobe.</p>
+  <div class="prompt"><div class="l">Prompt 4 · formulário vira card</div><pre>Quando alguém preencher o meu formulário [Tally / formulário do site], quero que vire card sozinho no meu CRM.
+
+Como eu quero que funcione:
+- cargo de dono, fundador, CEO, diretor, gerente ou head: vai direto pra coluna "Lead quente" e grava a data em que virou quente
+- qualquer outro cargo: entra em "Novo lead"
+- cada material tem uma etiqueta com o nome dele
+- se a mesma pessoa (mesmo e-mail) baixar outro material, NÃO cria card novo: coloca mais uma etiqueta no card dela
+- cada lead ganha uma pontuação de 0 a 100 (cargo, quantos materiais baixou, se respondeu as mensagens) e o card mostra o porquê de cada ponto
+- se o aviso do formulário falhar um dia, o CRM busca sozinho os envios que ficaram pra trás
+
+Antes de criar, me explica em português simples onde eu colo o endereço do aviso no formulário.</pre></div>
+  <p class="behind"><b>Por trás:</b> o formulário "toca a campainha" do CRM a cada envio. Repare na última regra: no meu caso, o aviso parou uma vez por 9 dias sem ninguém perceber. Por isso o painel também confere sozinho o que chegou.</p>
+  <figure class="print"><img src="tela-card.jpg" alt="Card do lead aberto com pontuação, etiquetas e reuniões"><figcaption>O card do lead: pontuação explicada à direita, etiqueta do material, histórico e o botão de agendar reunião. <em>Dados fictícios.</em></figcaption></figure>
+</section>
+
+<!-- 03 REUNIÃO -->
+<section class="pb" id="p3">
+  <h2 class="sec"><span class="tag">Etapa 03</span>A reunião vira card sozinha (e tem comemoração)</h2>
+  <p>Antes, alguém copiava a reunião da agenda pro CRM. Agora o card anda sozinho pra coluna de quem vai fazer a call, a reunião entra com dono e o time recebe o aviso.</p>
+  <div class="prompt"><div class="l">Prompt 5 · agenda vira reunião</div><pre>Quando um lead marcar reunião na minha agenda [Cal.com / Google Agenda]:
+- se ele já tem card (mesmo e-mail), o card anda pra "Reunião agendada"; se não tem, cria
+- cria a reunião com data, hora e dono (o dono é quem tem aquela agenda)
+- avisa o time no [Discord / WhatsApp / e-mail]
+
+E quando alguém do time agendar uma reunião pelo próprio card, quero uma comemoração na tela: confete e uma frase curta. Comercial vive de pequena vitória.</pre></div>
+  <div class="tip"><b>Time com mais de uma agenda</b>No meu, cada closer novo é uma linha numa tabela de agendas. O card já entra com o dono certo.</div>
+</section>
+
+<!-- 04 FUNIL IDEAL -->
+<section class="pb" id="p4">
+  <h2 class="sec"><span class="tag">Etapa 04 · a minha tela favorita</span>Funil ideal contra funil real</h2>
+  <p>O contorno é o funil ideal: quantos leads, reuniões e vendas eu preciso no mês pra bater a meta. Dentro, em verde, é onde eu estou hoje. Bato o olho e sei qual etapa trava.</p>
+  <figure class="print"><img src="tela-ideal.jpg" alt="Funil ideal com as metas do mês e o progresso em verde"><figcaption>Tem lead e não tem reunião? O problema é o contato. Tem reunião e não tem venda? O problema é a conversão. <em>Dados fictícios.</em></figcaption></figure>
+  <div class="prompt"><div class="l">Prompt 6 · funil ideal x real</div><pre>A minha meta do mês é R$ [30.000]. Pra isso eu preciso de [500] leads, [300] leads quentes, [60] reuniões agendadas, [50] realizadas e [10] vendas.
+
+Quero uma tela em formato de funil de verdade: o contorno de cada etapa é a meta, e dentro, em verde, quanto eu já fiz no mês. Faturamento fica numa barra separada, embaixo.
+
+Regras:
+- sempre o mês corrente, pra eu bater o olho e saber como está agora
+- um lead que virou quente conta no mês mesmo que já tenha avançado de etapa
+- nada de vermelho e amarelo: a cor é verde, e o tamanho mostra o quanto falta</pre></div>
+</section>
+
+<!-- 05 DINHEIRO NA MESA -->
+<section class="pb" id="p5">
+  <h2 class="sec"><span class="tag">Etapa 05 · conte o caso, não a regra</span>O dinheiro na mesa</h2>
+  <p>Aqui fica tudo que já tem valor de proposta mas ainda não fechou. E é o melhor exemplo da dica mais valiosa: <strong>em vez de descrever a regra, conte o caso</strong>.</p>
+  <div class="cmp">
+    <div class="col bad"><div class="h">Regra em teoria</div><div class="row">"Some as oportunidades com status de proposta"</div></div>
+    <div class="col good"><div class="h">Caso real</div><div class="row">"Fiz a call hoje, sei que é R$ 4.000, o cliente responde na segunda"</div></div>
+  </div>
+  <div class="prompt"><div class="l">Prompt 7 · dinheiro na mesa</div><pre>Fiz uma call hoje. O cliente vai me responder na segunda e eu já sei que é R$ 4.000. Ainda não é venda e eu nem mandei a proposta formal, mas pra mim isso já é dinheiro na mesa.
+
+Quero um número no painel com a soma de tudo que já tem valor de proposta e ainda não fechou nem foi perdido. Esse número não depende do mês: é o que está na mesa agora.</pre></div>
+  <div class="alert"><b>O que aconteceu comigo</b>Na primeira versão, ele somou o valor de leads que nem tinham falado comigo e apareceram mais de R$ 100 mil na mesa. Bonito e falso. Eu mostrei o caso real, ele entendeu a diferença e corrigiu. Quando o número parecer bom demais, desconfie e mostre um caso.</div>
+
+  <h3>O modelo pra qualquer melhoria</h3>
+  <div class="prompt"><div class="l">Prompt de melhoria · use toda vez</div><pre>Hoje me incomodou isso: [o que aconteceu, com um exemplo real].
+Eu queria que acontecesse assim: [como deveria ser].
+Antes de mexer, me diz o que vai mudar e o que pode quebrar.</pre></div>
+  <p class="behind"><b>Por trás:</b> é a dica número 2, uma melhoria por vez. O meu CRM não nasceu pronto: cada tela que você viu no vídeo foi um incômodo de um dia.</p>
+</section>
+
+<!-- 06 COBRA -->
+<section class="pb" id="p6">
+  <h2 class="sec"><span class="tag">Etapa 06</span>O sistema cobra por você</h2>
+  <p>Eu montei um sistema que não depende de mim pra gerenciar o time. O sino avisa o que importa, e quem não bateu a meta de ontem recebe o aviso dentro do painel, sem eu precisar cobrar no grupo. Eu só cobro o resultado no fim da semana ou do mês.</p>
+  <div class="grid2">
+    <figure class="print"><img src="tela-sino.jpg" alt="Sino de notificações aberto"><figcaption>O sino: lead novo, card que andou, reunião do dia. <em>Dados fictícios.</em></figcaption></figure>
+    <figure class="print"><img src="tela-checklist.jpg" alt="Checklist diário do time"><figcaption>O checklist diário do time, com a média contra a meta. <em>Dados fictícios.</em></figcaption></figure>
+  </div>
+  <div class="prompt"><div class="l">Prompt 8 · sino e checklist</div><pre>Quero um sino no topo do painel com o que importa: mensagem nova, card que mudou de etapa e reunião do dia. Separe em "Geral" e "Minhas". Não precisa guardar cada aviso no banco: calcule com o que já existe e guarde só quem já leu.
+
+E um checklist diário pro time: cada pessoa lança os números do dia ([conexões enviadas, mensagens, follow-ups]), cada um com a sua meta. Quem não bateu a meta de ontem recebe um aviso aqui dentro, numa janela curta que precisa de um "Ok" e leva direto pro checklist. Nada de cobrança no grupo do WhatsApp.</pre></div>
+
+  <div class="prompt"><div class="l">Prompt 9 · tour de novidades</div><pre>Toda vez que eu lançar uma melhoria, quero que o time veja um tour curto na primeira vez que entrar: um passo por novidade, texto leve e com humor, e um botão "me leva lá". Fechou, não aparece de novo. Quando eu mudar o número da versão, aparece de novo pra todo mundo.</pre></div>
+  <p class="behind"><b>Por trás:</b> sistema que ninguém sabe usar é sistema morto. O tour faz o time descobrir a novidade sem você mandar mensagem explicando.</p>
+</section>
+
+<!-- 07 TESTE E SEGURANÇA -->
+<section class="pb" id="p7">
+  <h2 class="sec"><span class="tag">Etapa 07 · antes da equipe usar</span>Teste com dado de mentira e cuide de quem vê o quê</h2>
+  <div class="prompt"><div class="l">Prompt 10 · testar antes de usar</div><pre>Antes de colocar isso no ar, testa com dado de mentira e me mostra o que pode quebrar. Testa principalmente:
+- duas pessoas abrindo o painel ao mesmo tempo
+- o mesmo lead chegando duas vezes
+- um card mudando de funil ou de etapa
+- a virada do mês nas métricas
+Me diz o que passou, o que falhou e o que você corrigiu.</pre></div>
+  <div class="prompt"><div class="l">Prompt 11 · quem vê o quê</div><pre>Revisa a segurança do meu CRM como se você fosse alguém tentando roubar os meus leads. Me responde:
+- alguém sem login consegue ler alguma tabela?
+- tem alguma chave secreta no código da página?
+- quem do time consegue ver e mexer em quê? Faz sentido pro cargo de cada um?
+- o cadastro está fechado?
+Me entrega a lista do que corrigir, do mais grave pro menos grave, em português simples.</pre></div>
+
+  <h3>Checklist antes de liberar pro time</h3>
+  <div class="steps">
+    <div class="step"><span class="n">1</span><span class="t"><b>Segurança ligada em todas as tabelas</b> (a chave de cada sala).</span></div>
+    <div class="step"><span class="n">2</span><span class="t"><b>Cadastro aberto desligado</b>, usuários criados na mão.</span></div>
+    <div class="step"><span class="n">3</span><span class="t"><b>Chave secreta fora da página e fora do chat.</b></span></div>
+    <div class="step"><span class="n">4</span><span class="t"><b>Cópia de segurança semanal</b> dos dados (peça ao Claude uma rotina automática).</span></div>
+    <div class="step"><span class="n">5</span><span class="t"><b>Testado no celular:</b> login, arrastar card, abrir e editar.</span></div>
+  </div>
+
+  <h3>Erros que derrubam o CRM</h3>
+  <table><tr><th>Erro</th><th>Como evitar</th></tr>
+    <tr><td>Começar pela tela, sem desenhar o processo</td><td>Folha do processo primeiro, depois o Plan Mode</td></tr>
+    <tr><td>Pedir tudo de uma vez</td><td>Uma melhoria por vez, testando cada uma</td></tr>
+    <tr><td>Campo demais no card</td><td>Comece com o mínimo e adicione quando sentir falta</td></tr>
+    <tr><td>Card avança e some das métricas</td><td>Guardar a data de entrada em cada etapa importante</td></tr>
+    <tr><td>Número bom demais pra ser verdade</td><td>Mostrar um caso real e pedir pra conferir de onde vem</td></tr>
+    <tr><td>Banco sem segurança ou cadastro aberto</td><td>Prompt 11 e o checklist acima, antes de usar</td></tr>
+  </table>
+
+  <div class="cta">
+    <img src="igor-miguel.png" alt="">
+    <div class="e">Método Demanda Infinita®</div>
+    <div class="t">Quer o funil inteiro rodando, do post no LinkedIn até a reunião no seu CRM?</div>
+    <div class="s">Em 30 minutos eu olho o seu caso e te mostro por onde começar.</div>
+    <a class="btn" href="https://cal.com/igor-miguel/demanda-infinita?overlayCalendar=true" target="_blank" rel="noopener">Falar comigo →</a>
+  </div>
+
+  <footer>Ferramentas de terceiros (Claude, Supabase, GitHub, Tally, Cal.com) mudam com frequência. Nomes de botões e atalhos refletem o uso em outubro de 2026.<br>Os prints são do meu CRM com dados fictícios. Os prompts foram reescritos a partir das conversas em que ele foi construído, sem os dados da empresa.<br>Demanda Infinita®</footer>
+</section>
+
+<script>
+document.querySelectorAll('.prompt').forEach(function(p){
+  var pre = p.querySelector('pre'); if(!pre) return;
+  var b = document.createElement('button'); b.className = 'copy'; b.type = 'button'; b.textContent = 'Copiar';
+  b.addEventListener('click', function(){
+    var t = pre.innerText;
+    function ok(){ b.textContent = 'Copiado!'; setTimeout(function(){ b.textContent = 'Copiar'; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, fallback); } else { fallback(); }
+    function fallback(){ var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try{ document.execCommand('copy'); ok(); }catch(e){} document.body.removeChild(a); }
+  });
+  p.appendChild(b);
+});
+// na impressão/PDF, os blocos opcionais saem abertos
+window.addEventListener('beforeprint', function(){
+  document.querySelectorAll('details.dev').forEach(function(d){ d.open = true; });
+});
+</script>
+</body>
+</html>
