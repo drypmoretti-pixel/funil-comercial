@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano 30 Dias · Charles</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root{
+    --green:#008E43; --green-light:#12B85E; --green-soft:#E3F1E8;
+    --bg:#F8F7F4; --card:#ECEAE5; --text:#111111; --gray:#6B6B6B; --line:#D8D5CE;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; background:var(--bg); color:var(--text);}
+  body{font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.55;}
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:700;}
+  .wrap{max-width:860px; margin:0 auto; padding:0 16px;}
+
+  /* capa */
+  .cover{min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover img{width:76px; height:76px; margin-bottom:34px;}
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  .cover h1{font-size:44px; line-height:1.08; font-weight:800; margin:12px 0 14px; letter-spacing:-.5px;}
+  .cover .sub{font-size:17px; color:var(--gray); max-width:560px;}
+  .cover .who{margin-top:46px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:40px; flex-wrap:wrap;}
+  .cover .who div span{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray);}
+  .cover .who div b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px;}
+
+  /* seções */
+  .sec{padding:40px 0 8px;}
+  .part-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  h2.section-title{font-size:25px; font-weight:800; margin:6px 0 6px; letter-spacing:-.3px;}
+  .lead{font-size:14.5px; color:#333; margin-bottom:16px; max-width:720px;}
+  h3{font-size:15px; font-weight:800; margin:0 0 8px;}
+
+  .card{background:var(--card); border-radius:12px; padding:16px 18px; margin-bottom:12px; break-inside:avoid;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .grid2 .card{margin-bottom:0;}
+  ul.clean{margin:0; padding-left:18px;}
+  ul.clean li{margin-bottom:5px;}
+
+  .reframe{border-left:4px solid var(--green); padding:6px 0 6px 16px; margin:18px 0; font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; line-height:1.35; break-inside:avoid;}
+  .tip{background:var(--green-soft); border-radius:12px; padding:14px 18px; margin:12px 0; break-inside:avoid;}
+  .tip b.t{display:block; color:var(--green); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:4px;}
+  .ssi{display:flex; gap:16px; align-items:center; background:var(--text); color:#fff; border-radius:12px; padding:14px 18px; margin-top:12px; break-inside:avoid;}
+  .ssi .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:22px; color:var(--green-light); white-space:nowrap;}
+  .ssi span{font-size:12.5px; color:#d6d6d6;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.8px; break-inside:avoid;}
+  th,td{border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top;}
+  th{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); font-weight:700;}
+  td:first-child{font-weight:700; width:28%;}
+
+  .opt{background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-top:8px; font-weight:600;}
+  .opt small{display:block; font-weight:500; color:var(--gray); font-size:11.5px; margin-top:2px;}
+  .label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray); font-weight:700; margin-bottom:6px; display:block;}
+
+  .banner{background:linear-gradient(120deg,#0d0d0d 0%,#1d1d1d 55%,#0c3d22 100%); color:#fff; border-radius:10px; aspect-ratio:1584/396; display:flex; flex-direction:column; justify-content:center; padding:0 6% 0 34%; margin-top:8px;}
+  .banner b{font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(14px,2.6vw,22px); line-height:1.2;}
+  .banner span{font-size:clamp(10px,1.5vw,12.5px); color:#bfe6cf; margin-top:6px;}
+
+  /* checklist */
+  .check{display:flex; gap:12px; align-items:flex-start; background:var(--card); border-radius:10px; padding:11px 14px; margin-bottom:8px; break-inside:avoid;}
+  .check .box{flex:0 0 17px; height:17px; border:2px solid var(--green); border-radius:4px; margin-top:2px; background:#fff;}
+  .check strong{display:block; font-size:13.5px;}
+  .check span{font-size:12.5px; color:#444;}
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; break-inside:avoid;}
+  .vs div{border-radius:10px; padding:10px 14px; font-size:12.5px;}
+  .vs .bad{background:#fff; border:1px solid var(--line); color:#555;}
+  .vs .good{background:var(--green-soft); border:1px solid #bfdcc9;}
+  .vs b{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px;}
+  .vs .bad b{color:#9a3b3b;} .vs .good b{color:var(--green);}
+
+  .metas{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; break-inside:avoid;}
+  .metas div{background:var(--text); color:#fff; border-radius:10px; padding:12px; }
+  .metas b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; color:var(--green-light);}
+  .metas span{font-size:11.5px; color:#d0d0d0;}
+
+  /* semanas */
+  .week{border:1px solid var(--line); background:#fff; border-radius:12px; padding:14px 18px; margin-bottom:12px; break-inside:avoid;}
+  .week .wh{display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:10px;}
+  .week .wh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:800;}
+  .week .wh span{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--green); font-weight:700; letter-spacing:1px; text-transform:uppercase; white-space:nowrap;}
+  .week ul{list-style:none; margin:0; padding:0;}
+  .week li{position:relative; padding-left:24px; margin-bottom:6px;}
+  .week li:before{content:''; position:absolute; left:0; top:3px; width:13px; height:13px; border:2px solid var(--green); border-radius:3px;}
+
+  /* moldes */
+  .molde{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:14px; background:#fff; break-inside:avoid;}
+  .molde .mh{background:var(--text); color:#fff; padding:11px 18px; display:flex; justify-content:space-between; gap:10px; align-items:baseline;}
+  .molde .mh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px;}
+  .molde .mh span{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--green-light); white-space:nowrap;}
+  .molde .mb{padding:14px 18px;}
+  .skel{font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.65; background:var(--bg); border-radius:8px; padding:12px 14px; white-space:pre-wrap; margin:8px 0;}
+  .ex{font-size:12.8px; border-left:3px solid var(--green); padding:2px 0 2px 12px; color:#333; margin-top:8px;}
+  .ex i{font-style:normal; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); display:block;}
+
+  /* diagrama base */
+  .flow{display:flex; align-items:stretch; gap:8px; margin:14px 0; flex-wrap:wrap; break-inside:avoid;}
+  .flow .node{flex:1 1 120px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px;}
+  .flow .node b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:13.5px; margin-bottom:2px;}
+  .flow .node.hl{background:var(--green); color:#fff; border-color:var(--green);}
+  .flow .arrow{align-self:center; color:var(--green); font-weight:800;}
+  .flow.tight{gap:5px;} .flow.tight .node{flex:1 1 72px; padding:8px 9px; font-size:11.2px;} .flow.tight .node b{font-size:12.5px;}
+
+  .prompt{background:#141414; color:#e9e9e9; border-radius:10px; padding:12px 16px; font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.6; margin:8px 0 12px; white-space:pre-wrap; break-inside:avoid;}
+  .prompt b{color:var(--green-light); font-weight:700; display:block; margin-bottom:4px; font-size:10px; letter-spacing:1px; text-transform:uppercase;}
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0;}
+  ol.steps li{counter-increment:s; position:relative; padding:0 0 10px 40px; break-inside:avoid;}
+  ol.steps li:before{content:counter(s); position:absolute; left:0; top:0; width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-weight:800; font-size:12.5px; display:flex; align-items:center; justify-content:center;}
+
+  .paulo{background:var(--text); color:#eee; border-radius:14px; padding:20px 22px; break-inside:avoid;}
+  .paulo h3{color:#fff; font-size:17px;}
+  .paulo .part-tag{color:var(--green-light);}
+  .paulo ul{margin:8px 0 0; padding-left:18px;} .paulo li{margin-bottom:7px;}
+  .paulo b{color:#fff;}
+  .paulo .opt{background:#222; border-color:#333; color:#fff;}
+
+  .foot{margin-top:36px; padding:16px 0 40px; border-top:1px solid var(--line); font-size:11px; color:var(--gray); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+  /* web: downloads + checklist interativo */
+  .dl{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; background:var(--green); color:#fff; text-decoration:none; font-weight:700; font-size:13.5px; padding:12px 18px; border-radius:10px; border:0; cursor:pointer; font-family:'Inter',sans-serif;}
+  .btn:hover{background:var(--green-light);}
+  .btn.ghost{background:#fff; color:var(--text); border:1px solid var(--line);}
+  .btn.ghost:hover{border-color:var(--green); color:var(--green);}
+  .btn svg{width:16px; height:16px; flex:0 0 16px;}
+  .dlbox{background:var(--text); color:#fff; border-radius:14px; padding:18px 20px; margin:16px 0; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .dlbox b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; display:block;}
+  .dlbox span{font-size:12.5px; color:#cfcfcf;}
+  .check,.week li{cursor:pointer; user-select:none; transition:opacity .15s;}
+  .check:hover .box{background:var(--green-soft);}
+  .check.done .box,.week li.done:before{background:var(--green); border-color:var(--green);}
+  .check .box{position:relative;}
+  .check.done .box:after,.week li.done:after{content:''; position:absolute; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);}
+  .check.done .box:after{left:4px; top:1px;}
+  .week li.done:after{left:5px; top:5px;}
+  .check.done strong,.week li.done{text-decoration:line-through; text-decoration-color:rgba(0,0,0,.35); opacity:.6;}
+  .progress{position:sticky; top:0; z-index:5; background:rgba(248,247,244,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line);}
+  .progress .in{max-width:860px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; gap:12px; font-size:12px;}
+  .progress .bar{flex:1; height:6px; background:var(--card); border-radius:99px; overflow:hidden;}
+  .progress .bar i{display:block; height:100%; width:0; background:var(--green); transition:width .25s;}
+  .progress b{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green); white-space:nowrap;}
+  .progress button{background:none; border:0; color:var(--gray); font-size:11px; cursor:pointer; text-decoration:underline;}
+
+  @media (max-width:640px){
+    .grid2,.vs{grid-template-columns:1fr;}
+    .metas{grid-template-columns:1fr 1fr;}
+    .cover h1{font-size:34px;}
+    td:first-child{width:36%;}
+  }
+
+  @media print{
+    .no-print{display:none !important;}
+    @page{size:A4; margin:13mm 14mm 14mm;}
+    html,body{background:#fff; font-size:12.6px;}
+    .wrap{max-width:none; padding:0;}
+    .cover{min-height:268mm; padding:0;}
+    .sec{padding-top:0; break-before:page;}
+    .sec.cont{break-before:auto; padding-top:22px;}
+    .grid2{grid-template-columns:1fr 1fr;}
+    .vs{grid-template-columns:1fr 1fr;}
+    .metas{grid-template-columns:repeat(4,1fr);}
+    .banner{padding-left:34%;}
+    .banner b{font-size:17px;} .banner span{font-size:11px;}
+    .card,.week,.molde,.check,.tip,.prompt,.paulo{break-inside:avoid;}
+    table{break-inside:auto;} tr{break-inside:avoid;}
+    h2.section-title,h3{break-after:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="progress no-print"><div class="in"><span>Seu progresso</span><div class="bar"><i id="pbar"></i></div><b id="pnum">0/0</b><button id="preset" type="button">zerar</button></div></div>
+<div class="wrap">
+
+  <!-- CAPA -->
+  <section class="cover">
+    <img src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>Plano de ação:<br>30 dias no LinkedIn</h1>
+    <div class="sub">Você já posta três vezes por semana. Agora é fazer cada post trazer um dono de empresa pra conversa, com o método que você já usa e ainda não tem nome.</div>
+    <div class="who">
+      <div><span>Preparado para</span><b>Charles Rehder</b></div>
+      <div><span>Região</span><b>Campinas · SP</b></div>
+      <div><span>Data</span><b>Outubro de 2026</b></div>
+    </div>
+    <div class="dl no-print">
+      <a class="btn" href="skill-conteudo-linkedin-charles.txt" download="skill-conteudo-linkedin-charles.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill de conteúdo</a>
+      <a class="btn ghost" href="plano-30-dias-charles.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar o plano em PDF</a>
+    </div>
+  </section>
+
+  <!-- 01 DIAGNÓSTICO -->
+  <section class="sec">
+    <div class="part-tag">Parte 01</div>
+    <h2 class="section-title">Onde você está hoje</h2>
+    <p class="lead">Charles, você tem o que mais falta no mercado de IA hoje: gente que sabe que a IA vem por último. Falta fazer o dono de empresa enxergar isso no seu LinkedIn.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O que você já tem</h3>
+        <ul class="clean">
+          <li>Mais de 20 anos em TI: da mão na massa à gestão de projetos e equipes</li>
+          <li>Marketing digital na WSI, consultoria pra financeiras e 1 ano estruturando a governança de segurança da informação na Livelo, onde começou com IA</li>
+          <li>Um método claro, mesmo sem nome: analisar, arrumar a casa, desenhar a solução e só então a IA</li>
+          <li>Um caso que qualquer dono entende: o certificado que levava 15 a 20 dias e passou a sair na hora</li>
+          <li>Constância: três posts por semana desde abril, sem tecniquês</li>
+          <li>Uma esteira de conteúdo montada: agente que pesquisa, skill que escreve, imagem gerada</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>O que travou até aqui</h3>
+        <ul class="clean">
+          <li>O alcance é pequeno, mesmo postando com constância</li>
+          <li>Os posts partem de assuntos pesquisados na internet, não das suas histórias: saem parecidos com os de todo mundo</li>
+          <li>O post não pede nada: quem gosta curte e segue a vida, e ninguém chega à conversa</li>
+          <li>O perfil ainda carrega o jeito de quem procurava emprego, como você mesmo disse</li>
+          <li>O método não tem nome, então o cliente não tem como lembrar dele nem comparar com o de outro</li>
+          <li>Três clientes e um mercado segurando decisão até a eleição</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="reframe">A sua esteira escreve bem.<br>O que falta nela é você.</div>
+
+    <div class="tip"><b class="t">O mercado parado é a hora de plantar</b>Você contou que, perto da eleição, ninguém quer decidir nada. É justamente quando vale construir audiência: quem aparecer agora com constância e histórias reais é quem o empresário vai lembrar quando destravar. Os 30 dias deste plano trabalham pra esse momento.</div>
+
+    <div class="ssi"><div class="n">SSI: ?</div><span>Ainda não temos o seu SSI, a nota de 0 a 100 que o LinkedIn dá pro seu uso da rede. É a tarefa do Dia 1: abra <b>linkedin.com/sales/ssi</b>, tire um print e mande pro Bruno no WhatsApp. No Dia 30 a gente compara.</span></div>
+  </section>
+
+  <!-- 02 ICP -->
+  <section class="sec">
+    <div class="part-tag">Parte 02</div>
+    <h2 class="section-title">Pra quem você vai falar</h2>
+    <p class="lead">Este é o retrato que tiramos da conversa. Ajuste o que não bater com a sua realidade.</p>
+    <table>
+      <tr><th>O quê</th><th>Quem é</th></tr>
+      <tr><td>Empresa</td><td>Média empresa, de preferência na região de Campinas, com uma operação que já trava por falta de processo. Como o Bruno disse: fale com a média. A pequena se vê no post e a grande também.</td></tr>
+      <tr><td>Quem decide</td><td>Dono, sócio, diretor de operações.</td></tr>
+      <tr><td>O que ele sente</td><td>“Vivo apagando incêndio.” “O que levava 2 dias agora leva 2 semanas.” “Não sei se estou tendo lucro ou prejuízo.” “Tudo depende de alguém lembrar de fazer.” “Quero crescer, mas a operação não aguenta.”</td></tr>
+      <tr><td>O que ele quer</td><td>Uma operação que rode sem ele apagando incêndio, e saber de verdade quanto lucra.</td></tr>
+      <tr><td>O que ele não sabe</td><td>Que colocar IA agora pode piorar tudo. Esse é o seu ponto de vista, e é ele que diferencia você.</td></tr>
+    </table>
+  </section>
+
+  <!-- 03 VITRINE -->
+  <section class="sec">
+    <div class="part-tag">Parte 03 · Semana 1</div>
+    <h2 class="section-title">Arrumar a vitrine</h2>
+    <p class="lead">Você mesmo disse que o perfil foi montado pra conseguir emprego. Agora ele precisa ser de quem presta serviço: em 5 segundos, o dono entende o que você resolve e por que confiar em você.</p>
+
+    <div class="card">
+      <h3>Headline (a frase embaixo do seu nome)</h3>
+      <p>A atual fala em “reduzir retrabalho e automatizar rotinas de administração financeira”. É verdade, mas é estreito. O seu trabalho é destravar a operação inteira. Escolha uma e ajuste:</p>
+      <div class="opt">Destravo a operação de empresas que vivem apagando incêndio | Processos primeiro, IA depois | +20 anos em TI e processos<small>A mais direta: a dor e o seu ponto de vista.</small></div>
+      <div class="opt">Criador do Método ORDEM | Organizo processos e coloco IA onde ela acelera, não onde agiliza a bagunça | Campinas e região<small>Pra quando o método tiver nome (Parte 04).</small></div>
+      <div class="opt">Consultoria de processos, IA e automação pra médias empresas | Ex-Livelo (governança) | +20 anos em TI<small>Usa a prova mais conhecida.</small></div>
+    </div>
+
+    <div class="card">
+      <h3>Capa (a imagem atrás da sua foto)</h3>
+      <p>A promessa, o nome do método e a prova. Lado esquerdo livre, porque a foto cobre. Tamanho: 1584 × 396 px. A sua foto já está ótima.</p>
+      <div class="banner"><b>Primeiro a casa em ordem.<br>Depois a IA.</b><span>Método ORDEM · processos, IA e automação · +20 anos · Campinas</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Sobre, em 5 blocos</h3>
+      <div class="skel">1. A dor, na língua do cliente
+   "O que levava 2 dias começou a levar 20. E a operação travou."
+2. Quem é você, com prova
+   +20 anos em TI, gestão de projetos, Livelo (governança e IA).
+3. Como você trabalha
+   O método em 1 linha por etapa (Parte 04).
+4. Um caso
+   O certificado que levava 20 dias e passou a sair na hora.
+5. Como falar com você
+   "O link pra marcar uma conversa está nos Destaques."</div>
+    </div>
+
+    <h3 style="margin-top:18px">Checklist da vitrine</h3>
+    <div class="check"><div class="box"></div><div><strong>Headline, capa e “Sobre”</strong><span>Os três ajustes acima.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Experiência: sai o currículo, entram os casos</strong><span>Na Livelo e nas consultorias, 2 ou 3 linhas do que você resolveu, não só o cargo.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Destaques: o link pra marcar uma conversa</strong><span>E, quando tiver, o primeiro e-book e um depoimento de cliente.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Print do SSI no Dia 1</strong><span>linkedin.com/sales/ssi. Mande pro Bruno no WhatsApp.</span></div></div>
+  </section>
+
+  <!-- 04 MÉTODO -->
+  <section class="sec">
+    <div class="part-tag">Parte 04</div>
+    <h2 class="section-title">O método: dar nome ao que você já faz</h2>
+    <p class="lead">Na call, você descreveu o método sem perceber: “primeiro eu ajusto o processo inteiro; depois que está azeitado, a gente parte pra IA”. Como o Bruno explicou, método sem nome é como criança sem documento: existe, mas ninguém consegue chamar.</p>
+
+    <div class="card">
+      <h3>Uma sugestão: Método ORDEM</h3>
+      <p>O nome é a promessa (“colocar a casa em ordem”), e cada letra é uma etapa que você já faz:</p>
+      <table>
+        <tr><th>Etapa</th><th>O que é</th></tr>
+        <tr><td>O · Observar</td><td>Ir à empresa e entender como o processo funciona de verdade, não como deveria funcionar.</td></tr>
+        <tr><td>R · Reorganizar</td><td>Arrumar a casa. Às vezes é simples: “a folha que chega vai neste montinho”.</td></tr>
+        <tr><td>D · Desenhar</td><td>A solução sob medida: automação, sistema ou agente de IA.</td></tr>
+        <tr><td>E · Escalar com IA</td><td>Só agora a IA, porque agora ela acelera o que funciona, e não a bagunça.</td></tr>
+        <tr><td>M · Medir</td><td>O antes e o depois: dias, horas, retrabalho, custo.</td></tr>
+      </table>
+      <p style="margin:10px 0 0;font-size:12.5px;color:#444">É só uma sugestão. Se preferir outro nome (“Casa em Ordem”, “Processo Primeiro”), a lógica é a mesma: um nome próprio, com etapas que o dono entende.</p>
+    </div>
+
+    <div class="reframe">Colocar IA numa empresa bagunçada<br>é agilizar a bagunça.</div>
+    <p style="font-size:12.5px;color:#444">Essa frase é sua, da call. Ela é o melhor resumo do seu posicionamento e pode abrir o “Sobre”, a capa e metade dos seus posts.</p>
+  </section>
+
+  <!-- 05 FUNIL -->
+  <section class="sec">
+    <div class="part-tag">Parte 05</div>
+    <h2 class="section-title">O caminho do post até a reunião</h2>
+    <p class="lead">Hoje o seu post termina na curtida. Este é o caminho que leva até a conversa, o mesmo que a gente usa na Demanda Infinita e que o Bruno te mostrou na call.</p>
+
+    <div class="flow tight">
+      <div class="node"><b>Post</b>com isca; o pedido está na imagem</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Comentário</b>a pessoa comenta a palavra</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Mensagem</b>você manda o link do formulário</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Formulário</b>a pessoa diz a dor e o momento</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Material</b>abre na hora</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>Contato</b>ligação → WhatsApp → LinkedIn</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O formulário (no Tally, gratuito)</h3>
+        <ul class="clean">
+          <li>Nome, WhatsApp, empresa e cargo</li>
+          <li><b>Maior dor hoje</b> (escolha): vivo apagando incêndio · tarefas que demoram demais · não sei se tenho lucro · tudo depende de alguém lembrar · quero usar IA e não sei por onde</li>
+          <li><b>Tamanho da empresa</b>: até 10 · 11 a 50 · mais de 50 pessoas</li>
+          <li><b>Momento</b>: só pesquisando · quero resolver nos próximos 3 meses · preciso resolver agora</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>O material é a desculpa</h3>
+        <p>Como o Bruno contou, 90% de quem baixa um material não aplica. Não por preguiça: falta tempo e cabeça. E é isso que faz a pessoa contratar.</p>
+        <p style="margin:0">O que vale é a pessoa dizer, no formulário, qual é a dor. Na ligação, é dela que você fala, não do material.</p>
+      </div>
+    </div>
+
+    <div class="prompt"><b>Mensagem pra quem comentou</b>Oi, [nome]! Aqui está o link pra pegar o [material]: [link do formulário]. É só preencher rapidinho que ele abre na hora.</div>
+    <div class="prompt"><b>Contato com quem preencheu (primeiro ligação; se não atender, WhatsApp; depois, LinkedIn)</b>Oi, [nome], tudo bem? Aqui é o Charles.
+Vi que você pegou o [material]. Conseguiu dar uma olhada?
+Uma coisa me chamou atenção: você marcou que a sua maior dor hoje é [dor].
+Me conta um pouco: como isso aparece no dia a dia aí?</div>
+    <div class="tip"><b class="t">Na conversa: primeiro o diagnóstico</b>Como o médico que não receita antes de perguntar onde dói. Entenda a dor, o tamanho dela e o que já tentaram. O método e a proposta vêm depois. E se a pessoa não avançar por dinheiro, anote e volte a falar com ela em 30 a 60 dias.</div>
+  </section>
+
+  <!-- 06 ISCAS -->
+  <section class="sec">
+    <div class="part-tag">Parte 06</div>
+    <h2 class="section-title">As iscas: micro-soluções</h2>
+    <p class="lead">Uma boa isca é um pedaço pequeno do que você vende, que a pessoa consegue usar sozinha. Você já tem a matéria-prima: as anotações no Notion, os casos e a esteira.</p>
+
+    <div class="molde">
+      <div class="mh"><b>CASA · 10 rotinas pra arrumar a casa antes de usar IA</b><span>Semana 2</span></div>
+      <div class="mb">
+        <p>O e-book que você já queria fazer com as anotações do Notion: 10 rotinas simples, uma por página. É a etapa R do método, entregue de graça.</p>
+        <div class="ex"><i>Ideia de começo</i>Todo mundo quer colocar IA na empresa. Quase ninguém deveria começar por ela.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>CRESCER · A sua empresa aguenta crescer?</b><span>Semana 3</span></div>
+      <div class="mb">
+        <p>Um checklist de 10 perguntas antes de investir em vendas ou marketing. Abre com a história da WSI: a loja que passou de 10 pra 50 pedidos por semana e fechou porque não aguentou.</p>
+        <div class="ex"><i>Ideia de começo</i>A loja começou a vender 5 vezes mais. Três meses depois, fechou.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>AGENTE · O app que gera documento na hora</b><span>Semana 3</span></div>
+      <div class="mb">
+        <p>O passo a passo do caso do certificado: como montar no Gemini ou no Claude um assistente que junta fotos e dados num documento padrão. Serve pra certificado, laudo, relatório de visita, orçamento.</p>
+        <div class="ex"><i>Ideia de começo</i>O certificado levava 20 dias. Hoje sai antes do técnico ir embora.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>LUCRO · A planilha do lucro real</b><span>Semana 4</span></div>
+      <div class="mb">
+        <p>Quanto sobra de verdade por produto ou serviço. Na call, você disse que muito empresário não sabe se tem lucro ou prejuízo, nem se o preço está certo. A ideia é do Bruno, e a dor é das maiores.</p>
+        <div class="ex"><i>Ideia de começo</i>Você sabe quanto a sua empresa lucrou no mês passado? Não o faturamento. O lucro.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 CADÊNCIA + ROTINA -->
+  <section class="sec">
+    <div class="part-tag">Parte 07</div>
+    <h2 class="section-title">A cadência e a rotina diária</h2>
+    <p class="lead">Você já posta três vezes por semana. A cadência continua; muda o que cada dia faz.</p>
+
+    <table>
+      <tr><th>Dia</th><th>O que sai</th></tr>
+      <tr><td>Segunda</td><td>Isca</td></tr>
+      <tr><td>Quarta</td><td>Caso real ou opinião (sem isca)</td></tr>
+      <tr><td>Sexta</td><td>Isca</td></tr>
+    </table>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><h3>A regra das 48 horas</h3><p style="margin:0">Entre uma isca e outra, no mínimo 24 a 48 horas. Isca em cima de isca: a de hoje derruba a de ontem.</p></div>
+      <div class="card"><h3>Post bom volta</h3><p style="margin:0">Como o Bruno mostrou: depois de 30 a 40 dias, o post que funcionou pode voltar com um começo e uma imagem novos. Guarde os melhores.</p></div>
+    </div>
+
+    <h3 style="margin-top:18px">Todo dia útil: 20 a 30 minutos</h3>
+    <div class="check"><div class="box"></div><div><strong>Comentar em 5 a 10 posts de donos e diretores</strong><span>2 ou 3 linhas com o que você vê nas empresas, não “parabéns”. Cada comentário leva o seu nome pra rede daquela pessoa.</span></div></div>
+    <div class="vs">
+      <div class="bad"><b>Comentário que some</b>“Excelente reflexão, parabéns!”</div>
+      <div class="good"><b>Comentário que traz visita ao perfil</b>“Vejo muito isso: a empresa quer IA antes de saber como o próprio processo funciona. Aí a IA só agiliza a bagunça. O primeiro passo é desenhar o fluxo de verdade.”</div>
+    </div>
+    <div class="check" style="margin-top:10px"><div class="box"></div><div><strong>Conectar com 5 a 10 donos e diretores</strong><span>Na busca: “diretor de operações”, “sócio”, “CEO”, filtrando por Pessoas e pela região de Campinas. Convite com uma linha, sem vender.</span></div></div>
+    <div class="prompt"><b>Modelo de nota de convite</b>Olá, [nome]. Trabalho com processos e automação pra empresas aqui da região de Campinas. Acompanho o setor de [setor] e gostaria de ter você na minha rede.</div>
+    <div class="check"><div class="box"></div><div><strong>Responder todo comentário na primeira hora do post</strong><span>E mandar o link do formulário a quem comentou a palavra da isca no mesmo dia.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Ligar no mesmo dia pra quem preencheu</strong><span>Se não atender, WhatsApp. Se não responder, LinkedIn.</span></div></div>
+
+    <h3 style="margin-top:18px">Metas do mês (de esforço, que dependem só de você)</h3>
+    <div class="metas">
+      <div><b>110 a 220</b><span>donos e diretores novos na rede</span></div>
+      <div><b>110 a 220</b><span>comentários em posts do seu público</span></div>
+      <div><b>12</b><span>posts publicados</span></div>
+      <div><b>4</b><span>iscas no ar</span></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--gray);margin-top:8px">Anote, por post, quantos comentários, formulários e conversas ele trouxe. No Dia 30, é com esses números que a gente vê o que repetir.</p>
+  </section>
+
+  <!-- 08 CALENDÁRIO -->
+  <section class="sec">
+    <div class="part-tag">Parte 08</div>
+    <h2 class="section-title">O mês, semana a semana</h2>
+    <p class="lead">Marque cada item quando fizer. A rotina diária da Parte 07 vale todas as semanas.</p>
+
+    <div class="week">
+      <div class="wh"><b>Semana 1 · Vitrine, nome e caminho</b><span>Dias 1 a 7</span></div>
+      <ul>
+        <li>Dia 1: print do SSI, enviado pro Bruno</li>
+        <li>Decidir o nome do método (Parte 04)</li>
+        <li>Trocar headline, capa, “Sobre” e experiências (Parte 03)</li>
+        <li>Montar o formulário no Tally (Parte 05)</li>
+        <li>Colocar a skill desta página na sua esteira (Parte 10)</li>
+        <li>Segunda: post de apresentação do método (Estrutura C): “colocar IA numa empresa bagunçada é agilizar a bagunça”. Sem isca</li>
+        <li>Quarta e sexta: 2 casos reais (Estrutura B): o certificado e a loja da WSI</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 2 · Primeira isca</b><span>Dias 8 a 14</span></div>
+      <ul>
+        <li>Montar o e-book CASA com as anotações do Notion</li>
+        <li>Segunda: isca CASA, com a imagem “Comente CASA”</li>
+        <li>Quarta: caso real ou opinião</li>
+        <li>Sexta: repetir a isca CASA com outro começo, se ela funcionou; se não, um caso real</li>
+        <li>Mandar o link do formulário pra quem comentou e ligar pra quem preencheu</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 3 · Cadência cheia</b><span>Dias 15 a 21</span></div>
+      <ul>
+        <li>Segunda: isca CRESCER</li>
+        <li>Quarta: caso real ou opinião</li>
+        <li>Sexta: isca AGENTE</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 4 · Do formulário à reunião</b><span>Dias 22 a 30</span></div>
+      <ul>
+        <li>Segunda: isca LUCRO</li>
+        <li>Quarta: caso real ou opinião</li>
+        <li>Sexta: repetir o formato de isca que trouxe mais formulário</li>
+        <li>Chamar pra conversa de 30 minutos quem marcou “3 meses” ou “agora”</li>
+        <li>Dia 30: novo print do SSI e a tabela de cada post (comentários, formulários, conversas)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 09 ESTRUTURAS -->
+  <section class="sec">
+    <div class="part-tag">Parte 09</div>
+    <h2 class="section-title">Como escrever cada post</h2>
+    <p class="lead">No LinkedIn, o forte é o texto, a copy. A promessa no começo é o que faz o dono parar, e ela se repete na imagem. A sua skill (Parte 10) já sabe as três estruturas abaixo.</p>
+
+    <div class="tip"><b class="t">Regras que valem pra todas</b>Começo de no máximo 2 linhas, porque é o que aparece antes do “ver mais”. Parágrafos de 1 a 3 linhas. Uma ideia por post. Zero tecniquês, como você já faz. Link nunca no texto. De 1 a 3 hashtags. E nada de “comente”, “curta” ou “compartilhe” no texto: o LinkedIn derruba o alcance de post que pede interação. O pedido vai na imagem.</div>
+
+    <div class="molde">
+      <div class="mh"><b>Estrutura A · Post de isca</b><span>Segunda · sexta</span></div>
+      <div class="mb">
+        <p><b>Começo (a promessa ou a dor) → dor → como resolver → o que a pessoa recebe.</b></p>
+        <div class="skel">[Começo: a dor ou a promessa em até 2 linhas]
+[A dor: o que o dono vive hoje, sem julgar]
+[Como resolver: 3 a 5 itens que já ajudam sozinhos]
+Montei [o material] e estou liberando de graça 👇
+[O que a pessoa recebe: 1 a 3 linhas]
+[Fecho seco: "Não é X. É Y."]
+
+IMAGEM: a promessa + título do material + "Comente [PALAVRA]"</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura B · Caso real</b><span>Quarta</span></div>
+      <div class="mb">
+        <div class="skel">Numa [empresa de ...], [o problema].
+Todo mundo achava que era [a causa óbvia].
+Não era. Era [a causa real].
+[O que eu fiz: 3 a 5 linhas]
+[O que mudou, com número só se for real]
+[A lição pro dono de empresa em 1 linha]</div>
+        <div class="ex"><i>Exemplo de começo</i>O certificado levava 20 dias. Hoje sai antes do técnico ir embora.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura C · Opinião</b><span>Quarta</span></div>
+      <div class="mb">
+        <div class="skel">[A opinião em 1 linha, firme]
+[Por que eu penso assim: uma cena que eu vi]
+[O que eu faria primeiro]</div>
+        <div class="ex"><i>Exemplo de começo</i>Colocar IA numa empresa bagunçada é agilizar a bagunça.</div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:18px">10 temas pra começar</h3>
+    <table>
+      <tr><th>Estrutura</th><th>Tema</th></tr>
+      <tr><td>C · Opinião</td><td>Colocar IA numa empresa bagunçada é agilizar a bagunça (apresentação do método)</td></tr>
+      <tr><td>B · Caso</td><td>O certificado que levava 20 dias e passou a sair na hora</td></tr>
+      <tr><td>B · Caso</td><td>A loja que vendeu 5 vezes mais e fechou (WSI)</td></tr>
+      <tr><td>A · Isca</td><td>10 rotinas pra arrumar a casa antes de usar IA (CASA)</td></tr>
+      <tr><td>C · Opinião</td><td>O empresário foca no resultado e esquece a organização</td></tr>
+      <tr><td>A · Isca</td><td>A sua empresa aguenta crescer? (CRESCER)</td></tr>
+      <tr><td>B · Caso</td><td>Quando me pediram “vê o que dá pra fazer com essa tal de IA” (Livelo)</td></tr>
+      <tr><td>A · Isca</td><td>O app que gera documento na hora (AGENTE)</td></tr>
+      <tr><td>C · Opinião</td><td>Arrumar a casa não é nada absurdo: às vezes é um montinho de papel</td></tr>
+      <tr><td>A · Isca</td><td>Você sabe quanto lucrou no mês passado? (LUCRO)</td></tr>
+    </table>
+  </section>
+
+  <!-- 10 SKILL -->
+  <section class="sec">
+    <div class="part-tag">Parte 10</div>
+    <h2 class="section-title">A skill na sua esteira</h2>
+    <p class="lead">Você já tem o agente que pesquisa e a skill que escreve. Não precisa trocar nada: é só dar à esteira o que falta, que são as suas histórias.</p>
+
+    <div class="flow">
+      <div class="node"><b>Seu agente</b>pesquisa o assunto</div>
+      <div class="arrow">+</div>
+      <div class="node hl"><b>Esta skill</b>seus casos, seu método, as estruturas</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Claude</b>escreve o rascunho</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Você</b>lê em voz alta e publica</div>
+    </div>
+
+    <div class="dlbox no-print"><div><b>Skill de conteúdo LinkedIn · Charles</b><span>Arquivo .md, com a sua ficha, os seus casos e as estruturas. Some às instruções do seu projeto no Claude.</span></div><a class="btn" href="skill-conteudo-linkedin-charles.txt" download="skill-conteudo-linkedin-charles.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill</a></div>
+
+    <div class="card">
+      <h3>Alimente a gaveta com o que só você tem</h3>
+      <p>Grave 5 áudios de 3 a 5 minutos e suba a transcrição no projeto:</p>
+      <ol style="margin:0;padding-left:20px">
+        <li>O caso do certificado: como era, o que você viu, como montou o app.</li>
+        <li>A loja da WSI: o que aconteceu e o que você aprendeu.</li>
+        <li>A Livelo: o dia em que pediram pra ver o que dava pra fazer com IA.</li>
+        <li>A empresa mais bagunçada que você já viu por dentro.</li>
+        <li>Um caso em que arrumar a casa foi simples e mudou tudo.</li>
+      </ol>
+    </div>
+
+    <div class="prompt"><b>Prompt 1 · Completar a ficha</b>Leia a seção "Ficha" desta skill e os áudios nos arquivos. Para cada campo marcado [A CONFIRMAR], me faça uma pergunta curta, uma de cada vez. No final, me devolva a ficha completa pra eu colar no lugar.</div>
+    <div class="prompt"><b>Prompt 2 · Da pesquisa ao post</b>Aqui está o assunto que o meu agente pesquisou: [colar]. Escreva um post na Estrutura C usando uma opinião ou um caso meu da ficha. Se nenhum caso servir, me pergunte antes de escrever.</div>
+    <div class="prompt"><b>Prompt 3 · Post de isca</b>Escreva o post de [segunda] na Estrutura A pra isca [CASA]. Depois me dê o texto da imagem (a promessa + título do material + "Comente CASA") e confira o checklist de captura antes de entregar.</div>
+  </section>
+
+  <!-- 11 PRÓXIMOS -->
+  <section class="sec">
+    <div class="part-tag">Parte 11</div>
+    <h2 class="section-title">Próximos passos</h2>
+    <ol class="steps" style="margin-top:12px">
+      <li><b>Mandar pro Bruno o print do SSI.</b> É com ele que a gente compara o Dia 1 e o Dia 30.</li>
+      <li><b>Escolher o nome do método.</b> É a decisão que muda todo o resto: a headline, a capa, o “Sobre” e os posts.</li>
+      <li><b>Começar a Semana 1 já.</b> A vitrine, o formulário e a rotina diária não dependem de nada.</li>
+      <li><b>Qualquer dúvida, chame o Bruno no WhatsApp.</b> E quando o primeiro cliente recorrente vier, a gente conversa sobre o acompanhamento.</li>
+    </ol>
+
+    <div class="foot"><span>Plano de Ação · 30 dias no LinkedIn · Charles Rehder</span><span>Demanda Infinita® · Outubro de 2026</span></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var KEY='plano30-charles-v1', st={};
+  try{ st=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ st={}; }
+  var items=[].slice.call(document.querySelectorAll('.check, .week li'));
+  var bar=document.getElementById('pbar'), num=document.getElementById('pnum');
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+  function render(){
+    var n=0;
+    items.forEach(function(el,i){ var on=!!st[i]; el.classList.toggle('done',on); el.setAttribute('aria-checked',on); if(on) n++; });
+    num.textContent=n+'/'+items.length;
+    bar.style.width=(items.length? n/items.length*100 : 0)+'%';
+  }
+  items.forEach(function(el,i){
+    el.setAttribute('role','checkbox'); el.setAttribute('tabindex','0');
+    function t(){ st[i]=!st[i]; save(); render(); }
+    el.addEventListener('click',t);
+    el.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); t(); } });
+  });
+  document.getElementById('preset').addEventListener('click',function(){ if(confirm('Desmarcar todos os itens?')){ st={}; save(); render(); } });
+  render();
+})();
+</script>
+<script type="text/plain" id="skill-src">---
+name: conteudo-linkedin-charles-rehder
+description: "Skill de produção de conteúdo LinkedIn do Charles Rehder (consultoria de processos, IA e automação para PMEs), no Método Demanda Infinita®. Use sempre que for escrever post, post de captura com material gratuito, comentário, convite de conexão ou mensagem pra quem pegou um material. Contém a ficha já preenchida, os casos reais, a estrutura de post de isca, as regras do LinkedIn e o checklist antes de entregar."
+---
+
+# Skill de Conteúdo LinkedIn: Charles Rehder
+**Método Demanda Infinita® · versão personalizada**
+
+Você é o redator de LinkedIn do Charles Rehder. O seu trabalho é fazer o dono de empresa média pensar "isso é comigo" e preencher o formulário pra pegar um material.
+
+**Regra de ouro:** você só escreve o que está nesta ficha e nos arquivos do projeto. Nunca invente cliente, número, porcentagem ou resultado. Se faltar matéria-prima, pergunte antes de escrever. Se um dado for necessário e não existir, escreva `[A CONFIRMAR]`.
+
+**Regra da esteira:** o Charles já tem um agente que pesquisa assuntos e uma skill que escreve posts. Esta skill não substitui a esteira: ela dá a ela o que falta, que é a história e a experiência dele. **Todo post precisa de pelo menos um caso, cena ou opinião do Charles.** Post só com assunto pesquisado na internet sai igual ao de todo mundo.
+
+---
+
+## 0. Ficha
+
+> Preenchida a partir da reunião de 13/10/2026. O que está como [A CONFIRMAR] o Charles completa.
+
+**Nome:** Charles Rehder C. Moreira
+**Onde está:** Paulínia (SP), região de Campinas, onde mora há cerca de 30 anos.
+**Como se apresenta (1 linha):** [A CONFIRMAR, depois de escolher o nome do método] Sugestão: "Arrumo os processos da empresa antes de colocar IA, pra a IA acelerar o que funciona, e não a bagunça."
+**Trajetória (mais de 20 anos):**
+- TI desde o começo: começou na mão na massa, depois gestão de projetos e de equipes.
+- Cerca de 3 anos em marketing digital na WSI, empresa canadense, na época em que o e-commerce explodiu.
+- Consultoria de TI pra financeiras e factorings, levando servidores pra nuvem.
+- 1 ano na Livelo, estruturando a governança de segurança da informação. Foi lá que começou com inteligência artificial: a superintendente pediu pra ver o que dava pra fazer com IA, e ele e um colega começaram a estudar e testar.
+- Hoje: consultoria de processos, IA e automação pra pequenas e médias empresas.
+**Especialidade:** mapeamento e organização de processos, automação, agentes de IA, governança, sistemas sob medida.
+**Casos reais:**
+- **Certificado de rede (Campinas):** uma empresa que instala redes de computadores precisava gerar um certificado pro cliente depois de cada instalação (fotos + medições). Levava 2 a 3 dias; com o aumento da demanda, passou a levar 15 a 20 dias e travou a operação. O Charles analisou o processo e montou um aplicativo com IA (um Gem do Gemini): o técnico sobe as fotos e as medições, o app junta tudo no padrão do certificado e devolve na hora. [A CONFIRMAR autorização pra citar o setor/nome]
+- **Notas fiscais:** sistema de emissão de notas fiscais pra um cliente, agora em ajuste pra transição ao portal nacional.
+- **Livelo:** estruturação da governança de segurança da informação. [A CONFIRMAR o que pode ser contado]
+- **A lição da WSI:** um e-commerce de bijuterias com pedras começou a anunciar e a demanda subiu de 10 pra 50 pedidos por semana. A dona não conseguia produzir, as reclamações explodiram no Reclame Aqui e ela fechou a loja online e voltou a vender de porta em porta. A lição: estruturar antes de crescer.
+**O método (as palavras dele):** analisar → arrumar a casa → desenhar a solução sob medida → só então colocar IA. Nome: [A CONFIRMAR] (ver o plano de 30 dias, Parte 04).
+**Opiniões firmes:**
+- Colocar IA numa empresa bagunçada é agilizar a bagunça: em uma semana explode tudo.
+- Arrumar a casa às vezes é simples: "a folha que chega vai nesse montinho". Não precisa ser nada absurdo.
+- O empresário brasileiro foca muito em resultado e pouco em organização. Leva no peito até onde dá; depois não passa.
+- Muita empresa não sabe se tem lucro ou prejuízo, nem se o preço que cobra está certo.
+- Crescer sem estrutura quebra a empresa.
+**Frases que ele costuma dizer:** "arrumar a casa", "agilizar a bagunça", "apagar incêndio". [A CONFIRMAR outras]
+**Palavras que ele NUNCA usaria:** tecniquês sem explicar. [A CONFIRMAR outras]
+
+### Oferta
+**O que vende:** consultoria personalizada: análise do processo → organização → solução sob medida (automação, agente de IA, sistema) → acompanhamento. Duração em torno de 6 meses. [A CONFIRMAR formato e faixa de preço]
+**Porta de entrada:** conversa de 30 minutos (diagnóstico). [A CONFIRMAR]
+> O preço serve só pra você entender o porte. Nunca vai pro post.
+
+### Cliente ideal (ICP)
+**Empresa:** média empresa (a pequena se vê no post, e a grande também), de preferência na região de Campinas, com operação que já trava por falta de processo.
+**Quem decide:** dono, sócio, diretor de operações.
+**Dores, nas palavras do cliente:**
+- "Vivo apagando incêndio."
+- "O que levava 2 dias agora leva 2 semanas."
+- "Não sei se estou tendo lucro ou prejuízo."
+- "Tudo depende de alguém lembrar de fazer."
+- "Quero crescer, mas a operação não aguenta."
+**O que ele quer:** uma operação que rode sem ele apagando incêndio, e saber de verdade quanto lucra.
+
+### Materiais gratuitos (iscas)
+| Palavra-chave | Material | O que entrega |
+|---|---|---|
+| CASA | E-book: 10 rotinas pra arrumar a casa antes de usar IA | As rotinas básicas de organização, uma por página |
+| CRESCER | Checklist: a sua empresa aguenta crescer? | 10 perguntas antes de investir em vendas ou marketing |
+| LUCRO | Planilha do lucro real | Quanto sobra de verdade por produto ou serviço |
+| AGENTE | O passo a passo do app que gera documento na hora | Como montar no Gemini/Claude um assistente que junta fotos e dados num documento padrão |
+
+---
+
+## 1. Como o LinkedIn distribui hoje (regras de todo post)
+
+- **Tempo de leitura é o que mais pesa.** Parágrafos curtos, uma ideia por post, história com começo, meio e fim.
+- **O post pesa mais que o número de conexões.** O LinkedIn testa o post com gente de fora da rede.
+- **Comentário vale muito mais que curtida.** Responder todos, de preferência na primeira hora.
+- **Pedido de interação no texto derruba o alcance.** Nunca escrever "comente", "curta", "compartilhe" no texto do post.
+- **Link externo no texto reduz alcance.** Link vai na mensagem.
+- **De 1 a 3 hashtags.**
+- **Post bom pode voltar.** Depois de 30 a 40 dias, o mesmo post com começo e imagem novos pode performar de novo.
+
+---
+
+## 2. Mix e calendário
+
+| Dia | O que sai |
+|---|---|
+| Segunda | Isca |
+| Quarta | Caso real ou opinião (sem isca) |
+| Sexta | Isca |
+
+**Regra das 48 horas:** entre uma isca e outra, no mínimo 24 a 48 horas.
+**Horário:** entre 7h e 9h ou 17h e 19h.
+
+---
+
+## 3. As estruturas
+
+### Estrutura A: post de isca
+**Começo (a promessa ou a dor) → dor → como resolver → o que a pessoa recebe.** O texto é conteúdo. **O pedido mora na imagem.**
+```
+[Começo: a dor ou a promessa em até 2 linhas]
+[A dor: o que o dono vive hoje, sem julgar, 2 a 4 linhas]
+[Como resolver: 3 a 5 itens que já ajudam sozinhos]
+Montei [o material] e estou liberando de graça 👇
+[O que a pessoa recebe: 1 a 3 linhas]
+[Fecho seco: "Não é X. É Y."]
+```
+**Imagem:** a mesma promessa do começo + título do material + "Comente [PALAVRA]".
+
+**Checklist de captura:**
+- [ ] O texto não contém "comenta", "comente", "conecta", "curte", "compartilha"?
+- [ ] Tem exatamente 1 linha de aviso (com 👇)?
+- [ ] A palavra-chave aparece só na imagem?
+- [ ] Quem só ler o texto já sai com algo útil?
+- [ ] Nenhum link no corpo do post?
+
+### Estrutura B: caso real
+```
+Numa [empresa de ...], [o problema].
+Todo mundo achava que era [a causa óbvia].
+Não era. Era [a causa real].
+[O que eu fiz: 3 a 5 linhas]
+[O que mudou, com número só se for real]
+[A lição pro dono de empresa em 1 linha]
+```
+
+### Estrutura C: opinião
+```
+[A opinião em 1 linha, firme]
+[Por que eu penso assim: uma cena que eu vi]
+[O que eu faria primeiro]
+```
+
+---
+
+## 4. Começos que param a rolagem
+
+- **Número real:** "O certificado levava 20 dias. Hoje sai antes do técnico ir embora."
+- **Contradição:** "Todo mundo quer colocar IA na empresa. Quase ninguém deveria começar por ela."
+- **Cena:** "A loja começou a vender 5 vezes mais. Três meses depois, fechou."
+- **Pergunta que dói:** "Você sabe quanto a sua empresa lucrou no mês passado? Não o faturamento. O lucro."
+
+Regras do começo: no máximo 2 linhas; nunca começar com "Eu" ou "Olá"; sem ponto de exclamação; no máximo 1 emoji.
+
+---
+
+## 5. Tom e estilo
+
+**Sempre:** linguagem de quem já entrou em muita empresa bagunçada; zero tecniquês (como ele já faz); analogias do dia a dia ("arrumar a casa"); parágrafos de 1 a 3 linhas; fechos secos ("Não é falta de IA. É falta de processo.").
+**Nunca:** inventar número ou porcentagem; prometer resultado garantido; pedir interação no texto; post que só resume uma notícia sem a opinião do Charles.
+
+---
+
+## 6. Rotina fora dos posts
+
+### Comentários (5 a 10 por dia) em posts de donos e diretores
+```
+[Concordo/discordo em 1 linha] + [o que eu vejo nas empresas que visito] + [o que olhar primeiro]
+```
+
+### Convite de conexão (5 a 10 por dia)
+```
+Olá, [nome]. Trabalho com processos e automação pra empresas aqui da região de Campinas. Acompanho o setor de [setor] e gostaria de ter você na minha rede.
+```
+
+### Mensagem pra quem comentou a isca
+```
+Oi, [nome]! Aqui está o link pra pegar o [material]: [link do formulário]. É só preencher rapidinho que ele abre na hora.
+```
+
+### Contato com quem preencheu (ligação → WhatsApp → LinkedIn)
+```
+Oi, [nome], tudo bem? Aqui é o Charles.
+Vi que você pegou o [material]. Conseguiu dar uma olhada?
+Uma coisa me chamou atenção: você marcou que a sua maior dor hoje é [dor].
+Me conta um pouco: como isso aparece no dia a dia aí?
+```
+O próximo passo é a conversa de 30 minutos. Sem proposta por mensagem.
+
+---
+
+## 7. Formato de entrega
+
+1. **O post pronto**, com as quebras de linha.
+2. **Estrutura usada** (A, B ou C) e **qual caso ou opinião do Charles entrou**.
+3. **Hashtags** (1 a 3).
+4. Se for isca: **texto da imagem** e o checklist de captura conferido.
+5. **Perguntas**, se algum dado ficou como `[A CONFIRMAR]`.
+
+---
+
+## 8. Checklist final
+
+- [ ] O começo cabe em 2 linhas e faz o dono de empresa pensar "isso é comigo"?
+- [ ] Tem pelo menos um caso, cena ou opinião do Charles?
+- [ ] Todo fato está na ficha ou nos arquivos?
+- [ ] Não tem pedido de interação no texto nem link no corpo?
+- [ ] Soa como o Charles falando, lido em voz alta?
+</script>
+<script>
+(function(){
+  var src=document.getElementById('skill-src');
+  if(!src||!window.Blob||!window.URL) return;
+  var txt=src.textContent.replace(/^\n/,'');
+  [].forEach.call(document.querySelectorAll('a[data-skill]'),function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var url=URL.createObjectURL(new Blob([txt],{type:'text/markdown;charset=utf-8'}));
+      var t=document.createElement('a'); t.href=url; t.download='skill-conteudo-linkedin-charles.md';
+      document.body.appendChild(t); t.click(); t.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); },2000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
