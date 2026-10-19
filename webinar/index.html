@@ -265,11 +265,14 @@
 <div id="modal-root"></div>
 
 <script>
-const KEY = 'kit-evento-di-v1';
+// cada endereço guarda o seu próprio estado (o localStorage é do domínio, não da pasta)
+const KEY = 'kit-evento-di-v1:' + location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
+// página pré-preenchida para um cliente: { v:1, config:{...}, evento:{data,hora,edicao,link_sala,...} }. null = kit padrão.
+const PRESET = null;
 const DIAS = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
 const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
-let S = { config: {}, eventos: [], seq: 1 };
+let S = { config: {}, eventos: [], seq: 1, presetV: 0 };
 let atual = null;
 let abertos = new Set();
 
@@ -277,8 +280,18 @@ let abertos = new Set();
 function carregar() {
   try {
     const r = localStorage.getItem(KEY);
-    if (r) { const d = JSON.parse(r); if (d && Array.isArray(d.eventos)) S = { config: d.config || {}, eventos: d.eventos, seq: d.seq || 1 }; }
+    if (r) { const d = JSON.parse(r); if (d && Array.isArray(d.eventos)) S = { config: d.config || {}, eventos: d.eventos, seq: d.seq || 1, presetV: d.presetV || 0 }; }
   } catch (e) { semArmazenamento(); }
+}
+function aplicarPreset() {
+  if (!PRESET || (S.presetV || 0) >= PRESET.v) return;
+  // só preenche o que a pessoa ainda não mexeu; nunca apaga o que ela já escreveu
+  Object.entries(PRESET.config || {}).forEach(([k, v]) => { if (S.config[k] === undefined || S.config[k] === '') S.config[k] = v; });
+  if (PRESET.evento && !S.eventos.some(e => e.preset)) {
+    S.eventos.push({ id: S.seq++, link_sala: '', link_evento: '', link_grupo: '', link_gravacao: '', edicao: null, status: 'ativo', checks: {}, ...PRESET.evento, preset: true });
+  }
+  S.presetV = PRESET.v;
+  salvar();
 }
 function salvar() {
   try { localStorage.setItem(KEY, JSON.stringify(S)); }
@@ -344,7 +357,7 @@ const CAMPOS = [
     { k:'temBonus', l:'Bônus ao vivo', t:'check', lc:'Vou entregar algo só para quem estiver ao vivo', dica:'Só marque se for verdade: a mensagem D-3 promete. Se marcar, o roteiro do evento lembra de entregar.' },
   ]},
   { grupo: '5 · Depois do evento', desc: 'O convite que fecha a mensagem do dia seguinte.', itens: [
-    { k:'ctaFrase', l:'Frase do convite', t:'text', opt:true, full:true, ph:'ex.: Quer que eu olhe o caixa da sua empresa com você? Agenda uma conversa:', dica:'Opcional. Se você só preencher o link, entra a frase padrão sobre agendar uma conversa.', usa:'mensagem D+1' },
+    { k:'ctaFrase', l:'Frase do convite', t:'text', opt:true, full:true, ph:'ex.: Quer que eu olhe o caixa da sua empresa com você? Agenda uma conversa:', dica:'Opcional. Preencha a frase e o link juntos. Só o link já basta: entra a frase padrão sobre agendar uma conversa.', usa:'mensagem D+1' },
     { k:'ctaLink', l:'Link do convite (agenda, formulário, WhatsApp)', t:'url', opt:true, full:true, ph:'https://', usa:'mensagem D+1' },
   ]},
 ];
@@ -584,7 +597,7 @@ const MSG = {
   'm+1': c => L(
     'Obrigado a todo mundo que esteve com a gente ontem 🙏',
     c.grav ? `Quem não conseguiu ficar até o fim, a gravação está aqui:\n${c.grav}` : '',
-    (c.ctaFrase || c.ctaLink) ? `${c.ctaFrase || `Quer aplicar isso no seu negócio com ${c.apres} olhando o seu caso? Agenda aqui:`}${c.ctaLink ? '\n' + c.ctaLink : ''}` : '',
+    (c.ctaFrase || c.ctaLink) ? `${c.ctaFrase || `Quer aplicar isso no seu negócio com ${c.apres} olhando o seu caso? Agenda aqui:`}${c.ctaLink ? '\n' + c.ctaLink : (c.ctaFrase ? '\n[LINK DO CONVITE]' : '')}` : '',
     c.prox ? `${c.semanal ? 'E o evento acontece *toda semana*. ' : ''}A próxima edição é *${c.proxDia}, ${c.proxData}, às ${c.proxHora}*. Manda para quem precisa ver.` : ''),
 };
 
@@ -618,7 +631,8 @@ function htmlMsg(texto) { return esc(texto).replace(RE_PH, '<span class="ph">[$1
 function avisoFalta(texto) {
   const f = faltando(texto);
   if (!f.length) return '';
-  const links = f.filter(x => x.startsWith('LINK')), campos = f.filter(x => !x.startsWith('LINK'));
+  const FICHA = ['LINK DO EVENTO', 'LINK DA SALA', 'LINK DO GRUPO'];
+  const links = f.filter(x => FICHA.includes(x)), campos = f.filter(x => !FICHA.includes(x));
   const partes = [];
   if (links.length) partes.push(`na ficha da edição: ${links.map(x => x.toLowerCase()).join(', ')}`);
   if (campos.length) partes.push(`em "Meu evento": ${campos.map(x => x.toLowerCase()).join(', ')}`);
@@ -808,7 +822,8 @@ function novoEvento(base) {
     S.eventos.push(ev);
     salvar();
     fecharModal();
-    location.hash = '#e/' + ev.id;
+    const alvo = '#e/' + ev.id;
+    if (location.hash === alvo) route(); else location.hash = alvo;
   };
 }
 function fecharModal() { $('modal-root').innerHTML = ''; }
@@ -1034,7 +1049,7 @@ $('f-restaurar').onchange = e => {
       const d = JSON.parse(r.result);
       if (!d || !Array.isArray(d.eventos) || typeof d.config !== 'object') throw new Error('formato');
       if (!confirm('Substituir tudo que está neste navegador pelo conteúdo do backup?')) return;
-      S = { config: d.config || {}, eventos: d.eventos, seq: d.seq || (Math.max(0, ...d.eventos.map(x => x.id)) + 1) };
+      S = { config: d.config || {}, eventos: d.eventos, seq: d.seq || (Math.max(0, ...d.eventos.map(x => x.id)) + 1), presetV: d.presetV || (PRESET ? PRESET.v : 0) };
       salvar(); route(); toast('Backup restaurado');
     } catch (err) { toast('Esse arquivo não é um backup do kit'); }
   };
@@ -1043,6 +1058,7 @@ $('f-restaurar').onchange = e => {
 };
 
 carregar();
+aplicarPreset();
 route();
 </script>
 </body>
