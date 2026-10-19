@@ -595,6 +595,30 @@ svg.chart { display: block; }
 .ss-var-nota b { font-weight: 700; color: var(--text-primary); }
 .ss-var-risco { font-size: .73rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
 .ss-erro { border: 1px solid var(--critical); border-radius: 10px; padding: 11px 13px; font-size: .8rem; color: var(--critical); background: rgba(208,59,59,.05); }
+/* ---- agente de suporte (tirar dúvidas do material) ---- */
+.ss-sup-ficha { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; background: var(--surface-1); margin-top: 14px; }
+.ss-sup-ficha p { margin: 0 0 8px; font-size: .86rem; line-height: 1.55; color: var(--text-secondary); }
+.ss-sup-ficha p b { color: var(--text-primary); }
+.ss-sup-ficha-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.ss-sup-ficha-top b { font-size: .98rem; }
+.ss-sup-ficha-top span { font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ss-sup-ficha details { margin: 0 0 8px; font-size: .84rem; color: var(--text-secondary); }
+.ss-sup-ficha summary { cursor: pointer; font-weight: 700; color: var(--text-primary); }
+.ss-sup-ficha ul, .ss-sup-txt ul { margin: 6px 0 0; padding-left: 18px; line-height: 1.55; }
+.ss-sup-ficha-pe { font-size: .72rem; color: var(--muted); margin-top: 4px; }
+.ss-sup-atalhos { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 10px; }
+.ss-sup-atalhos button { border: 1px solid var(--border); background: none; color: var(--text-secondary); border-radius: 999px; padding: 5px 12px; font-size: .76rem; cursor: pointer; }
+.ss-sup-atalhos button:hover { border-color: var(--accent); color: var(--accent); }
+.ss-sup-ask { display: flex; gap: 8px; }
+.ss-sup-ask input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); font-size: .88rem; font-family: inherit; box-sizing: border-box; }
+.ss-sup-ask .btn { width: auto; padding: 10px 20px; }
+.ss-sup-chat { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+.ss-sup-q { align-self: flex-end; max-width: 86%; background: var(--text-primary); color: #fff; padding: 8px 13px; border-radius: 14px 14px 3px 14px; font-size: .84rem; line-height: 1.45; }
+.ss-sup-a { display: grid; gap: 10px; }
+.ss-sup-txt { border: 1px solid var(--border); border-radius: 12px; padding: 12px 15px; background: var(--surface-1); font-size: .88rem; line-height: 1.6; color: var(--text-primary); }
+.ss-sup-txt.dest { background: var(--field-bg); border-left: 2px solid var(--accent); }
+.ss-sup-fonte { margin-top: 8px; font-size: .72rem; color: var(--muted); }
+.ss-sup-a .ss-bloco { margin: 0; border: 1px solid var(--border); border-radius: 12px; padding: 12px 15px; background: var(--surface-1); }
 /* ---- atividades do lead (bolinha do Pipedrive) ---- */
 .ativ-dot {
   display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto;
@@ -2560,6 +2584,36 @@ form.form-grid.form-collapse:not(.open) { display: none; }
       <div class="ss-doc">
 
         <div class="ss-switch">
+          <button type="button" id="ss-btn-suporte" class="ativo" onclick="ssModo('suporte')">Tirar dúvidas</button>
+          <button type="button" id="ss-btn-agente" onclick="ssModo('agente')">Gerar mensagem</button>
+          <button type="button" id="ss-btn-playbook" onclick="ssModo('playbook')">O playbook</button>
+        </div>
+
+        <div id="ss-suporte">
+          <h2>Tirar dúvidas do material</h2>
+          <p class="ss-sub">Escolhe o material que o lead baixou. O agente lê o material primeiro e depois responde as suas dúvidas e sugere como puxar assunto com o lead sobre ele. Não usa IA: responde só com o que está escrito no material e avisa quando não achou.</p>
+          <div class="ss-form" style="margin-top:16px;">
+            <div>
+              <label>Material</label>
+              <select id="ss-sup-mat" onchange="ssSupEscolher(this.value)"><option value="">Carregando materiais…</option></select>
+            </div>
+            <div class="ss-form-linha">
+              <div><label>Nome do lead (opcional)</label><input type="text" id="ss-sup-nome" placeholder="Entra no lugar do [Nome] nas mensagens" autocomplete="off"></div>
+              <div><label>O que você viu no perfil dele (opcional)</label><input type="text" id="ss-sup-obs" placeholder="Ex.: parou de postar faz 2 meses" autocomplete="off"></div>
+            </div>
+          </div>
+          <div id="ss-sup-ficha"></div>
+          <div id="ss-sup-form" style="display:none;">
+            <div class="ss-sup-atalhos" id="ss-sup-atalhos"></div>
+            <div class="ss-sup-ask">
+              <input type="text" id="ss-sup-q" placeholder="Escreva sua dúvida sobre o material…" autocomplete="off" onkeydown="if(event.key==='Enter'){ssSupPerguntar();}">
+              <button type="button" class="btn" onclick="ssSupPerguntar()">Perguntar</button>
+            </div>
+          </div>
+          <div class="ss-sup-chat" id="ss-sup-chat"></div>
+        </div>
+
+        <div id="ss-agente" style="display:none;">        <div class="ss-switch">
           <button type="button" id="ss-btn-agente" class="ativo" onclick="ssModo('agente')">Gerar mensagem</button>
           <button type="button" id="ss-btn-playbook" onclick="ssModo('playbook')">O playbook</button>
         </div>
@@ -9596,11 +9650,11 @@ function ssPopularVoz() {
 }
 
 function ssModo(modo) {
-  const ehAgente = modo === 'agente';
-  document.getElementById('ss-agente').style.display = ehAgente ? 'block' : 'none';
-  document.getElementById('ss-playbook').style.display = ehAgente ? 'none' : 'block';
-  document.getElementById('ss-btn-agente').classList.toggle('ativo', ehAgente);
-  document.getElementById('ss-btn-playbook').classList.toggle('ativo', !ehAgente);
+  ['suporte', 'agente', 'playbook'].forEach(m => {
+    document.getElementById('ss-' + m).style.display = m === modo ? 'block' : 'none';
+    document.getElementById('ss-btn-' + m).classList.toggle('ativo', m === modo);
+  });
+  if (modo === 'suporte') ssSupIniciar();
 }
 
 function ssBuscarLead() {
@@ -9757,6 +9811,383 @@ function ssCopiaFallback(texto, feedback) {
   } catch (e) {
     feedback(false);
   }
+}
+
+
+// ---------- SOCIAL SELLING · AGENTE DE SUPORTE DA SDR ----------
+// Sem IA e sem token: lê o HTML do material (guardado no Drive, pasta abaixo) e responde por regra.
+// 1) lê o material: a "ficha-sdr" embutida (resumo, pra quem é, dor, FAQ) + o texto inteiro, em seções;
+// 2) responde buscando no que está escrito; se não achou, diz que não achou em vez de chutar;
+// 3) sugere abordagem montando as mensagens do playbook com o ponto específico daquele material.
+const SS_SUP_PASTA = '01 - Comercial/Materiais LinkedIn';
+const ssSupCache = {};
+let ssSupMat = null;
+let ssSupCarregando = false;
+
+const SS_SUP_STOP = new Set(('a o as os um uma uns umas de do da dos das em no na nos nas por para pra pro com sem sobre e ou mas que se ja eu voce vc ele ela eles elas nao sim isso isto esse essa esses essas este esta estes estas aquele aquela meu minha seu sua nosso nossa como qual quais quando onde quem porque pq muito mais menos tambem so ate ao aos ha tem tenho ter vai vou foi sao ser estao era mesmo entao la aqui cada outro outra todo toda tudo algo pode posso podem faz fazer fica ficar ta to ne pois precisa preciso precisar quero queria sera seria estou favor oi ola me te lhe material lead quanto quantos quantas pessoa usa uso usar funciona funcionar serve servir faco fazem explica explicar explique mostra mostrar fala falar diz dizer existe tipo coisa jeito forma ajuda ajudar acho sabe saber').split(' '));
+const SS_SUP_SIN = [
+  'custo custa custos preco precos pagar pago paga mensalidade assinatura gratis gratuito gratuita',
+  'seguro seguranca risco arriscado perigo confiavel privacidade proteger protegido vazar',
+  'conectar conecta conecto conector conexao ligar ligo liga ligacao integrar integracao integra plugar',
+  'instalar instalo instalacao baixar baixo download configurar configuro configuracao',
+  'programar programador codigo tecnico desenvolvedor dev programacao',
+  'tempo minutos demora demorado rapido leva duracao horas',
+].map(g => g.split(' '));
+const SS_SUP_SINMAP = {};
+SS_SUP_SIN.forEach((g, i) => g.forEach(w => { SS_SUP_SINMAP[w] = '@' + i; }));
+
+function ssSupNorm(t) {
+  return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function ssSupTokens(t) {
+  const out = [];
+  ssSupNorm(t).split(' ').forEach(w => {
+    if (!w || SS_SUP_STOP.has(w)) return;
+    if (SS_SUP_SINMAP[w]) { out.push(SS_SUP_SINMAP[w]); return; }
+    if (w.length > 4 && w.endsWith('s')) w = w.slice(0, -1);
+    if (SS_SUP_STOP.has(w) || (w.length < 3 && !/^\d+$/.test(w))) return;
+    if (w.length > 6) w = w.slice(0, 6);
+    out.push(w);
+  });
+  return out;
+}
+function ssSupEsc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+const SS_SUP_BLOCOS = new Set(['P', 'DIV', 'LI', 'UL', 'OL', 'TR', 'TABLE', 'THEAD', 'TBODY', 'SECTION', 'ARTICLE', 'HEADER', 'FOOTER', 'MAIN', 'ASIDE', 'NAV', 'PRE', 'BLOCKQUOTE', 'DL', 'DT', 'DD', 'FIGURE', 'FIGCAPTION', 'DETAILS', 'SUMMARY', 'FORM', 'BODY', 'HTML']);
+
+// transforma o HTML do material em: ficha (se tiver) + seções com trechos de texto, já indexadas pra busca
+function ssSupLer(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  let ficha = null;
+  const fj = doc.getElementById('ficha-sdr');
+  if (fj) { try { ficha = JSON.parse(fj.textContent); } catch (e) { ficha = null; } }
+  const tituloDoc = (doc.title || '').replace(/\s*[|·—-]\s*Método.*$/i, '').trim();
+  doc.querySelectorAll('script,style,svg,noscript,iframe,template,button,head').forEach(n => n.remove());
+  const limpa = t => t.replace(/\s+/g, ' ').trim();
+  const secoes = [{ titulo: tituloDoc || 'Início', nivel: 0, trechos: [] }];
+  let atual = secoes[0];
+  let buf = [];
+  const flush = () => { buf.join('').split(/\n[ \t]*\n/).forEach(par => { const t = limpa(par); if (t.length >= 3) atual.trechos.push(t); }); buf = []; };
+  const anda = no => {
+    no.childNodes.forEach(c => {
+      if (c.nodeType === 3) { buf.push(c.nodeValue); return; }
+      if (c.nodeType !== 1) return;
+      const tag = c.tagName;
+      if (/^H[1-4]$/.test(tag)) {
+        flush();
+        const t = limpa(Array.from(c.childNodes).map(n => n.textContent).join(' '))
+          .replace(/^(parte|etapa|passo)\s*(\d+)\s*[·:.-]?\s*/i, (m, a, n) => a[0].toUpperCase() + a.slice(1).toLowerCase() + ' ' + n + ' · ');
+        atual = { titulo: t, nivel: +tag[1], trechos: [] };
+        secoes.push(atual);
+      } else if ((tag === 'PRE' || tag === 'CODE') && (c.textContent.match(/^#{1,4}\s+\S/gm) || []).length >= 3) {
+        flush();
+        let par = [];
+        const solta = () => { if (par.length) { const t = limpa(par.join(' ')); if (t.length >= 3) atual.trechos.push(t); } par = []; };
+        c.textContent.split('\n').forEach(linha => {
+          const h = /^(#{1,4})\s+(.*\S)\s*$/.exec(linha);
+          if (h) { solta(); atual = { titulo: limpa(h[2].replace(/[*_`]/g, '')), nivel: h[1].length + 1, trechos: [] }; secoes.push(atual); }
+          else if (!linha.trim()) solta();
+          else par.push(linha.trim());
+        });
+        solta();
+      } else if (tag === 'BR') {
+        flush();
+      } else if (SS_SUP_BLOCOS.has(tag)) {
+        flush(); anda(c); flush();
+      } else if (tag === 'TD' || tag === 'TH') {
+        buf.push(' | '); anda(c); buf.push(' ');
+      } else {
+        buf.push(' '); anda(c); buf.push(' ');
+      }
+    });
+  };
+  anda(doc.body || doc.documentElement);
+  flush();
+
+  const vistos = new Set();
+  const trechos = [];
+  secoes.forEach((s, i) => {
+    s.set = new Set(ssSupTokens(s.titulo));
+    s.trechos = s.trechos.filter(t => { const k = ssSupNorm(t); if (vistos.has(k)) return false; vistos.add(k); return true; });
+    s.trechos.forEach(t => trechos.push({ s: i, t }));
+  });
+  const df = {};
+  trechos.forEach(x => {
+    x.tok = ssSupTokens(x.t);
+    x.set = new Set(x.tok);
+    x.set.forEach(w => { df[w] = (df[w] || 0) + 1; });
+  });
+  return { ficha, titulo: (ficha && ficha.titulo) || tituloDoc || 'Material', secoes, trechos, df, n: trechos.length };
+}
+
+// sem ficha, monta o mínimo a partir do próprio texto — o agente funciona, só com menos finura
+function ssSupFichaMinima(mat) {
+  const h2 = mat.secoes.slice(1).map(s => s.titulo).filter(t => t && t.length < 90).slice(0, 8);
+  const lead = mat.trechos.find(x => x.t.length > 70);
+  const txt = mat.trechos.map(x => x.t).join(' ');
+  const fp = /feito pra ([^.]{5,140})/i.exec(txt);
+  return {
+    titulo: mat.titulo, link: '', formato: '', resumo: lead ? lead.t : '', para_quem: fp ? 'Feito pra ' + fp[1] : '',
+    dor: '', entrega: h2, como_comeca: '', primeiro_passo: '', pergunta_dor: '', ponte: '', nao_e: '', faq: [], objecoes: [], _minima: true,
+  };
+}
+
+// ---------- busca no texto ----------
+// Cada seção do material pontua pelas palavras da pergunta (título vale mais que corpo). Mostra os trechos que casam.
+function ssSupBuscar(mat, q) {
+  const qt = [...new Set(ssSupTokens(q))];
+  if (!qt.length || !mat.n) return null;
+  const N = mat.n, med = mat.trechos.reduce((a, x) => a + x.tok.length, 0) / N || 1;
+  const idf = w => Math.log(1 + (N - (mat.df[w] || 0) + 0.5) / ((mat.df[w] || 0) + 0.5));
+  const util = x => x.t.split(' ').length >= 4;
+  const placar = [];
+  mat.secoes.forEach((sec, si) => {
+    const chunks = mat.trechos.filter(x => x.s === si && util(x));
+    let s = 0;
+    const cob = new Set();
+    qt.forEach(w => {
+      let melhor = 0;
+      chunks.forEach(x => {
+        if (!x.set.has(w)) return;
+        const tf = x.tok.reduce((a, z) => a + (z === w ? 1 : 0), 0);
+        melhor = Math.max(melhor, idf(w) * (tf * 2.2) / (tf + 1.2 * (0.25 + 0.75 * x.tok.length / med)));
+      });
+      const tit = sec.set.has(w) ? idf(w) * 1.5 : 0;
+      if (melhor || tit) cob.add(w);
+      s += melhor + tit;
+    });
+    if (s > 0) placar.push({ si, s, cob: cob.size, chunks });
+  });
+  if (!placar.length) return null;
+  placar.sort((a, b) => b.s - a.s);
+  const top = placar[0], sec = mat.secoes[top.si];
+  const cov = top.cob / qt.length;
+  const desconhecidas = qt.filter(w => !mat.df[w] && !mat.secoes.some(z => z.set.has(w))).length;
+  if (top.s < 1.2 || (qt.length >= 2 && top.cob < 2 && cov < 0.5)) return null;
+  if (desconhecidas && desconhecidas / qt.length >= 0.5) return null;     // a pergunta cita algo que o material nem menciona: não chuta
+  const casa = x => qt.filter(w => x.set.has(w)).length;
+  let escolhidos = top.chunks.filter(x => casa(x)).sort((a, b) => casa(b) - casa(a)).slice(0, 2);
+  if (!escolhidos.length) escolhidos = top.chunks.slice(0, 2);
+  escolhidos.sort((a, b) => top.chunks.indexOf(a) - top.chunks.indexOf(b));
+  const filhos = [];
+  if (sec.nivel >= 2) for (let k = top.si + 1; k < mat.secoes.length && mat.secoes[k].nivel > sec.nivel; k++) { if (mat.secoes[k].nivel === sec.nivel + 1) filhos.push(mat.secoes[k].titulo); }
+  const outra = placar.find(p => p.si !== top.si);
+  return { tituloCasa: qt.some(w => sec.set.has(w)), secao: sec.titulo, partes: escolhidos.map(x => x.t.length > 420 ? x.t.slice(0, 420).replace(/\s+\S*$/, '') + '…' : x.t), filhos: filhos.length >= 2 ? filhos.slice(0, 12) : [], conf: cov >= 0.6 ? 'alta' : 'media', tambem: outra ? mat.secoes[outra.si].titulo : '' };
+}
+
+function ssSupMelhorPar(lista, q, campos) {
+  const qt = [...new Set(ssSupTokens(q))];
+  if (!qt.length) return null;
+  let melhor = null;
+  (lista || []).forEach(x => {
+    const dt = new Set(ssSupTokens(campos.map(c => x[c] || '').join(' ')));
+    const hit = qt.filter(w => dt.has(w)).length;
+    if (!hit) return;
+    const cov = hit / qt.length;
+    const pt = new Set(ssSupTokens(x[campos[0]] || ''));
+    const jac = qt.filter(w => pt.has(w)).length / (new Set([...qt, ...pt]).size || 1);
+    const sc = cov + 0.5 * jac;
+    if (!melhor || sc > melhor.sc) melhor = { x, cov, hit, sc };
+  });
+  return melhor;
+}
+
+function ssSupIntencao(q) {
+  const n = ssSupNorm(q);
+  const t = r => r.test(n);
+  if (t(/\b(abord\w*|mensage(m|ns)|msgs?|puxar assunto|comecar (a )?conversa|iniciar (a )?conversa|follow ?up|retomar|reativ\w*|quebra gelo|entrar em contato|o que (eu )?(falo|digo|mando|escrevo)|como (eu )?(falo|chamo|inicio|comeco|puxo))\b/)) return 'abordagem';
+  if (t(/\b(objec\w*|(ele|ela) (me )?(disse|disser|falou|falar|respondeu|responder|perguntou)|respondeu que|disse que|falou que|nao quer|nao tem interesse|nao tenho (tempo|interesse|verba)|ja (uso|tenho|tentei)|muito caro|nao (e|eh) pra mim|agora nao)\b/)) return 'objecao';
+  return null;
+}
+function ssSupIntencao2(q) {
+  const n = ssSupNorm(q);
+  const t = r => r.test(n);
+  const curta = ssSupTokens(q).length <= 2;
+  if (t(/\b(custa|custo|preco|pagar|pago|paga|gratis|gratuito|mensalidade|assinatura)\b/)) return /\b(mentoria|consultoria|servico|programa|metodo|contrat\w+|cobram|cobra)\b/.test(n) ? 'preco_servico' : 'custo';
+  if (curta && t(/\b(pra quem|para quem|publico|perfil ideal|quem (deve|pode|serve|usa|se interessa|baixa)|icp)\b/)) return 'para_quem';
+  if (curta && t(/\b(o que (tem|entrega|vem|leva|ganha|ensina|mostra|contem)|conteudo|dentro|sumario|indice|partes|etapas|passos|estrutura)\b/)) return 'entrega';
+  if (t(/\b(qual (e )?o link|o link (do|desse|deste)|link pra mandar|(me )?(manda|passa|da) o link|pagina publica|onde (baixo|acho|encontro|esta publicado))\b/)) return 'link';
+  if (curta && t(/\b(trava\w*|dificuldade|erra\w*|primeiro passo|por onde (comec\w*|inici\w*)|como comeca|desiste)\b/)) return 'trava';
+  if (t(/\b(dor|dores|problema|resolve|qual a dor|por que (ele|ela|alguem) (baixou|quer|pegou))\b/)) return 'dor';
+  if (!ssSupTokens(q).length && t(/\b(resum\w*|explic\w*|do que (se )?trata|sobre o que|o que (e|eh)|me conta|me fala)\b/)) return 'resumo';
+  if (curta && t(/\b(limite\w*|cuidado|aviso|ressalva|pegadinha|o que nao (e|eh))\b/)) return 'nao_e';
+  return null;
+}
+
+// objeções do playbook (texto do Igor), usadas quando o material não tem uma objeção própria que case
+const SS_SUP_OBJ_PLAYBOOK = [
+  { ele: 'Agora não é o momento', k: 'agora momento depois tempo prioridade', voce: 'Tranquilo! Te chamo em [mês] então? Só me diz uma coisa pra eu não te chamar à toa: até lá isso vai virar prioridade aí ou o foco é outro?' },
+  { ele: 'Manda por aqui mesmo, não gosto de call', k: 'call ligacao chamada conversa reuniao mandar aqui', voce: 'Entendo. Só que por aqui vira material genérico, e disso você já tem bastante. No bate papo eu olho o seu perfil ao vivo. Se em 10 minutos não fizer sentido, eu mesmo encerro.' },
+  { ele: 'Já tenho agência / social media', k: 'agencia social media equipe time terceirizo', voce: 'Ótimo, isso ajuda muito na produção. A pergunta que eu faria é: quantas reuniões o conteúdo deles gerou nos últimos 90 dias? Se a resposta for "não sei", é aí que eu entro.' },
+  { ele: 'Já tentei LinkedIn e não deu resultado', k: 'tentei linkedin resultado funcionou testei', voce: 'Faz total sentido, eu passava muito por isso. Na maioria das vezes o problema não é postar, é pra quem se posta e o que se pede depois. Me conta rapidinho o que você chegou a testar?' },
+  { ele: 'Eu mesmo faço meu conteúdo', k: 'faco meu conteudo sozinho proprio', voce: 'Melhor ainda, metade do caminho já tá andando! E hoje ele gera quantas conversas por mês? Se for menos de 4 ou 5, o gargalo não é volume.' },
+  { ele: 'Vou olhar e te falo', k: 'olhar vejo ver depois falo aviso', voce: 'Um follow em 3 dias, com data na mão. Depois disso, o encerramento. Nunca mais de dois "conseguiu ver?".' },
+];
+
+// ---------- abordagem: playbook + o ponto específico do material ----------
+// Os textos são os do playbook (voz do Igor); só o encaixe do material muda. Cada linha = um balão no chat.
+function ssSupAbordagens(f, ctx) {
+  const nome = (ctx.nome || '').trim() || '[Nome]';
+  const obs = (ctx.obs || '').trim() || '[o que você viu de verdade no perfil dele]';
+  const passo = f.primeiro_passo ? 'conseguiu ' + f.primeiro_passo : 'o material te ajudou em alguma coisa';
+  const cards = [];
+  cards.push({
+    titulo: 'Lembrete com o material na ponta',
+    quando: 'Ele ainda não respondeu: no lugar do lembrete de 4 dias depois da mensagem 2.',
+    msgs: [nome + ', tudo bem por aí?', f.primeiro_passo ? 'Só passando pra saber se você ' + passo + '.' : 'Só passando pra saber se o material te ajudou em alguma coisa.'],
+    nota: 'Mesmo tom do playbook: continua sem falar de call. A pergunta é sobre o material, não sobre vender.',
+  });
+  cards.push({
+    titulo: 'Puxar a dor que o material resolve',
+    quando: 'Ele respondeu o "tudo bem?": é a mensagem 3 do playbook, com a pergunta do material.',
+    msgs: ['Eu vi que você ' + obs + '...', f.pergunta_dor || 'Como está indo com isso aí?'],
+    nota: 'O "Eu vi que você…" precisa ser verdade: se não olhou o perfil dele, olhe antes. Se ele contar a dor, siga a mensagem 4 do playbook: devolve a dor com as palavras dele e oferece "uma clareza".',
+  });
+  cards.push({
+    titulo: 'Ponte pra cliente novo',
+    quando: 'Ele respondeu, mas não falou de problema nenhum.',
+    msgs: ['E como tá vindo cliente novo pra vocês hoje: indicação, tráfego ou LinkedIn?'],
+    nota: (f.ponte ? 'O raciocínio por trás (use com as suas palavras, não copie): ' + f.ponte + ' ' : '') + 'Se ele responder "indicação", abre a mensagem 4 do playbook.',
+  });
+  return cards;
+}
+const SS_SUP_APOS_RESPOSTA = [
+  { titulo: 'Se ele disse que aplicou ou gostou', msgs: ['Boa demais! E isso já virou cliente novo ou ainda é ganho interno?'], nota: 'Do playbook, "Achei massa, apliquei em X".' },
+  { titulo: 'Se ele disse que baixou e nem olhou', msgs: ['Sem problema, acontece direto. E aí, como estão as coisas por aí? Vi que você [observação]... Como está indo?'], nota: 'Do playbook, "Baixei mas nem olhei": volta pra mensagem 3.' },
+];
+
+// ---------- resposta ----------
+function ssSupResponder(mat, q, ctx) {
+  const f = mat.ficha || ssSupFichaMinima(mat);
+  const blocos = [];
+  const atalho = SS_SUP_ATALHO_INT[ssSupNorm(q)];
+  const intencao = atalho === 'abordagem' || atalho === 'objecao' ? atalho : (atalho ? null : ssSupIntencao(q));
+  if (intencao === 'abordagem') {
+    blocos.push({ t: 'texto', txt: 'Três jeitos de falar deste material com o lead, na ordem do playbook. Cada linha vira uma mensagem separada no chat.' });
+    ssSupAbordagens(f, ctx).forEach(c => blocos.push({ t: 'msg', ...c }));
+    blocos.push({ t: 'texto', txt: 'E se ele responder:' });
+    SS_SUP_APOS_RESPOSTA.forEach(c => blocos.push({ t: 'msg', ...c }));
+    return blocos;
+  }
+  if (intencao === 'objecao') {
+    const par = atalho ? null : (ssSupMelhorPar(f.objecoes, q, ['ele', 'k']) || { cov: 0 });
+    const parPb = atalho ? null : ssSupMelhorPar(SS_SUP_OBJ_PLAYBOOK, q, ['ele', 'k']);
+    const ach = par && par.cov >= 0.34 ? par : (parPb && parPb.cov >= 0.34 ? parPb : null);
+    if (ach) {
+      blocos.push({ t: 'texto', txt: 'Ele disse: “' + ach.x.ele + '”. Uma resposta possível (adapte, não cole):' });
+      blocos.push({ t: 'texto', txt: ach.x.voce, destaque: true });
+      return blocos;
+    }
+    if ((f.objecoes || []).length) {
+      blocos.push({ t: 'texto', txt: atalho ? 'As objeções mais prováveis deste material. Adapte, não cole:' : 'Não achei uma objeção igual a essa neste material. As mais prováveis dele:' });
+      f.objecoes.forEach(o => blocos.push({ t: 'texto', txt: '“' + o.ele + '”\n' + o.voce, destaque: true }));
+      blocos.push({ t: 'texto', txt: 'As objeções gerais (preço, "manda por aqui", "agora não") estão no playbook, na seção Objeções.' });
+      return blocos;
+    }
+    blocos.push({ t: 'texto', txt: 'Este material não tem objeções cadastradas. As gerais (preço, "manda por aqui", "agora não", "já tenho agência") estão no playbook, na seção Objeções.' });
+    return blocos;
+  }
+  const faq = atalho ? null : ssSupMelhorPar(f.faq, q, ['p', 'k']);
+  if (faq && faq.cov >= 0.99) { blocos.push({ t: 'texto', txt: faq.x.r, titulo: faq.x.p }); return blocos; }
+  const i2 = atalho || ssSupIntencao2(q);
+  if (i2 === 'preco_servico') { blocos.push({ t: 'texto', txt: 'Isso não é do material, é do serviço. A resposta do playbook para "Quanto custa?" ainda no chat:' }); blocos.push({ t: 'msg', titulo: 'Quanto custa?', msgs: ['Depende do tamanho da operação, varia bastante. Te falo no bate papo com número real em vez de te dar um chute agora. É rápido, [dia] às [hora], pode ser?'], nota: 'Não passe valor por mensagem.' }); return blocos; }
+  if (i2 === 'custo' && f.custo) { blocos.push({ t: 'texto', txt: f.custo, titulo: 'Custo' }); return blocos; }
+  if (i2 === 'para_quem' && f.para_quem) { blocos.push({ t: 'texto', txt: f.para_quem }); if (f.dor) blocos.push({ t: 'texto', txt: 'A dor que ele sente: ' + f.dor }); return blocos; }
+  if (i2 === 'dor' && f.dor) { blocos.push({ t: 'texto', txt: f.dor }); if (f.pergunta_dor) blocos.push({ t: 'msg', titulo: 'Pergunta pra puxar essa dor', msgs: [f.pergunta_dor], nota: '' }); return blocos; }
+  if (i2 === 'entrega' && (f.entrega || []).length) { blocos.push({ t: 'lista', itens: f.entrega, titulo: 'O que tem dentro' }); return blocos; }
+  if (i2 === 'link') {
+    if (f.link) { blocos.push({ t: 'msg', titulo: 'Link pra mandar', msgs: [f.link], nota: 'Só mande o link quando for entregar o material que ele pediu (playbook, mensagem 1).' }); }
+    else blocos.push({ t: 'texto', txt: 'Este material não tem link público cadastrado. Pergunta pro Igor onde ele está publicado.' });
+    return blocos;
+  }
+  if (i2 === 'trava' && f.como_comeca) { blocos.push({ t: 'texto', txt: f.como_comeca, titulo: 'Por onde começa e onde costuma travar' }); return blocos; }
+  if (i2 === 'resumo' && f.resumo) { blocos.push({ t: 'texto', txt: f.resumo }); return blocos; }
+  if (i2 === 'nao_e' && f.nao_e) { blocos.push({ t: 'texto', txt: f.nao_e, titulo: 'O que ele não é / cuidados' }); return blocos; }
+  const achou = ssSupBuscar(mat, q);
+  if (achou && achou.conf === 'alta' && achou.tituloCasa) { blocos.push({ t: 'trecho', ...achou }); return blocos; }
+  if (faq && faq.cov >= 0.5) { blocos.push({ t: 'texto', txt: faq.x.r, titulo: faq.x.p }); return blocos; }
+  if (achou) { blocos.push({ t: 'trecho', ...achou }); return blocos; }
+  blocos.push({ t: 'sem' });
+  return blocos;
+}
+
+// ---------- tela ----------
+function ssSupMsgHtml(texto) {
+  return ssSupEsc(texto).replace(/\[[^\]]+\]/g, m => '<span class="ss-var">' + m + '</span>');
+}
+function ssSupRenderBloco(b) {
+  if (b.t === 'texto') return `<div class="ss-sup-txt${b.destaque ? ' dest' : ''}">${b.titulo ? `<b>${ssSupEsc(b.titulo)}</b><br>` : ''}${ssSupEsc(b.txt).replace(/\n/g, '<br>')}</div>`;
+  if (b.t === 'lista') return `<div class="ss-sup-txt"><b>${ssSupEsc(b.titulo)}</b><ul>${b.itens.map(i => `<li>${ssSupEsc(i)}</li>`).join('')}</ul></div>`;
+  if (b.t === 'msg') return `<div class="ss-bloco"><div class="ss-bloco-head"><span class="ss-t">${ssSupEsc(b.titulo)}</span><span class="ss-quando">${ssSupEsc(b.quando || '')}</span><button class="ss-copy" onclick="ssCopiar(this)">Copiar</button></div><div class="ss-msg">${ssSupMsgHtml(b.msgs.join('\n\n'))}</div>${b.nota ? `<p class="ss-nota">${ssSupEsc(b.nota)}</p>` : ''}</div>`;
+  if (b.t === 'trecho') return `<div class="ss-sup-txt">${b.conf === 'media' ? '<i>Achei isto, mas não tenho certeza de que responde. Confere no material:</i><br>' : ''}${b.partes.map(p => ssSupEsc(p)).join('<br><br>')}${(b.filhos || []).length ? `<ul>${b.filhos.map(i => `<li>${ssSupEsc(i)}</li>`).join('')}</ul>` : ''}<div class="ss-sup-fonte">Está em «${ssSupEsc(b.secao)}» do material${b.tambem ? ' · também aparece em «' + ssSupEsc(b.tambem) + '»' : ''}</div></div>`;
+  return `<div class="ss-sup-txt">Não achei isso no material, e não vou chutar. Tenta de outro jeito (uma palavra-chave ajuda) ou usa um dos atalhos acima. Se for dúvida que o material não cobre, pergunta pro Igor ou pro Bruno.</div>`;
+}
+function ssSupCtx() {
+  return { nome: (document.getElementById('ss-sup-nome') || {}).value || '', obs: (document.getElementById('ss-sup-obs') || {}).value || '' };
+}
+function ssSupPerguntar(texto) {
+  const inp = document.getElementById('ss-sup-q');
+  const q = (texto != null ? texto : inp.value).trim();
+  if (!q || !ssSupMat) return;
+  inp.value = '';
+  const chat = document.getElementById('ss-sup-chat');
+  const blocos = ssSupResponder(ssSupMat, q, ssSupCtx());
+  chat.insertAdjacentHTML('beforeend', `<div class="ss-sup-q">${ssSupEsc(q)}</div><div class="ss-sup-a">${blocos.map(ssSupRenderBloco).join('')}</div>`);
+  const ult = chat.lastElementChild;
+  if (ult && ult.scrollIntoView) ult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function ssSupFichaHtml(mat) {
+  const f = mat.ficha || ssSupFichaMinima(mat);
+  const li = a => (a || []).map(i => `<li>${ssSupEsc(i)}</li>`).join('');
+  return `<div class="ss-sup-ficha">
+    <div class="ss-sup-ficha-top"><b>${ssSupEsc(f.titulo)}</b>${f.formato ? `<span>${ssSupEsc(f.formato)}</span>` : ''}</div>
+    ${f.resumo ? `<p>${ssSupEsc(f.resumo)}</p>` : ''}
+    ${f.para_quem ? `<p><b>Pra quem é:</b> ${ssSupEsc(f.para_quem)}</p>` : ''}
+    ${f.dor ? `<p><b>Dor que resolve:</b> ${ssSupEsc(f.dor)}</p>` : ''}
+    ${(f.entrega || []).length ? `<details><summary>O que tem dentro</summary><ul>${li(f.entrega)}</ul></details>` : ''}
+    <div class="ss-sup-ficha-pe">Li o material: ${mat.secoes.filter(s => s.trechos.length).length} seções, ${mat.n} trechos${mat.ficha ? '' : ' · <b>sem ficha</b>: respondo só com o texto dele, sem as sugestões afinadas'}</div>
+  </div>`;
+}
+const SS_SUP_ATALHOS = ['Como abordar o lead?', 'Pra quem é?', 'Qual dor resolve?', 'O que tem dentro?', 'Onde ele costuma travar?', 'Link pra mandar', 'Se ele disser que…'];
+const SS_SUP_ATALHO_INT = { 'como abordar o lead': 'abordagem', 'pra quem e': 'para_quem', 'qual dor resolve': 'dor', 'o que tem dentro': 'entrega', 'onde ele costuma travar': 'trava', 'link pra mandar': 'link', 'se ele disser que': 'objecao' };
+
+async function ssSupIniciar() {
+  const sel = document.getElementById('ss-sup-mat');
+  if (!sel || sel.dataset.pronto) return;
+  sel.innerHTML = '<option value="">Carregando materiais…</option>';
+  const { data, error } = await sb.from('com_arquivos').select('id,nome,path,pasta').eq('pasta', SS_SUP_PASTA).ilike('nome', '%.html').order('nome');
+  if (error) { sel.innerHTML = '<option value="">Não consegui listar os materiais</option>'; return; }
+  window.ssSupLista = data || [];
+  if (!window.ssSupLista.length) { sel.innerHTML = '<option value="">Nenhum material na pasta ' + ssSupEsc(SS_SUP_PASTA) + ' do Arquivos</option>'; return; }
+  sel.dataset.pronto = '1';
+  sel.innerHTML = '<option value="">Escolha o material que o lead baixou…</option>' + window.ssSupLista.map(a => `<option value="${a.id}">${ssSupEsc(a.nome.replace(/\.html$/i, ''))}</option>`).join('');
+}
+async function ssSupEscolher(id) {
+  const fichaEl = document.getElementById('ss-sup-ficha');
+  const form = document.getElementById('ss-sup-form');
+  const chat = document.getElementById('ss-sup-chat');
+  chat.innerHTML = '';
+  ssSupMat = null;
+  if (!id) { fichaEl.innerHTML = ''; form.style.display = 'none'; return; }
+  const arq = (window.ssSupLista || []).find(a => a.id === id);
+  if (!arq || ssSupCarregando) return;
+  ssSupCarregando = true;
+  form.style.display = 'none';
+  fichaEl.innerHTML = '<div class="ss-sup-ficha"><p>Lendo o material…</p></div>';
+  try {
+    if (!ssSupCache[id]) {
+      const r = await fetch(arqUrl(arq));
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      ssSupCache[id] = ssSupLer(await r.text());
+    }
+    ssSupMat = ssSupCache[id];
+    fichaEl.innerHTML = ssSupFichaHtml(ssSupMat);
+    document.getElementById('ss-sup-atalhos').innerHTML = SS_SUP_ATALHOS.map(a => `<button type="button" onclick="ssSupPerguntar(this.textContent)">${ssSupEsc(a)}</button>`).join('');
+    form.style.display = 'block';
+  } catch (e) {
+    fichaEl.innerHTML = `<div class="ss-erro">Não consegui ler o material: ${ssSupEsc(e.message)}</div>`;
+  }
+  ssSupCarregando = false;
 }
 
 
@@ -11143,6 +11574,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     ajustarIndicadores(btn.dataset.tab);
     if (btn.dataset.tab === 'whatsapp') document.getElementById('whats-badge').style.display = 'none';
     if (btn.dataset.tab === 'arquivos') carregarArquivos();
+    if (btn.dataset.tab === 'social') ssSupIniciar();
     if (btn.dataset.tab === 'relatorio') carregarRelatorio();
     recarregarLadoEspelhado(btn.dataset.tab);
   });
@@ -11244,7 +11676,7 @@ const ARQ_IC = {
   mover: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 13h6"/><path d="M13 10l3 3-3 3"/></svg>',
   lixo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg>',
 };
-const ARQ_CORES = { PDF:'#d93025', DOC:'#1a73e8', DOCX:'#1a73e8', XLS:'#188038', XLSX:'#188038', CSV:'#188038', PPT:'#e8710a', PPTX:'#e8710a', PNG:'#9334e6', JPG:'#9334e6', JPEG:'#9334e6', GIF:'#9334e6', WEBP:'#9334e6', ZIP:'#5f6368', RAR:'#5f6368', MP4:'#c5221f', MOV:'#c5221f', MP3:'#e37400' };
+const ARQ_CORES = { HTML:'#e44d26', PDF:'#d93025', DOC:'#1a73e8', DOCX:'#1a73e8', XLS:'#188038', XLSX:'#188038', CSV:'#188038', PPT:'#e8710a', PPTX:'#e8710a', PNG:'#9334e6', JPG:'#9334e6', JPEG:'#9334e6', GIF:'#9334e6', WEBP:'#9334e6', ZIP:'#5f6368', RAR:'#5f6368', MP4:'#c5221f', MOV:'#c5221f', MP3:'#e37400' };
 
 function arqUrl(a) { return sb.storage.from(ARQ_BUCKET).getPublicUrl(a.path).data.publicUrl; }
 function arqExt(n) { const m = /\.([a-z0-9]{1,5})$/i.exec(n || ''); return m ? m[1].toUpperCase() : 'ARQ'; }
@@ -11581,11 +12013,12 @@ async function arqEnviar(files, pasta) {
   if (!itens.some(i => i.estado === 'erro')) arqEnvioTimer = setTimeout(() => document.getElementById('arq-envio').classList.remove('aberto'), 5000);
 }
 
-function arqNovaAba(id) { const a = arqLista.find(x => x.id === id); if (a) window.open(arqUrl(a), '_blank', 'noopener'); }
+function arqNovaAba(id) { const a = arqLista.find(x => x.id === id); if (!a) return; if (arqExt(a.nome) === 'HTML') return arqAbrirHtml(a); window.open(arqUrl(a), '_blank', 'noopener'); }
 // duplo clique = visualizar aqui mesmo (PDF, imagem, vídeo, áudio); outros tipos abrem em nova aba
 function arqAbrir(id) {
   const a = arqLista.find(x => x.id === id); if (!a) return;
   const ext = arqExt(a.nome), url = arqUrl(a);
+  if (ext === 'HTML') return arqAbrirHtml(a);
   let corpo;
   if (arqEhPdf(a)) corpo = `<iframe src="${arqEsc(url)}" title="${arqEsc(a.nome)}"></iframe>`;
   else if (arqEhImg(a)) corpo = `<img src="${arqEsc(url)}" alt="${arqEsc(a.nome)}">`;
@@ -11604,9 +12037,44 @@ function arqAbrir(id) {
 }
 function arqFechaPrev() { const pv = document.getElementById('arq-prev'); pv.classList.remove('aberto'); pv.innerHTML = ''; }
 
+// O Storage serve .html como texto cru (de propósito, anti-XSS). Aqui o arquivo é baixado e mostrado como
+// página dentro de um iframe isolado (sandbox sem allow-same-origin: o material não enxerga a sessão do painel).
+function arqLinkDaFicha(html) {
+  const m = /<script[^>]*id=["']ficha-sdr["'][^>]*>([\s\S]*?)<\/script>/.exec(html);
+  if (!m) return '';
+  try { return (JSON.parse(m[1]).link || '').trim(); } catch (e) { return ''; }
+}
+async function arqAbrirHtml(a) {
+  const pv = document.getElementById('arq-prev');
+  const topo = extra => `<div class="arq-prev-topo"><div class="arq-prev-nome">${arqEsc(a.nome)}</div>${extra}<button type="button" id="arq-prev-x">Fechar ✕</button></div>`;
+  pv.innerHTML = topo('') + '<div class="arq-prev-corpo" style="color:#fff">Abrindo…</div>';
+  pv.classList.add('aberto');
+  document.getElementById('arq-prev-x').onclick = arqFechaPrev;
+  pv.onclick = e => { if (e.target === pv || e.target.classList.contains('arq-prev-corpo')) arqFechaPrev(); };
+  let html;
+  try {
+    const r = await fetch(arqUrl(a));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    html = await r.text();
+  } catch (e) {
+    pv.querySelector('.arq-prev-corpo').textContent = 'Não consegui abrir o arquivo: ' + e.message;
+    return;
+  }
+  const link = arqLinkDaFicha(html);
+  pv.innerHTML = topo(link ? `<button type="button" id="arq-prev-link">Copiar link da página</button><a href="${arqEsc(link)}" target="_blank" rel="noopener">Abrir página pública</a>` : '') +
+    '<div class="arq-prev-corpo"><iframe id="arq-html-frame" title="' + arqEsc(a.nome) + '" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" allow="clipboard-write"></iframe></div>';
+  document.getElementById('arq-html-frame').srcdoc = html;
+  document.getElementById('arq-prev-x').onclick = arqFechaPrev;
+  const bl = document.getElementById('arq-prev-link');
+  if (bl) bl.onclick = async e => { await arqCopiarLink(a.id); e.target.textContent = 'Copiado!'; setTimeout(() => { e.target.textContent = 'Copiar link da página'; }, 1500); };
+}
+
 async function arqCopiarLink(id) {
   const a = arqLista.find(x => x.id === id); if (!a) return;
-  const url = arqUrl(a);
+  let url = arqUrl(a);
+  if (arqExt(a.nome) === 'HTML') {   // o link cru do Storage mostraria texto; o que vale é a página pública do material
+    try { const r = await fetch(url); const l = arqLinkDaFicha(await r.text()); if (l) url = l; } catch (e) {}
+  }
   try { await navigator.clipboard.writeText(url); }
   catch (e) { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
   const prog = document.getElementById('arq-prog');
