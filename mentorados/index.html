@@ -1308,7 +1308,7 @@ async function iniciar() {
 }
 
 /* ---------- sino (notificações computadas ao vivo; só o "lida" é gravado) ---------- */
-const NOTIF_SECOES = ['Aprovações', 'Indicações', 'Eventos', 'Posts', 'Aulas', 'Checklist', 'Plano', 'Pendências'];
+const NOTIF_SECOES = ['Aprovações', 'Indicações', 'Eventos', 'Posts', 'Aulas', 'Drive', 'Checklist', 'Plano', 'Pendências'];
 async function carregarNotifs() {
   const lista = [];
   try {
@@ -1368,6 +1368,9 @@ async function notifsCliente(out, clienteId) {
       out.push({ chave: `evento-${e.id}`, sec: 'Posts', titulo: t[0], desc: `${p.titulo || 'Sem título'}${t[1] ? ' · ' + t[1] : e.texto ? ' · ' + e.texto.slice(0, 80) : ''}`, quando: new Date(e.criado_em), href: `#/posts/${p.id}` });
     });
   }
+  // material novo no Drive que NÃO foi o próprio mentorado que enviou (time ou automação das gravações)
+  const novosArq = await q(sb.from('cli_arquivos').select('id,nome,pasta,created_at,enviado_por').eq('cliente_id', clienteId).is('post_id', null).gte('created_at', new Date(Date.now() - 14 * 864e5).toISOString()).order('created_at', { ascending: false }).limit(30));
+  novosArq.filter(a => a.enviado_por !== S.user.id).forEach(a => out.push({ chave: `arq-${a.id}`, sec: 'Drive', titulo: 'Material novo no seu Drive', desc: `${a.nome}${a.pasta ? ' · ' + a.pasta : ''}`, quando: new Date(a.created_at), href: '#/drive' }));
   const planos = await q(sb.from('cli_planos').select('id').eq('cliente_id', clienteId).eq('status', 'ativo'));
   if (planos.length) {
     const atras = await q(sb.from('cli_plano_itens').select('id').eq('plano_id', planos[0].id).eq('concluido', false).lt('prazo', hojeISO()));
