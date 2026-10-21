@@ -2394,11 +2394,12 @@ function corExt(ext, mime) {
   if (/^video\//.test(mime || '') || ['mp4', 'mov', 'webm', 'mkv'].includes(ext)) return '#4a3aa7';
   if (['xls', 'xlsx', 'csv'].includes(ext)) return '#008E43';
   if (['doc', 'docx', 'txt', 'md'].includes(ext)) return '#2A6FD6';
+  if (ext === 'link') return '#4a3aa7';
   if (['html', 'htm'].includes(ext)) return '#B45309';
   if (['ppt', 'pptx', 'key'].includes(ext)) return '#eb6834';
   return '#7a7872';
 }
-const icoArq = a => { const e = extDe(a.nome); return `<span class="dr-ico" style="--c:${corExt(e, a.mime)}">${esc((e || 'arq').slice(0, 4).toUpperCase())}</span>`; };
+const icoArq = a => { const e = a.url ? 'link' : extDe(a.nome); return `<span class="dr-ico" style="--c:${corExt(e, a.mime)}">${esc((e || 'arq').slice(0, 4).toUpperCase())}</span>`; };
 const ehImg = a => /^image\//.test(a.mime || '') || ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extDe(a.nome));
 const pastasVazias = () => { try { return new Set(JSON.parse(lsGet('drive-pastas-' + DR.cli) || '[]')); } catch (e) { return new Set(); } };
 const gravarVazias = set => lsSet('drive-pastas-' + DR.cli, JSON.stringify([...set]));
@@ -2486,6 +2487,7 @@ const arqPorId = id => DR.arquivos.find(a => a.id === Number(id));
 /* ---------- visualizador ---------- */
 async function abrirArquivo(a) {
   if (!a) return;
+  if (a.url) { window.open(a.url, '_blank', 'noopener'); return; }   // gravação do Meet: vídeo mora no Google Drive, aqui só o link
   const url = await urlAssinada(a.path, 900), e = extDe(a.nome);
   let corpo;
   if (ehImg(a)) corpo = `<img src="${esc(url)}" alt="${esc(a.nome)}">`;
@@ -2524,7 +2526,7 @@ ACT['dr-menu'] = el => {
 };
 ACT['dr-novo'] = el => abrirMenuDrive(el, [['dr-nova-pasta', 'Nova pasta'], ['dr-enviar', 'Enviar arquivos']]);
 ACT['dr-abrir-m'] = el => { fecharMenuDrive(); return ACT['dr-abrir'](el); };
-ACT['dr-baixar'] = async el => { fecharMenuDrive(); const a = arqPorId(el.dataset.id); const url = await urlAssinada(a.path, 120, a.nome); const l = document.createElement('a'); l.href = url; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove(); };
+ACT['dr-baixar'] = async el => { fecharMenuDrive(); const a = arqPorId(el.dataset.id); if (a.url) { window.open(a.url, '_blank', 'noopener'); return; } const url = await urlAssinada(a.path, 120, a.nome); const l = document.createElement('a'); l.href = url; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove(); };
 ACT['dr-enviar'] = () => { fecharMenuDrive(); $('#dr-file').click(); };
 ACT['dr-nova-pasta'] = () => {
   fecharMenuDrive(); const nome = (prompt('Nome da nova pasta:') || '').trim().replace(/\//g, '-'); if (!nome) return;
@@ -2551,7 +2553,7 @@ async function moverArquivo(id, destino) {
 ACT['dr-mover-ok'] = async el => { const dest = $('#mv-p').value; fecharModal(); await moverArquivo(el.dataset.id, dest); };
 ACT['dr-excluir'] = async el => {
   fecharMenuDrive(); const a = arqPorId(el.dataset.id); if (!confirm(`Excluir “${a.nome}”? Não dá pra desfazer.`)) return;
-  await sb.storage.from(BUCKET).remove([a.path]);
+  if (!a.url) await sb.storage.from(BUCKET).remove([a.path]);
   const { error } = await sb.from('cli_arquivos').delete().eq('id', a.id); if (error) throw error;
   DR.arquivos = DR.arquivos.filter(x => x.id !== a.id); desenharDrive(); toast('Excluído.');
 };
