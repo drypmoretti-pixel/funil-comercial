@@ -165,6 +165,12 @@
     .evhead h1{font-size:20px;}
     .top .who{display:none;}
   }
+
+.editor{border:1px solid var(--line,#d9e2dc);border-radius:10px;padding:12px;background:#fff}
+.editor textarea{width:100%;box-sizing:border-box;font:inherit;font-size:14px;line-height:1.5;padding:10px;border:1px solid #cfd8d2;border-radius:8px;resize:vertical;margin:8px 0}
+.editor .vars{display:flex;flex-wrap:wrap;gap:6px}
+.editor .chip{font:inherit;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid #cfd8d2;background:#f4f8f5;cursor:pointer}
+.editor .chip:hover{background:#e3efe7}
 </style>
 </head>
 <body>
@@ -501,6 +507,69 @@ const WHY = {
   'm+1': 'Fecha o ciclo e já empurra a próxima edição. Sem link de gravação, essa parte some sozinha.',
 };
 
+/* ---------- textos personalizados (valem para todas as edições) ---------- */
+let textos = {};          // chave -> texto salvo (com {variáveis})
+let editando = new Set();
+const VARS = [
+  ['{dia}', 'dia da semana'], ['{data}', 'data (dd/mm)'], ['{hora}', 'horário do evento'],
+  ['{hora-5}', 'horário 5 min antes'], ['{evento}', 'link do evento'], ['{sala}', 'link da sala'],
+  ['{grupo}', 'link do grupo'], ['{gravacao}', 'link da gravação'],
+  ['{proxDia}', 'dia da próxima'], ['{proxData}', 'data da próxima'], ['{proxHora}', 'hora da próxima'],
+];
+function ctxModelo() {
+  return { dia:'{dia}', data:'{data}', hora:'{hora}', h: m => `{hora${m < 0 ? m : '+' + m}}`,
+    sala:'{sala}', evento:'{evento}', grupo:'{grupo}', grav:'{gravacao}',
+    proxDia:'{proxDia}', proxData:'{proxData}', proxHora:'{proxHora}' };
+}
+function modeloOriginal(k) { return MSG[k](ctxModelo()); }
+function aplicarModelo(tpl, c) {
+  let t = tpl;
+  if (!c.grav) t = t.split('\n\n').filter(p => !p.includes('{gravacao}')).join('\n\n');
+  return t.replace(/\{hora([+-]\d+)\}/g, (_, m) => c.h(Number(m)))
+    .replace(/\{(dia|data|hora|evento|sala|grupo|proxDia|proxData|proxHora)\}/g, (_, n) => c[n])
+    .replace(/\{gravacao\}/g, c.grav);
+}
+function msgTexto(k, c) { return k in textos ? aplicarModelo(textos[k], c) : MSG[k](c); }
+function modeloAtual(k) { return k in textos ? textos[k] : modeloOriginal(k); }
+
+function abrirEdicao(k) { editando.add(k); abertos.add(k); renderEvento(false, true); }
+function cancelarEdicao(k) { editando.delete(k); renderEvento(false, true); }
+function inserirVar(k, v) {
+  const ta = document.getElementById('ed-' + k); if (!ta) return;
+  const a = ta.selectionStart, b = ta.selectionEnd;
+  ta.value = ta.value.slice(0, a) + v + ta.value.slice(b);
+  ta.focus(); ta.selectionStart = ta.selectionEnd = a + v.length;
+}
+async function salvarTexto(k) {
+  const v = document.getElementById('ed-' + k).value.replace(/\s+$/, '');
+  if (!v.trim()) { toast('O texto não pode ficar vazio'); return; }
+  if (v === modeloOriginal(k)) return restaurarTexto(k, true);
+  const linha = { chave: k, texto: v, atualizado_por: eu.id, atualizado_em: new Date().toISOString() };
+  const { error } = await sb.from('evs_textos').upsert(linha);
+  if (error) { toast('Não salvou: ' + error.message); return; }
+  textos[k] = v; editando.delete(k);
+  renderEvento(false, true); toast('Texto salvo para todas as edições');
+}
+async function restaurarTexto(k, silencioso) {
+  if (!silencioso && !confirm('Voltar para o texto original desta mensagem?')) return;
+  if (k in textos) {
+    const { error } = await sb.from('evs_textos').delete().eq('chave', k);
+    if (error) { toast('Não salvou: ' + error.message); return; }
+    delete textos[k];
+  }
+  editando.delete(k);
+  renderEvento(false, true); toast('Texto original restaurado');
+}
+function editorMsg(k) {
+  return `<div class="editor"><div class="lb">Editando o texto desta mensagem</div>
+    <div class="muted" style="font-size:12.5px;margin-bottom:6px">Vale para todas as edições. Clique numa variável para inserir no cursor; ela é trocada pelo valor de cada edição.</div>
+    <div class="vars">${VARS.map(([v, d]) => `<button type="button" class="chip" title="${esc(d)}" onclick="inserirVar('${k}','${v}')">${esc(v)}</button>`).join('')}</div>
+    <textarea id="ed-${k}" rows="14">${esc(modeloAtual(k))}</textarea>
+    <div class="row"><button class="btn green small" onclick="salvarTexto('${k}')">Salvar texto</button>
+      <button class="btn ghost small" onclick="cancelarEdicao('${k}')">Cancelar</button>
+      ${k in textos ? `<button class="btn ghost small" onclick="restaurarTexto('${k}')">Voltar ao original</button>` : ''}</div></div>`;
+}
+
 function faltando(texto) { return [...new Set((texto.match(/\[(LINK[^\]]*)\]/g) || []))]; }
 function htmlMsg(texto) { return esc(texto).replace(/\[(LINK[^\]]*)\]/g, '<span class="ph">[$1]</span>'); }
 
@@ -587,6 +656,9 @@ async function iniciar() {
   $('who').textContent = eu.nome;
   $('btn-sair').classList.remove('hidden');
   await carregarEventos();
+  const { data: tx } = await sb.from('evs_textos').select('chave,texto');
+  textos = {};
+  (tx || []).forEach(t => { if (MSG[t.chave]) textos[t.chave] = t.texto; });
   const alvo = Number(new URLSearchParams(location.search).get('e'));
   if (alvo && eventos.some(e => e.id === alvo)) abrirEvento(alvo, true); else mostrarLista(true);
 }
@@ -811,8 +883,11 @@ function renderItem(it, c, proximo, agora) {
 
   let corpo = '';
   if (it.tipo === 'msg') {
-    const texto = MSG[it.k](c);
-    corpo = blocoCopia('Mensagem para o grupo', texto) + `<div class="why">${esc(WHY[it.k] || '')}</div>`;
+    const texto = msgTexto(it.k, c);
+    const custom = it.k in textos;
+    corpo = (editando.has(it.k) ? editorMsg(it.k) : blocoCopia('Mensagem para o grupo' + (custom ? ' · personalizada' : ''), texto)
+      + `<div class="row" style="margin-top:6px"><button class="btn ghost small" onclick="abrirEdicao('${it.k}')">Editar texto</button></div>`)
+      + `<div class="why">${esc(WHY[it.k] || '')}</div>`;
   } else {
     corpo = (it.desc ? `<div class="desc">${esc(it.desc)}</div>` : '') + guia(atual, it, c);
   }
@@ -841,7 +916,7 @@ function irPara(k) {
   document.getElementById('it-' + k).scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
 async function copiarMsg(k) {
-  const texto = MSG[k](ctx(atual));
+  const texto = msgTexto(k, ctx(atual));
   await copiar(texto);
   toast(faltando(texto).length ? 'Copiado, mas ainda tem link faltando' : 'Mensagem copiada');
 }
