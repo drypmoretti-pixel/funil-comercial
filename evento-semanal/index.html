@@ -171,6 +171,7 @@
 .editor .vars{display:flex;flex-wrap:wrap;gap:6px}
 .editor .chip{font:inherit;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid #cfd8d2;background:#f4f8f5;cursor:pointer}
 .editor .chip:hover{background:#e3efe7}
+.imgblk{margin-top:8px}.imgblk img{display:block;max-width:100%;max-height:260px;border-radius:8px;border:1px solid #d9e2dc;margin:6px 0}
 </style>
 </head>
 <body>
@@ -508,6 +509,7 @@ const WHY = {
 };
 
 /* ---------- textos personalizados (valem para todas as edições) ---------- */
+let imagens = {};         // chave -> { url, path }
 let textos = {};          // chave -> texto salvo (com {variáveis})
 let editando = new Set();
 const VARS = [
@@ -540,6 +542,62 @@ function inserirVar(k, v) {
   ta.value = ta.value.slice(0, a) + v + ta.value.slice(b);
   ta.focus(); ta.selectionStart = ta.selectionEnd = a + v.length;
 }
+function imgPicker(k) {
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/png,image/jpeg,image/webp,image/gif';
+  inp.onchange = () => inp.files[0] && subirImagem(k, inp.files[0]);
+  inp.click();
+}
+async function subirImagem(k, f) {
+  if (f.size > 8 * 1024 * 1024) { toast('Imagem acima de 8 MB'); return; }
+  toast('Enviando imagem...');
+  const ext = (f.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const path = `${k.replace(/[^a-z0-9+-]/gi, '_')}-${Date.now()}.${ext}`;
+  const up = await sb.storage.from('evento-imagens').upload(path, f, { contentType: f.type });
+  if (up.error) { toast('Não enviou: ' + up.error.message); return; }
+  const url = sb.storage.from('evento-imagens').getPublicUrl(path).data.publicUrl;
+  const { error } = await sb.from('evs_textos').upsert({ chave: k, imagem_url: url, imagem_path: path, atualizado_por: eu.id, atualizado_em: new Date().toISOString() });
+  if (error) { toast('Não salvou: ' + error.message); return; }
+  if (imagens[k]) sb.storage.from('evento-imagens').remove([imagens[k].path]);
+  imagens[k] = { url, path };
+  renderEvento(false, true); toast('Imagem salva para todas as edições');
+}
+async function removerImagem(k) {
+  if (!confirm('Remover a imagem desta mensagem?')) return;
+  const antigo = imagens[k];
+  const { error } = (k in textos) ? await sb.from('evs_textos').update({ imagem_url: null, imagem_path: null }).eq('chave', k)
+                                  : await sb.from('evs_textos').delete().eq('chave', k);
+  if (error) { toast('Não removeu: ' + error.message); return; }
+  sb.storage.from('evento-imagens').remove([antigo.path]);
+  delete imagens[k];
+  renderEvento(false, true);
+}
+async function copiarImagem(k) {
+  try {
+    const blob = await (await fetch(imagens[k].url)).blob();
+    const bmp = await createImageBitmap(blob);
+    const cv = document.createElement('canvas'); cv.width = bmp.width; cv.height = bmp.height;
+    cv.getContext('2d').drawImage(bmp, 0, 0);
+    const png = await new Promise(r => cv.toBlob(r, 'image/png'));
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]);
+    toast('Imagem copiada. Cole no grupo.');
+  } catch (e) { toast('Não deu para copiar. Use Baixar.'); }
+}
+async function baixarImagem(k) {
+  const blob = await (await fetch(imagens[k].url)).blob();
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = imagens[k].path; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function blocoImagem(k) {
+  const im = imagens[k];
+  return im
+    ? `<div class="imgblk"><div class="lb">Imagem da mensagem</div><img src="${esc(im.url)}" alt="">
+        <div class="row"><button class="btn green small" onclick="copiarImagem('${k}')">Copiar imagem</button>
+        <button class="btn ghost small" onclick="baixarImagem('${k}')">Baixar</button>
+        <button class="btn ghost small" onclick="imgPicker('${k}')">Trocar imagem</button>
+        <button class="btn ghost small" onclick="removerImagem('${k}')">Remover</button></div></div>`
+    : `<div class="row" style="margin-top:6px"><button class="btn ghost small" onclick="imgPicker('${k}')">Adicionar imagem</button></div>`;
+}
+
 async function salvarTexto(k) {
   const v = document.getElementById('ed-' + k).value.replace(/\s+$/, '');
   if (!v.trim()) { toast('O texto não pode ficar vazio'); return; }
@@ -553,7 +611,8 @@ async function salvarTexto(k) {
 async function restaurarTexto(k, silencioso) {
   if (!silencioso && !confirm('Voltar para o texto original desta mensagem?')) return;
   if (k in textos) {
-    const { error } = await sb.from('evs_textos').delete().eq('chave', k);
+    const { error } = imagens[k] ? await sb.from('evs_textos').update({ texto: null }).eq('chave', k)
+                                 : await sb.from('evs_textos').delete().eq('chave', k);
     if (error) { toast('Não salvou: ' + error.message); return; }
     delete textos[k];
   }
@@ -656,9 +715,9 @@ async function iniciar() {
   $('who').textContent = eu.nome;
   $('btn-sair').classList.remove('hidden');
   await carregarEventos();
-  const { data: tx } = await sb.from('evs_textos').select('chave,texto');
-  textos = {};
-  (tx || []).forEach(t => { if (MSG[t.chave]) textos[t.chave] = t.texto; });
+  const { data: tx } = await sb.from('evs_textos').select('chave,texto,imagem_url,imagem_path');
+  textos = {}; imagens = {};
+  (tx || []).forEach(t => { if (!MSG[t.chave]) return; if (t.texto != null) textos[t.chave] = t.texto; if (t.imagem_url) imagens[t.chave] = { url: t.imagem_url, path: t.imagem_path }; });
   const alvo = Number(new URLSearchParams(location.search).get('e'));
   if (alvo && eventos.some(e => e.id === alvo)) abrirEvento(alvo, true); else mostrarLista(true);
 }
@@ -887,7 +946,7 @@ function renderItem(it, c, proximo, agora) {
     const custom = it.k in textos;
     corpo = (editando.has(it.k) ? editorMsg(it.k) : blocoCopia('Mensagem para o grupo' + (custom ? ' · personalizada' : ''), texto)
       + `<div class="row" style="margin-top:6px"><button class="btn ghost small" onclick="abrirEdicao('${it.k}')">Editar texto</button></div>`)
-      + `<div class="why">${esc(WHY[it.k] || '')}</div>`;
+      + blocoImagem(it.k) + `<div class="why">${esc(WHY[it.k] || '')}</div>`;
   } else {
     corpo = (it.desc ? `<div class="desc">${esc(it.desc)}</div>` : '') + guia(atual, it, c);
   }
