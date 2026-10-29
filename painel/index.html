@@ -691,20 +691,69 @@ svg.chart { display: block; }
 .viz-meter-trilho { height: 8px; border-radius: 99px; background: #cde2fb; overflow: hidden; }
 .viz-meter-trilho > b { display: block; height: 100%; border-radius: 99px; background: #2a78d6; transition: width .4s ease; }
 .viz-meter-trilho.batida > b { background: var(--good); }
-/* aba Instagram */
-.ig-status { display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; font-weight: 700; margin-top: 6px; }
-.ig-status.bom { color: var(--good); }
-.ig-status.atras { color: var(--warning); }
-.ig-comp { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; margin-top: 12px; }
-.ig-comp h3 { font-size: .6rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
-.ig-barra { display: grid; grid-template-columns: 84px 1fr auto; align-items: center; gap: 10px; font-size: .8rem; margin-bottom: 8px; }
-.ig-barra .trilho { height: 10px; border-radius: 4px; background: var(--grid); overflow: hidden; }
-.ig-barra .trilho > b { display: block; height: 100%; border-radius: 4px; background: #2a78d6; }
-.ig-barra .num { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text-primary); }
-.ig-barra .num span { font-weight: 500; color: var(--muted); }
-.ig-hook a { color: var(--text-primary); text-decoration: none; }
-.ig-hook a:hover { text-decoration: underline; }
-.ig-chip { display: inline-block; font-size: .68rem; font-weight: 700; padding: 2px 9px; border-radius: 99px; border: 1px solid var(--border); color: var(--text-secondary); }
+/* aba Instagram — HUD no mesmo painel escuro do funil (.lanc), série em ciano pra não
+   competir com o verde, que aqui é marca e status (adiantado) */
+.ig-hud { --ig-serie:#1e9bd0; --ig-brilho:#7fd8ff; --ig-txt:#e8f3ea; --ig-mut:#b6c9bb; --ig-linha:rgba(255,255,255,.08); margin:0 0 18px; }
+.ig-hud > * { position:relative; }
+.ig-hud-topo { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.ig-sync { display:inline-flex; align-items:center; gap:8px; font-size:.66rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ig-mut); }
+.ig-sync i { width:8px; height:8px; border-radius:50%; background:#3fcb4a; box-shadow:0 0 10px #3fcb4a; animation:ig-pisca 2.4s ease-in-out infinite; }
+@keyframes ig-pisca { 50% { opacity:.35; } }
+.ig-hud .lanc-titulo { margin-top:6px; }
+.ig-hud-grade { display:grid; grid-template-columns:minmax(240px, 300px) 1fr; gap:26px; align-items:center; margin:6px 0 10px; }
+@media (max-width: 760px) { .ig-hud-grade { grid-template-columns:1fr; justify-items:center; } }
+.ig-reator svg { display:block; width:100%; max-width:300px; height:auto; overflow:visible; }
+.ig-reator .giro { transform-origin:150px 150px; animation:ig-giro 48s linear infinite; }
+.ig-reator .giro.inv { animation-duration:70s; animation-direction:reverse; }
+@keyframes ig-giro { to { transform:rotate(360deg); } }
+.ig-reator .arco { transition:stroke-dashoffset 1.4s cubic-bezier(.2,.9,.3,1); }
+.ig-leituras { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; width:100%; }
+.ig-cel { position:relative; padding:14px 16px 13px; border-radius:14px; background:linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.09); }
+/* cantos de mira */
+.ig-cel::before, .ig-cel::after { content:""; position:absolute; width:12px; height:12px; border:2px solid rgba(127,216,255,.55); pointer-events:none; }
+.ig-cel::before { top:-1px; left:-1px; border-right:0; border-bottom:0; border-top-left-radius:14px; }
+.ig-cel::after { bottom:-1px; right:-1px; border-left:0; border-top:0; border-bottom-right-radius:14px; }
+.ig-cel-rot { font-size:.62rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ig-mut); }
+.ig-cel-val { margin-top:6px; font-size:1.9rem; font-weight:800; letter-spacing:-.03em; line-height:1.05; color:#fff; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.ig-cel-sub { margin-top:4px; font-size:.74rem; color:var(--ig-mut); }
+.ig-cel.bom { border-color:rgba(63,203,74,.55); background:linear-gradient(160deg, rgba(63,203,74,.18), rgba(63,203,74,.04)); }
+.ig-cel.bom .ig-cel-val { color:#7be58a; }
+.ig-cel.atras { border-color:rgba(239,182,63,.5); background:linear-gradient(160deg, rgba(239,182,63,.14), rgba(239,182,63,.03)); }
+.ig-cel.atras .ig-cel-val { color:#ffd27a; }
+.ig-hud-chart { margin-top:14px; padding-top:16px; border-top:1px solid rgba(255,255,255,.10); }
+.ig-hud-rot { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; font-size:.62rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ig-mut); }
+.ig-leg { display:inline-flex; align-items:center; gap:8px; letter-spacing:.06em; text-transform:none; font-weight:600; font-size:.74rem; }
+.ig-leg i { display:inline-block; width:16px; height:3px; border-radius:2px; }
+.ig-leg i.serie { background:var(--ig-serie); box-shadow:0 0 8px var(--ig-brilho); }
+.ig-leg i.ref { background:var(--ig-mut); height:1px; margin-left:8px; }
+.ig-hud .viz-tip { background:rgba(8,16,12,.94); border:1px solid rgba(127,216,255,.45); color:var(--ig-txt); box-shadow:0 0 22px rgba(30,155,208,.25); backdrop-filter:blur(6px); }
+.ig-varredura { opacity:0; animation:ig-varre 2.6s cubic-bezier(.4,0,.2,1) .2s 1 both; }
+@keyframes ig-varre { from { transform:translateX(0); opacity:.9; } to { transform:translateX(var(--ig-dist)); opacity:0; } }
+.ig-pulso { transform-box:fill-box; transform-origin:center; animation:ig-pulso 2s ease-out infinite; }
+@keyframes ig-pulso { from { transform:scale(1); opacity:.7; } to { transform:scale(3.2); opacity:0; } }
+.ig-hud-duas { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:18px; }
+.ig-hud-duas .ig-hud { margin:0 0 18px; }
+.ig-celulas { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; margin-top:12px; }
+.ig-comp { display:grid; gap:18px; }
+.ig-comp h3 { font-size:.62rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ig-mut); margin:0 0 10px; }
+.ig-barra { display:grid; grid-template-columns:78px 1fr auto; align-items:center; gap:12px; font-size:.84rem; color:var(--ig-txt); margin-bottom:10px; }
+.ig-barra .trilho { height:8px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden; }
+.ig-barra .trilho > b { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, #13668a, var(--ig-serie) 70%, var(--ig-brilho)); box-shadow:0 0 12px rgba(30,155,208,.65); transition:width .9s cubic-bezier(.2,.9,.3,1); }
+.ig-barra .num { font-weight:800; font-variant-numeric:tabular-nums; color:#fff; }
+.ig-barra .num span { font-weight:600; color:var(--ig-mut); }
+.ig-tabela { width:100%; border-collapse:collapse; font-size:.84rem; color:var(--ig-txt); }
+.ig-tabela th { text-align:left; font-size:.6rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ig-mut); padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.12); white-space:nowrap; }
+.ig-tabela td { padding:11px 10px; border-bottom:1px solid var(--ig-linha); vertical-align:top; font-variant-numeric:tabular-nums; }
+.ig-tabela tr:hover td { background:rgba(30,155,208,.07); }
+.ig-tabela td.n { font-weight:700; color:#fff; }
+.ig-tabela td.top { color:var(--ig-brilho); font-weight:800; }
+.ig-tabela td.pq { color:var(--ig-mut); max-width:320px; }
+.ig-tabela td.vazio { color:var(--ig-mut); padding:18px 4px; }
+.ig-hook a { color:#fff; text-decoration:none; }
+.ig-hook a:hover { color:var(--ig-brilho); }
+.ig-chip { display:inline-block; font-size:.66rem; font-weight:800; letter-spacing:.06em; padding:3px 10px; border-radius:99px; color:#7be58a; background:rgba(63,203,74,.12); border:1px solid rgba(63,203,74,.3); white-space:nowrap; }
+.ig-hud .fv-vazio { padding:10px 0; }
+@media (prefers-reduced-motion: reduce) { .ig-hud * { animation:none !important; transition:none !important; } }
 .viz-etapas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: .8rem; margin-top: 4px; }
 .viz-etapa { display: inline-flex; align-items: baseline; gap: 7px; }
 .viz-etapa i { width: 9px; height: 9px; border-radius: 2px; flex: 0 0 auto; transform: translateY(0); }
@@ -3182,36 +3231,47 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
     </div>
 
     <div class="tab-panel" id="tab-instagram">
-      <section class="card">
-        <div class="section-title">
-          <h2>Instagram · rumo aos 10 mil</h2>
-          <span class="muted" style="font-size:.74rem;" id="ig-atualizado"></span>
+      <section class="lanc ig-hud">
+        <div class="ig-hud-topo">
+          <span class="lanc-selo">Instagram · @igorr_miguel</span>
+          <span class="ig-sync"><i></i><span id="ig-atualizado">aguardando dados</span></span>
         </div>
-        <p class="muted">Seguidores contra a curva da meta. A linha fina é onde a conta precisa estar em cada dia pra chegar nos 10 mil no prazo. Passe o mouse no gráfico pra ver o dia.</p>
-        <div class="viz-cabecalho" id="ig-cabecalho"></div>
-        <div class="viz-chart-wrap" id="viz-ig-wrap">
-          <svg id="chart-ig" class="chart"></svg>
-          <div class="viz-tip" id="tip-ig"></div>
+        <h2 class="lanc-titulo">Rumo aos 10 mil</h2>
+        <p class="fv-sub">O anel mostra quanto do caminho já foi. A marca branca é onde a conta precisava estar hoje pra chegar nos 10 mil no prazo.</p>
+        <div class="ig-hud-grade">
+          <div class="ig-reator" id="ig-reator"></div>
+          <div class="ig-leituras" id="ig-leituras"></div>
+        </div>
+        <div class="ig-hud-chart">
+          <div class="ig-hud-rot"><span>Trajetória</span><span class="ig-leg"><i class="serie"></i>seguidores <i class="ref"></i>curva da meta</span></div>
+          <div class="viz-chart-wrap" id="viz-ig-wrap">
+            <svg id="chart-ig" class="chart"></svg>
+            <div class="viz-tip" id="tip-ig"></div>
+          </div>
         </div>
       </section>
 
-      <div class="tiles" id="ig-tiles"></div>
+      <div class="ig-hud-duas">
+        <section class="lanc ig-hud">
+          <span class="lanc-selo">Últimos 7 dias</span>
+          <div class="ig-celulas" id="ig-tiles"></div>
+        </section>
+        <section class="lanc ig-hud">
+          <span class="lanc-selo">Formato e horário</span>
+          <p class="fv-sub">Alcance médio por post. Diz o que repetir.</p>
+          <div class="ig-comp" id="ig-comparativos"></div>
+        </section>
+      </div>
 
-      <section class="card">
-        <h2>Formato e horário</h2>
-        <p class="muted">Alcance médio por post publicado. Serve pra decidir o que repetir: Reels ou carrossel, 11h ou 18h.</p>
-        <div class="ig-comp" id="ig-comparativos"></div>
+      <section class="lanc ig-hud">
+        <span class="lanc-selo">Posts</span>
+        <p class="fv-sub">Do maior alcance pro menor. "Por quê" é a leitura do agente sobre o resultado, e é ela que ajusta as próximas skills.</p>
+        <div class="tabela-wrap"><table class="ig-tabela" id="ig-tabela"></table></div>
       </section>
 
-      <section class="card">
-        <h2>Posts</h2>
-        <p class="muted">Do maior alcance pro menor. "Por quê" é a leitura do agente sobre o resultado, e é ela que ajusta as próximas skills.</p>
-        <div class="tabela-wrap"><table class="tabela-leads" id="ig-tabela"></table></div>
-      </section>
-
-      <section class="card">
-        <h2>Fila de aprovação</h2>
-        <p class="muted">O que o agente mandou pro Discord e ainda não foi publicado.</p>
+      <section class="lanc ig-hud">
+        <span class="lanc-selo">Fila de aprovação</span>
+        <p class="fv-sub">O que o agente mandou pro Discord e ainda não foi publicado.</p>
         <div id="ig-fila"></div>
       </section>
     </div>
@@ -9180,6 +9240,13 @@ function igMetaNoDia(meta, d) {
   return Math.round(meta.seguidores_inicio + (meta.meta - meta.seguidores_inicio) * passados / total);
 }
 
+// cores do HUD: o painel .lanc é escuro nos dois temas, então são fixas (não seguem corTema)
+const IG_HUD = { serie: '#1e9bd0', brilho: '#7fd8ff', txt: '#e8f3ea', mut: '#b6c9bb', grade: 'rgba(255,255,255,.07)', base: 'rgba(255,255,255,.22)' };
+
+function igCel(rot, val, sub, classe) {
+  return `<div class="ig-cel ${classe || ''}"><div class="ig-cel-rot">${rot}</div><div class="ig-cel-val">${val}</div><div class="ig-cel-sub">${sub}</div></div>`;
+}
+
 function renderInstagram() {
   const { meta, conta, posts, ultima } = igDados;
   const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
@@ -9190,26 +9257,20 @@ function renderInstagram() {
   const metaHoje = igMetaNoDia(meta, diaAtual);
   const diasRestantes = Math.max(1, igDiasEntre(diaAtual, igDia(meta.prazo)));
   const ritmo = Math.ceil(Math.max(0, meta.meta - atual) / diasRestantes);
-  const pct = Math.max(0, Math.min(100, Math.round((atual - meta.seguidores_inicio) / (meta.meta - meta.seguidores_inicio) * 100)));
   const dif = atual - metaHoje;
+  const sinal = v => (v >= 0 ? '+' : '−') + igNum(Math.abs(v));
 
-  document.getElementById('ig-atualizado').textContent = 'atualizado em ' + igDiaCurto(diaAtual);
-  // adiantado/atrasado é status: vai com sinal + palavra, nunca só a cor
-  const status = dif >= 0
-    ? `<div class="ig-status bom">▲ adiantado ${igNum(dif)} em relação à curva</div>`
-    : `<div class="ig-status atras">▼ atrasado ${igNum(-dif)} em relação à curva</div>`;
-  document.getElementById('ig-cabecalho').innerHTML = `
-    <div>
-      <div class="viz-rotulo">Seguidores</div>
-      <div class="viz-hero">${igNum(atual)}</div>
-      <div class="viz-hero-sub">${ontem != null ? `<b>${atual - ontem >= 0 ? '+' : ''}${igNum(atual - ontem)}</b> desde ontem · ` : ''}<b>+${igNum(atual - meta.seguidores_inicio)}</b> desde ${igDiaCurto(igDia(meta.inicio))}</div>
-      ${status}
-    </div>
-    <div class="viz-meter">
-      <div class="viz-meter-topo"><span>${pct}% do caminho · precisa de <b>+${igNum(ritmo)}/dia</b></span><b>${igNum(meta.meta)}</b></div>
-      <div class="viz-meter-trilho ${atual >= meta.meta ? 'batida' : ''}"><b style="width:${pct}%"></b></div>
-      <div class="viz-meter-topo" style="margin-top:6px;"><span>faltam ${diasRestantes} dias</span><span>prazo ${igDiaCurto(igDia(meta.prazo))}</span></div>
-    </div>`;
+  document.getElementById('ig-atualizado').textContent = 'sincronizado ' + igDiaCurto(diaAtual);
+  desenharReatorIg(atual, metaHoje, meta.meta);
+
+  // adiantado/atrasado é status: seta + palavra + cor, nunca só a cor
+  document.getElementById('ig-leituras').innerHTML =
+    (dif >= 0
+      ? igCel('▲ Adiantado', sinal(dif), `acima da curva de hoje (${igNum(metaHoje)})`, 'bom')
+      : igCel('▼ Atrasado', sinal(dif), `abaixo da curva de hoje (${igNum(metaHoje)})`, 'atras'))
+    + igCel('Ritmo necessário', `+${igNum(ritmo)}<small style="font-size:.9rem;color:#b6c9bb;font-weight:700;">/dia</small>`, `pra fechar ${igMil(meta.meta)} em ${igDiaCurto(igDia(meta.prazo))}`)
+    + igCel('Desde ontem', ontem == null ? '—' : sinal(atual - ontem), `${sinal(atual - meta.seguidores_inicio)} desde ${igDiaCurto(igDia(meta.inicio))}`)
+    + igCel('Faltam', `${diasRestantes}<small style="font-size:.9rem;color:#b6c9bb;font-weight:700;"> dias</small>`, `prazo ${igDiaCurto(igDia(meta.prazo))}`);
 
   desenharSeguidoresIg(meta, conta);
 
@@ -9219,120 +9280,200 @@ function renderInstagram() {
   const recentes = publicados.filter(p => p.publicado_em && new Date(p.publicado_em) >= seteDias);
   const soma = (lista, k) => lista.reduce((s, p) => s + Number(p.m[k] || 0), 0);
   const media = (lista, k) => lista.length ? Math.round(soma(lista, k) / lista.length) : null;
-  const tile = (label, valor, sub) => `<div class="tile"><div class="label">${label}</div><div class="value">${valor}</div><div class="sub">${sub}</div></div>`;
   document.getElementById('ig-tiles').innerHTML =
-    tile('Posts nos últimos 7 dias', igNum(recentes.length), 'meta: 14 (2 por dia)')
-    + tile('Alcance nos últimos 7 dias', igNum(soma(recentes, 'alcance')), 'soma dos posts da semana')
-    + tile('Comentários por post', igNum(media(publicados, 'comentarios')), 'cada um é um lead da isca')
-    + tile('Salvos + compartilhados', igNum(publicados.length ? Math.round((soma(publicados, 'salvamentos') + soma(publicados, 'compartilhamentos')) / publicados.length) : null), 'por post · o que traz alcance novo');
+    igCel('Posts', igNum(recentes.length), 'meta: 14 (2 por dia)')
+    + igCel('Alcance', igMil(soma(recentes, 'alcance')), 'soma dos posts da semana')
+    + igCel('Comentários / post', igNum(media(recentes, 'comentarios')), 'cada um é um lead da isca')
+    + igCel('Salvos + compart.', igNum(recentes.length ? Math.round((soma(recentes, 'salvamentos') + soma(recentes, 'compartilhamentos')) / recentes.length) : null), 'por post · traz alcance novo');
 
-  // comparativos: alcance médio por grupo
-  const grupo = (nome, filtro) => {
-    const l = publicados.filter(filtro);
-    return { nome, n: l.length, media: media(l, 'alcance') };
-  };
+  const grupo = (nome, filtro) => { const l = publicados.filter(filtro); return { nome, n: l.length, media: media(l, 'alcance') }; };
   const blocos = [
     { titulo: 'Formato', itens: [grupo('Carrossel', p => p.tipo === 'carrossel'), grupo('Reels', p => p.tipo === 'reels')] },
     { titulo: 'Horário', itens: [grupo('11h', p => (p.slot || '').endsWith('11h')), grupo('18h', p => (p.slot || '').endsWith('18h'))] },
   ];
-  document.getElementById('ig-comparativos').innerHTML = publicados.length ? blocos.map(b => {
+  const comp = document.getElementById('ig-comparativos');
+  comp.innerHTML = publicados.length ? blocos.map(b => {
     const max = Math.max(1, ...b.itens.map(i => i.media || 0));
     return `<div><h3>${b.titulo}</h3>${b.itens.map(i => `
       <div class="ig-barra"><span>${i.nome}</span>
-        <div class="trilho"><b style="width:${i.media ? Math.round(i.media / max * 100) : 0}%"></b></div>
+        <div class="trilho"><b style="width:0" data-w="${i.media ? Math.round(i.media / max * 100) : 0}"></b></div>
         <span class="num">${i.media == null ? '—' : igNum(i.media)} <span>· ${i.n} post${i.n === 1 ? '' : 's'}</span></span></div>`).join('')}</div>`;
-  }).join('') : '<div class="empty">Aparece quando o primeiro post for publicado e medido.</div>';
+  }).join('') : '<div class="fv-vazio">Aparece quando o primeiro post for publicado e medido.</div>';
+  requestAnimationFrame(() => comp.querySelectorAll('.trilho > b').forEach(b => { b.style.width = b.dataset.w + '%'; }));
 
-  // ranking
   const ordem = [...publicados].sort((a, b) => Number(b.m.alcance || 0) - Number(a.m.alcance || 0));
   document.getElementById('ig-tabela').innerHTML = ordem.length ? `
     <tr><th>Data</th><th>Formato</th><th>Hook</th><th>Alcance</th><th>Curt.</th><th>Coment.</th><th>Salv.</th><th>Compart.</th><th>Por quê</th></tr>
-    ${ordem.map(p => {
+    ${ordem.map((p, i) => {
       const hook = igEsc((p.hook || '').slice(0, 90)) + ((p.hook || '').length > 90 ? '…' : '');
       return `<tr>
-        <td>${p.publicado_em ? igDiaCurto(new Date(p.publicado_em)) : '—'}${p.slot ? ' · ' + igEsc(p.slot.split('_')[1] || '') : ''}</td>
+        <td style="white-space:nowrap;">${p.publicado_em ? igDiaCurto(new Date(p.publicado_em)) : '—'}${p.slot ? ' · ' + igEsc(p.slot.split('_')[1] || '') : ''}</td>
         <td>${p.tipo === 'reels' ? 'Reels' : 'Carrossel'}</td>
         <td class="ig-hook">${p.permalink ? `<a href="${igEsc(p.permalink)}" target="_blank" rel="noopener">${hook}</a>` : hook}</td>
-        <td>${igNum(p.m.alcance)}</td><td>${igNum(p.m.curtidas)}</td><td>${igNum(p.m.comentarios)}</td>
-        <td>${igNum(p.m.salvamentos)}</td><td>${igNum(p.m.compartilhamentos)}</td>
-        <td class="muted" style="max-width:320px;">${igEsc(p.analise || '—')}</td></tr>`;
-    }).join('')}` : '<tr><td class="empty">Nenhum post publicado ainda. Os números aparecem aqui quando o agente publicar o primeiro carrossel.</td></tr>';
+        <td class="${i === 0 ? 'top' : 'n'}">${igNum(p.m.alcance)}</td><td class="n">${igNum(p.m.curtidas)}</td><td class="n">${igNum(p.m.comentarios)}</td>
+        <td class="n">${igNum(p.m.salvamentos)}</td><td class="n">${igNum(p.m.compartilhamentos)}</td>
+        <td class="pq">${igEsc(p.analise || '—')}</td></tr>`;
+    }).join('')}` : '<tr><td class="vazio">Nenhum post publicado ainda. Os números aparecem aqui quando o agente publicar o primeiro carrossel.</td></tr>';
 
-  // fila
   const fila = posts.filter(p => p.status === 'aguardando' || p.status === 'aprovado');
   const rotulo = { aguardando: 'aguardando aprovação', aprovado: 'aprovado · vai publicar' };
-  document.getElementById('ig-fila').innerHTML = fila.length ? `<div class="tabela-wrap"><table class="tabela-leads">
+  document.getElementById('ig-fila').innerHTML = fila.length ? `<div class="tabela-wrap"><table class="ig-tabela">
     <tr><th>Horário</th><th>Formato</th><th>Hook</th><th>Situação</th></tr>
-    ${fila.map(p => `<tr><td>${p.slot ? igDiaCurto(igDia(p.slot)) + ' · ' + igEsc(p.slot.split('_')[1] || '') : '—'}</td><td>${p.tipo === 'reels' ? 'Reels' : 'Carrossel'}</td>
+    ${fila.map(p => `<tr><td style="white-space:nowrap;">${p.slot ? igDiaCurto(igDia(p.slot)) + ' · ' + igEsc(p.slot.split('_')[1] || '') : '—'}</td><td>${p.tipo === 'reels' ? 'Reels' : 'Carrossel'}</td>
       <td class="ig-hook">${igEsc((p.hook || '').slice(0, 90))}</td><td><span class="ig-chip">${rotulo[p.status]}</span></td></tr>`).join('')}
-    </table></div>` : '<div class="empty">Nada na fila agora.</div>';
+    </table></div>` : '<div class="fv-vazio">Nada na fila agora.</div>';
+}
+
+// anel tipo reator: 270° de 0 a 10 mil, marca branca = onde a curva da meta está hoje
+function desenharReatorIg(atual, metaHoje, alvo) {
+  const C = 150, R = 100, INI = 135, VARRE = 270;
+  const ponto = (r, a) => [C + r * Math.cos(a * Math.PI / 180), C + r * Math.sin(a * Math.PI / 180)];
+  const arco = (r, f) => {
+    const [x0, y0] = ponto(r, INI), [x1, y1] = ponto(r, INI + VARRE * f);
+    return `M${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 ${VARRE * f > 180 ? 1 : 0} 1 ${x1.toFixed(2)},${y1.toFixed(2)}`;
+  };
+  const f = Math.max(0, Math.min(1, atual / alvo));
+  const fHoje = Math.max(0, Math.min(1, metaHoje / alvo));
+  const comp = 2 * Math.PI * R * (VARRE / 360);
+
+  let marcas = '';
+  for (let i = 0; i <= 60; i++) {
+    const a = INI + VARRE * i / 60, maior = i % 15 === 0;
+    const [x0, y0] = ponto(maior ? 112 : 116, a), [x1, y1] = ponto(122, a);
+    marcas += `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="${i / 60 <= f ? IG_HUD.brilho : 'rgba(255,255,255,.22)'}" stroke-width="${maior ? 2 : 1}" opacity="${maior ? 1 : .8}"/>`;
+    if (maior) {
+      const [tx, ty] = ponto(138, a);
+      marcas += `<text x="${tx.toFixed(1)}" y="${(ty + 3).toFixed(1)}" font-size="9" font-weight="700" fill="${IG_HUD.mut}" text-anchor="middle">${igMil(alvo * i / 60)}</text>`;
+    }
+  }
+  const [hx0, hy0] = ponto(R - 13, INI + VARRE * fHoje), [hx1, hy1] = ponto(R + 13, INI + VARRE * fHoje);
+  const pct = Math.round(f * 100);
+
+  document.getElementById('ig-reator').innerHTML = `
+  <svg viewBox="0 0 300 300" role="img" aria-label="${igNum(atual)} seguidores, ${pct}% de ${igMil(alvo)}">
+    <defs>
+      <linearGradient id="ig-grad-arco" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#13668a"/><stop offset=".6" stop-color="${IG_HUD.serie}"/><stop offset="1" stop-color="${IG_HUD.brilho}"/></linearGradient>
+      <radialGradient id="ig-grad-nucleo"><stop offset="0" stop-color="rgba(30,155,208,.28)"/><stop offset="1" stop-color="rgba(30,155,208,0)"/></radialGradient>
+      <filter id="ig-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="${C}" cy="${C}" r="148" fill="none" stroke="rgba(127,216,255,.30)" stroke-width="1" stroke-dasharray="2 7" class="giro"/>
+    <circle cx="${C}" cy="${C}" r="128" fill="none" stroke="rgba(127,216,255,.14)" stroke-width="3" stroke-dasharray="46 16" class="giro inv"/>
+    <circle cx="${C}" cy="${C}" r="84" fill="url(#ig-grad-nucleo)" stroke="rgba(127,216,255,.18)" stroke-width="1"/>
+    ${marcas}
+    <path d="${arco(R, 1)}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="14" stroke-linecap="round"/>
+    <path class="arco" d="${arco(R, 1)}" fill="none" stroke="url(#ig-grad-arco)" stroke-width="14" stroke-linecap="round" filter="url(#ig-glow)"
+      stroke-dasharray="${comp.toFixed(1)}" stroke-dashoffset="${comp.toFixed(1)}" data-alvo="${(comp * (1 - f)).toFixed(1)}"/>
+    <line x1="${hx0.toFixed(1)}" y1="${hy0.toFixed(1)}" x2="${hx1.toFixed(1)}" y2="${hy1.toFixed(1)}" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="${C}" y="${C - 22}" font-size="9" font-weight="800" letter-spacing="2.2" fill="${IG_HUD.mut}" text-anchor="middle">SEGUIDORES</text>
+    <text x="${C}" y="${C + 16}" font-size="44" font-weight="800" letter-spacing="-1.5" fill="#fff" text-anchor="middle" style="font-variant-numeric:tabular-nums" id="ig-contador">0</text>
+    <text x="${C}" y="${C + 38}" font-size="11.5" font-weight="700" fill="${IG_HUD.brilho}" text-anchor="middle">${pct}% de ${igMil(alvo)}</text>
+  </svg>`;
+
+  // arco enche e o número conta até o valor (pula a animação se o sistema pedir menos movimento)
+  const svg = document.querySelector('#ig-reator svg');
+  const arcoEl = svg.querySelector('.arco');
+  const cont = svg.querySelector('#ig-contador');
+  const parado = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  requestAnimationFrame(() => { arcoEl.style.strokeDashoffset = arcoEl.dataset.alvo; });
+  if (parado) { cont.textContent = igNum(atual); return; }
+  const t0 = performance.now();
+  const passo = t => {
+    const k = Math.max(0, Math.min(1, (t - t0) / 1400)), e = 1 - Math.pow(1 - k, 3);
+    cont.textContent = igNum(Math.round(atual * e));
+    if (k < 1) requestAnimationFrame(passo);
+  };
+  requestAnimationFrame(passo);
 }
 
 function desenharSeguidoresIg(meta, conta) {
   const svg = document.getElementById('chart-ig');
   const inicio = igDia(meta.inicio), prazo = igDia(meta.prazo);
   const totalDias = igDiasEntre(inicio, prazo);
-  const padEsq = 46, padDir = 16, padTopo = 22, bandaX = 26, alturaPlot = 200;
+  const padEsq = 46, padDir = 16, padTopo = 26, bandaX = 26, alturaPlot = 210;
   const h = padTopo + alturaPlot + bandaX;
   const w = vizLarguraDisponivel('viz-ig-wrap', 340);
   const escalaX = d => padEsq + (w - padEsq - padDir) * (igDiasEntre(inicio, d) / totalDias);
   const { topo, ticks } = vizEscala(Math.max(meta.meta, ...conta.map(c => c.seguidores)), 4);
   const escalaY = v => padTopo + alturaPlot - alturaPlot * (v / topo);
-  const corTexto = corTema('--text-primary'), corMuted = corTema('--muted'), corBase = corTema('--baseline');
-  const corSuperficie = corTema('--surface-1') || '#ffffff';
+  const baseY = padTopo + alturaPlot;
 
-  // marcas do eixo x a cada 14 dias, mais o prazo
+  const grade = ticks.map(v => `<line x1="${padEsq}" y1="${escalaY(v)}" x2="${w - padDir}" y2="${escalaY(v)}" stroke="${IG_HUD.grade}" stroke-width="1"/>
+    <text x="${padEsq - 8}" y="${escalaY(v) + 3.5}" font-size="9.5" fill="${IG_HUD.mut}" text-anchor="end" style="font-variant-numeric:tabular-nums">${igMil(v)}</text>`).join('');
+
   let eixoX = '';
   for (let i = 0; i <= totalDias; i += 14) {
-    const d = new Date(inicio); d.setDate(d.getDate() + i);
     if (totalDias - i < 7) break;
-    eixoX += `<text x="${escalaX(d)}" y="${h - 8}" font-size="10" fill="${corMuted}" text-anchor="middle">${igDiaCurto(d)}</text>`;
+    const d = new Date(inicio); d.setDate(d.getDate() + i);
+    eixoX += `<text x="${escalaX(d)}" y="${h - 8}" font-size="10" fill="${IG_HUD.mut}" text-anchor="middle">${igDiaCurto(d)}</text>`;
   }
-  eixoX += `<text x="${escalaX(prazo)}" y="${h - 8}" font-size="10" font-weight="700" fill="${corTexto}" text-anchor="end">${igDiaCurto(prazo)}</text>`;
+  eixoX += `<text x="${escalaX(prazo)}" y="${h - 8}" font-size="10" font-weight="700" fill="#fff" text-anchor="end">${igDiaCurto(prazo)}</text>`;
 
-  // curva da meta: referência, não série (linha fina na cor do texto, rótulo na pastilha)
+  // curva da meta: referência (linha fina clara + pastilha), não série
   const yMetaFim = escalaY(meta.meta);
-  const rotuloMeta = `META ${igMil(meta.meta)}`;
-  const larguraChip = rotuloMeta.length * 5.9 + 12;
-  const linhaMeta = `<line x1="${escalaX(inicio)}" y1="${escalaY(meta.seguidores_inicio)}" x2="${escalaX(prazo)}" y2="${yMetaFim}" stroke="${corTexto}" stroke-width="1" opacity=".55"/>`
-    + `<rect x="${w - padDir - larguraChip}" y="${yMetaFim - 22}" width="${larguraChip}" height="16" rx="4" fill="${corSuperficie}"/>`
-    + `<text x="${w - padDir - 6}" y="${yMetaFim - 10.5}" font-size="9.5" font-weight="700" fill="${corTexto}" text-anchor="end">${rotuloMeta}</text>`;
+  const rotuloMeta = `META ${igMil(meta.meta).toUpperCase()}`;
+  const larguraChip = rotuloMeta.length * 6 + 14;
+  const linhaMeta = `<line x1="${escalaX(inicio)}" y1="${escalaY(meta.seguidores_inicio)}" x2="${escalaX(prazo)}" y2="${yMetaFim}" stroke="${IG_HUD.mut}" stroke-width="1" opacity=".7"/>`
+    + `<rect x="${w - padDir - larguraChip}" y="${yMetaFim - 24}" width="${larguraChip}" height="17" rx="5" fill="rgba(8,16,12,.9)" stroke="rgba(255,255,255,.18)"/>`
+    + `<text x="${w - padDir - 7}" y="${yMetaFim - 12.5}" font-size="9.5" font-weight="800" letter-spacing=".6" fill="#fff" text-anchor="end">${rotuloMeta}</text>`;
 
-  // série real: linha de 2px + ponto no último dia com rótulo direto
   const pts = conta.map(c => [escalaX(igDia(c.data)), escalaY(c.seguidores)]);
   let serie = '';
-  if (pts.length > 1) serie += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="${VIZ_SERIE}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if (pts.length > 1) {
+    const linha = pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ');
+    serie += `<polygon points="${pts[0][0].toFixed(1)},${baseY} ${linha} ${pts[pts.length - 1][0].toFixed(1)},${baseY}" fill="url(#ig-grad-area)"/>`
+      + `<polyline points="${linha}" fill="none" stroke="${IG_HUD.serie}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" filter="url(#ig-glow-linha)"/>`;
+  }
   if (pts.length) {
     const [ux, uy] = pts[pts.length - 1];
-    const ult = conta[conta.length - 1].seguidores;
-    serie += `<circle cx="${ux}" cy="${uy}" r="5" fill="${VIZ_SERIE}" stroke="${corSuperficie}" stroke-width="2"/>`
-      + `<text x="${ux + 9}" y="${uy - 8}" font-size="11" font-weight="700" fill="${corTexto}" style="font-variant-numeric:tabular-nums">${igNum(ult)}</text>`;
+    serie += `<circle cx="${ux}" cy="${uy}" r="5" fill="${IG_HUD.brilho}" class="ig-pulso"/>`
+      + `<circle cx="${ux}" cy="${uy}" r="5" fill="${IG_HUD.brilho}" stroke="#0b130e" stroke-width="2"/>`
+      + `<text x="${ux + 10}" y="${uy - 9}" font-size="12" font-weight="800" fill="#fff" style="font-variant-numeric:tabular-nums">${igNum(conta[conta.length - 1].seguidores)}</text>`;
   }
 
-  // faixas de hover: um dia cada, cobrindo o prazo inteiro
+  // faixas de hover (um dia cada) + mira vertical
   const porDia = {};
   conta.forEach(c => { porDia[c.data.slice(0, 10)] = c.seguidores; });
   const larguraDia = (w - padEsq - padDir) / totalDias;
   let bandas = '';
-  const textos = [];
+  const textos = [], miras = [];
   for (let i = 0; i <= totalDias; i++) {
     const d = new Date(inicio); d.setDate(d.getDate() + i);
     const chave = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    const cx = escalaX(d);
+    const cx = escalaX(d), real = porDia[chave], alvo = igMetaNoDia(meta, d);
+    miras.push({ cx, cy: real == null ? null : escalaY(real) });
     bandas += `<rect class="viz-banda" x="${cx - larguraDia / 2}" y="${padTopo}" width="${larguraDia}" height="${alturaPlot}" fill="transparent" data-i="${i}" data-cx="${cx}" data-topo="${padTopo}"/>`;
-    const real = porDia[chave];
-    const alvo = igMetaNoDia(meta, d);
     textos.push(`<div class="tip-mes">${d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>`
-      + `<div class="tip-linha"><i style="background:${VIZ_SERIE}"></i>Seguidores<b>${real == null ? '—' : igNum(real)}</b></div>`
-      + `<div class="tip-linha" style="opacity:.75;">Meta do dia<b>${igNum(alvo)}</b></div>`);
+      + `<div class="tip-linha"><i style="background:${IG_HUD.serie}"></i>Seguidores<b>${real == null ? '—' : igNum(real)}</b></div>`
+      + `<div class="tip-linha" style="opacity:.75;">Curva da meta<b>${igNum(alvo)}</b></div>`
+      + (real == null ? '' : `<div class="tip-linha" style="opacity:.75;">${real >= alvo ? '▲ acima' : '▼ abaixo'}<b>${igNum(Math.abs(real - alvo))}</b></div>`));
   }
 
+  const ultimoX = pts.length ? pts[pts.length - 1][0] : padEsq;
   svg.setAttribute('width', w);
   svg.setAttribute('height', h);
-  svg.innerHTML = vizEixoY(ticks, escalaY, w - padDir, padEsq, igMil)
-    + `<line x1="${padEsq}" y1="${padTopo + alturaPlot}" x2="${w - padDir}" y2="${padTopo + alturaPlot}" stroke="${corBase}" stroke-width="1"/>`
-    + eixoX + linhaMeta + serie + bandas;
+  svg.innerHTML = `<defs>
+      <linearGradient id="ig-grad-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(30,155,208,.42)"/><stop offset="1" stop-color="rgba(30,155,208,0)"/></linearGradient>
+      <linearGradient id="ig-grad-varre" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(127,216,255,0)"/><stop offset="1" stop-color="rgba(127,216,255,.35)"/></linearGradient>
+      <filter id="ig-glow-linha" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>`
+    + grade
+    + `<line x1="${padEsq}" y1="${baseY}" x2="${w - padDir}" y2="${baseY}" stroke="${IG_HUD.base}" stroke-width="1"/>`
+    + eixoX + linhaMeta + serie
+    + `<rect class="ig-varredura" x="${padEsq - 40}" y="${padTopo}" width="40" height="${alturaPlot}" fill="url(#ig-grad-varre)" style="--ig-dist:${Math.max(0, ultimoX - padEsq + 40)}px"/>`
+    + `<line id="ig-mira" x1="0" y1="${padTopo}" x2="0" y2="${baseY}" stroke="${IG_HUD.brilho}" stroke-width="1" opacity="0"/>`
+    + `<circle id="ig-mira-ponto" r="6" fill="none" stroke="${IG_HUD.brilho}" stroke-width="2" opacity="0"/>`
+    + bandas;
   vizLigarTooltip('viz-ig-wrap', 'tip-ig', textos);
+  const mira = svg.querySelector('#ig-mira'), miraPonto = svg.querySelector('#ig-mira-ponto');
+  svg.querySelectorAll('.viz-banda').forEach(b => {
+    b.addEventListener('mouseenter', () => {
+      const m = miras[Number(b.dataset.i)];
+      mira.setAttribute('x1', m.cx); mira.setAttribute('x2', m.cx); mira.setAttribute('opacity', '.55');
+      if (m.cy == null) miraPonto.setAttribute('opacity', '0');
+      else { miraPonto.setAttribute('cx', m.cx); miraPonto.setAttribute('cy', m.cy); miraPonto.setAttribute('opacity', '1'); }
+    });
+    b.addEventListener('mouseleave', () => { mira.setAttribute('opacity', '0'); miraPonto.setAttribute('opacity', '0'); });
+  });
 }
 
 
