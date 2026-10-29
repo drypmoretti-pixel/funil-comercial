@@ -3052,10 +3052,13 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <div class="ct-grupo-cab"><span class="ct-num">1</span><span class="ct-tit">Empresa contratante<small>Quem está fechando com a gente</small></span></div>
           <div class="ct-campos">
             <div class="full">
-              <label>Razão social</label>
+              <label class="ct-opcao" style="display:inline-flex;gap:8px;align-items:center;cursor:pointer;"><input type="checkbox" id="ctr-pf" onchange="ctrAplicarPF()"><span>Contrato de pessoa física (CPF, sem empresa)</span></label>
+            </div>
+            <div class="full">
+              <label id="ctr-razao-rotulo">Razão social</label>
               <input type="text" id="ctr-razao" placeholder="Nome completo da empresa" required>
             </div>
-            <div>
+            <div id="ctr-cnpj-wrap">
               <label>CNPJ</label>
               <input type="text" id="ctr-cnpj" placeholder="00.000.000/0000-00" required>
             </div>
@@ -3097,20 +3100,20 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <div class="ct-grupo">
           <div class="ct-grupo-cab"><span class="ct-num">3</span><span class="ct-tit">Quem assina<small>Responsável legal e dados para a assinatura</small></span></div>
           <div class="ct-campos">
-            <div>
+            <div id="ctr-responsavel-wrap">
               <label>Nome do responsável (quem assina)</label>
               <input type="text" id="ctr-responsavel" required>
             </div>
-            <div>
+            <div id="ctr-cargo-wrap">
               <label>Cargo do responsável</label>
               <input type="text" id="ctr-cargo" value="Sócio(a)" required>
             </div>
             <div>
-              <label>RG do contratante</label>
-              <input type="text" id="ctr-rg" required>
+              <label>RG do contratante (opcional)</label>
+              <input type="text" id="ctr-rg">
             </div>
             <div>
-              <label>CPF do contratante</label>
+              <label>CPF do contratante (obrigatório)</label>
               <input type="text" id="ctr-cpf" placeholder="000.000.000-00" required>
             </div>
             <div class="full">
@@ -3128,7 +3131,11 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
             </div>
             <div>
               <label>Forma de pagamento</label>
-              <input type="text" id="ctr-pagamento" value="à vista via Pix" required>
+              <select id="ctr-pagamento-tipo" onchange="ctrAplicarPagamento()">
+                <option value="avista" selected>À vista via Pix</option>
+                <option value="outro">Outro (escrever a condição negociada)</option>
+              </select>
+              <input type="text" id="ctr-pagamento" value="à vista via Pix" required hidden style="margin-top:8px;" placeholder="Ex.: em sinal de R$ 2.000,00 e 3 parcelas de R$ 1.000,00 via Pix, vencendo todo dia 10">
             </div>
             <div class="full">
               <label id="ctr-prazo-rotulo">Tempo da consultoria</label>
@@ -11418,13 +11425,16 @@ function montarContratoCorpo(d) {
         '<p>3.5.5. O descumprimento de qualquer das condições acima afasta o direito à garantia, uma vez que ' + gAfasta + ' A ausência de solicitação no prazo previsto nesta cláusula importa renúncia à garantia.</p>');
   const assinaturaExt = dataExtenso(d.data_inicio);
   const estado = (d.estado || '').toUpperCase();
+  const pf = !d.cnpj;
 
   return '' +
     '<h1>CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE<br>CONSULTORIA</h1>' +
     '<p class="subt">Consultoria em Geração de Leads – LinkedIn</p>' +
 
     '<h2>I. QUALIFICAÇÃO DAS PARTES</h2>' +
-    '<p><strong>' + d.razao_social + '</strong>, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº ' + d.cnpj + ', com sede na ' + d.endereco + ', bairro ' + d.bairro + ', ' + d.cidade + '/' + estado + ', CEP ' + d.cep + ', telefone ' + d.telefone + ', e-mail ' + d.email + ', neste ato representada por seu ' + d.cargo_responsavel + ' <strong>' + d.nome_responsavel + '</strong>, brasileiro(a), empresário(a), portador(a) da Carteira de Identidade RG nº ' + d.rg + ', inscrito(a) no CPF/ME sob o nº ' + d.cpf + ', doravante denominada simplesmente "CONTRATANTE".</p>' +
+    (pf
+      ? '<p><strong>' + d.razao_social + '</strong>, pessoa física, brasileiro(a), ' + (d.rg ? 'portador(a) da Carteira de Identidade RG nº ' + d.rg + ', ' : '') + 'inscrito(a) no CPF/ME sob o nº ' + d.cpf + ', residente e domiciliado(a) na ' + d.endereco + ', bairro ' + d.bairro + ', ' + d.cidade + '/' + estado + ', CEP ' + d.cep + ', telefone ' + d.telefone + ', e-mail ' + d.email + ', doravante denominado(a) simplesmente "CONTRATANTE".</p>'
+      : '<p><strong>' + d.razao_social + '</strong>, pessoa jurídica de direito privado, inscrita no CNPJ sob o nº ' + d.cnpj + ', com sede na ' + d.endereco + ', bairro ' + d.bairro + ', ' + d.cidade + '/' + estado + ', CEP ' + d.cep + ', telefone ' + d.telefone + ', e-mail ' + d.email + ', neste ato representada por seu ' + d.cargo_responsavel + ' <strong>' + d.nome_responsavel + '</strong>, brasileiro(a), empresário(a), ' + (d.rg ? 'portador(a) da Carteira de Identidade RG nº ' + d.rg + ', ' : '') + 'inscrito(a) no CPF/ME sob o nº ' + d.cpf + ', doravante denominada simplesmente "CONTRATANTE".</p>') +
     '<p>De outro lado,</p>' +
     '<p><strong>' + CONTRATADA.nome + '</strong>, pessoa jurídica de direito privado, inscrita no CNPJ/ME sob o nº ' + CONTRATADA.cnpj + ', com sede na ' + CONTRATADA.endereco + ', neste ato representada por seu Sócio Administrador ' + CONTRATADA.responsavel + ', brasileiro, empresário, portador da Carteira de Identidade RG nº ' + CONTRATADA.rg + ', inscrito no CPF/ME sob o nº ' + CONTRATADA.cpf + ', com endereço eletrônico ' + CONTRATADA.email + ', doravante denominada simplesmente "CONTRATADA".</p>' +
     '<p>As partes acima qualificadas, em conjunto doravante denominadas "PARTES" e, individualmente, "PARTE", têm justo e contratado o presente Contrato de Prestação de Serviços de Consultoria, doravante simplesmente "CONTRATO", o qual se regerá pelas cláusulas e condições seguintes, nos termos dos arts. 421 e 421-A do Código Civil Brasileiro (Lei nº 10.406/2002).</p>' +
@@ -11525,7 +11535,7 @@ function montarContratoCorpo(d) {
 
     '<p class="assin-local">São João da Boa Vista/SP, ' + assinaturaExt + '.</p>' +
 
-    '<div class="assin-bloco"><div class="linha"></div><p><strong>' + d.razao_social + '</strong><br>CNPJ: ' + d.cnpj + '<br>p/ ' + d.nome_responsavel + '<br>CONTRATANTE</p></div>' +
+    '<div class="assin-bloco"><div class="linha"></div><p><strong>' + d.razao_social + '</strong>' + (pf ? '<br>CPF: ' + d.cpf : '<br>CNPJ: ' + d.cnpj + '<br>p/ ' + d.nome_responsavel) + '<br>CONTRATANTE</p></div>' +
     '<div class="assin-bloco"><div class="linha"></div><p><strong>' + CONTRATADA.nome + '</strong><br>CNPJ: ' + CONTRATADA.cnpj + '<br>p/ ' + CONTRATADA.responsavel + ' — CPF ' + CONTRATADA.cpf + '<br>CONTRATADA</p></div>';
 }
 
@@ -11609,7 +11619,7 @@ function ctrDataInicio() {
 function lerDadosContrato() {
   const d = {
     razao_social: document.getElementById('ctr-razao').value.trim(),
-    cnpj: document.getElementById('ctr-cnpj').value.trim(),
+    cnpj: ctrEhPF() ? '' : document.getElementById('ctr-cnpj').value.trim(),
     email: document.getElementById('ctr-email').value.trim(),
     email_assinatura: document.getElementById('ctr-email-assinatura').value.trim(),
     telefone: document.getElementById('ctr-telefone').value.trim(),
@@ -11618,8 +11628,8 @@ function lerDadosContrato() {
     cep: document.getElementById('ctr-cep').value.trim(),
     cidade: document.getElementById('ctr-cidade').value.trim(),
     estado: document.getElementById('ctr-estado').value.trim(),
-    nome_responsavel: document.getElementById('ctr-responsavel').value.trim(),
-    cargo_responsavel: document.getElementById('ctr-cargo').value.trim(),
+    nome_responsavel: ctrEhPF() ? document.getElementById('ctr-razao').value.trim() : document.getElementById('ctr-responsavel').value.trim(),
+    cargo_responsavel: ctrEhPF() ? '' : document.getElementById('ctr-cargo').value.trim(),
     rg: document.getElementById('ctr-rg').value.trim(),
     cpf: document.getElementById('ctr-cpf').value.trim(),
     valor: Number(document.getElementById('ctr-valor').value),
@@ -11735,6 +11745,34 @@ async function carregarContratos() {
 }
 
 // Resumo do contrato ao lado do formulário: confere o que foi digitado antes de gerar.
+function ctrEhPF() { const c = document.getElementById('ctr-pf'); return !!(c && c.checked); }
+function ctrAplicarPF() {
+  const pf = ctrEhPF();
+  document.getElementById('ctr-razao-rotulo').textContent = pf ? 'Nome completo' : 'Razão social';
+  document.getElementById('ctr-razao').placeholder = pf ? 'Nome completo do contratante' : 'Nome completo da empresa';
+  [['ctr-cnpj-wrap', 'ctr-cnpj'], ['ctr-responsavel-wrap', 'ctr-responsavel'], ['ctr-cargo-wrap', 'ctr-cargo']].forEach(function (par) {
+    document.getElementById(par[0]).hidden = pf;
+    document.getElementById(par[1]).required = !pf;
+  });
+  ctrResumoAtualizar();
+}
+function ctrAplicarPagamento() {
+  const outro = document.getElementById('ctr-pagamento-tipo').value === 'outro';
+  const inp = document.getElementById('ctr-pagamento');
+  inp.hidden = !outro;
+  if (!outro) inp.value = 'à vista via Pix';
+  else if (inp.value === 'à vista via Pix') inp.value = '';
+  if (outro && inp.focus) inp.focus();
+  ctrResumoAtualizar();
+}
+function ctrSincronizarForm() {
+  const inp = document.getElementById('ctr-pagamento');
+  const v = inp.value.trim();
+  document.getElementById('ctr-pagamento-tipo').value = (!v || v === 'à vista via Pix') ? 'avista' : 'outro';
+  inp.hidden = document.getElementById('ctr-pagamento-tipo').value === 'avista';
+  if (!v) inp.value = 'à vista via Pix';
+  ctrAplicarPF();
+}
 function ctrResumoAtualizar() {
   const form = document.getElementById('form-contrato');
   if (!form) return;
@@ -11743,7 +11781,7 @@ function ctrResumoAtualizar() {
   const feitos = obrig.filter(el => String(el.value).trim()).length;
   const set = (id, txt, vazio) => { const el = document.getElementById(id); el.textContent = txt; el.classList.toggle('vazio', !!vazio); };
   set('ctr-r-razao', v('ctr-razao') || 'Nome da empresa', !v('ctr-razao'));
-  document.getElementById('ctr-r-cnpj').textContent = v('ctr-cnpj') ? 'CNPJ ' + v('ctr-cnpj') : 'CNPJ não informado';
+  document.getElementById('ctr-r-cnpj').textContent = ctrEhPF() ? (v('ctr-cpf') ? 'CPF ' + v('ctr-cpf') : 'Pessoa física') : (v('ctr-cnpj') ? 'CNPJ ' + v('ctr-cnpj') : 'CNPJ não informado');
   const valor = parseFloat(document.getElementById('ctr-valor').value);
   set('ctr-r-valor', isNaN(valor) ? 'R$ —' : formatarMoeda(valor), isNaN(valor));
   document.getElementById('ctr-r-pag').textContent = v('ctr-pagamento') || '—';
@@ -11763,7 +11801,7 @@ function ctrResumoAtualizar() {
   document.getElementById('ctr-duracao-ajuda').textContent = ctrRotuloPrazo(dur) + (dur === 90 || dur === 180 ? ' (' + dur + ' dias)' : '')
     + '. O prazo começa na data de elaboração do contrato e entra no objeto, na vigência, no valor e na data de término.';
   document.getElementById('ctr-r-prazo').textContent = ctrRotuloPrazo(dur) + ' · até ' + somarDias(ini, dur).split('-').reverse().join('/');
-  const quem = v('ctr-responsavel');
+  const quem = ctrEhPF() ? v('ctr-razao') : v('ctr-responsavel');
   document.getElementById('ctr-r-quem').textContent = quem ? (v('ctr-cargo') ? `${quem} · ${v('ctr-cargo')}` : quem) : '—';
   document.getElementById('ctr-r-barra').style.width = (obrig.length ? (feitos / obrig.length) * 100 : 0) + '%';
   document.getElementById('ctr-r-prog').textContent = feitos === obrig.length
@@ -11774,7 +11812,7 @@ function ctrResumoAtualizar() {
   const f = document.getElementById('form-contrato');
   if (!f) return;
   f.addEventListener('input', ctrResumoAtualizar);
-  f.addEventListener('reset', () => setTimeout(() => { ctrOcultarOutroPrazo(); document.getElementById('ctr-data-inicio').value = ''; ctrResumoAtualizar(); }, 0));
+  f.addEventListener('reset', () => setTimeout(() => { ctrSincronizarForm(); ctrOcultarOutroPrazo(); document.getElementById('ctr-data-inicio').value = ''; ctrResumoAtualizar(); }, 0));
   ctrResumoAtualizar();
 })();
 
@@ -11805,6 +11843,9 @@ function ctrPreencherForm(c, limparInicio) {
   Object.keys(CTR_CAMPOS).forEach(function (campo) {
     document.getElementById(CTR_CAMPOS[campo]).value = dados[campo] == null ? '' : dados[campo];
   });
+  document.getElementById('ctr-pf').checked = !c.cnpj;
+  if (!c.cnpj) document.getElementById('ctr-responsavel').value = '';
+  ctrSincronizarForm();
   ctrDefinirDuracao(c.duracao_dias || 90);
   // duplicar = contrato novo: o prazo começa hoje. Editar mantém a data gravada.
   document.getElementById('ctr-data-inicio').value = limparInicio ? '' : (c.data_inicio || '');
