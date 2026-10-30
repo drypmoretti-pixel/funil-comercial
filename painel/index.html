@@ -846,6 +846,47 @@ svg.chart { display: block; }
 #tab-youtube .yt-sel { max-width:100%; background:#121212 !important; color:#fff !important; border:1px solid var(--yt-borda) !important; border-radius:10px; padding:9px 12px; font:inherit; font-size:.84rem; }
 #tab-youtube .yt-ret-cels { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px; margin:4px 0 16px; }
 #tab-youtube .yt-nota { font-size:.74rem; color:var(--yt-sec); margin-top:10px; }
+#tab-youtube .yt-topo-dir { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+#tab-youtube .yt-btn-plano { display:inline-flex; align-items:center; gap:8px; border:0; cursor:pointer; font:inherit; font-size:.86rem; font-weight:500; color:#0f0f0f; background:#f1f1f1; padding:9px 16px; border-radius:999px; transition:background .15s; }
+#tab-youtube .yt-btn-plano:hover { background:#d9d9d9; }
+#tab-youtube .yt-escada { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:-6px 0 16px; }
+#tab-youtube .yt-escada i { color:#555; font-style:normal; }
+#tab-youtube .yt-degrau { font-size:.74rem; color:var(--yt-sec); background:#242424; border:1px solid var(--yt-borda); padding:3px 10px; border-radius:999px; font-variant-numeric:tabular-nums; }
+#tab-youtube .yt-degrau.agora { color:#fff; border-color:var(--yt-verm); background:rgba(255,0,51,.14); font-weight:600; }
+#tab-youtube .yt-degrau.feito { color:#4cd964; border-color:rgba(43,166,64,.5); }
+#tab-youtube .yt-escada.grande .yt-degrau { font-size:.86rem; padding:7px 14px; display:inline-flex; flex-direction:column; align-items:center; line-height:1.25; }
+#tab-youtube .yt-degrau small { font-size:.66rem; font-weight:400; color:var(--yt-sec); }
+/* plano de ação: painel por cima da aba, mesmo visual do Studio */
+#tab-youtube .yt-plano { position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,.72); display:none; align-items:flex-start; justify-content:center; padding:4vh 16px; overflow-y:auto; backdrop-filter:blur(3px); }
+#tab-youtube .yt-plano.aberto { display:flex; }
+#tab-youtube .yt-plano-caixa { width:100%; max-width:980px; background:#0f0f0f; border:1px solid var(--yt-borda); border-radius:18px; padding:26px 28px 30px; box-shadow:0 30px 80px rgba(0,0,0,.6); animation:yt-sobe .25s ease-out; }
+@keyframes yt-sobe { from { transform:translateY(14px); opacity:0; } to { transform:none; opacity:1; } }
+#tab-youtube .yt-plano-topo { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+#tab-youtube .yt-plano-topo h2 { margin:0; font-size:1.4rem; font-weight:700; color:#fff; }
+#tab-youtube .yt-plano-fechar { border:0; background:#272727; color:#fff; width:38px; height:38px; border-radius:50%; font-size:1.2rem; cursor:pointer; flex:0 0 auto; }
+#tab-youtube .yt-plano-fechar:hover { background:#3a3a3a; }
+#tab-youtube .yt-plano h3 { margin:26px 0 12px; font-size:.78rem; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--yt-sec); }
+#tab-youtube .yt-plano-sub { margin:8px 0 0; font-size:.9rem; line-height:1.55; color:#ccc; }
+#tab-youtube .yt-plano-sub b { color:#fff; }
+#tab-youtube .yt-plano-lista { margin:0; padding-left:18px; display:grid; gap:9px; font-size:.88rem; line-height:1.55; color:#ccc; }
+#tab-youtube .yt-plano-lista b { color:#fff; }
+#tab-youtube .yt-plano-tab tr.agora td { background:#1d2a3a; }
+#tab-youtube .yt-plano-tab td.tit { max-width:340px; color:var(--yt-txt); }
+#tab-youtube .yt-st { font-size:.8rem; color:var(--yt-sec); white-space:nowrap; }
+#tab-youtube .yt-st.ok { color:#4cd964; }
+#tab-youtube .yt-st.nao { color:#ff6b6b; }
+#tab-youtube .yt-st.agora { color:var(--yt-azul); }
+#tab-youtube .yt-alavancas { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:12px; }
+#tab-youtube .yt-alav { display:flex; gap:12px; background:var(--yt-card); border:1px solid var(--yt-borda); border-radius:12px; padding:16px; }
+#tab-youtube .yt-alav .num { flex:0 0 auto; width:28px; height:28px; border-radius:50%; background:var(--yt-verm); color:#fff; font-weight:700; font-size:.82rem; display:flex; align-items:center; justify-content:center; }
+#tab-youtube .yt-alav .t { font-weight:700; color:#fff; font-size:.94rem; }
+#tab-youtube .yt-alav .o { font-size:.82rem; line-height:1.55; color:#bbb; margin-top:5px; }
+#tab-youtube .yt-alav .m { font-size:.78rem; color:#ddd; margin-top:8px; }
+#tab-youtube .yt-alav .m span { display:inline-block; min-width:42px; font-size:.68rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--yt-azul); margin-right:6px; }
+#tab-youtube .yt-semana { display:grid; gap:8px; }
+#tab-youtube .yt-semana div { display:grid; grid-template-columns:80px 1fr; gap:12px; background:var(--yt-card); border:1px solid var(--yt-borda); border-radius:10px; padding:11px 14px; font-size:.86rem; color:#ccc; }
+#tab-youtube .yt-semana b { color:#fff; }
+@media (max-width: 560px) { #tab-youtube .yt-plano-caixa { padding:20px 16px 24px; } #tab-youtube .yt-semana div { grid-template-columns:1fr; gap:3px; } }
 @media (prefers-reduced-motion: reduce) { #tab-youtube * { animation:none !important; transition:none !important; } }
 .viz-etapas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: .8rem; margin-top: 4px; }
 .viz-etapa { display: inline-flex; align-items: baseline; gap: 7px; }
@@ -3383,12 +3424,16 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <svg viewBox="0 0 28 20" width="34" height="24" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#ff0033"/><polygon points="11,5.5 19,10 11,14.5" fill="#fff"/></svg>
           <div>Igor Miguel<small>Studio do canal</small></div>
         </div>
-        <span class="yt-sync"><i></i><span id="yt-atualizado">aguardando dados</span></span>
+        <div class="yt-topo-dir">
+          <span class="yt-sync"><i></i><span id="yt-atualizado">aguardando dados</span></span>
+          <button class="yt-btn-plano" onclick="abrirPlanoYt()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Plano de ação</button>
+        </div>
       </div>
 
       <section class="yt-card">
-        <div class="yt-card-topo"><h2>Meta: 10 mil inscritos</h2></div>
-        <p class="yt-desc">O anel vermelho é o caminho até 10 mil. A marca branca é onde o canal precisava estar hoje pra bater a meta no prazo.</p>
+        <div class="yt-card-topo"><h2 id="yt-meta-titulo">Meta</h2></div>
+        <p class="yt-desc">O anel vermelho é o caminho até a meta. A marca branca é onde o canal precisava estar hoje, pela rampa do plano de ação.</p>
+        <div class="yt-escada" id="yt-escada"></div>
         <div class="yt-meta-grade">
           <div class="yt-anel" id="yt-reator"></div>
           <div class="yt-cels" id="yt-leituras"></div>
@@ -3462,6 +3507,16 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <div class="viz-tip" id="tip-ytret"></div>
         </div>
       </section>
+
+      <div class="yt-plano" id="yt-plano" onclick="if (event.target === this) fecharPlanoYt()">
+        <div class="yt-plano-caixa" role="dialog" aria-modal="true" aria-labelledby="yt-plano-titulo">
+          <div class="yt-plano-topo">
+            <h2 id="yt-plano-titulo">Plano de ação: como chegar na meta</h2>
+            <button class="yt-plano-fechar" onclick="fecharPlanoYt()" aria-label="Fechar">✕</button>
+          </div>
+          <div id="yt-plano-corpo"></div>
+        </div>
+      </div>
     </div>
 
     <div class="tab-panel" id="tab-admin">
@@ -9703,15 +9758,16 @@ function ytCel(rot, val, sub, classe) {
 
 async function carregarYoutube() {
   const desde = new Date(); desde.setDate(desde.getDate() - 800);
-  const [meta, canal, videos, largada, recortes] = await Promise.all([
-    sb.from('yt_meta').select('*').maybeSingle(),
+  const [marcos, rampa, canal, videos, largada, recortes] = await Promise.all([
+    sb.from('yt_marcos').select('*').order('marco'),
+    sb.from('yt_rampa').select('*').order('mes'),
     sb.from('yt_canal_diario').select('*').gte('data', desde.toISOString().slice(0, 10)).order('data'),
     sb.from('yt_videos').select('*'),
     sb.from('yt_video_largada').select('*'),
     sb.from('yt_recortes').select('*'),
   ]);
-  const erro = meta.error || canal.error || videos.error || largada.error || recortes.error;
-  if (erro || !meta.data || !(canal.data || []).length) {
+  const erro = marcos.error || rampa.error || canal.error || videos.error || largada.error || recortes.error;
+  if (erro || !(marcos.data || []).length || !(canal.data || []).length) {
     document.getElementById('yt-leituras').innerHTML =
       `<div class="fv-vazio">Não consegui carregar os dados do YouTube${erro ? ': ' + igEsc(erro.message) : ''}.</div>`;
     return;
@@ -9721,44 +9777,75 @@ async function carregarYoutube() {
   const publicos = (videos.data || []).filter(v => v.privacidade === 'public')
     .map(v => ({ ...v, l: larg[v.id] || {} }))
     .sort((a, b) => new Date(b.publicado_em) - new Date(a.publicado_em));
-  ytDados = { meta: meta.data, canal: canal.data, videos: publicos, recortes: recortes.data || [] };
+  // a meta da vez é o primeiro marco da escada que ainda não foi batido (o metricas.py marca atingido_em)
+  const meta = marcos.data.find(m => !m.atingido_em) || marcos.data[marcos.data.length - 1];
+  ytDados = { marcos: marcos.data, meta, rampa: (rampa.data || []).filter(r => r.marco === meta.marco),
+    canal: canal.data, videos: publicos, recortes: recortes.data || [] };
   if (!ytEstado.video) { const ultimo = publicos.find(v => v.formato === 'longo'); ytEstado.video = ultimo ? ultimo.id : null; }
   renderYoutube();
 }
 
-// onde o canal precisa estar no dia d pra chegar na meta no prazo (rampa linear, igual à do Instagram)
-function ytMetaNoDia(meta, d) {
-  const total = igDiasEntre(igDia(meta.inicio), igDia(meta.prazo));
-  const passados = Math.min(total, Math.max(0, igDiasEntre(igDia(meta.inicio), d)));
-  return Math.round(meta.inscritos_inicio + (meta.marco - meta.inscritos_inicio) * passados / total);
+// pontos da curva da meta: início do marco + o alvo de fim de cada mês da rampa (ritmo sobe mês a mês,
+// canal cresce composto). Sem rampa, liga o início ao prazo em linha reta.
+function ytPontosMeta(meta, rampa) {
+  const pts = [{ d: igDia(meta.inicio), v: meta.inscritos_inicio }];
+  if (rampa.length) rampa.forEach(r => pts.push({ d: igDia(r.mes), v: r.alvo }));
+  else pts.push({ d: igDia(meta.prazo), v: meta.marco });
+  return pts;
+}
+// onde o canal precisa estar no dia d, e o ritmo que a curva pede naquele trecho
+function ytMetaNoDia(meta, rampa, d) {
+  const pts = ytPontosMeta(meta, rampa);
+  if (d <= pts[0].d) return { alvo: pts[0].v, ritmo: (pts[1].v - pts[0].v) / Math.max(1, igDiasEntre(pts[0].d, pts[1].d)) };
+  for (let i = 1; i < pts.length; i++) {
+    if (d <= pts[i].d) {
+      const dias = Math.max(1, igDiasEntre(pts[i - 1].d, pts[i].d));
+      const ritmo = (pts[i].v - pts[i - 1].v) / dias;
+      return { alvo: Math.round(pts[i - 1].v + ritmo * igDiasEntre(pts[i - 1].d, d)), ritmo };
+    }
+  }
+  return { alvo: meta.marco, ritmo: 0 };
 }
 
 function renderYoutube() {
-  const { meta, canal } = ytDados;
+  const { meta, rampa, canal, marcos } = ytDados;
   const ult = canal[canal.length - 1];
   const r28 = canal.slice(-28);
   const liq28 = r28.reduce((s, d) => s + Number(d.inscritos_ganhos || 0) - Number(d.inscritos_perdidos || 0), 0);
   const atual = ult.inscritos_total;
   const diaAtual = igDia(ult.data);
-  const metaHoje = ytMetaNoDia(meta, diaAtual);
-  const diasRestantes = Math.max(1, igDiasEntre(diaAtual, igDia(meta.prazo)));
-  const ritmoNec = Math.ceil(Math.max(0, meta.marco - atual) / diasRestantes);
   const ritmoAtual = liq28 / 28;
-  const dif = atual - metaHoje;
   const sinal = v => (v >= 0 ? '+' : '−') + igNum(Math.abs(v));
+  const fmtRitmo = v => v.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
 
   document.getElementById('yt-atualizado').textContent = 'Dados até ' + diaAtual.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
-  desenharAnelYt(atual, metaHoje, meta.marco);
+  document.getElementById('yt-meta-titulo').textContent = `Meta: ${igMil(meta.marco)} inscritos`;
+  document.getElementById('yt-escada').innerHTML = marcos.map(m => `<span class="yt-degrau ${m.atingido_em ? 'feito' : m.marco === meta.marco ? 'agora' : ''}">${m.atingido_em ? '✓ ' : ''}${igMil(m.marco)}</span>`).join('<i>›</i>');
 
-  // adiantado/atrasado é status: seta + palavra + cor, nunca só a cor
-  const fmtRitmo = v => v.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
-  document.getElementById('yt-leituras').innerHTML =
-    (dif >= 0
-      ? ytCel('▲ Adiantado', sinal(dif), `acima da curva de hoje (${igNum(metaHoje)})`, 'bom')
-      : ytCel('▼ Atrasado', sinal(dif), `abaixo da curva de hoje (${igNum(metaHoje)})`, 'atras'))
-    + ytCel('Ritmo necessário', `+${igNum(ritmoNec)}<small> /dia</small>`, `hoje o canal faz +${fmtRitmo(ritmoAtual)}/dia (média de 28 dias)`, ritmoAtual >= ritmoNec ? 'bom' : 'atras')
-    + ytCel('Inscritos · 28 dias', sinal(liq28), `${sinal(atual - meta.inscritos_inicio)} desde o início da meta (${igDiaCurto(igDia(meta.inicio))})`)
-    + ytCel('Faltam', `${diasRestantes}<small> dias</small>`, `prazo ${igDia(meta.prazo).toLocaleDateString('pt-BR')} · faltam ${igNum(Math.max(0, meta.marco - atual))} inscritos`);
+  if (meta.prazo && meta.inicio) {
+    const { alvo: metaHoje, ritmo: ritmoNec } = ytMetaNoDia(meta, rampa, diaAtual);
+    const dif = atual - metaHoje;
+    const diasRestantes = Math.max(1, igDiasEntre(diaAtual, igDia(meta.prazo)));
+    const fimMes = rampa.find(r => igDia(r.mes) >= diaAtual);
+    desenharAnelYt(atual, metaHoje, meta.marco);
+    // adiantado/atrasado é status: seta + palavra + cor, nunca só a cor
+    document.getElementById('yt-leituras').innerHTML =
+      (dif >= 0
+        ? ytCel('▲ Adiantado', sinal(dif), `acima da curva de hoje (${igNum(metaHoje)})`, 'bom')
+        : ytCel('▼ Atrasado', sinal(dif), `abaixo da curva de hoje (${igNum(metaHoje)})`, 'atras'))
+      + ytCel('Ritmo que a rampa pede', `+${fmtRitmo(Math.ceil(ritmoNec))}<small> /dia</small>`, `hoje o canal faz +${fmtRitmo(ritmoAtual)}/dia (média de 28 dias)`, ritmoAtual >= ritmoNec ? 'bom' : 'atras')
+      + ytCel('Alvo do mês', fimMes ? igNum(fimMes.alvo) : '—', fimMes ? `até ${igDia(fimMes.mes).toLocaleDateString('pt-BR')} · faltam ${igNum(Math.max(0, fimMes.alvo - atual))}` : 'sem rampa')
+      + ytCel('Faltam', `${diasRestantes}<small> dias</small>`, `prazo ${igDia(meta.prazo).toLocaleDateString('pt-BR')} · faltam ${igNum(Math.max(0, meta.marco - atual))} inscritos`);
+  } else {
+    // marco sem prazo combinado ainda: mostra projeção no ritmo atual em vez de curva
+    desenharAnelYt(atual, null, meta.marco);
+    const dias = ritmoAtual > 0 ? Math.ceil((meta.marco - atual) / ritmoAtual) : null;
+    document.getElementById('yt-leituras').innerHTML =
+      ytCel('Próximo marco', igMil(meta.marco), `faltam ${igNum(Math.max(0, meta.marco - atual))} inscritos`)
+      + ytCel('Ritmo atual', `+${fmtRitmo(ritmoAtual)}<small> /dia</small>`, 'média dos últimos 28 dias')
+      + ytCel('Projeção', dias == null ? '—' : `${igNum(dias)}<small> dias</small>`, 'no ritmo atual')
+      + ytCel('Prazo', 'a definir', 'combinar o prazo desse marco');
+  }
 
   renderVisaoGeralYt();
   renderRecortesYt();
@@ -9769,9 +9856,9 @@ function renderYoutube() {
 // anel no vermelho do YouTube: 0 → meta, marca branca = curva da meta hoje
 function desenharAnelYt(atual, metaHoje, alvo) {
   const C = 125, R = 100, comp = 2 * Math.PI * R;
-  const f = Math.max(0, Math.min(1, atual / alvo)), fHoje = Math.max(0, Math.min(1, metaHoje / alvo));
+  const f = Math.max(0, Math.min(1, atual / alvo)), fHoje = metaHoje == null ? null : Math.max(0, Math.min(1, metaHoje / alvo));
   const ang = fr => (-90 + 360 * fr) * Math.PI / 180;
-  const [hx0, hy0, hx1, hy1] = [C + (R - 13) * Math.cos(ang(fHoje)), C + (R - 13) * Math.sin(ang(fHoje)), C + (R + 13) * Math.cos(ang(fHoje)), C + (R + 13) * Math.sin(ang(fHoje))];
+  const [hx0, hy0, hx1, hy1] = fHoje == null ? [0, 0, 0, 0] : [C + (R - 13) * Math.cos(ang(fHoje)), C + (R - 13) * Math.sin(ang(fHoje)), C + (R + 13) * Math.cos(ang(fHoje)), C + (R + 13) * Math.sin(ang(fHoje))];
   const pct = (atual / alvo * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
   document.getElementById('yt-reator').innerHTML = `
   <svg viewBox="0 0 250 250" role="img" aria-label="${igNum(atual)} inscritos, ${pct}% de ${igMil(alvo)}">
@@ -9779,7 +9866,7 @@ function desenharAnelYt(atual, metaHoje, alvo) {
     <circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="#2c2c2c" stroke-width="16"/>
     <circle class="arco" cx="${C}" cy="${C}" r="${R}" fill="none" stroke="url(#yt-grad-anel)" stroke-width="16" stroke-linecap="round"
       transform="rotate(-90 ${C} ${C})" stroke-dasharray="${comp.toFixed(1)}" stroke-dashoffset="${comp.toFixed(1)}" data-alvo="${(comp * (1 - f)).toFixed(1)}"/>
-    <line x1="${hx0.toFixed(1)}" y1="${hy0.toFixed(1)}" x2="${hx1.toFixed(1)}" y2="${hy1.toFixed(1)}" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    ${fHoje == null ? '' : `<line x1="${hx0.toFixed(1)}" y1="${hy0.toFixed(1)}" x2="${hx1.toFixed(1)}" y2="${hy1.toFixed(1)}" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`}
     <text x="${C}" y="${C - 24}" font-size="11" fill="${YT_COR.sec}" text-anchor="middle">Inscritos</text>
     <text x="${C}" y="${C + 14}" font-size="40" font-weight="700" fill="#fff" text-anchor="middle" style="font-variant-numeric:tabular-nums" id="yt-contador">0</text>
     <text x="${C}" y="${C + 38}" font-size="12" fill="${YT_COR.sec}" text-anchor="middle">${pct}% de ${igMil(alvo)}</text>
@@ -10083,6 +10170,145 @@ async function renderRetencaoYt() {
     if (ytDados) redesenhar();
   }));
 });
+
+// ---------- YOUTUBE · PLANO DE AÇÃO ----------
+// O texto do plano é fixo (leitura dos dados de 30/10/2026); o que muda sozinho são a rampa (real × alvo
+// por mês), o "hoje" de cada alavanca e o placar dos últimos vídeos, calculados do que a aba já carregou.
+const YT_PADRAO = { aos30: 0.6, d7: 500, porMil: 15, duracao: 180 };
+
+const YT_ALAVANCAS = [
+  { t: 'Gancho de 15 segundos', o: 'Abrir com o resultado na tela e a promessa dita em uma frase. Nada de contexto, apresentação ou "antes de começar". O que é técnico entra depois de 1 minuto.',
+    meta: '≥ 60% ainda assistindo aos 0:30', hoje: 'aos30' },
+  { t: 'Tutorial pesquisável, 2 por semana', o: 'Tema tirado dos termos de busca e dos vídeos que mais trazem inscrito. A palavra buscada abre o título ("Claude Code no VS Code: …"). Tutorial converte ~15 inscritos por mil views; "construí X" fica em 2 a 6.',
+    meta: '≥ 15 inscritos a cada mil views', hoje: 'porMil' },
+  { t: 'Série "Claude Code do zero"', o: 'Playlist em ordem de episódios, cada vídeo termina mandando pro próximo (tela final + fala). 94% das views são de quem não é inscrito: a série é o que transforma visita em hábito.',
+    meta: '1 episódio novo por semana', hoje: null },
+  { t: 'Pedido de inscrição na hora certa', o: 'Depois da primeira entrega de valor (2 a 3 min), com motivo concreto: "toda semana sai um tutorial assim, se inscreve pra não perder o próximo". Repetir na tela final e no comentário fixado.',
+    meta: 'em todo vídeo longo', hoje: null },
+  { t: 'Shorts como porta, 1 por dia', o: 'Corte do tutorial da semana com o "vídeo relacionado" ligado no longo. Short traz gente nova, mas quase não vira inscrito: é vitrine, não motor.',
+    meta: '≥ 70% assistido e vídeo relacionado em todo short', hoje: 'shorts' },
+  { t: 'Distribuição própria', o: 'Todo vídeo novo vai pro LinkedIn (5 mil conexões), Instagram, grupo de alunos e materiais de isca. Tráfego externo é o que mais rende tempo assistido no canal.',
+    meta: 'post no LinkedIn no dia de cada vídeo', hoje: 'externo' },
+  { t: 'Miniatura e título testados', o: 'Usar o "Testar e comparar" do YouTube com 2 a 3 miniaturas em todo vídeo longo. Com o CTR no painel dá pra separar: perdeu na miniatura ou no conteúdo.',
+    meta: 'CTR ≥ 6%', hoje: 'ctr' },
+];
+
+const YT_SEMANA = [
+  ['Seg', 'Rodar o briefing, escolher o tutorial da semana pelos dados, roteiro com gancho de 15s'],
+  ['Ter', 'Publicar o tutorial 1 + post no LinkedIn e Instagram'],
+  ['Qua', 'Gravar o tutorial 2 · shorts do dia'],
+  ['Qui', 'Publicar o tutorial 2 (episódio da série) + distribuição'],
+  ['Sex', 'Abrir o placar: 1ª semana e gancho do vídeo da semana anterior. Ajuste vira regra na skill'],
+  ['Todo dia', '1 short cortado do tutorial da semana, com vídeo relacionado'],
+];
+
+async function abrirPlanoYt() {
+  if (!ytDados) return;
+  document.getElementById('yt-plano').classList.add('aberto');
+  document.body.style.overflow = 'hidden';
+  await renderPlanoYt();
+}
+function fecharPlanoYt() {
+  document.getElementById('yt-plano').classList.remove('aberto');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('yt-plano')?.classList.contains('aberto')) fecharPlanoYt(); });
+
+async function renderPlanoYt() {
+  const { meta, rampa, canal, videos, recortes, marcos } = ytDados;
+  const corpo = document.getElementById('yt-plano-corpo');
+  const ult = canal[canal.length - 1];
+  const atual = ult.inscritos_total, diaAtual = igDia(ult.data);
+  const r28 = canal.slice(-28);
+  const soma = (l, k) => l.reduce((s, d) => s + Number(d[k] || 0), 0);
+  const liq28 = soma(r28, 'inscritos_ganhos') - soma(r28, 'inscritos_perdidos');
+  const porMil28 = soma(r28, 'views') ? liq28 * 1000 / soma(r28, 'views') : 0;
+  const fmt1 = v => v.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+
+  // retenção aos 0:30 dos últimos vídeos longos (pro placar e pro "hoje" do gancho)
+  const longos = videos.filter(v => v.formato === 'longo').slice(0, 6);
+  const { data: ret } = await sb.from('yt_retencao').select('video_id,pos,assistindo').in('video_id', longos.map(v => v.id));
+  const aos30 = {};
+  longos.forEach(v => {
+    const curva = (ret || []).filter(r => r.video_id === v.id);
+    if (!curva.length) return;
+    const alvo = Math.min(1, 30 / v.duracao_s);
+    aos30[v.id] = Number(curva.reduce((m, p) => Math.abs(p.pos - alvo) < Math.abs(m.pos - alvo) ? p : m).assistindo);
+  });
+  const ganchos = Object.values(aos30);
+  const shorts28 = videos.filter(v => v.formato === 'short' && new Date(v.publicado_em) >= new Date(diaAtual.getTime() - 28 * 864e5));
+  const traf = recortes.filter(r => r.janela === '28d' && r.dimensao === 'trafego');
+  const totTraf = traf.reduce((s, r) => s + Number(r.views || 0), 0);
+  const ext = traf.find(r => r.chave === 'EXT_URL');
+  const hoje = {
+    aos30: ganchos.length ? `média dos últimos ${ganchos.length}: ${Math.round(ganchos.reduce((a, b) => a + b, 0) / ganchos.length * 100)}%` : '—',
+    porMil: `canal nos últimos 28 dias: ${fmt1(porMil28)} por mil`,
+    shorts: shorts28.length ? `${shorts28.length} shorts em 28 dias · média ${Math.round(shorts28.reduce((s, v) => s + Number(v.pct_assistido || 0), 0) / shorts28.length)}% assistido` : 'nenhum short em 28 dias',
+    externo: ext && totTraf ? `externo = ${Math.round(ext.views / totTraf * 100)}% das views e ${ytHoras(ext.minutos)} em 28 dias` : '—',
+    ctr: 'chega com o relatório de impressões (~01/11)',
+  };
+
+  // rampa: alvo de cada fim de mês × onde o canal estava naquele dia (ou está agora, no mês corrente)
+  const porData = {};
+  canal.forEach(d => { porData[d.data] = d.inscritos_total; });
+  let anterior = { d: igDia(meta.inicio || ult.data), v: meta.inscritos_inicio || atual };
+  const ritmos = [];
+  const linhasRampa = rampa.map(r => {
+    const fim = igDia(r.mes);
+    const dias = Math.max(1, igDiasEntre(anterior.d, fim));
+    const ritmo = (r.alvo - anterior.v) / dias;
+    ritmos.push(ritmo);
+    const fechado = fim < diaAtual;
+    const emCurso = !fechado && anterior.d <= diaAtual;
+    const real = fechado ? porData[r.mes] : emCurso ? atual : null;
+    let status = '<span class="yt-st">a caminho</span>';
+    if (fechado) status = real >= r.alvo ? '<span class="yt-st ok">✓ batido</span>' : '<span class="yt-st nao">✗ não bateu</span>';
+    else if (emCurso) status = `<span class="yt-st agora">● em curso · faltam ${igNum(Math.max(0, r.alvo - atual))}</span>`;
+    anterior = { d: fim, v: r.alvo };
+    return `<tr class="${emCurso ? 'agora' : ''}"><td>${fim.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</td><td class="n">${igNum(r.alvo)}</td><td class="n">+${Math.ceil(ritmo)}/dia</td><td class="n">${real == null ? '—' : igNum(real)}</td><td>${status}</td></tr>`;
+  }).join('');
+
+  const ok = (cond, txt) => `<span class="yt-st ${cond == null ? '' : cond ? 'ok' : 'nao'}">${cond == null ? '' : cond ? '✓ ' : '✗ '}${txt}</span>`;
+  const placar = longos.map(v => {
+    const pm = v.views ? Number(v.inscritos_ganhos || 0) * 1000 / Number(v.views) : 0;
+    const a = aos30[v.id];
+    return `<tr><td class="tit">${igEsc(v.titulo)}</td>
+      <td>${a == null ? ok(null, '—') : ok(a >= YT_PADRAO.aos30, Math.round(a * 100) + '%')}</td>
+      <td>${v.l.views_d7 == null ? ok(null, '—') : ok(v.l.views_d7 >= YT_PADRAO.d7, igNum(v.l.views_d7))}</td>
+      <td>${ok(pm >= YT_PADRAO.porMil, fmt1(pm))}</td>
+      <td>${v.duracao_media_s == null ? ok(null, '—') : ok(v.duracao_media_s >= YT_PADRAO.duracao, ytTempo(v.duracao_media_s))}</td></tr>`;
+  }).join('');
+
+  const prazoTxt = meta.prazo ? igDia(meta.prazo).toLocaleDateString('pt-BR') : 'prazo a definir';
+  corpo.innerHTML = `
+    <p class="yt-plano-sub">${igNum(atual)} → ${igNum(meta.marco)} inscritos · ${prazoTxt}. Hoje o canal faz <b>+${fmt1(liq28 / 28)}/dia</b>${ritmos.length ? `; a rampa começa em +${Math.ceil(ritmos[0])}/dia e sobe até +${Math.ceil(Math.max(...ritmos))}/dia` : ''}.</p>
+
+    <h3>Diagnóstico (dados de 30/10/2026)</h3>
+    <ul class="yt-plano-lista">
+      <li><b>O gancho é o gargalo nº 1.</b> Os 8 últimos vídeos longos ficaram abaixo de vídeos parecidos nos primeiros 30s. Metade do público sai entre 0:21 e 0:56.</li>
+      <li><b>Tutorial é o que vira inscrito.</b> Skills pra leads, 3 formas de ganhar dinheiro e funil em 30 min fazem ~15 inscritos por mil views. "Construí X" alcança, mas faz de 2 a 6. Shorts quase não convertem.</li>
+      <li><b>A porta de entrada é a busca.</b> "Claude Code no VS Code", "landing page com IA" e "Retell AI" trazem gente o ano inteiro. O Google sozinho mandou 671 views em 28 dias.</li>
+      <li><b>94% de quem assiste não é inscrito.</b> O canal atrai, mas não chama pra ficar.</li>
+    </ul>
+
+    <h3>Rampa mês a mês</h3>
+    <div class="tabela-wrap"><table class="yt-tabela yt-plano-tab"><tr><th>Mês</th><th>Alvo no fim do mês</th><th>Ritmo no mês</th><th>Real</th><th>Situação</th></tr>${linhasRampa || '<tr><td class="vazio" colspan="5">Sem rampa pra esse marco.</td></tr>'}</table></div>
+
+    <h3>As 7 alavancas</h3>
+    <div class="yt-alavancas">${YT_ALAVANCAS.map((a, i) => `<div class="yt-alav"><div class="num">${i + 1}</div><div>
+      <div class="t">${a.t}</div><div class="o">${a.o}</div>
+      <div class="m"><span>Meta</span>${a.meta}</div>${a.hoje ? `<div class="m"><span>Hoje</span>${hoje[a.hoje]}</div>` : ''}</div></div>`).join('')}</div>
+
+    <h3>Padrão de cada vídeo longo · placar dos últimos ${longos.length}</h3>
+    <div class="tabela-wrap"><table class="yt-tabela yt-plano-tab"><tr><th>Vídeo</th><th>Aos 0:30 ≥ 60%</th><th>1ª semana ≥ 500</th><th>Inscritos/mil ≥ 15</th><th>Duração média ≥ 3:00</th></tr>${placar}</table></div>
+
+    <h3>Semana padrão</h3>
+    <div class="yt-semana">${YT_SEMANA.map(([d, t]) => `<div><b>${d}</b><span>${t}</span></div>`).join('')}</div>
+
+    <h3>Escada de metas</h3>
+    <p class="yt-plano-sub" style="margin-top:0;">Bateu um marco, o painel passa sozinho pro próximo. O prazo de cada marco novo é combinado quando chegar nele.</p>
+    <div class="yt-escada grande">${marcos.map(m => `<span class="yt-degrau ${m.atingido_em ? 'feito' : m.marco === meta.marco ? 'agora' : ''}">${m.atingido_em ? '✓ ' : ''}${igMil(m.marco)}${m.atingido_em ? `<small>${igDia(m.atingido_em).toLocaleDateString('pt-BR')}</small>` : m.prazo ? `<small>até ${igDia(m.prazo).toLocaleDateString('pt-BR')}</small>` : ''}</span>`).join('<i>›</i>')}</div>`;
+}
 
 // ---------- MOTIVO DE PERDA ----------
 // "Perdido" sem motivo é um dado que não responde nada: no fim do mês você sabe que perdeu 55 e
