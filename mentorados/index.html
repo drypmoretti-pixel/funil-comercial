@@ -11,6 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<script>/* link de "esqueci minha senha" volta com #...type=recovery (ou com erro, se expirou); o supabase-js limpa a URL ao iniciar */
+window.DI_RECUPERACAO=/type=recovery/.test(location.hash);
+window.DI_LINK_ERRO=/error_code=/.test(location.hash)?(/otp_expired/.test(location.hash)?'Esse link expirou ou já foi usado. Peça outro abaixo.':'Não deu pra usar esse link. Peça outro abaixo.'):'';</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
@@ -133,6 +136,9 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .senha-wrap .ver:hover{background:var(--accent-wash)}
 @media (max-width:860px){.login-marca{display:none}.login-box img.logo-m{display:block}}
 .erro{color:var(--critical);font-size:.82rem;margin-top:10px;display:none}
+.login-box .link-esqueci{display:block;margin:14px auto 0;border:0;background:none;color:var(--accent-deep);font-weight:700;font-size:.84rem;padding:4px 6px;border-radius:6px;cursor:pointer}
+.login-box .link-esqueci:hover{background:var(--accent-wash)}
+.ok-msg{color:var(--accent-deep);font-size:.84rem;margin-top:10px;line-height:1.5;display:none}
 .app-shell{display:none;min-height:100vh}
 .sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--side-bg);display:flex;flex-direction:column;padding:18px 12px;
   position:sticky;top:0;height:100vh;align-self:flex-start;overflow-y:auto;border-right:1px solid rgba(255,255,255,.05)}
@@ -953,8 +959,8 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
     <div class="login-box">
       <img class="logo-m" src="../logo-demanda-infinita.png" alt="Demanda Infinita">
       <div class="kicker">Portal dos mentorados</div>
-      <h1>Entrar</h1>
-      <p class="sub">Use o e-mail e a senha que você recebeu.</p>
+      <h1 id="login-h1">Entrar</h1>
+      <p class="sub" id="login-sub">Use o e-mail e a senha que você recebeu.</p>
       <form id="form-login">
         <div class="campo"><label class="lbl" for="login-email">E-mail</label>
           <input type="email" id="login-email" required autocomplete="username"></div>
@@ -962,8 +968,26 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
           <div class="senha-wrap"><input type="password" id="login-senha" required autocomplete="current-password"><button type="button" class="ver" data-act="senha-ver" data-alvo="login-senha" aria-label="Mostrar ou ocultar a senha">mostrar</button></div></div>
         <button type="submit" class="btn btn-primary">Entrar</button>
         <div class="erro" id="login-erro" role="alert"></div>
+        <button type="button" class="link-esqueci" data-act="esqueci">Esqueci minha senha</button>
       </form>
-      <div class="ajuda">Não recebeu o acesso ou esqueceu a senha? Fale com o Igor que ele gera uma nova.</div>
+      <form id="form-esqueci" style="display:none">
+        <div class="campo"><label class="lbl" for="esq-email">E-mail do seu acesso</label>
+          <input type="email" id="esq-email" required autocomplete="username"></div>
+        <button type="submit" class="btn btn-primary">Enviar link pro meu e-mail</button>
+        <div class="ok-msg" id="esq-ok" role="status"></div>
+        <div class="erro" id="esq-erro" role="alert"></div>
+        <button type="button" class="link-esqueci" data-act="voltar-login">Voltar pro login</button>
+      </form>
+      <form id="form-nova-senha" style="display:none">
+        <div class="campo"><label class="lbl" for="ns1">Nova senha</label>
+          <div class="senha-wrap"><input type="password" id="ns1" minlength="8" required autocomplete="new-password"><button type="button" class="ver" data-act="senha-ver" data-alvo="ns1" aria-label="Mostrar ou ocultar a senha">mostrar</button></div>
+          <div class="hint">Pelo menos 8 caracteres.</div></div>
+        <div class="campo"><label class="lbl" for="ns2">Repita a nova senha</label>
+          <input type="password" id="ns2" minlength="8" required autocomplete="new-password"></div>
+        <button type="submit" class="btn btn-primary">Salvar e entrar</button>
+        <div class="erro" id="ns-erro" role="alert"></div>
+      </form>
+      <div class="ajuda">Não recebeu o acesso? Fale com o Igor que ele gera um pra você.</div>
     </div>
   </div>
 </div>
@@ -1249,6 +1273,47 @@ $('#form-login').addEventListener('submit', async e => {
   await iniciar();
 });
 ACT['sair'] = async () => { await sb.auth.signOut(); location.reload(); };
+/* ---------- esqueci minha senha: link por e-mail → volta aqui com sessão de recuperação → define a nova ---------- */
+function telaLogin(qual, msgErro) {
+  const titulos = { login: ['Entrar', 'Use o e-mail e a senha que você recebeu.'],
+    esqueci: ['Esqueci minha senha', 'A gente manda um link pro seu e-mail. Pelo link você cria uma senha nova.'],
+    nova: ['Criar nova senha', 'Escolha a senha nova. Depois de salvar, você já entra no portal.'] };
+  $('#form-login').style.display = qual === 'login' ? '' : 'none';
+  $('#form-esqueci').style.display = qual === 'esqueci' ? '' : 'none';
+  $('#form-nova-senha').style.display = qual === 'nova' ? '' : 'none';
+  [$('#login-h1').textContent, $('#login-sub').textContent] = titulos[qual];
+  $('#carregando').style.display = 'none'; $('#tela-login').style.display = 'flex';
+  const erro = qual === 'login' ? $('#login-erro') : qual === 'esqueci' ? $('#esq-erro') : $('#ns-erro');
+  erro.textContent = msgErro || ''; erro.style.display = msgErro ? 'block' : 'none';
+}
+ACT['esqueci'] = () => { $('#esq-email').value = $('#login-email').value.trim(); $('#esq-ok').style.display = 'none'; telaLogin('esqueci'); $('#esq-email').focus(); };
+ACT['voltar-login'] = () => telaLogin('login');
+$('#form-esqueci').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true;
+  $('#esq-erro').style.display = 'none'; $('#esq-ok').style.display = 'none';
+  const { error } = await sb.auth.resetPasswordForEmail($('#esq-email').value.trim(), { redirectTo: location.origin + location.pathname });
+  btn.disabled = false;
+  if (error && /rate|limit|seconds/i.test(error.message)) { telaLogin('esqueci', 'Muitos pedidos de link agora. Espere alguns minutos ou fale com o Igor.'); return; }
+  if (error) { telaLogin('esqueci', 'Não deu pra enviar agora. Tente de novo ou fale com o Igor.'); return; }
+  // mesma resposta exista ou não o e-mail: não revela quem tem acesso
+  $('#esq-ok').textContent = 'Pronto. Se esse e-mail tiver acesso ao portal, o link chega em alguns minutos (olhe também o spam). Não chegou? Fale com o Igor.';
+  $('#esq-ok').style.display = 'block';
+});
+$('#form-nova-senha').addEventListener('submit', async e => {
+  e.preventDefault();
+  const a = $('#ns1').value, b = $('#ns2').value;
+  if (a !== b) { telaLogin('nova', 'As senhas não são iguais.'); return; }
+  const btn = e.target.querySelector('button[type=submit]'); btn.disabled = true;
+  const { error } = await sb.auth.updateUser({ password: a });
+  btn.disabled = false;
+  if (error) { telaLogin('nova', /different|same/i.test(error.message) ? 'A senha nova precisa ser diferente da antiga.' : 'Não deu pra salvar: ' + error.message); return; }
+  window.DI_RECUPERACAO = false;
+  history.replaceState(null, '', location.pathname);
+  $('#tela-login').style.display = 'none'; $('#carregando').style.display = 'flex';
+  await iniciar();
+  toast('Senha nova salva.');
+});
 /* ---------- tema claro/escuro (a escolha fica no navegador; o <head> aplica antes de pintar, sem piscar) ---------- */
 const temaAtual = () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'escuro' : 'claro';
 function aplicarTema(t) {
@@ -1275,10 +1340,14 @@ SUB['senha'] = async f => {
 
 async function boot() {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) { $('#carregando').style.display = 'none'; $('#tela-login').style.display = 'flex'; return; }
+  if (session && window.DI_RECUPERACAO) { telaLogin('nova'); return; }
+  if (!session) { window.DI_LINK_ERRO ? telaLogin('esqueci', window.DI_LINK_ERRO) : telaLogin('login'); return; }
   await iniciar();
 }
-sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT' && S.perfil) location.reload(); });
+sb.auth.onAuthStateChange(ev => {
+  if (ev === 'SIGNED_OUT' && S.perfil) location.reload();
+  if (ev === 'PASSWORD_RECOVERY' && !S.perfil) { window.DI_RECUPERACAO = true; telaLogin('nova'); }
+});
 
 async function iniciar() {
   const { data: { user } } = await sb.auth.getUser();
@@ -3448,7 +3517,7 @@ const AVISOS = [
   ['Você fechou o checklist de ontem?', 'Um lembrete que aparece uma vez por dia útil.', 'Toca em “Preencher agora” e ajusta o dia. Fim de semana não cobra; na segunda ele cobra a sexta.', 'Calendário'],
 ];
 const FAQ = [
-  ['Esqueci a senha. E agora?', 'Fala com o Igor: ele gera uma nova em segundos. Dentro do portal você troca a senha pelo menu do canto superior direito (seu nome).'],
+  ['Esqueci a senha. E agora?', 'Na tela de login, toca em “Esqueci minha senha”: o link pra criar uma nova chega no seu e-mail. Se não chegar, fala com o Igor que ele gera uma em segundos. Dentro do portal você troca a senha pelo menu do canto superior direito (seu nome).'],
   ['Posso editar o post depois de enviar?', 'Só se o Igor pedir ajustes. Enviou, está nas mãos dele. Por isso vale reler antes de apertar “Enviar para aprovação”.'],
   ['Cadê o botão de publicar?', 'Ele só aparece depois que o post é aprovado. Antes disso, a tela mostra “Aguardando aprovação”.'],
   ['Onde coloco o link do post?', 'Depois de publicar no LinkedIn, na tela do post aprovado (“Já publicou?”). Antes de postar não existe link, então não tem o que colar.'],
