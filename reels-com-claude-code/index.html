@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reels com o Claude Code | Método Demanda Infinita®</title>
+<meta name="description" content="O passo a passo e os prompts pra fazer Reels com o Claude Code: roteiro, voz, legenda palavra a palavra, animação e vídeo pronto.">
+<meta property="og:title" content="Como fazer Reels com o Claude Code">
+<meta property="og:description" content="O passo a passo e os prompts pra fazer Reels com o Claude Code: roteiro, voz, legenda palavra a palavra, animação e vídeo pronto.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://demandainfinita.com/reels-com-claude-code/">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+  @page{size:A4; margin:16mm 15mm 16mm 15mm;}
+  :root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE;--warn:#C2410C;}
+  *{box-sizing:border-box;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact; scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:12.5px;line-height:1.55;}
+  h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:600;}
+  .pb{break-before:page;}
+  .avoid{break-inside:avoid;}
+
+  /* capa */
+  .cover{min-height:255mm;display:flex;flex-direction:column;justify-content:center;text-align:center;}
+  .cover img.logo{width:84px;height:84px;margin:0 auto 22px;}
+  .kicker{font-size:11px;font-weight:700;letter-spacing:1.6px;color:var(--green);text-transform:uppercase;}
+  .cover h1{font-size:40px;font-weight:800;line-height:1.12;margin:12px 0 14px;}
+  .cover .sub{font-size:15px;color:var(--gray);max-width:420px;margin:0 auto;}
+  .badge{display:inline-block;margin:24px auto 0;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px;}
+
+  /* vídeo */
+  .video{margin:8px auto 8px;max-width:860px;}
+  .video .kv{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);text-align:center;margin-bottom:6px;}
+  .video h2{font-size:24px;text-align:center;margin-bottom:16px;line-height:1.25;}
+  .video .frame{position:relative;padding-top:56.25%;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 14px 40px rgba(0,0,0,.18);border:1px solid var(--line);}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .jump{display:block;width:fit-content;margin:18px auto 0;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13.5px;color:var(--green);text-decoration:none;border:1.5px solid var(--green);background:#fff;border-radius:999px;padding:9px 20px;}
+  .jump:hover{background:var(--green);color:#fff;}
+
+  h2.sec{font-size:22px;font-weight:800;padding-bottom:8px;border-bottom:2px solid var(--green);margin-bottom:14px;}
+  h2.sec .tag{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+  h3{font-size:15px;font-weight:800;margin:16px 0 6px;}
+  .lead{font-size:13.5px;}
+  .lead strong{color:var(--green);}
+  .analogy{font-size:13.5px;border-left:4px solid var(--green-light);padding:2px 0 2px 13px;margin:0 0 12px;}
+  .analogy strong{color:var(--green);}
+
+  .card{background:var(--card);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+  .white{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:10px;}
+
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  .f{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;break-inside:avoid;}
+  .f .n{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--green);}
+  .f .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;margin:2px 0;}
+  .f .d{font-size:11.5px;color:var(--gray);line-height:1.4;}
+  a.f{display:block;color:inherit;text-decoration:none;transition:border-color .15s, transform .15s;}
+  a.f:hover{border-color:var(--green);transform:translateY(-2px);}
+
+  /* ícones desenhados */
+  svg.ic{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block;}
+  .f svg.ic{width:24px;height:24px;margin-bottom:5px;}
+  .term svg.ic{margin:0 auto 7px;width:28px;height:28px;}
+
+  /* termos / glossário */
+  .term{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 12px;text-align:center;break-inside:avoid;}
+  .term .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13.5px;}
+  .term .d{font-size:11px;color:var(--gray);margin-top:3px;line-height:1.35;}
+
+  /* diagrama */
+  .dg{margin:16px 0;text-align:center;break-inside:avoid;}
+  .dg svg{width:100%;height:auto;max-width:620px;}
+  .dg figcaption{font-size:10.5px;color:var(--gray);margin-top:8px;font-style:italic;}
+
+  .prompt{background:#0A0F0C;border:1px solid rgba(18,184,94,.3);border-radius:12px;padding:11px 14px 10px;margin:10px 0;break-inside:avoid;}
+  .prompt .l{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--green-light);margin-bottom:6px;}
+  .prompt pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:'JetBrains Mono',monospace;font-size:10.8px;line-height:1.55;color:#E8F3EC;}
+  .prompt.master{border:2px solid var(--green-light);box-shadow:0 0 0 4px rgba(18,184,94,.12);}
+  .prompt.master .l{display:inline-block;background:var(--green-light);color:#06130b;padding:3px 10px;border-radius:999px;font-weight:800;}
+
+  .tip,.alert{border-left:4px solid var(--green);background:var(--card);border-radius:8px;padding:9px 13px;margin:11px 0;font-size:12px;break-inside:avoid;}
+  .tip b,.alert b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--green);margin-bottom:2px;font-family:'Plus Jakarta Sans',sans-serif;}
+  .alert{border-left-color:var(--warn);}
+  .alert b{color:var(--warn);}
+
+  table{border-collapse:collapse;width:100%;font-size:11.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0;}
+  th{background:var(--card);text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid var(--line);}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+  tr:last-child td{border-bottom:0;}
+  tr{break-inside:avoid;}
+
+  .steps{display:flex;flex-direction:column;gap:9px;margin:10px 0;}
+  .step{display:flex;gap:11px;align-items:flex-start;break-inside:avoid;}
+  .step .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px;}
+  .step .t b{font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;}
+  code{font-family:'JetBrains Mono',monospace;background:var(--card);padding:1px 5px;border-radius:4px;font-size:11px;}
+
+  .quest{border:2px solid var(--green);background:#fff;border-radius:16px;padding:20px 24px;margin:16px 0;text-align:center;break-inside:avoid;}
+  .quest .e{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+  .quest .q{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:18px;line-height:1.35;max-width:520px;margin:0 auto;}
+  .quest .s{font-size:11.5px;color:var(--gray);margin-top:10px;}
+
+  .behind{font-size:11.5px;color:var(--gray);margin:-4px 0 10px;padding-left:2px;}
+  .behind b{color:var(--green);font-weight:700;}
+  .when{font-size:12px;color:var(--gray);margin:0 0 -2px;}
+  .when b{color:var(--text);font-weight:700;}
+
+  /* bloco técnico que abre sob demanda */
+  details.dev{border:1.5px dashed var(--line);border-radius:12px;background:#fff;margin:14px 0;padding:0;}
+  details.dev summary{cursor:pointer;list-style:none;padding:11px 15px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:10px;}
+  details.dev summary::-webkit-details-marker{display:none;}
+  details.dev summary::before{content:"+";flex:0 0 22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;}
+  details.dev[open] summary::before{content:"–";}
+  details.dev summary small{display:block;font-weight:500;font-size:11px;color:var(--gray);font-family:'Inter',sans-serif;}
+  details.dev .in{padding:0 15px 12px;}
+  details.dev table{margin:4px 0 0;}
+
+  /* comparação visual bad/good */
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+  .cmp .col{border-radius:12px;padding:12px 14px;background:#fff;}
+  .cmp .bad{border:2px solid var(--warn);}
+  .cmp .good{border:2px solid var(--green);}
+  .cmp .h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:12px;text-align:center;margin-bottom:8px;}
+  .cmp .bad .h{color:var(--warn);}
+  .cmp .good .h{color:var(--green);}
+  .cmp .row{display:flex;align-items:center;gap:8px;font-size:11.5px;padding:7px 0;border-top:1px solid var(--line);}
+  .cmp .row:first-of-type{border-top:0;}
+
+  /* impacto visual */
+  .impact{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0;text-align:center;}
+  .impact .v{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 10px;}
+  .impact .v.ok{border:2px solid var(--green);}
+  .impact .lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;color:var(--gray);letter-spacing:1px;}
+  .impact .ico{width:64px;height:auto;margin:8px auto;display:block;}
+  .impact .cap{font-size:10.5px;color:var(--gray);}
+  .impact .v.ok .cap{color:var(--green);font-weight:700;}
+
+  /* conversa de exemplo */
+  .convo{margin:12px 0;}
+  .msg{max-width:82%;padding:9px 13px;border-radius:13px;margin-bottom:8px;font-size:11.3px;line-height:1.5;break-inside:avoid;}
+  .msg .who{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:9px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
+  .msg.you{background:#fff;border:1px solid var(--line);margin-left:auto;border-bottom-right-radius:3px;}
+  .msg.you .who{color:var(--gray);text-align:right;}
+  .msg.ai{background:#0A0F0C;color:#E8F3EC;margin-right:auto;border-bottom-left-radius:3px;font-family:'JetBrains Mono',monospace;font-size:10.6px;}
+  .msg.ai .who{color:var(--green-light);}
+  .msg.save{background:var(--card);border:2px dashed var(--green);margin:0 auto 8px;max-width:92%;text-align:center;font-weight:700;color:var(--green);border-radius:10px;}
+
+  .cta{margin-top:18px;padding:26px 24px;border-radius:18px;text-align:center;background:radial-gradient(circle at 50% 0%,#163825 0%,#0A0F0C 62%);border:1px solid rgba(18,184,94,.35);color:#fff;break-inside:avoid;}
+  .cta img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--green-light);margin:0 auto 12px;display:block;}
+  .cta .e{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--green-light);margin-bottom:8px;}
+  .cta .t{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:19px;line-height:1.3;max-width:420px;margin:0 auto 6px;}
+  .cta .s{font-size:12px;color:#a9b3ad;}
+  footer{text-align:center;font-size:10px;color:var(--gray);margin-top:16px;line-height:1.5;}
+  .cta a.btn{display:inline-block;margin-top:12px;background:#12B85E;color:#06130b;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;text-decoration:none;padding:10px 22px;border-radius:999px;}
+  @media screen{
+    body{font-size:16px;line-height:1.65;padding:0 18px;}
+    section{max-width:860px;margin-left:auto;margin-right:auto;}
+    .cover{min-height:auto;padding:72px 0 40px;}
+    .pb{margin-top:56px;scroll-margin-top:20px;}
+    pre{white-space:pre-wrap;word-break:break-word;}
+    .cta{padding:40px 28px;margin:48px 0 24px;} .cta .t{font-size:24px;max-width:540px;} .cta .s{font-size:15px;}
+    .cta a.btn{font-size:17px;padding:15px 30px;}
+    .quest .q{font-size:24px;}
+    .dg figcaption{font-size:13px;}
+    .f .d,.term .d{font-size:13px;}
+    .f .t,.term .t{font-size:15.5px;}
+    .cmp .row{font-size:14px;}
+    td,th{font-size:13.5px;}
+    .behind,.when{font-size:13.5px;}
+    .tip,.alert{font-size:14px;}
+    details.dev summary{font-size:14.5px;} details.dev summary small{font-size:12.5px;}
+    .impact .cap{font-size:12.5px;}
+    .msg{font-size:13.5px;} .msg.ai{font-size:12.5px;}
+    .prompt pre{font-size:12.5px;}
+    .step .t b{font-size:inherit;}
+    .step .t{font-size:15px;}
+  }
+  @media screen and (max-width:640px){
+    .grid3,.grid2,.grid4{grid-template-columns:1fr 1fr !important;}
+    table{display:block;overflow-x:auto;}
+    .only-d{display:none !important;}
+    .only-m{display:block !important;}
+    .cover h1{font-size:32px;}
+    .video h2{font-size:20px;}
+    .msg{max-width:94%;}
+    .cmp{grid-template-columns:1fr;}
+  }
+  .prompt .l{padding-right:78px;}
+  .prompt.master .l{padding-right:10px;}
+
+  /* versão vertical dos diagramas (só celular) */
+  .only-m{display:none;}
+  .mflow{display:flex;flex-direction:column;margin:14px 0 4px;text-align:left;}
+  .ms{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--text);border-radius:12px;padding:11px 14px;}
+  .ms .mn{flex:0 0 26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font:800 13px 'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;}
+  .ms b{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;line-height:1.3;}
+  .ms small{display:block;font-size:13px;color:var(--gray);line-height:1.35;}
+  .ms.done{justify-content:center;border-radius:999px;border-width:2px;text-align:center;}
+  .ms.boss{background:var(--green);border-color:var(--green);color:#fff;justify-content:center;text-align:center;}
+  .ms.boss small{color:#e6f6ec;}
+  .ma{display:block;width:0;height:0;margin:3px auto;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--text);}
+  .ma.g{border-top-color:var(--green);}
+  .mloop{margin-top:12px;background:rgba(18,184,94,.12);border:1.5px solid var(--green);color:var(--green);border-radius:12px;padding:10px 13px;text-align:center;font:800 13.5px/1.35 'Plus Jakarta Sans',sans-serif;}
+  .mlabel{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:13px;letter-spacing:.3px;color:var(--green);margin:16px 0 8px;text-align:left;}
+  .prompt{position:relative;}
+  .copy{position:absolute;top:8px;right:10px;background:rgba(18,184,94,.16);color:#7be3a6;border:1px solid rgba(18,184,94,.4);border-radius:999px;font:600 11px 'JetBrains Mono',monospace;padding:4px 12px;cursor:pointer;}
+  .copy:hover{background:rgba(18,184,94,.3);}
+  .prompt.master .copy{top:9px;}
+  @media print{.copy,.video,.jump{display:none;} a.f{transform:none;}}
+
+  figure.print{margin:14px 0;break-inside:avoid;}
+  figure.print img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.10);}
+  figure.print figcaption{font-size:11px;color:var(--gray);margin-top:7px;text-align:center;}
+  @media screen{figure.print figcaption{font-size:13.5px;}}
+  @media screen and (max-width:640px){.grid2 figure.print{grid-column:1/-1;}}
+</style>
+</head>
+<body>
+<!-- CAPA -->
+<section class="cover">
+  <img class="logo" src="logo-demanda-infinita.png" alt="">
+  <div class="kicker">Coisas que eu construí com o Claude</div>
+  <h1>Reels feitos com o Claude Code, do roteiro ao vídeo pronto</h1>
+  <p class="sub">O passo a passo e os prompts pra transformar uma ideia num Reels animado, com voz e legenda palavra a palavra. Sem editor de vídeo.</p>
+  <span class="badge">Material do vídeo · passo a passo</span>
+</section>
+
+<!--VIDEO-->
+
+<section>
+  <p class="lead">No vídeo eu mostrei como faço os Reels e Shorts do meu canal. Aqui está <strong>o caminho, na ordem</strong>, com o prompt de cada etapa pra você copiar, trocar os colchetes e colar no Claude Code.</p>
+  <p class="analogy"><strong>A ideia central:</strong> o Claude Code não "edita" vídeo. Ele escreve uma página animada, tira uma foto de cada quadro e junta tudo num MP4. Por isso o resultado é preciso: a palavra aparece <strong>no instante em que é falada</strong>.</p>
+
+  <div class="grid4">
+    <a class="f" href="#p0"><div class="n">00</div><div class="t">O roteiro</div><div class="d">Gancho nos 2 primeiros segundos</div></a>
+    <a class="f" href="#p1"><div class="n">01</div><div class="t">A pasta</div><div class="d">Projeto e Plan Mode</div></a>
+    <a class="f" href="#p2"><div class="n">02</div><div class="t">A voz</div><div class="d">Narração gerada do texto</div></a>
+    <a class="f" href="#p3"><div class="n">03</div><div class="t">O tempo</div><div class="d">Cada palavra com seu segundo</div></a>
+    <a class="f" href="#p4"><div class="n">04</div><div class="t">A cena</div><div class="d">Animação em HTML</div></a>
+    <a class="f" href="#p5"><div class="n">05</div><div class="t">A prévia</div><div class="d">Ver antes de renderizar</div></a>
+    <a class="f" href="#p6"><div class="n">06</div><div class="t">O vídeo</div><div class="d">Quadros + áudio = MP4</div></a>
+    <a class="f" href="#p7"><div class="n">07</div><div class="t">O caderno</div><div class="d">Ele lembra do seu estilo</div></a>
+  </div>
+
+  <figure class="dg">
+    <svg viewBox="0 0 640 96" role="img" aria-label="Roteiro, voz, tempo das palavras, cena em HTML, quadros e MP4">
+      <g font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="12" text-anchor="middle">
+        <rect x="4" y="26" width="86" height="44" rx="10" fill="#fff" stroke="#111" stroke-width="1.6"/><text x="47" y="53">Roteiro</text>
+        <rect x="112" y="26" width="86" height="44" rx="10" fill="#fff" stroke="#111" stroke-width="1.6"/><text x="155" y="53">Voz</text>
+        <rect x="220" y="26" width="86" height="44" rx="10" fill="#fff" stroke="#111" stroke-width="1.6"/><text x="263" y="53">Tempos</text>
+        <rect x="328" y="26" width="86" height="44" rx="10" fill="#fff" stroke="#111" stroke-width="1.6"/><text x="371" y="53">Cena HTML</text>
+        <rect x="436" y="26" width="86" height="44" rx="10" fill="#fff" stroke="#111" stroke-width="1.6"/><text x="479" y="53">Quadros</text>
+        <rect x="544" y="26" width="92" height="44" rx="10" fill="#008E43"/><text x="590" y="53" fill="#fff">Reels MP4</text>
+      </g>
+      <g stroke="#008E43" stroke-width="2" fill="none"><path d="M92 48h18M200 48h18M308 48h18M416 48h18M524 48h18"/></g>
+    </svg>
+    <figcaption>O caminho de todo Reels: seis passos, cada um com um arquivo que você pode abrir e conferir.</figcaption>
+  </figure>
+
+  <p class="lead">A regra que guia tudo: <strong>confira cada etapa antes de ir pra próxima</strong>. Voz errada no passo 2 vira vídeo errado no passo 6.</p>
+</section>
+
+<!-- 00 -->
+<section class="pb" id="p0">
+  <h2 class="sec"><span class="tag">Etapa 00</span>O roteiro: o gancho vem primeiro</h2>
+  <p>Antes de abrir o Claude Code, escreva o que o vídeo diz. Reels bom decide nos <strong>2 primeiros segundos</strong>: nada de "oi, pessoal", vá direto no problema ou no resultado. Pode pedir ajuda ao Claude, mas a ideia e a verdade dela são suas.</p>
+  <div class="prompt"><div class="l">Prompt 0 · roteiro de 30 segundos</div><pre>Escreva o roteiro de um Reels de 30 segundos, em português do Brasil, sobre: [o tema, em uma frase].
+
+Regras:
+- A primeira frase mostra o problema ou o resultado. Nada de apresentação.
+- Frases curtas, de no máximo 10 palavras.
+- Só use fatos que eu te der ou que tenham fonte. Se faltar dado, me pergunte.
+- Termina com uma pergunta simples pra gerar comentário.
+- Me entregue só o texto falado, pronto pra ser lido em voz alta.
+
+O que eu sei sobre o tema: [cole aqui fatos, números e a sua história real]</pre></div>
+  <div class="tip"><b>Dica</b>Gancho que funciona é o que você viveu. Se não aconteceu, não escreva como se tivesse acontecido.</div>
+</section>
+
+<!-- 01 -->
+<section class="pb" id="p1">
+  <h2 class="sec"><span class="tag">Etapa 01</span>A pasta do projeto e o Plan Mode</h2>
+  <p>Crie uma pasta chamada <code>meus-reels</code>, abra o Claude Code dentro dela e ligue o <strong>Plan Mode</strong> (<code>Shift + Tab</code> até aparecer "plan mode"). Ele planeja e pergunta antes de criar qualquer arquivo.</p>
+  <div class="prompt"><div class="l">Prompt 1 · o briefing do projeto</div><pre>Quero montar Reels em vídeo vertical (1080x1920, 30 quadros por segundo) usando só código, sem editor de vídeo. Antes de criar qualquer arquivo, me explique o plano e me faça as perguntas que faltam.
+
+O caminho que eu imagino:
+1. Eu escrevo o roteiro num arquivo de texto
+2. Você gera a narração em áudio a partir do texto
+3. Você descobre o segundo exato de cada palavra falada
+4. Você monta uma página HTML animada, com a legenda aparecendo palavra por palavra no tempo da fala
+5. Você tira uma imagem de cada quadro da animação
+6. Você junta as imagens e o áudio num MP4
+
+Meu estilo visual: [fundo claro ou escuro, cores, fonte, com ou sem rosto]
+Me diga quais ferramentas precisam ser instaladas, uma por uma, e por quê. Não instale nada sem eu aprovar.</pre></div>
+  <p class="behind"><b>Por trás:</b> o Claude propõe o que instalar (normalmente Node, Python, ffmpeg e um navegador sem tela pra tirar as imagens). Você lê, aprova e ele instala.</p>
+</section>
+
+<!-- 02 -->
+<section class="pb" id="p2">
+  <h2 class="sec"><span class="tag">Etapa 02</span>A voz: do texto ao áudio</h2>
+  <p>Você tem três caminhos: gravar a sua voz, usar uma voz sintética grátis ou usar um serviço pago de voz. Teste e <strong>ouça antes de seguir</strong>: voz robótica derruba a retenção do vídeo.</p>
+  <div class="prompt"><div class="l">Prompt 2 · a narração</div><pre>Gere a narração do arquivo roteiro.txt em português do Brasil, em voz masculina natural, um pouco mais rápida que o normal. Salve em voz.wav (48 kHz, mono).
+
+Se alguma palavra sair com pronúncia errada (nomes de ferramentas em inglês, por exemplo), crie um arquivo pronuncia.txt com a troca de escrita só pra fala, sem mudar o que aparece na tela. Me avise quais palavras você trocou.</pre></div>
+  <div class="alert"><b>Atenção</b>Se for clonar a voz de alguém, só com autorização. Na minha experiência, clone local gratuito ficou pior do que uma boa voz pronta. Teste antes de apostar nele.</div>
+</section>
+
+<!-- 03 -->
+<section class="pb" id="p3">
+  <h2 class="sec"><span class="tag">Etapa 03</span>O tempo: cada palavra com seu segundo</h2>
+  <p>É aqui que o Reels fica profissional. Uma transcrição que marca <strong>quando cada palavra começa e termina</strong> permite que a legenda acompanhe a fala sem você mexer em linha do tempo.</p>
+  <div class="prompt"><div class="l">Prompt 3 · transcrição com tempo</div><pre>Transcreva voz.wav com marcação de tempo palavra por palavra, rodando localmente no meu computador, e salve em palavras.json (cada item com palavra, início e fim em segundos).
+
+Depois compare o texto transcrito com o roteiro.txt e me mostre as diferenças. Se a transcrição errou uma palavra, corrija pelo roteiro, mas mantenha o tempo original.</pre></div>
+  <p class="behind"><b>Por trás:</b> o Claude usa um modelo de reconhecimento de fala (como o Whisper) que roda no seu computador, sem enviar o áudio pra ninguém.</p>
+</section>
+
+<!-- 04 -->
+<section class="pb" id="p4">
+  <h2 class="sec"><span class="tag">Etapa 04</span>A cena: a animação em HTML</h2>
+  <p>Agora o Claude desenha o vídeo como uma página. Cada tela do Reels é um bloco; cada palavra entra no segundo que o arquivo de tempos mandou.</p>
+  <div class="prompt master"><div class="l">Prompt 4 · o prompt mestre da cena</div><pre>Monte uma página HTML (cena.html) de 1080x1920 que representa o Reels inteiro, controlada por uma função render(t) onde t é o segundo atual. Assim eu consigo ver qualquer instante do vídeo, sem esperar tocar.
+
+Use o roteiro.txt e o palavras.json. Regras:
+- O fundo é [descreva]. Fonte: [nome]. Cores: [hex].
+- A legenda entra palavra por palavra, no segundo exato de cada palavra, e a palavra importante fica em destaque.
+- Cada ideia do roteiro é uma tela. A troca de tela usa [desfoque / deslize / corte seco].
+- No primeiro segundo já tem que haver movimento e uma frase grande na tela.
+- Tudo precisa caber na área segura: 150 px de margem em cima e 250 px embaixo (onde o Instagram cobre com botões).
+- Quando o roteiro citar um dado, mostre o número grande com a fonte pequena embaixo.
+- Nada de imagem baixada da internet. Só o que for desenhado em código, meus arquivos ou material com licença livre.</pre></div>
+  <div class="tip"><b>Dica</b>"Humor" também se desenha em código: cartão Expectativa x Realidade, reação com emoji tremendo, "Ninguém: / A IA:". Recrie a ideia do meme, não baixe a imagem dele.</div>
+</section>
+
+<!-- 05 -->
+<section class="pb" id="p5">
+  <h2 class="sec"><span class="tag">Etapa 05</span>A prévia: ver antes de renderizar</h2>
+  <p>Renderizar o vídeo todo leva minutos. Conferir alguns instantes leva segundos. <strong>Sempre veja a prévia primeiro.</strong></p>
+  <div class="prompt"><div class="l">Prompt 5 · folha de contato</div><pre>Gere uma imagem única (folha de contato) com a cena nos segundos [0,5 / 3 / 8 / 15 / 25 / último]. Olhe você mesmo a imagem e me diga o que está errado: texto cortado, palavra fora do tempo, contraste ruim, coisa escondida atrás dos botões do Instagram. Corrija e gere a folha de novo antes de me mostrar.</pre></div>
+  <div class="prompt"><div class="l">Prompt 5b · ajustes comuns</div><pre>Ajustes na cena:
+- [a palavra X está entrando antes de ser falada]
+- [o gancho do segundo 0 está fraco: deixe a frase maior e com movimento]
+- [o texto da tela 3 está pequeno pra celular]
+Aplique, gere a folha de contato de novo e só me avise quando estiver certo.</pre></div>
+</section>
+
+<!-- 06 -->
+<section class="pb" id="p6">
+  <h2 class="sec"><span class="tag">Etapa 06</span>O vídeo: quadros + áudio = MP4</h2>
+  <p>Com a prévia aprovada, o Claude tira uma imagem de cada quadro (30 por segundo) e junta tudo com o áudio.</p>
+  <div class="prompt"><div class="l">Prompt 6 · renderizar</div><pre>Renderize a cena.html quadro a quadro em 30 fps, junte com voz.wav e entregue reel.mp4 em H.264, vertical 1080x1920, com volume normalizado pra celular (por volta de -14 LUFS). Quando terminar, confira: duração, resolução, se o áudio e a imagem terminam juntos, e se não há quadro preto no começo ou no fim. Me diga o que conferiu.</pre></div>
+  <div class="tip"><b>Dica</b>Quadro igual ao anterior não precisa de foto nova. Peça ao Claude pra reaproveitar: o render fica bem mais rápido.</div>
+</section>
+
+<!-- 07 -->
+<section class="pb" id="p7">
+  <h2 class="sec"><span class="tag">Etapa 07</span>O caderno: o Claude lembra do seu estilo</h2>
+  <p>Depois que um Reels sai do jeito que você gosta, peça pra ele guardar as regras. O próximo vai nascer mais perto do final. É o que transforma "fazer um Reels" em "ter uma fábrica de Reels".</p>
+  <div class="prompt"><div class="l">Prompt 7 · guardar o padrão</div><pre>Esse Reels ficou do jeito que eu queria. Crie uma skill chamada "meus-reels" com tudo o que você aprendeu: o passo a passo que usamos, o estilo visual (cores, fontes, tipo de transição), as regras de tela segura, as correções de pronúncia e os erros que cometemos. Da próxima vez que eu pedir um Reels, comece lendo essa skill.</pre></div>
+  <p>Depois de cada vídeo aprovado, mande: <code>atualize a skill meus-reels com o que aprendemos agora</code>.</p>
+
+  <h3>Checklist antes de postar</h3>
+  <div class="grid2">
+    <div class="white"><strong>Nos 2 primeiros segundos</strong><br>Tem problema, resultado ou movimento na tela. Sem "oi, pessoal".</div>
+    <div class="white"><strong>No meio</strong><br>Sem pausa morta. Cada frase entrega uma coisa nova.</div>
+    <div class="white"><strong>No final</strong><br>Uma pergunta simples pra puxar comentário.</div>
+    <div class="white"><strong>Na ficha técnica</strong><br>Dado com fonte, sem imagem alheia, legenda legível no celular.</div>
+  </div>
+
+  <h3>Erros comuns</h3>
+  <table><tr><th>Erro</th><th>Como evitar</th></tr>
+    <tr><td>Renderizar sem ver a prévia</td><td>Folha de contato primeiro (Etapa 05)</td></tr>
+    <tr><td>Voz robótica</td><td>Ouvir o áudio antes de montar a cena</td></tr>
+    <tr><td>Legenda escondida pelos botões do Instagram</td><td>Pedir a área segura no Prompt 4</td></tr>
+    <tr><td>Palavra de ferramenta pronunciada errado</td><td>Arquivo de pronúncia (Etapa 02)</td></tr>
+    <tr><td>Baixar vídeo ou meme da internet</td><td>Desenhar em código ou usar material de licença livre; direito autoral pode derrubar o canal</td></tr>
+    <tr><td>Começar com apresentação</td><td>Gancho primeiro, quem você é depois</td></tr>
+  </table>
+
+  <div class="cta">
+    <img src="igor-miguel.png" alt="">
+    <div class="e">Método Demanda Infinita®</div>
+    <div class="t">Quer sistemas assim rodando no seu negócio?</div>
+    <div class="s">Em 30 minutos eu olho o seu caso e te mostro por onde começar.</div>
+    <a class="btn" href="https://cal.com/igor-miguel/demanda-infinita?overlayCalendar=true" target="_blank" rel="noopener">Falar comigo →</a>
+  </div>
+
+  <footer>Ferramentas de terceiros (Claude Code, Instagram, YouTube) mudam com frequência. Nomes de botões e atalhos refletem o uso em outubro de 2026.<br>Os prompts foram reescritos a partir das conversas em que meus Reels foram construídos.<br>Demanda Infinita®</footer>
+</section>
+
+<script>
+document.querySelectorAll('.prompt').forEach(function(p){
+  var pre = p.querySelector('pre'); if(!pre) return;
+  var b = document.createElement('button'); b.className = 'copy'; b.type = 'button'; b.textContent = 'Copiar';
+  b.addEventListener('click', function(){
+    var t = pre.innerText;
+    function ok(){ b.textContent = 'Copiado!'; setTimeout(function(){ b.textContent = 'Copiar'; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(ok, fallback); } else { fallback(); }
+    function fallback(){ var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try{ document.execCommand('copy'); ok(); }catch(e){} document.body.removeChild(a); }
+  });
+  p.appendChild(b);
+});
+// na impressão/PDF, os blocos opcionais saem abertos
+window.addEventListener('beforeprint', function(){
+  document.querySelectorAll('details.dev').forEach(function(d){ d.open = true; });
+});
+</script>
+</body>
+</html>
