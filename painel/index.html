@@ -691,69 +691,120 @@ svg.chart { display: block; }
 .viz-meter-trilho { height: 8px; border-radius: 99px; background: #cde2fb; overflow: hidden; }
 .viz-meter-trilho > b { display: block; height: 100%; border-radius: 99px; background: #2a78d6; transition: width .4s ease; }
 .viz-meter-trilho.batida > b { background: var(--good); }
-/* aba Instagram — HUD no mesmo painel escuro do funil (.lanc), série em ciano pra não
-   competir com o verde, que aqui é marca e status (adiantado) */
-.ig-hud { --ig-serie:#1e9bd0; --ig-brilho:#7fd8ff; --ig-txt:#e8f3ea; --ig-mut:#b6c9bb; --ig-linha:rgba(255,255,255,.08); margin:0 0 18px; }
-.ig-hud > * { position:relative; }
-.ig-hud-topo { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-.ig-sync { display:inline-flex; align-items:center; gap:8px; font-size:.66rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ig-mut); }
-.ig-sync i { width:8px; height:8px; border-radius:50%; background:#3fcb4a; box-shadow:0 0 10px #3fcb4a; animation:ig-pisca 2.4s ease-in-out infinite; }
-@keyframes ig-pisca { 50% { opacity:.35; } }
-.ig-hud .lanc-titulo { margin-top:6px; }
-.ig-hud-grade { display:grid; grid-template-columns:minmax(240px, 300px) 1fr; gap:26px; align-items:center; margin:6px 0 10px; }
-@media (max-width: 760px) { .ig-hud-grade { grid-template-columns:1fr; justify-items:center; } }
-.ig-reator svg { display:block; width:100%; max-width:300px; height:auto; overflow:visible; }
-.ig-reator .giro { transform-origin:150px 150px; animation:ig-giro 48s linear infinite; }
-.ig-reator .giro.inv { animation-duration:70s; animation-direction:reverse; }
-@keyframes ig-giro { to { transform:rotate(360deg); } }
-.ig-reator .arco { transition:stroke-dashoffset 1.4s cubic-bezier(.2,.9,.3,1); }
-.ig-leituras { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; width:100%; }
-.ig-cel { position:relative; padding:14px 16px 13px; border-radius:14px; background:linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.09); }
-/* cantos de mira */
-.ig-cel::before, .ig-cel::after { content:""; position:absolute; width:12px; height:12px; border:2px solid rgba(127,216,255,.55); pointer-events:none; }
-.ig-cel::before { top:-1px; left:-1px; border-right:0; border-bottom:0; border-top-left-radius:14px; }
-.ig-cel::after { bottom:-1px; right:-1px; border-left:0; border-top:0; border-bottom-right-radius:14px; }
-.ig-cel-rot { font-size:.62rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ig-mut); }
-.ig-cel-val { margin-top:6px; font-size:1.9rem; font-weight:800; letter-spacing:-.03em; line-height:1.05; color:#fff; font-variant-numeric:tabular-nums; white-space:nowrap; }
-.ig-cel-sub { margin-top:4px; font-size:.74rem; color:var(--ig-mut); }
-.ig-cel.bom { border-color:rgba(63,203,74,.55); background:linear-gradient(160deg, rgba(63,203,74,.18), rgba(63,203,74,.04)); }
-.ig-cel.bom .ig-cel-val { color:#7be58a; }
-.ig-cel.atras { border-color:rgba(239,182,63,.5); background:linear-gradient(160deg, rgba(239,182,63,.14), rgba(239,182,63,.03)); }
-.ig-cel.atras .ig-cel-val { color:#ffd27a; }
-.ig-hud-chart { margin-top:14px; padding-top:16px; border-top:1px solid rgba(255,255,255,.10); }
-.ig-hud-rot { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; font-size:.62rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ig-mut); }
-.ig-leg { display:inline-flex; align-items:center; gap:8px; letter-spacing:.06em; text-transform:none; font-weight:600; font-size:.74rem; }
-.ig-leg i { display:inline-block; width:16px; height:3px; border-radius:2px; }
-.ig-leg i.serie { background:var(--ig-serie); box-shadow:0 0 8px var(--ig-brilho); }
-.ig-leg i.ref { background:var(--ig-mut); height:1px; margin-left:8px; }
-.ig-hud .viz-tip { background:rgba(8,16,12,.94); border:1px solid rgba(127,216,255,.45); color:var(--ig-txt); box-shadow:0 0 22px rgba(30,155,208,.25); backdrop-filter:blur(6px); }
-.ig-varredura { opacity:0; animation:ig-varre 2.6s cubic-bezier(.4,0,.2,1) .2s 1 both; }
-@keyframes ig-varre { from { transform:translateX(0); opacity:.9; } to { transform:translateX(var(--ig-dist)); opacity:0; } }
-.ig-pulso { transform-box:fill-box; transform-origin:center; animation:ig-pulso 2s ease-out infinite; }
-@keyframes ig-pulso { from { transform:scale(1); opacity:.7; } to { transform:scale(3.2); opacity:0; } }
-.ig-hud-duas { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:18px; }
-.ig-hud-duas .ig-hud { margin:0 0 18px; }
-.ig-celulas { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; margin-top:12px; }
-.ig-comp { display:grid; gap:18px; }
-.ig-comp h3 { font-size:.62rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ig-mut); margin:0 0 10px; }
-.ig-barra { display:grid; grid-template-columns:78px 1fr auto; align-items:center; gap:12px; font-size:.84rem; color:var(--ig-txt); margin-bottom:10px; }
-.ig-barra .trilho { height:8px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden; }
-.ig-barra .trilho > b { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, #13668a, var(--ig-serie) 70%, var(--ig-brilho)); box-shadow:0 0 12px rgba(30,155,208,.65); transition:width .9s cubic-bezier(.2,.9,.3,1); }
-.ig-barra .num { font-weight:800; font-variant-numeric:tabular-nums; color:#fff; }
-.ig-barra .num span { font-weight:600; color:var(--ig-mut); }
-.ig-tabela { width:100%; border-collapse:collapse; font-size:.84rem; color:var(--ig-txt); }
-.ig-tabela th { text-align:left; font-size:.6rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--ig-mut); padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.12); white-space:nowrap; }
-.ig-tabela td { padding:11px 10px; border-bottom:1px solid var(--ig-linha); vertical-align:top; font-variant-numeric:tabular-nums; }
-.ig-tabela tr:hover td { background:rgba(30,155,208,.07); }
-.ig-tabela td.n { font-weight:700; color:#fff; }
-.ig-tabela td.top { color:var(--ig-brilho); font-weight:800; }
-.ig-tabela td.pq { color:var(--ig-mut); max-width:320px; }
-.ig-tabela td.vazio { color:var(--ig-mut); padding:18px 4px; }
-.ig-hook a { color:#fff; text-decoration:none; }
-.ig-hook a:hover { color:var(--ig-brilho); }
-.ig-chip { display:inline-block; font-size:.66rem; font-weight:800; letter-spacing:.06em; padding:3px 10px; border-radius:99px; color:#7be58a; background:rgba(63,203,74,.12); border:1px solid rgba(63,203,74,.3); white-space:nowrap; }
-.ig-hud .fv-vazio { padding:10px 0; }
-@media (prefers-reduced-motion: reduce) { .ig-hud * { animation:none !important; transition:none !important; } }
+/* aba Instagram — visual do Instagram Insights (fundo preto, cards cinza, azul de gráfico; laranja só no par
+   seguidores × não seguidores; verde/vermelho só em status, sempre com seta e palavra). Escuro nos dois temas
+   do painel, então as cores são fixas aqui e no IG_COR do JS. Paleta validada no fundo preto (dataviz). */
+#tab-instagram { --ig-bg:#000; --ig-card:#121212; --ig-cel:#1c1c1c; --ig-borda:#262626; --ig-txt:#f5f5f5; --ig-sec:#a8a8a8;
+  --ig-azul:#3987e5; --ig-laranja:#d95926; --ig-bom:#3fcb4a; --ig-ruim:#ff6b6b;
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color:var(--ig-txt); }
+#tab-instagram.active { display:block; background:var(--ig-bg); border-radius:18px; padding:22px; }
+#tab-instagram .ig-topo { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+#tab-instagram .ig-perfil { display:flex; align-items:center; gap:14px; }
+#tab-instagram .ig-foto { width:56px; height:56px; border-radius:50%; padding:2px; background:linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5); flex:0 0 auto; }
+#tab-instagram .ig-foto img, #tab-instagram .ig-foto span { display:block; width:100%; height:100%; border-radius:50%; border:2px solid #000; object-fit:cover; background:#1c1c1c; }
+#tab-instagram .ig-nome { font-size:1.15rem; font-weight:700; letter-spacing:-.01em; }
+#tab-instagram .ig-nome small { display:block; font-size:.78rem; font-weight:400; color:var(--ig-sec); margin-top:2px; }
+#tab-instagram .ig-nums { display:flex; gap:22px; margin-left:8px; }
+#tab-instagram .ig-nums div { font-size:.78rem; color:var(--ig-sec); line-height:1.25; }
+#tab-instagram .ig-nums b { display:block; font-size:1.05rem; color:var(--ig-txt); font-variant-numeric:tabular-nums; }
+#tab-instagram .ig-topo-dir { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+#tab-instagram .ig-sync { display:inline-flex; align-items:center; gap:8px; font-size:.78rem; color:var(--ig-sec); }
+#tab-instagram .ig-sync i { width:8px; height:8px; border-radius:50%; background:var(--ig-bom); }
+#tab-instagram .ig-card { background:var(--ig-card); border:1px solid var(--ig-borda); border-radius:14px; padding:20px 22px; margin-bottom:16px; }
+#tab-instagram .ig-card-topo { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:4px; }
+#tab-instagram .ig-card h2 { margin:0; font-size:1.05rem; font-weight:700; color:var(--ig-txt); letter-spacing:-.005em; }
+#tab-instagram .ig-desc { margin:4px 0 16px; font-size:.82rem; line-height:1.5; color:var(--ig-sec); }
+#tab-instagram .ig-duas { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(330px, 100%), 1fr)); gap:16px; margin-bottom:16px; }
+#tab-instagram .ig-duas .ig-card { margin-bottom:0; }
+#tab-instagram .ig-seg { display:inline-flex; gap:2px; background:#0a0a0a; border:1px solid var(--ig-borda); border-radius:999px; padding:3px; flex-wrap:wrap; }
+#tab-instagram .ig-seg button { white-space:nowrap; border:0; background:none; color:var(--ig-sec); font:inherit; font-size:.78rem; font-weight:500; padding:6px 13px; border-radius:999px; cursor:pointer; transition:background .15s, color .15s; }
+#tab-instagram .ig-seg button:hover { color:#fff; }
+#tab-instagram .ig-seg button.on { background:#363636; color:#fff; }
+@media (max-width: 560px) { #tab-instagram .ig-seg { border-radius:14px; } #tab-instagram .ig-nums { margin-left:0; }
+  #tab-instagram.active { padding:12px; } #tab-instagram .ig-card { padding:16px; } }
+/* visão geral */
+#tab-instagram .ig-kpis { display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); border:1px solid var(--ig-borda); border-radius:12px; overflow:hidden; margin:6px 0 18px; }
+@media (max-width: 1100px) { #tab-instagram .ig-kpis { grid-template-columns:repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { #tab-instagram .ig-kpis { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+#tab-instagram .ig-kpi { padding:14px 16px 13px; border-right:1px solid var(--ig-borda); border-bottom:1px solid var(--ig-borda); margin:0 -1px -1px 0; }
+#tab-instagram .ig-kpi .r { font-size:.76rem; color:var(--ig-sec); }
+#tab-instagram .ig-kpi .v { font-size:1.6rem; font-weight:700; letter-spacing:-.02em; margin-top:4px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#tab-instagram .ig-kpi .d { font-size:.74rem; margin-top:3px; color:var(--ig-sec); }
+#tab-instagram .sobe { color:var(--ig-bom) !important; }
+#tab-instagram .desce { color:var(--ig-ruim) !important; }
+#tab-instagram .ig-rot-graf { font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ig-sec); margin:0 0 8px; }
+#tab-instagram .ig-legenda { display:flex; gap:16px; flex-wrap:wrap; font-size:.74rem; color:var(--ig-sec); margin-top:8px; }
+#tab-instagram .ig-legenda i { display:inline-block; width:14px; height:3px; border-radius:2px; background:var(--ig-azul); vertical-align:middle; margin-right:6px; }
+#tab-instagram .viz-chart-wrap { position:relative; }
+#tab-instagram .viz-tip { transform:none; background:#262626; border:1px solid #3a3a3a; color:var(--ig-txt); border-radius:10px; box-shadow:0 10px 28px rgba(0,0,0,.6); font-size:.74rem; padding:10px 12px; }
+#tab-instagram .viz-tip .tip-mes { color:#fff; }
+/* divisão em duas partes (seguidores × não seguidores) */
+#tab-instagram .ig-div + .ig-div { margin-top:16px; }
+#tab-instagram .ig-div-topo { display:flex; justify-content:space-between; font-size:.8rem; color:var(--ig-sec); margin-bottom:8px; }
+#tab-instagram .ig-div-topo b { color:var(--ig-txt); font-variant-numeric:tabular-nums; }
+#tab-instagram .ig-div-barra { display:flex; gap:2px; height:10px; border-radius:99px; overflow:hidden; background:#262626; }
+#tab-instagram .ig-div-barra b { display:block; height:100%; transition:width .9s cubic-bezier(.2,.9,.3,1); }
+#tab-instagram .ig-div-leg { display:flex; gap:18px; flex-wrap:wrap; margin-top:9px; font-size:.8rem; }
+#tab-instagram .ig-div-leg span { display:inline-flex; align-items:center; gap:7px; color:var(--ig-sec); }
+#tab-instagram .ig-div-leg i { width:9px; height:9px; border-radius:50%; }
+#tab-instagram .ig-div-leg b { color:var(--ig-txt); font-variant-numeric:tabular-nums; }
+/* barras de uma cor */
+#tab-instagram .ig-bloco + .ig-bloco { margin-top:20px; }
+#tab-instagram .ig-bloco h3 { font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ig-sec); margin:0 0 10px; }
+#tab-instagram .ig-barra { display:grid; grid-template-columns:minmax(96px, 170px) 1fr auto; align-items:center; gap:12px; font-size:.82rem; margin-bottom:10px; }
+#tab-instagram .ig-barra > span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ig-txt); }
+#tab-instagram .ig-barra .trilho { height:6px; border-radius:99px; background:#2c2c2c; overflow:hidden; }
+#tab-instagram .ig-barra .trilho > b { display:block; height:100%; border-radius:99px; background:var(--ig-azul); transition:width .9s cubic-bezier(.2,.9,.3,1); }
+#tab-instagram .ig-barra .num { font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#tab-instagram .ig-barra .num span { font-weight:400; color:var(--ig-sec); }
+@media (max-width: 560px) { #tab-instagram .ig-barra { grid-template-columns:minmax(80px, 1fr) 60px auto; gap:10px; } }
+#tab-instagram .ig-nota { font-size:.74rem; color:var(--ig-sec); margin-top:10px; line-height:1.5; }
+#tab-instagram .fv-vazio { color:var(--ig-sec); font-size:.82rem; padding:8px 0; }
+/* seguidores e meta */
+#tab-instagram .ig-meta { display:grid; grid-template-columns:minmax(220px, 1fr) 2fr; gap:22px; align-items:center; margin-bottom:18px; }
+@media (max-width: 760px) { #tab-instagram .ig-meta { grid-template-columns:1fr; } }
+#tab-instagram .ig-meta-num { font-size:2.4rem; font-weight:700; letter-spacing:-.03em; line-height:1; font-variant-numeric:tabular-nums; }
+#tab-instagram .ig-meta-num small { font-size:1rem; font-weight:500; color:var(--ig-sec); letter-spacing:0; }
+#tab-instagram .ig-meta-trilho { position:relative; height:10px; border-radius:99px; background:#262626; margin:14px 0 8px; }
+#tab-instagram .ig-meta-trilho > b { position:absolute; left:0; top:0; bottom:0; border-radius:99px; background:var(--ig-azul); transition:width 1s cubic-bezier(.2,.9,.3,1); }
+#tab-instagram .ig-meta-trilho > i { position:absolute; top:-5px; width:2px; height:20px; background:#fff; border-radius:2px; }
+#tab-instagram .ig-meta-rod { display:flex; justify-content:space-between; gap:10px; font-size:.74rem; color:var(--ig-sec); }
+#tab-instagram .ig-cels { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+@media (max-width: 760px) { #tab-instagram .ig-cels { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+#tab-instagram .ig-cel { background:var(--ig-cel); border-radius:12px; padding:14px 16px; }
+#tab-instagram .ig-cel-rot { font-size:.74rem; color:var(--ig-sec); }
+#tab-instagram .ig-cel-val { margin-top:6px; font-size:1.6rem; font-weight:700; letter-spacing:-.02em; line-height:1.1; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#tab-instagram .ig-cel-sub { margin-top:4px; font-size:.74rem; color:var(--ig-sec); line-height:1.4; }
+#tab-instagram .ig-aviso { margin-top:14px; padding:12px 14px; border-radius:10px; background:#1c1c1c; border-left:3px solid var(--ig-ruim); font-size:.82rem; line-height:1.5; color:#ddd; }
+#tab-instagram .ig-aviso.bom { border-left-color:var(--ig-bom); }
+#tab-instagram .ig-aviso b { color:#fff; }
+/* melhores conteúdos: grade de miniaturas como no perfil */
+#tab-instagram .ig-grade { display:grid; grid-template-columns:repeat(8, minmax(0, 1fr)); gap:10px; }
+@media (max-width: 1100px) { #tab-instagram .ig-grade { grid-template-columns:repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 560px) { #tab-instagram .ig-grade { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+#tab-instagram .ig-post { position:relative; display:block; aspect-ratio:4/5; border-radius:10px; overflow:hidden; background:#1c1c1c; color:#fff; text-decoration:none; }
+#tab-instagram .ig-post img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .3s; }
+#tab-instagram .ig-post:hover img { transform:scale(1.04); }
+#tab-instagram .ig-post .pos { position:absolute; top:8px; left:8px; font-size:.7rem; font-weight:700; background:rgba(0,0,0,.65); padding:2px 7px; border-radius:99px; }
+#tab-instagram .ig-post .tipo { position:absolute; top:8px; right:8px; width:22px; height:22px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.55); border-radius:6px; }
+#tab-instagram .ig-post .rod { position:absolute; left:0; right:0; bottom:0; padding:28px 10px 9px; background:linear-gradient(transparent, rgba(0,0,0,.88)); font-size:.74rem; line-height:1.35; }
+#tab-instagram .ig-post .rod b { display:block; font-size:1.05rem; font-variant-numeric:tabular-nums; }
+#tab-instagram .ig-post .rod span { color:#d6d6d6; }
+/* tabela de posts */
+#tab-instagram .ig-tabela { width:100%; border-collapse:collapse; font-size:.82rem; }
+#tab-instagram .ig-tabela th { text-align:left; font-size:.72rem; font-weight:500; color:var(--ig-sec); padding:10px; border-bottom:1px solid var(--ig-borda); white-space:nowrap; }
+#tab-instagram .ig-tabela td { padding:10px; border-bottom:1px solid #1f1f1f; vertical-align:middle; font-variant-numeric:tabular-nums; }
+#tab-instagram .ig-tabela td.top { color:var(--ig-azul); font-weight:700; }
+#tab-instagram .ig-tabela td.vazio { color:var(--ig-sec); }
+#tab-instagram .ig-tabela tr:hover td { background:#1a1a1a; }
+#tab-instagram .ig-item { display:flex; align-items:center; gap:12px; min-width:260px; }
+#tab-instagram .ig-item img, #tab-instagram .ig-item .ph { width:44px; height:55px; object-fit:cover; border-radius:6px; flex:0 0 auto; background:#262626; }
+#tab-instagram .ig-item a { color:var(--ig-txt); text-decoration:none; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+#tab-instagram .ig-item a:hover { color:var(--ig-azul); }
+#tab-instagram .ig-chip { display:inline-block; font-size:.7rem; font-weight:600; padding:3px 10px; border-radius:99px; color:var(--ig-txt); background:#262626; white-space:nowrap; }
+#tab-instagram .ig-mais { margin-top:14px; border:1px solid var(--ig-borda); background:#262626; color:#fff; font:inherit; font-weight:500; font-size:.82rem; padding:9px 18px; border-radius:999px; cursor:pointer; }
+#tab-instagram .ig-mais:hover { background:#333; }
+@media (prefers-reduced-motion: reduce) { #tab-instagram * { animation:none !important; transition:none !important; } }
 /* aba YouTube — visual do YouTube Studio (fundo preto, cards cinza, azul de gráfico, vermelho só na marca e na meta).
    Escuro nos dois temas do painel, então as cores são fixas aqui e no YT_COR do JS. */
 #tab-youtube { --yt-bg:#0f0f0f; --yt-card:#1b1b1b; --yt-cel:#242424; --yt-borda:#2e2e2e; --yt-txt:#f1f1f1; --yt-sec:#aaaaaa;
@@ -3373,49 +3424,98 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
     </div>
 
     <div class="tab-panel" id="tab-instagram">
-      <section class="lanc ig-hud">
-        <div class="ig-hud-topo">
-          <span class="lanc-selo">Instagram · @igorr_miguel</span>
+      <div class="ig-topo">
+        <div class="ig-perfil">
+          <div class="ig-foto" id="ig-foto"><span></span></div>
+          <div class="ig-nome" id="ig-nome">@igorr_miguel<small>Insights da conta</small></div>
+          <div class="ig-nums" id="ig-nums"></div>
+        </div>
+        <div class="ig-topo-dir">
           <span class="ig-sync"><i></i><span id="ig-atualizado">aguardando dados</span></span>
+          <span class="ig-seg" id="ig-seg-dias"><button data-v="7" class="on">Últimos 7 dias</button><button data-v="30">Últimos 30 dias</button></span>
         </div>
-        <h2 class="lanc-titulo">Rumo aos 10 mil</h2>
-        <p class="fv-sub">O anel mostra quanto do caminho já foi. A marca branca é onde a conta precisava estar hoje pra chegar nos 10 mil no prazo.</p>
-        <div class="ig-hud-grade">
-          <div class="ig-reator" id="ig-reator"></div>
-          <div class="ig-leituras" id="ig-leituras"></div>
-        </div>
-        <div class="ig-hud-chart">
-          <div class="ig-hud-rot"><span>Trajetória</span><span class="ig-leg"><i class="serie"></i>seguidores <i class="ref"></i>curva da meta</span></div>
-          <div class="viz-chart-wrap" id="viz-ig-wrap">
-            <svg id="chart-ig" class="chart"></svg>
-            <div class="viz-tip" id="tip-ig"></div>
-          </div>
+      </div>
+
+      <section class="ig-card">
+        <div class="ig-card-topo"><h2>Visão geral</h2></div>
+        <p class="ig-desc">Comparado com o mesmo número de dias logo antes. Conta stories, posts e reels, como no Insights do app.</p>
+        <div class="ig-kpis" id="ig-kpis"></div>
+        <div class="ig-rot-graf">Contas alcançadas por dia</div>
+        <div class="viz-chart-wrap" id="viz-ig-wrap">
+          <svg id="chart-ig" class="chart"></svg>
+          <div class="viz-tip" id="tip-ig"></div>
         </div>
       </section>
 
-      <div class="ig-hud-duas">
-        <section class="lanc ig-hud">
-          <span class="lanc-selo">Últimos 7 dias</span>
-          <div class="ig-celulas" id="ig-tiles"></div>
+      <div class="ig-duas">
+        <section class="ig-card">
+          <h2>Alcance</h2>
+          <p class="ig-desc">Não seguidores é quem ainda não te segue: é daí que vêm os seguidores novos.</p>
+          <div id="ig-alcance"></div>
         </section>
-        <section class="lanc ig-hud">
-          <span class="lanc-selo">Formato e horário</span>
-          <p class="fv-sub">Alcance médio por post. Diz o que repetir.</p>
-          <div class="ig-comp" id="ig-comparativos"></div>
+        <section class="ig-card">
+          <h2>Interações</h2>
+          <p class="ig-desc">Salvamento e compartilhamento pesam mais pro algoritmo do que curtida.</p>
+          <div id="ig-interacoes"></div>
         </section>
       </div>
 
-      <section class="lanc ig-hud">
-        <span class="lanc-selo">Posts</span>
-        <p class="fv-sub">Do maior alcance pro menor. "Por quê" é a leitura do agente sobre o resultado, e é ela que ajusta as próximas skills.</p>
-        <div class="tabela-wrap"><table class="ig-tabela" id="ig-tabela"></table></div>
+      <section class="ig-card">
+        <h2>Seguidores e meta</h2>
+        <p class="ig-desc">A marca branca é onde a conta precisava estar hoje pra chegar nos 10 mil no prazo.</p>
+        <div id="ig-seguidores"></div>
+        <div class="ig-rot-graf" style="margin-top:20px;">Novos seguidores por dia</div>
+        <div class="viz-chart-wrap" id="viz-ignovos-wrap">
+          <svg id="chart-ig-novos" class="chart"></svg>
+          <div class="viz-tip" id="tip-ig-novos"></div>
+        </div>
+        <p class="ig-nota">O Instagram só informa por dia quem começou a seguir. Quem deixou de seguir aparece só no total do período, nos números acima.</p>
       </section>
 
-      <section class="lanc ig-hud">
-        <span class="lanc-selo">Fila de aprovação</span>
-        <p class="fv-sub">O que o agente mandou pro Discord e ainda não foi publicado.</p>
-        <div id="ig-fila"></div>
+      <div class="ig-duas">
+        <section class="ig-card">
+          <h2>Quem te segue</h2>
+          <p class="ig-desc">Faixa etária e gênero dos seguidores.</p>
+          <div id="ig-publico"></div>
+        </section>
+        <section class="ig-card">
+          <h2>Onde estão</h2>
+          <p class="ig-desc">Principais cidades e países dos seguidores.</p>
+          <div id="ig-locais"></div>
+        </section>
+      </div>
+
+      <section class="ig-card">
+        <div class="ig-card-topo">
+          <h2>Melhores conteúdos</h2>
+          <span class="ig-seg" id="ig-seg-ordem"><button data-v="alcance" class="on">Alcance</button><button data-v="interacoes">Interações</button><button data-v="salvamentos">Salvos</button><button data-v="compartilhamentos">Compartilhamentos</button><button data-v="recentes">Recentes</button></span>
+        </div>
+        <p class="ig-desc">Números de toda a vida do post. Clique pra abrir no Instagram.</p>
+        <div class="ig-grade" id="ig-grade"></div>
       </section>
+
+      <section class="ig-card">
+        <div class="ig-card-topo">
+          <h2>Todos os posts</h2>
+          <span class="ig-seg" id="ig-seg-formato"><button data-v="todos" class="on">Todos</button><button data-v="carrossel">Carrossel</button><button data-v="reels">Reels</button><button data-v="imagem">Imagem</button></span>
+        </div>
+        <p class="ig-desc">Taxa = interações ÷ contas alcançadas. Acima de 5% é post que prende; abaixo de 2% é post que passa batido. Mesma ordem dos melhores conteúdos.</p>
+        <div class="tabela-wrap"><table class="ig-tabela" id="ig-tabela"></table></div>
+        <div id="ig-tabela-mais"></div>
+      </section>
+
+      <div class="ig-duas">
+        <section class="ig-card">
+          <h2>Por formato</h2>
+          <p class="ig-desc">Média por post publicado. É o que decide carrossel × reels.</p>
+          <div class="tabela-wrap"><table class="ig-tabela" id="ig-formatos"></table></div>
+        </section>
+        <section class="ig-card">
+          <h2>Fila de aprovação</h2>
+          <p class="ig-desc">O que o agente mandou pro Discord e ainda não foi publicado.</p>
+          <div id="ig-fila"></div>
+        </section>
+      </div>
     </div>
 
     <div class="tab-panel" id="tab-youtube">
@@ -9446,9 +9546,19 @@ window.addEventListener('resize', () => {
 
 
 // ---------- INSTAGRAM ----------
-// Alimentado pelo instagram-agente (Mac do Igor): metricas.py grava ig_conta_diaria e
-// ig_post_metricas todo dia, publicar.py grava ig_posts. A tela só lê (RLS: só admin).
+// Alimentado pelo instagram-agente (Mac do Igor): metricas.py grava ig_conta_diaria, ig_posts, ig_post_metricas
+// e ig_insights (snapshot do Insights de 7 e 30 dias, com o período anterior) todo dia às 7h. A tela só lê
+// (RLS: só admin). Visual do Instagram Insights: preto nos dois temas do painel, cores fixas em IG_COR.
 let igDados = null;
+const igEstado = { dias: 7, ordem: 'alcance', formato: 'todos', todos: false };
+const IG_COR = { azul: '#3987e5', laranja: '#d95926', sec: '#a8a8a8', grade: 'rgba(255,255,255,.07)', base: 'rgba(255,255,255,.2)', fundo: '#121212' };
+const IG_FORMATOS = { STORY: 'Stories', CAROUSEL_CONTAINER: 'Carrossel', POST: 'Post', REEL: 'Reels' };
+const IG_TIPO = { carrossel: 'Carrossel', reels: 'Reels', imagem: 'Imagem' };
+const IG_GENERO = { M: 'Homens', F: 'Mulheres', U: 'Não informado' };
+const IG_ICONE = {
+  carrossel: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2"><rect x="7" y="3" width="14" height="14" rx="2"/><path d="M3 7v12a2 2 0 0 0 2 2h12"/></svg>',
+  reels: '<svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M8 5.5v13l11-6.5z"/></svg>',
+};
 
 function igEsc(s) {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -9458,25 +9568,46 @@ function igDiasEntre(a, b) { return Math.round((b - a) / 86400000); }
 function igDiaCurto(d) { return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }); }
 function igNum(v) { return v == null ? '—' : Number(v).toLocaleString('pt-BR'); }
 function igMil(v) { return v >= 1000 ? (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : String(v); }
+function igPct(parte, todo) { return todo ? Math.round(parte / todo * 100) : 0; }
+function igTaxa(m) { return m.alcance && m.interacoes != null ? m.interacoes / m.alcance : null; }
+function igTaxaFmt(t) { return t == null ? '—' : (t * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%'; }
 
 async function carregarInstagram() {
-  const [meta, conta, posts, mets] = await Promise.all([
+  const [meta, conta, posts, mets, ins] = await Promise.all([
     sb.from('ig_meta').select('*').maybeSingle(),
     sb.from('ig_conta_diaria').select('*').order('data'),
     sb.from('ig_posts').select('*').order('criado_em', { ascending: false }),
     sb.from('ig_post_metricas').select('*').order('data'),
+    sb.from('ig_insights').select('*').order('data', { ascending: false }).limit(4),
   ]);
-  const erro = meta.error || conta.error || posts.error || mets.error;
+  const erro = meta.error || conta.error || posts.error || mets.error || ins.error;
   if (erro || !meta.data) {
-    document.getElementById('ig-cabecalho').innerHTML =
-      `<div class="empty">Não consegui carregar os dados do Instagram${erro ? ': ' + igEsc(erro.message) : ''}.</div>`;
+    document.getElementById('ig-kpis').innerHTML =
+      `<div class="fv-vazio" style="padding:16px;">Não consegui carregar os dados do Instagram${erro ? ': ' + igEsc(erro.message) : ''}.</div>`;
     return;
   }
   // última leitura de cada post: as métricas acumulam, então o dia mais recente é o número que vale
   const ultima = {};
   (mets.data || []).forEach(m => { ultima[m.post_id] = m; });
-  igDados = { meta: meta.data, conta: conta.data || [], posts: posts.data || [], ultima };
+  // snapshot mais recente de cada janela (vem ordenado do mais novo pro mais velho)
+  const snap = {};
+  (ins.data || []).forEach(r => { if (!snap[r.periodo]) snap[r.periodo] = r; });
+  igDados = { meta: meta.data, conta: conta.data || [], posts: posts.data || [], ultima, snap };
+  igLigarSeg('ig-seg-dias', v => { igEstado.dias = Number(v); });
+  igLigarSeg('ig-seg-ordem', v => { igEstado.ordem = v; });
+  igLigarSeg('ig-seg-formato', v => { igEstado.formato = v; igEstado.todos = false; });
   renderInstagram();
+}
+
+function igLigarSeg(id, aplicar) {
+  const el = document.getElementById(id);
+  if (!el || el.dataset.ligado) return;
+  el.dataset.ligado = '1';
+  el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    el.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    aplicar(b.dataset.v);
+    renderInstagram();
+  }));
 }
 
 // onde a conta precisa estar no dia d pra chegar na meta no prazo (rampa linear)
@@ -9486,247 +9617,331 @@ function igMetaNoDia(meta, d) {
   return Math.round(meta.seguidores_inicio + (meta.meta - meta.seguidores_inicio) * passados / total);
 }
 
-// cores do HUD: o painel .lanc é escuro nos dois temas, então são fixas (não seguem corTema)
-const IG_HUD = { serie: '#1e9bd0', brilho: '#7fd8ff', txt: '#e8f3ea', mut: '#b6c9bb', grade: 'rgba(255,255,255,.07)', base: 'rgba(255,255,255,.22)' };
+function renderInstagram() {
+  const { conta, snap } = igDados;
+  const s = snap[igEstado.dias] || snap[7] || snap[30];
+  const d = s ? s.dados : null;
+  const perfil = d ? d.perfil : null;
+  const ultimaConta = conta[conta.length - 1];
+  // os seletores sempre mostram o estado real (também quando ele muda por código)
+  [['ig-seg-dias', String(igEstado.dias)], ['ig-seg-ordem', igEstado.ordem], ['ig-seg-formato', igEstado.formato]]
+    .forEach(([id, v]) => document.querySelectorAll(`#${id} button`).forEach(b => b.classList.toggle('on', b.dataset.v === v)));
 
-function igCel(rot, val, sub, classe) {
-  return `<div class="ig-cel ${classe || ''}"><div class="ig-cel-rot">${rot}</div><div class="ig-cel-val">${val}</div><div class="ig-cel-sub">${sub}</div></div>`;
+  if (perfil && perfil.foto) {
+    document.getElementById('ig-foto').innerHTML = `<img src="${igEsc(perfil.foto)}" alt="" referrerpolicy="no-referrer">`;
+  }
+  document.getElementById('ig-nome').innerHTML = `@${igEsc(perfil ? perfil.username : 'igorr_miguel')}<small>Insights da conta</small>`;
+  document.getElementById('ig-nums').innerHTML = perfil
+    ? `<div><b>${igNum(perfil.posts)}</b>posts</div><div><b>${igNum(perfil.seguidores)}</b>seguidores</div><div><b>${igNum(perfil.seguindo)}</b>seguindo</div>` : '';
+  document.getElementById('ig-atualizado').textContent = s
+    ? `atualizado ${igDiaCurto(igDia(s.data))} · ${igDiaCurto(igDia(d.periodo.desde))} a ${igDiaCurto(igDia(d.periodo.ate))}`
+    : (ultimaConta ? 'atualizado ' + igDiaCurto(igDia(ultimaConta.data)) : 'aguardando dados');
+
+  renderKpisIg(d);
+  desenharAlcanceIg(d);
+  renderAlcanceIg(d);
+  renderInteracoesIg(d);
+  renderSeguidoresIg(d);
+  desenharNovosIg(d);
+  renderPublicoIg(d);
+  renderConteudoIg();
+  renderTabelaIg();
+  renderFormatosIg();
+  renderFilaIg();
 }
 
-function renderInstagram() {
-  const { meta, conta, posts, ultima } = igDados;
-  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
-  const atualLinha = conta[conta.length - 1] || { data: meta.inicio, seguidores: meta.seguidores_inicio };
-  const atual = atualLinha.seguidores;
-  const ontem = conta.length > 1 ? conta[conta.length - 2].seguidores : null;
-  const diaAtual = igDia(atualLinha.data);
-  const metaHoje = igMetaNoDia(meta, diaAtual);
-  const diasRestantes = Math.max(1, igDiasEntre(diaAtual, igDia(meta.prazo)));
-  const ritmo = Math.ceil(Math.max(0, meta.meta - atual) / diasRestantes);
+// variação contra o período anterior de mesmo tamanho: seta + palavra, a cor só reforça
+function igDelta(atual, antes, dias) {
+  const ref = `vs ${dias} dias anteriores`;
+  if (atual == null || antes == null) return `<div class="d">${ref}</div>`;
+  if (antes === 0) return atual === 0 ? `<div class="d">igual · ${ref}</div>` : `<div class="d sobe">▲ novo · ${ref}</div>`;
+  const p = Math.round((atual - antes) / antes * 100);
+  if (p === 0) return `<div class="d">igual · ${ref}</div>`;
+  return `<div class="d ${p > 0 ? 'sobe' : 'desce'}">${p > 0 ? '▲' : '▼'} ${Math.abs(p)}% · ${ref}</div>`;
+}
+
+function renderKpisIg(d) {
+  const el = document.getElementById('ig-kpis');
+  if (!d) { el.innerHTML = '<div class="fv-vazio" style="padding:16px;">Os números aparecem depois da primeira coleta do Insights (todo dia às 7h).</div>'; return; }
+  const t = d.totais, a = d.anterior || {}, dias = d.periodo.dias;
+  const saldo = (t.seguiram ?? 0) - (t.deixaram ?? 0);
+  const kpi = (rot, v, delta) => `<div class="ig-kpi"><div class="r">${rot}</div><div class="v">${v}</div>${delta}</div>`;
+  el.innerHTML = kpi('Contas alcançadas', igNum(t.alcance), igDelta(t.alcance, a.alcance, dias))
+    + kpi('Visualizações', igNum(t.views), igDelta(t.views, a.views, dias))
+    + kpi('Contas com engajamento', igNum(t.contas_engajadas), igDelta(t.contas_engajadas, a.contas_engajadas, dias))
+    + kpi('Interações', igNum(t.interacoes), igDelta(t.interacoes, a.interacoes, dias))
+    + kpi('Saldo de seguidores', `<span class="${saldo > 0 ? 'sobe' : saldo < 0 ? 'desce' : ''}">${saldo > 0 ? '+' : ''}${igNum(saldo)}</span>`,
+      `<div class="d">${igNum(t.seguiram)} entraram · ${igNum(t.deixaram)} saíram</div>`)
+    + kpi('Toques no link', igNum(t.cliques_link), igDelta(t.cliques_link, a.cliques_link, dias));
+}
+
+// série diária de uma métrica: linha + área (alcance) ou barras (novos seguidores). Um eixo só, uma cor só.
+function igSerie(svgId, wrapId, tipId, dias, valorDe, rotulo, comoBarras) {
+  const svg = document.getElementById(svgId);
+  if (!dias.length) { svg.setAttribute('height', 0); svg.innerHTML = ''; return; }
+  const padEsq = 40, padDir = 12, padTopo = 14, bandaX = 30, alturaPlot = comoBarras ? 130 : 200;
+  const h = padTopo + alturaPlot + bandaX;
+  const w = vizLarguraDisponivel(wrapId, 320);
+  const n = dias.length;
+  const passoX = (w - padEsq - padDir) / (comoBarras ? n : Math.max(1, n - 1));
+  const escalaX = i => comoBarras ? padEsq + passoX * (i + .5) : padEsq + passoX * i;
+  const valores = dias.map(x => valorDe(x) ?? 0);
+  const { topo, ticks } = vizEscala(Math.max(comoBarras ? 4 : 1, ...valores), comoBarras ? 2 : 4);
+  const escalaY = v => padTopo + alturaPlot - alturaPlot * (v / topo);
+  const baseY = escalaY(0);
+
+  const grade = ticks.map(v => `<line x1="${padEsq}" y1="${escalaY(v)}" x2="${w - padDir}" y2="${escalaY(v)}" stroke="${IG_COR.grade}" stroke-width="1"/>
+    <text x="${padEsq - 8}" y="${escalaY(v) + 3.5}" font-size="10" fill="${IG_COR.sec}" text-anchor="end" style="font-variant-numeric:tabular-nums">${igMil(v)}</text>`).join('');
+  const cada = n <= 8 ? 1 : 7;
+  let eixoX = '';
+  dias.forEach((x, i) => {
+    const ultimo = i === n - 1;
+    if ((n - 1 - i) % cada === 0) eixoX += `<text x="${escalaX(i)}" y="${h - 6}" font-size="10" fill="${ultimo ? '#fff' : IG_COR.sec}" text-anchor="${ultimo && !comoBarras ? 'end' : 'middle'}">${igDiaCurto(igDia(x.data))}</text>`;
+  });
+
+  let marcas = '', pts;
+  if (comoBarras) {
+    const larg = Math.max(3, Math.min(26, passoX - 4));   // 2px de respiro de cada lado
+    pts = valores.map((v, i) => [escalaX(i), escalaY(v)]);
+    pts.forEach(([x, y], i) => {
+      marcas += `<path d="${vizBarra(x - larg / 2, y, larg, baseY - y, 4)}" fill="${IG_COR.azul}"/>`;
+      if (valores[i] > 0 && n <= 8) marcas += `<text x="${x}" y="${y - 6}" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">${valores[i]}</text>`;
+    });
+  } else {
+    pts = valores.map((v, i) => [escalaX(i), escalaY(v)]);
+    const linha = pts.map(p => p.map(x => x.toFixed(1)).join(',')).join(' ');
+    const [ux, uy] = pts[pts.length - 1];
+    marcas = `<polygon points="${pts[0][0].toFixed(1)},${baseY} ${linha} ${ux.toFixed(1)},${baseY}" fill="url(#ig-grad-${svgId})"/>`
+      + `<polyline points="${linha}" fill="none" stroke="${IG_COR.azul}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`
+      + `<circle cx="${ux}" cy="${uy}" r="4.5" fill="${IG_COR.azul}" stroke="${IG_COR.fundo}" stroke-width="2"/>`;
+  }
+
+  let bandas = '';
+  const textos = dias.map((x, i) => {
+    const xb = comoBarras ? escalaX(i) - passoX / 2 : escalaX(i) - passoX / 2;
+    bandas += `<rect class="viz-banda" x="${xb}" y="${padTopo}" width="${passoX}" height="${alturaPlot}" fill="transparent" data-i="${i}" data-topo="${padTopo}"/>`;
+    return `<div class="tip-mes">${igDia(x.data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}</div>`
+      + `<div class="tip-linha"><i style="background:${IG_COR.azul}"></i>${rotulo}<b>${igNum(valorDe(x))}</b></div>`;
+  });
+
+  svg.setAttribute('width', w);
+  svg.setAttribute('height', h);
+  svg.innerHTML = `<defs><linearGradient id="ig-grad-${svgId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(57,135,229,.30)"/><stop offset="1" stop-color="rgba(57,135,229,0)"/></linearGradient></defs>`
+    + grade
+    + `<line x1="${padEsq}" y1="${baseY}" x2="${w - padDir}" y2="${baseY}" stroke="${IG_COR.base}" stroke-width="1"/>`
+    + eixoX + marcas
+    + `<line id="${svgId}-mira" x1="0" y1="${padTopo}" x2="0" y2="${baseY}" stroke="#fff" stroke-width="1" opacity="0"/>`
+    + `<circle id="${svgId}-ponto" r="5.5" fill="${IG_COR.azul}" stroke="#fff" stroke-width="2" opacity="0"/>`
+    + bandas;
+  // mesmo tooltip da aba YouTube: fica dentro do gráfico e vira de lado perto da borda
+  ytLigarTooltip(wrapId, tipId, textos, pts, `${svgId}-mira`, `${svgId}-ponto`);
+}
+
+function desenharAlcanceIg(d) {
+  igSerie('chart-ig', 'viz-ig-wrap', 'tip-ig', d ? d.serie : [], x => x.alcance, 'Contas alcançadas', false);
+}
+function desenharNovosIg(d) {
+  igSerie('chart-ig-novos', 'viz-ignovos-wrap', 'tip-ig-novos', d ? d.serie : [], x => x.novos, 'Começaram a seguir', true);
+}
+
+// duas partes de um todo (seguidores × não seguidores): as únicas duas categorias da aba, por isso azul e laranja
+function igDivisao(titulo, partes) {
+  const a = partes.FOLLOWER || 0, b = partes.NON_FOLLOWER || 0, tot = a + b;
+  if (!tot) return `<div class="ig-div"><div class="ig-div-topo"><span>${titulo}</span><b>—</b></div></div>`;
+  return `<div class="ig-div">
+    <div class="ig-div-topo"><span>${titulo}</span><b>${igNum(tot)}</b></div>
+    <div class="ig-div-barra"><b style="width:${a / tot * 100}%;background:${IG_COR.azul}"></b><b style="width:${b / tot * 100}%;background:${IG_COR.laranja}"></b></div>
+    <div class="ig-div-leg"><span><i style="background:${IG_COR.azul}"></i>Seguidores <b>${igPct(a, tot)}%</b> · ${igNum(a)}</span>
+      <span><i style="background:${IG_COR.laranja}"></i>Não seguidores <b>${igPct(b, tot)}%</b> · ${igNum(b)}</span></div>
+  </div>`;
+}
+
+// barras de uma cor só: aqui a cor não identifica nada, o comprimento é que lê a grandeza
+function igBarras(itens, valor, nome, sub) {
+  const max = Math.max(1, ...itens.map(valor));
+  return itens.map(i => `<div class="ig-barra"><span title="${igEsc(nome(i))}">${igEsc(nome(i))}</span>
+    <div class="trilho"><b style="width:0" data-w="${Math.round(valor(i) / max * 100)}"></b></div>
+    <span class="num">${sub(i)}</span></div>`).join('');
+}
+function igAnimarBarras(el) {
+  requestAnimationFrame(() => el.querySelectorAll('.trilho > b').forEach(b => { b.style.width = b.dataset.w + '%'; }));
+}
+function igPorFormato(obj) {
+  return Object.entries(obj || {}).map(([k, v]) => ({ k, nome: IG_FORMATOS[k] || k, v })).sort((x, y) => y.v - x.v);
+}
+
+function renderAlcanceIg(d) {
+  const el = document.getElementById('ig-alcance');
+  if (!d) { el.innerHTML = '<div class="fv-vazio">Sem dados ainda.</div>'; return; }
+  const formatos = igPorFormato(d.alcance_por_formato);
+  el.innerHTML = igDivisao('Contas alcançadas', d.alcance_por_seguidor || {})
+    + igDivisao('Visualizações', d.views_por_seguidor || {})
+    + `<div class="ig-bloco" style="margin-top:22px;"><h3>Contas alcançadas por formato</h3>`
+    + (formatos.length ? igBarras(formatos, x => x.v, x => x.nome, x => igNum(x.v)) : '<div class="fv-vazio">Sem dados.</div>')
+    + `<div class="ig-nota">Quem viu mais de um formato conta em cada um, por isso a soma passa do total.</div></div>`;
+  igAnimarBarras(el);
+}
+
+function renderInteracoesIg(d) {
+  const el = document.getElementById('ig-interacoes');
+  if (!d) { el.innerHTML = '<div class="fv-vazio">Sem dados ainda.</div>'; return; }
+  const t = d.totais, a = d.anterior || {};
+  const tipos = [['Curtidas', 'curtidas'], ['Comentários', 'comentarios'], ['Salvamentos', 'salvamentos'], ['Compartilhamentos', 'compartilhamentos']]
+    .map(([nome, k]) => ({ nome, v: t[k] || 0, antes: a[k] }));
+  const formatos = igPorFormato(d.interacoes_por_formato);
+  el.innerHTML = `<div class="ig-bloco"><h3>${igNum(t.interacoes)} interações no período</h3>`
+    + igBarras(tipos, x => x.v, x => x.nome, x => `${igNum(x.v)} <span>· antes ${igNum(x.antes)}</span>`) + '</div>'
+    + `<div class="ig-bloco"><h3>Interações por formato</h3>`
+    + (formatos.length ? igBarras(formatos, x => x.v, x => x.nome, x => igNum(x.v)) : '<div class="fv-vazio">Sem dados.</div>') + '</div>';
+  igAnimarBarras(el);
+}
+
+function renderSeguidoresIg(d) {
+  const { meta, conta } = igDados;
+  const el = document.getElementById('ig-seguidores');
+  const ultima = conta[conta.length - 1] || { data: meta.inicio, seguidores: meta.seguidores_inicio };
+  const atual = d ? d.perfil.seguidores : ultima.seguidores;
+  const hoje = igDia(d ? d.periodo.ate : ultima.data);
+  const metaHoje = igMetaNoDia(meta, hoje);
+  const diasRest = Math.max(1, igDiasEntre(hoje, igDia(meta.prazo)));
+  const precisa = Math.ceil(Math.max(0, meta.meta - atual) / diasRest);
+  const pct = Math.max(0, Math.min(100, atual / meta.meta * 100));
+  const pctHoje = Math.max(0, Math.min(100, metaHoje / meta.meta * 100));
+  const t = d ? d.totais : {};
+  const dias = d ? d.periodo.dias : 7;
+  const saldo = (t.seguiram ?? 0) - (t.deixaram ?? 0);
+  const ritmo = saldo / dias;
   const dif = atual - metaHoje;
-  const sinal = v => (v >= 0 ? '+' : '−') + igNum(Math.abs(v));
 
-  document.getElementById('ig-atualizado').textContent = 'sincronizado ' + igDiaCurto(diaAtual);
-  desenharReatorIg(atual, metaHoje, meta.meta);
+  // projeção honesta: no ritmo do período, quando bate (ou se não bate)
+  let aviso;
+  if (!d) aviso = '';
+  else if (ritmo <= 0) aviso = `<div class="ig-aviso"><b>No ritmo dos últimos ${dias} dias a conta não cresce</b> (saldo ${saldo > 0 ? '+' : ''}${saldo}: ${t.seguiram ?? 0} entraram, ${t.deixaram ?? 0} saíram). Pra chegar nos ${igMil(meta.meta)} em ${igDiaCurto(igDia(meta.prazo))} precisa de <b>+${igNum(precisa)} por dia</b>, todo dia.</div>`;
+  else {
+    const diasAteMeta = Math.ceil((meta.meta - atual) / ritmo);
+    const quando = new Date(hoje); quando.setDate(quando.getDate() + diasAteMeta);
+    const chega = quando <= igDia(meta.prazo);
+    aviso = `<div class="ig-aviso ${chega ? 'bom' : ''}">No ritmo dos últimos ${dias} dias (<b>${ritmo.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} por dia</b>), a conta chega em ${igMil(meta.meta)} por volta de <b>${quando.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}</b>${chega ? ', dentro do prazo.' : `. Pra bater em ${igDiaCurto(igDia(meta.prazo))} precisa de <b>+${igNum(precisa)} por dia</b>.`}</div>`;
+  }
 
-  // adiantado/atrasado é status: seta + palavra + cor, nunca só a cor
-  document.getElementById('ig-leituras').innerHTML =
-    (dif >= 0
-      ? igCel('▲ Adiantado', sinal(dif), `acima da curva de hoje (${igNum(metaHoje)})`, 'bom')
-      : igCel('▼ Atrasado', sinal(dif), `abaixo da curva de hoje (${igNum(metaHoje)})`, 'atras'))
-    + igCel('Ritmo necessário', `+${igNum(ritmo)}<small style="font-size:.9rem;color:#b6c9bb;font-weight:700;">/dia</small>`, `pra fechar ${igMil(meta.meta)} em ${igDiaCurto(igDia(meta.prazo))}`)
-    + igCel('Desde ontem', ontem == null ? '—' : sinal(atual - ontem), `${sinal(atual - meta.seguidores_inicio)} desde ${igDiaCurto(igDia(meta.inicio))}`)
-    + igCel('Faltam', `${diasRestantes}<small style="font-size:.9rem;color:#b6c9bb;font-weight:700;"> dias</small>`, `prazo ${igDiaCurto(igDia(meta.prazo))}`);
+  el.innerHTML = `<div class="ig-meta">
+      <div>
+        <div class="ig-meta-num">${igNum(atual)} <small>de ${igNum(meta.meta)}</small></div>
+        <div class="ig-cel-sub" style="margin-top:6px;"><span class="${dif >= 0 ? 'sobe' : 'desce'}">${dif >= 0 ? '▲ adiantado' : '▼ atrasado'} ${igNum(Math.abs(dif))}</span> em relação à curva de hoje (${igNum(metaHoje)})</div>
+      </div>
+      <div>
+        <div class="ig-meta-trilho"><b style="width:0" data-w="${pct}"></b><i style="left:calc(${pctHoje}% - 1px)" title="onde precisava estar hoje"></i></div>
+        <div class="ig-meta-rod"><span>${pct.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}% da meta · precisa de +${igNum(precisa)}/dia</span><span>${diasRest} dias · prazo ${igDiaCurto(igDia(meta.prazo))}</span></div>
+      </div>
+    </div>
+    <div class="ig-cels">
+      <div class="ig-cel"><div class="ig-cel-rot">Começaram a seguir</div><div class="ig-cel-val">${igNum(t.seguiram)}</div><div class="ig-cel-sub">últimos ${dias} dias</div></div>
+      <div class="ig-cel"><div class="ig-cel-rot">Deixaram de seguir</div><div class="ig-cel-val">${igNum(t.deixaram)}</div><div class="ig-cel-sub">últimos ${dias} dias</div></div>
+      <div class="ig-cel"><div class="ig-cel-rot">Saldo</div><div class="ig-cel-val ${saldo > 0 ? 'sobe' : saldo < 0 ? 'desce' : ''}">${saldo > 0 ? '+' : ''}${igNum(saldo)}</div><div class="ig-cel-sub">${saldo > 0 ? '▲ crescendo' : saldo < 0 ? '▼ perdendo seguidores' : 'parado'}</div></div>
+      <div class="ig-cel"><div class="ig-cel-rot">Precisa por dia</div><div class="ig-cel-val">+${igNum(precisa)}</div><div class="ig-cel-sub">pra chegar em ${igMil(meta.meta)} no prazo</div></div>
+    </div>${aviso}`;
+  requestAnimationFrame(() => { const b = el.querySelector('.ig-meta-trilho > b'); if (b) b.style.width = b.dataset.w + '%'; });
+}
 
-  desenharSeguidoresIg(meta, conta);
+function renderPublicoIg(d) {
+  const pub = d && d.publico ? d.publico : {};
+  const elP = document.getElementById('ig-publico'), elL = document.getElementById('ig-locais');
+  const total = l => (l || []).reduce((s, x) => s + x[1], 0);
+  const vazio = '<div class="fv-vazio">O Instagram só mostra o público de contas com 100+ seguidores.</div>';
+  // faixa etária na ordem das idades (é ordinal), não por tamanho
+  const idades = [...(pub.idade || [])].sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+  const ti = total(idades), tg = total(pub.genero);
+  elP.innerHTML = idades.length ? `<div class="ig-bloco"><h3>Faixa etária</h3>${igBarras(idades, x => x[1], x => x[0] + ' anos', x => `${igPct(x[1], ti)}% <span>· ${igNum(x[1])}</span>`)}</div>`
+    + `<div class="ig-bloco"><h3>Gênero</h3>${igBarras(pub.genero || [], x => x[1], x => IG_GENERO[x[0]] || x[0], x => `${igPct(x[1], tg)}% <span>· ${igNum(x[1])}</span>`)}</div>` : vazio;
+  let nomePais = c => c;
+  try { const dn = new Intl.DisplayNames(['pt-BR'], { type: 'region' }); nomePais = c => dn.of(c) || c; } catch (e) { /* navegador antigo: fica a sigla */ }
+  const tc = total(pub.cidades), tp = total(pub.paises);
+  elL.innerHTML = (pub.cidades || []).length ? `<div class="ig-bloco"><h3>Cidades</h3>${igBarras(pub.cidades.slice(0, 6), x => x[1], x => x[0].split(',')[0], x => `${igPct(x[1], tc)}% <span>· ${igNum(x[1])}</span>`)}</div>`
+    + `<div class="ig-bloco"><h3>Países</h3>${igBarras((pub.paises || []).slice(0, 5), x => x[1], x => nomePais(x[0]), x => `${igPct(x[1], tp)}% <span>· ${igNum(x[1])}</span>`)}</div>`
+    + '<div class="ig-nota">Percentual sobre as maiores cidades e países que o Instagram informa.</div>' : vazio;
+  igAnimarBarras(elP); igAnimarBarras(elL);
+}
 
-  // posts publicados com a última leitura de métricas
-  const publicados = posts.filter(p => p.status === 'publicado').map(p => ({ ...p, m: ultima[p.id] || {} }));
-  const seteDias = new Date(hoje); seteDias.setDate(seteDias.getDate() - 7);
-  const recentes = publicados.filter(p => p.publicado_em && new Date(p.publicado_em) >= seteDias);
-  const soma = (lista, k) => lista.reduce((s, p) => s + Number(p.m[k] || 0), 0);
-  const media = (lista, k) => lista.length ? Math.round(soma(lista, k) / lista.length) : null;
-  document.getElementById('ig-tiles').innerHTML =
-    igCel('Posts', igNum(recentes.length), 'meta: 14 (2 por dia)')
-    + igCel('Alcance', igMil(soma(recentes, 'alcance')), 'soma dos posts da semana')
-    + igCel('Comentários / post', igNum(media(recentes, 'comentarios')), 'cada um é um lead da isca')
-    + igCel('Salvos + compart.', igNum(recentes.length ? Math.round((soma(recentes, 'salvamentos') + soma(recentes, 'compartilhamentos')) / recentes.length) : null), 'por post · traz alcance novo');
+// posts publicados com a última leitura de métricas, na ordem escolhida
+function igPostsOrdenados() {
+  const { posts, ultima } = igDados;
+  const lista = posts.filter(p => p.status === 'publicado').map(p => ({ ...p, m: ultima[p.id] || {} }));
+  const k = igEstado.ordem;
+  if (k === 'recentes') return lista.sort((a, b) => String(b.publicado_em).localeCompare(String(a.publicado_em)));
+  return lista.sort((a, b) => Number(b.m[k] ?? -1) - Number(a.m[k] ?? -1));
+}
 
-  const grupo = (nome, filtro) => { const l = publicados.filter(filtro); return { nome, n: l.length, media: media(l, 'alcance') }; };
-  const blocos = [
-    { titulo: 'Formato', itens: [grupo('Carrossel', p => p.tipo === 'carrossel'), grupo('Reels', p => p.tipo === 'reels')] },
-    { titulo: 'Horário', itens: [grupo('11h', p => (p.slot || '').endsWith('11h')), grupo('18h', p => (p.slot || '').endsWith('18h'))] },
-  ];
-  const comp = document.getElementById('ig-comparativos');
-  comp.innerHTML = publicados.length ? blocos.map(b => {
-    const max = Math.max(1, ...b.itens.map(i => i.media || 0));
-    return `<div><h3>${b.titulo}</h3>${b.itens.map(i => `
-      <div class="ig-barra"><span>${i.nome}</span>
-        <div class="trilho"><b style="width:0" data-w="${i.media ? Math.round(i.media / max * 100) : 0}"></b></div>
-        <span class="num">${i.media == null ? '—' : igNum(i.media)} <span>· ${i.n} post${i.n === 1 ? '' : 's'}</span></span></div>`).join('')}</div>`;
-  }).join('') : '<div class="fv-vazio">Aparece quando o primeiro post for publicado e medido.</div>';
-  requestAnimationFrame(() => comp.querySelectorAll('.trilho > b').forEach(b => { b.style.width = b.dataset.w + '%'; }));
+const IG_ORDEM_ROT = { alcance: 'contas alcançadas', interacoes: 'interações', salvamentos: 'salvamentos', compartilhamentos: 'compartilhamentos', recentes: 'contas alcançadas' };
 
-  const ordem = [...publicados].sort((a, b) => Number(b.m.alcance || 0) - Number(a.m.alcance || 0));
-  document.getElementById('ig-tabela').innerHTML = ordem.length ? `
-    <tr><th>Data</th><th>Formato</th><th>Hook</th><th>Alcance</th><th>Curt.</th><th>Coment.</th><th>Salv.</th><th>Compart.</th><th>Por quê</th></tr>
-    ${ordem.map((p, i) => {
-      const hook = igEsc((p.hook || '').slice(0, 90)) + ((p.hook || '').length > 90 ? '…' : '');
+function renderConteudoIg() {
+  const el = document.getElementById('ig-grade');
+  const lista = igPostsOrdenados().slice(0, 8);
+  if (!lista.length) { el.innerHTML = '<div class="fv-vazio">Nenhum post publicado ainda.</div>'; return; }
+  const k = igEstado.ordem === 'recentes' ? 'alcance' : igEstado.ordem;
+  el.innerHTML = lista.map((p, i) => `<a class="ig-post" href="${igEsc(p.permalink || '#')}" target="_blank" rel="noopener" title="${igEsc((p.hook || '').slice(0, 140))}">
+      ${p.thumb_url ? `<img src="${igEsc(p.thumb_url)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}
+      <span class="pos">${i + 1}º</span>${IG_ICONE[p.tipo] ? `<span class="tipo">${IG_ICONE[p.tipo]}</span>` : ''}
+      <span class="rod"><b>${igNum(p.m[k])}</b><span>${IG_ORDEM_ROT[igEstado.ordem]} · ${p.publicado_em ? igDiaCurto(new Date(p.publicado_em)) : ''}</span></span>
+    </a>`).join('');
+}
+
+function renderTabelaIg() {
+  const el = document.getElementById('ig-tabela'), mais = document.getElementById('ig-tabela-mais');
+  let lista = igPostsOrdenados();
+  if (igEstado.formato !== 'todos') lista = lista.filter(p => p.tipo === igEstado.formato);
+  const total = lista.length;
+  if (!igEstado.todos) lista = lista.slice(0, 10);
+  if (!total) { el.innerHTML = '<tr><td class="vazio">Nenhum post nesse formato.</td></tr>'; mais.innerHTML = ''; return; }
+  const maxAlc = Math.max(...lista.map(p => p.m.alcance || 0));
+  el.innerHTML = `<tr><th>Post</th><th>Data</th><th>Formato</th><th>Alcance</th><th>Interações</th><th>Taxa</th><th>Curtidas</th><th>Coment.</th><th>Salvos</th><th>Compart.</th><th>Visitas ao perfil</th><th>Seguiram</th></tr>`
+    + lista.map(p => {
+      const m = p.m, taxa = igTaxa(m);
+      const leg = (p.hook || p.legenda || '(sem legenda)').slice(0, 110);
       return `<tr>
-        <td style="white-space:nowrap;">${p.publicado_em ? igDiaCurto(new Date(p.publicado_em)) : '—'}${p.slot ? ' · ' + igEsc(p.slot.split('_')[1] || '') : ''}</td>
-        <td>${p.tipo === 'reels' ? 'Reels' : 'Carrossel'}</td>
-        <td class="ig-hook">${p.permalink ? `<a href="${igEsc(p.permalink)}" target="_blank" rel="noopener">${hook}</a>` : hook}</td>
-        <td class="${i === 0 ? 'top' : 'n'}">${igNum(p.m.alcance)}</td><td class="n">${igNum(p.m.curtidas)}</td><td class="n">${igNum(p.m.comentarios)}</td>
-        <td class="n">${igNum(p.m.salvamentos)}</td><td class="n">${igNum(p.m.compartilhamentos)}</td>
-        <td class="pq">${igEsc(p.analise || '—')}</td></tr>`;
-    }).join('')}` : '<tr><td class="vazio">Nenhum post publicado ainda. Os números aparecem aqui quando o agente publicar o primeiro carrossel.</td></tr>';
+        <td><div class="ig-item">${p.thumb_url ? `<img src="${igEsc(p.thumb_url)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '<span class="ph"></span>'}
+          <a href="${igEsc(p.permalink || '#')}" target="_blank" rel="noopener">${igEsc(leg)}</a></div></td>
+        <td style="white-space:nowrap;">${p.publicado_em ? new Date(p.publicado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: '2-digit' }) : '—'}</td>
+        <td><span class="ig-chip">${IG_TIPO[p.tipo] || p.tipo}</span></td>
+        <td class="${m.alcance && m.alcance === maxAlc ? 'top' : ''}">${igNum(m.alcance)}</td>
+        <td>${igNum(m.interacoes)}</td>
+        <td class="${taxa == null ? '' : taxa >= .05 ? 'sobe' : taxa < .02 ? 'desce' : ''}">${igTaxaFmt(taxa)}</td>
+        <td>${igNum(m.curtidas)}</td><td>${igNum(m.comentarios)}</td><td>${igNum(m.salvamentos)}</td><td>${igNum(m.compartilhamentos)}</td>
+        <td>${igNum(m.visitas_perfil)}</td><td>${igNum(m.seguiram)}</td></tr>`;
+    }).join('');
+  mais.innerHTML = total > 10 ? `<button class="ig-mais" onclick="igEstado.todos = !igEstado.todos; renderTabelaIg();">${igEstado.todos ? 'Mostrar menos' : `Ver todos os ${total}`}</button>` : '';
+}
 
-  const fila = posts.filter(p => p.status === 'aguardando' || p.status === 'aprovado');
+function renderFormatosIg() {
+  const el = document.getElementById('ig-formatos');
+  const lista = igPostsOrdenados().filter(p => p.m.alcance != null);
+  if (!lista.length) { el.innerHTML = '<tr><td class="vazio">Aparece quando houver posts medidos.</td></tr>'; return; }
+  const media = (l, k) => Math.round(l.reduce((s, p) => s + Number(p.m[k] || 0), 0) / l.length);
+  const linhas = Object.keys(IG_TIPO).map(tipo => ({ nome: IG_TIPO[tipo], l: lista.filter(p => p.tipo === tipo) })).filter(x => x.l.length);
+  // horário só existe nos posts do agente (slot 11h/18h); aparece quando tiver
+  ['11h', '18h'].forEach(hr => { const l = lista.filter(p => (p.slot || '').endsWith(hr)); if (l.length) linhas.push({ nome: 'Postado às ' + hr, l }); });
+  const melhor = Math.max(...linhas.map(x => media(x.l, 'alcance')));
+  el.innerHTML = `<tr><th></th><th>Posts</th><th>Alcance</th><th>Interações</th><th>Salvos</th><th>Compart.</th><th>Taxa</th></tr>`
+    + linhas.map(x => {
+      const alc = media(x.l, 'alcance'), inter = media(x.l, 'interacoes');
+      return `<tr><td>${x.nome}</td><td>${x.l.length}</td><td class="${alc === melhor ? 'top' : ''}">${igNum(alc)}</td><td>${igNum(inter)}</td>
+        <td>${igNum(media(x.l, 'salvamentos'))}</td><td>${igNum(media(x.l, 'compartilhamentos'))}</td><td>${igTaxaFmt(alc ? inter / alc : null)}</td></tr>`;
+    }).join('');
+}
+
+function renderFilaIg() {
+  const fila = igDados.posts.filter(p => p.status === 'aguardando' || p.status === 'aprovado');
   const rotulo = { aguardando: 'aguardando aprovação', aprovado: 'aprovado · vai publicar' };
   document.getElementById('ig-fila').innerHTML = fila.length ? `<div class="tabela-wrap"><table class="ig-tabela">
     <tr><th>Horário</th><th>Formato</th><th>Hook</th><th>Situação</th></tr>
-    ${fila.map(p => `<tr><td style="white-space:nowrap;">${p.slot ? igDiaCurto(igDia(p.slot)) + ' · ' + igEsc(p.slot.split('_')[1] || '') : '—'}</td><td>${p.tipo === 'reels' ? 'Reels' : 'Carrossel'}</td>
-      <td class="ig-hook">${igEsc((p.hook || '').slice(0, 90))}</td><td><span class="ig-chip">${rotulo[p.status]}</span></td></tr>`).join('')}
+    ${fila.map(p => `<tr><td style="white-space:nowrap;">${p.slot ? igDiaCurto(igDia(p.slot)) + ' · ' + igEsc(p.slot.split('_')[1] || '') : '—'}</td><td>${IG_TIPO[p.tipo] || p.tipo}</td>
+      <td>${igEsc((p.hook || '').slice(0, 90))}</td><td><span class="ig-chip">${rotulo[p.status]}</span></td></tr>`).join('')}
     </table></div>` : '<div class="fv-vazio">Nada na fila agora.</div>';
 }
-
-// anel tipo reator: 270° de 0 a 10 mil, marca branca = onde a curva da meta está hoje
-function desenharReatorIg(atual, metaHoje, alvo) {
-  const C = 150, R = 100, INI = 135, VARRE = 270;
-  const ponto = (r, a) => [C + r * Math.cos(a * Math.PI / 180), C + r * Math.sin(a * Math.PI / 180)];
-  const arco = (r, f) => {
-    const [x0, y0] = ponto(r, INI), [x1, y1] = ponto(r, INI + VARRE * f);
-    return `M${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 ${VARRE * f > 180 ? 1 : 0} 1 ${x1.toFixed(2)},${y1.toFixed(2)}`;
-  };
-  const f = Math.max(0, Math.min(1, atual / alvo));
-  const fHoje = Math.max(0, Math.min(1, metaHoje / alvo));
-  const comp = 2 * Math.PI * R * (VARRE / 360);
-
-  let marcas = '';
-  for (let i = 0; i <= 60; i++) {
-    const a = INI + VARRE * i / 60, maior = i % 15 === 0;
-    const [x0, y0] = ponto(maior ? 112 : 116, a), [x1, y1] = ponto(122, a);
-    marcas += `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="${i / 60 <= f ? IG_HUD.brilho : 'rgba(255,255,255,.22)'}" stroke-width="${maior ? 2 : 1}" opacity="${maior ? 1 : .8}"/>`;
-    if (maior) {
-      const [tx, ty] = ponto(138, a);
-      marcas += `<text x="${tx.toFixed(1)}" y="${(ty + 3).toFixed(1)}" font-size="9" font-weight="700" fill="${IG_HUD.mut}" text-anchor="middle">${igMil(alvo * i / 60)}</text>`;
-    }
-  }
-  const [hx0, hy0] = ponto(R - 13, INI + VARRE * fHoje), [hx1, hy1] = ponto(R + 13, INI + VARRE * fHoje);
-  const pct = Math.round(f * 100);
-
-  document.getElementById('ig-reator').innerHTML = `
-  <svg viewBox="0 0 300 300" role="img" aria-label="${igNum(atual)} seguidores, ${pct}% de ${igMil(alvo)}">
-    <defs>
-      <linearGradient id="ig-grad-arco" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#13668a"/><stop offset=".6" stop-color="${IG_HUD.serie}"/><stop offset="1" stop-color="${IG_HUD.brilho}"/></linearGradient>
-      <radialGradient id="ig-grad-nucleo"><stop offset="0" stop-color="rgba(30,155,208,.28)"/><stop offset="1" stop-color="rgba(30,155,208,0)"/></radialGradient>
-      <filter id="ig-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>
-    <circle cx="${C}" cy="${C}" r="148" fill="none" stroke="rgba(127,216,255,.30)" stroke-width="1" stroke-dasharray="2 7" class="giro"/>
-    <circle cx="${C}" cy="${C}" r="128" fill="none" stroke="rgba(127,216,255,.14)" stroke-width="3" stroke-dasharray="46 16" class="giro inv"/>
-    <circle cx="${C}" cy="${C}" r="84" fill="url(#ig-grad-nucleo)" stroke="rgba(127,216,255,.18)" stroke-width="1"/>
-    ${marcas}
-    <path d="${arco(R, 1)}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="14" stroke-linecap="round"/>
-    <path class="arco" d="${arco(R, 1)}" fill="none" stroke="url(#ig-grad-arco)" stroke-width="14" stroke-linecap="round" filter="url(#ig-glow)"
-      stroke-dasharray="${comp.toFixed(1)}" stroke-dashoffset="${comp.toFixed(1)}" data-alvo="${(comp * (1 - f)).toFixed(1)}"/>
-    <line x1="${hx0.toFixed(1)}" y1="${hy0.toFixed(1)}" x2="${hx1.toFixed(1)}" y2="${hy1.toFixed(1)}" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-    <text x="${C}" y="${C - 22}" font-size="9" font-weight="800" letter-spacing="2.2" fill="${IG_HUD.mut}" text-anchor="middle">SEGUIDORES</text>
-    <text x="${C}" y="${C + 16}" font-size="44" font-weight="800" letter-spacing="-1.5" fill="#fff" text-anchor="middle" style="font-variant-numeric:tabular-nums" id="ig-contador">0</text>
-    <text x="${C}" y="${C + 38}" font-size="11.5" font-weight="700" fill="${IG_HUD.brilho}" text-anchor="middle">${pct}% de ${igMil(alvo)}</text>
-  </svg>`;
-
-  // arco enche e o número conta até o valor (pula a animação se o sistema pedir menos movimento)
-  const svg = document.querySelector('#ig-reator svg');
-  const arcoEl = svg.querySelector('.arco');
-  const cont = svg.querySelector('#ig-contador');
-  const parado = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  requestAnimationFrame(() => { arcoEl.style.strokeDashoffset = arcoEl.dataset.alvo; });
-  if (parado) { cont.textContent = igNum(atual); return; }
-  const t0 = performance.now();
-  const passo = t => {
-    const k = Math.max(0, Math.min(1, (t - t0) / 1400)), e = 1 - Math.pow(1 - k, 3);
-    cont.textContent = igNum(Math.round(atual * e));
-    if (k < 1) requestAnimationFrame(passo);
-  };
-  requestAnimationFrame(passo);
-}
-
-function desenharSeguidoresIg(meta, conta) {
-  const svg = document.getElementById('chart-ig');
-  const inicio = igDia(meta.inicio), prazo = igDia(meta.prazo);
-  const totalDias = igDiasEntre(inicio, prazo);
-  const padEsq = 46, padDir = 16, padTopo = 26, bandaX = 26, alturaPlot = 210;
-  const h = padTopo + alturaPlot + bandaX;
-  const w = vizLarguraDisponivel('viz-ig-wrap', 340);
-  const escalaX = d => padEsq + (w - padEsq - padDir) * (igDiasEntre(inicio, d) / totalDias);
-  const { topo, ticks } = vizEscala(Math.max(meta.meta, ...conta.map(c => c.seguidores)), 4);
-  const escalaY = v => padTopo + alturaPlot - alturaPlot * (v / topo);
-  const baseY = padTopo + alturaPlot;
-
-  const grade = ticks.map(v => `<line x1="${padEsq}" y1="${escalaY(v)}" x2="${w - padDir}" y2="${escalaY(v)}" stroke="${IG_HUD.grade}" stroke-width="1"/>
-    <text x="${padEsq - 8}" y="${escalaY(v) + 3.5}" font-size="9.5" fill="${IG_HUD.mut}" text-anchor="end" style="font-variant-numeric:tabular-nums">${igMil(v)}</text>`).join('');
-
-  let eixoX = '';
-  for (let i = 0; i <= totalDias; i += 14) {
-    if (totalDias - i < 7) break;
-    const d = new Date(inicio); d.setDate(d.getDate() + i);
-    eixoX += `<text x="${escalaX(d)}" y="${h - 8}" font-size="10" fill="${IG_HUD.mut}" text-anchor="middle">${igDiaCurto(d)}</text>`;
-  }
-  eixoX += `<text x="${escalaX(prazo)}" y="${h - 8}" font-size="10" font-weight="700" fill="#fff" text-anchor="end">${igDiaCurto(prazo)}</text>`;
-
-  // curva da meta: referência (linha fina clara + pastilha), não série
-  const yMetaFim = escalaY(meta.meta);
-  const rotuloMeta = `META ${igMil(meta.meta).toUpperCase()}`;
-  const larguraChip = rotuloMeta.length * 6 + 14;
-  const linhaMeta = `<line x1="${escalaX(inicio)}" y1="${escalaY(meta.seguidores_inicio)}" x2="${escalaX(prazo)}" y2="${yMetaFim}" stroke="${IG_HUD.mut}" stroke-width="1" opacity=".7"/>`
-    + `<rect x="${w - padDir - larguraChip}" y="${yMetaFim - 24}" width="${larguraChip}" height="17" rx="5" fill="rgba(8,16,12,.9)" stroke="rgba(255,255,255,.18)"/>`
-    + `<text x="${w - padDir - 7}" y="${yMetaFim - 12.5}" font-size="9.5" font-weight="800" letter-spacing=".6" fill="#fff" text-anchor="end">${rotuloMeta}</text>`;
-
-  const pts = conta.map(c => [escalaX(igDia(c.data)), escalaY(c.seguidores)]);
-  let serie = '';
-  if (pts.length > 1) {
-    const linha = pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' ');
-    serie += `<polygon points="${pts[0][0].toFixed(1)},${baseY} ${linha} ${pts[pts.length - 1][0].toFixed(1)},${baseY}" fill="url(#ig-grad-area)"/>`
-      + `<polyline points="${linha}" fill="none" stroke="${IG_HUD.serie}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" filter="url(#ig-glow-linha)"/>`;
-  }
-  if (pts.length) {
-    const [ux, uy] = pts[pts.length - 1];
-    serie += `<circle cx="${ux}" cy="${uy}" r="5" fill="${IG_HUD.brilho}" class="ig-pulso"/>`
-      + `<circle cx="${ux}" cy="${uy}" r="5" fill="${IG_HUD.brilho}" stroke="#0b130e" stroke-width="2"/>`
-      + `<text x="${ux + 10}" y="${uy - 9}" font-size="12" font-weight="800" fill="#fff" style="font-variant-numeric:tabular-nums">${igNum(conta[conta.length - 1].seguidores)}</text>`;
-  }
-
-  // faixas de hover (um dia cada) + mira vertical
-  const porDia = {};
-  conta.forEach(c => { porDia[c.data.slice(0, 10)] = c.seguidores; });
-  const larguraDia = (w - padEsq - padDir) / totalDias;
-  let bandas = '';
-  const textos = [], miras = [];
-  for (let i = 0; i <= totalDias; i++) {
-    const d = new Date(inicio); d.setDate(d.getDate() + i);
-    const chave = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    const cx = escalaX(d), real = porDia[chave], alvo = igMetaNoDia(meta, d);
-    miras.push({ cx, cy: real == null ? null : escalaY(real) });
-    bandas += `<rect class="viz-banda" x="${cx - larguraDia / 2}" y="${padTopo}" width="${larguraDia}" height="${alturaPlot}" fill="transparent" data-i="${i}" data-cx="${cx}" data-topo="${padTopo}"/>`;
-    textos.push(`<div class="tip-mes">${d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</div>`
-      + `<div class="tip-linha"><i style="background:${IG_HUD.serie}"></i>Seguidores<b>${real == null ? '—' : igNum(real)}</b></div>`
-      + `<div class="tip-linha" style="opacity:.75;">Curva da meta<b>${igNum(alvo)}</b></div>`
-      + (real == null ? '' : `<div class="tip-linha" style="opacity:.75;">${real >= alvo ? '▲ acima' : '▼ abaixo'}<b>${igNum(Math.abs(real - alvo))}</b></div>`));
-  }
-
-  const ultimoX = pts.length ? pts[pts.length - 1][0] : padEsq;
-  svg.setAttribute('width', w);
-  svg.setAttribute('height', h);
-  svg.innerHTML = `<defs>
-      <linearGradient id="ig-grad-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(30,155,208,.42)"/><stop offset="1" stop-color="rgba(30,155,208,0)"/></linearGradient>
-      <linearGradient id="ig-grad-varre" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(127,216,255,0)"/><stop offset="1" stop-color="rgba(127,216,255,.35)"/></linearGradient>
-      <filter id="ig-glow-linha" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>`
-    + grade
-    + `<line x1="${padEsq}" y1="${baseY}" x2="${w - padDir}" y2="${baseY}" stroke="${IG_HUD.base}" stroke-width="1"/>`
-    + eixoX + linhaMeta + serie
-    + `<rect class="ig-varredura" x="${padEsq - 40}" y="${padTopo}" width="40" height="${alturaPlot}" fill="url(#ig-grad-varre)" style="--ig-dist:${Math.max(0, ultimoX - padEsq + 40)}px"/>`
-    + `<line id="ig-mira" x1="0" y1="${padTopo}" x2="0" y2="${baseY}" stroke="${IG_HUD.brilho}" stroke-width="1" opacity="0"/>`
-    + `<circle id="ig-mira-ponto" r="6" fill="none" stroke="${IG_HUD.brilho}" stroke-width="2" opacity="0"/>`
-    + bandas;
-  vizLigarTooltip('viz-ig-wrap', 'tip-ig', textos);
-  const mira = svg.querySelector('#ig-mira'), miraPonto = svg.querySelector('#ig-mira-ponto');
-  svg.querySelectorAll('.viz-banda').forEach(b => {
-    b.addEventListener('mouseenter', () => {
-      const m = miras[Number(b.dataset.i)];
-      mira.setAttribute('x1', m.cx); mira.setAttribute('x2', m.cx); mira.setAttribute('opacity', '.55');
-      if (m.cy == null) miraPonto.setAttribute('opacity', '0');
-      else { miraPonto.setAttribute('cx', m.cx); miraPonto.setAttribute('cy', m.cy); miraPonto.setAttribute('opacity', '1'); }
-    });
-    b.addEventListener('mouseleave', () => { mira.setAttribute('opacity', '0'); miraPonto.setAttribute('opacity', '0'); });
-  });
-}
-
 
 // ---------- YOUTUBE ----------
 // Alimentado pelo youtube-agente (Mac do Igor): metricas.py lê a Data API + Analytics API e grava yt_*.
 // O Analytics fecha o dia com ~3 dias de atraso, então o "agora" aqui é o último dia fechado. Só admin lê.
-// Visual do YouTube Studio: escuro nos dois temas, por isso as cores são fixas (YT_COR), como no IG_HUD.
+// Visual do YouTube Studio: escuro nos dois temas, por isso as cores são fixas (YT_COR), como no IG_COR.
 let ytDados = null;
 const ytEstado = { metrica: 'views', dias: 90, janela: '28d', formato: 'todos', ordem: 'v7', video: null, todos: false };
 const ytRetCache = {};
