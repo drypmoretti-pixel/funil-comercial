@@ -15,7 +15,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Funil Comercial — Demanda Infinita</title>
@@ -754,37 +754,99 @@ svg.chart { display: block; }
 .ig-chip { display:inline-block; font-size:.66rem; font-weight:800; letter-spacing:.06em; padding:3px 10px; border-radius:99px; color:#7be58a; background:rgba(63,203,74,.12); border:1px solid rgba(63,203,74,.3); white-space:nowrap; }
 .ig-hud .fv-vazio { padding:10px 0; }
 @media (prefers-reduced-motion: reduce) { .ig-hud * { animation:none !important; transition:none !important; } }
-/* aba YouTube — mesmo HUD da aba Instagram (.ig-hud), com controles de recorte e a tabela de vídeos */
-.yt-ctrls { display:inline-flex; gap:8px; flex-wrap:wrap; }
-.yt-seg { display:inline-flex; gap:2px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:3px; }
-.yt-seg button { white-space:nowrap; border:0; background:none; color:var(--ig-mut); font-size:.7rem; font-weight:800; letter-spacing:.04em; padding:6px 12px; border-radius:999px; cursor:pointer; transition:background .15s, color .15s; }
-.yt-seg button:hover { color:#fff; }
-.yt-seg button.on { background:rgba(30,155,208,.28); color:#fff; box-shadow:0 0 12px rgba(30,155,208,.35) inset; }
-.yt-barra { display:grid; grid-template-columns:minmax(96px, 168px) 1fr auto; align-items:center; gap:12px; font-size:.82rem; color:var(--ig-txt); margin-bottom:9px; }
-.yt-barra > span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.yt-barra .trilho { height:8px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden; }
-.yt-barra .trilho > b { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, #13668a, var(--ig-serie) 70%, var(--ig-brilho)); box-shadow:0 0 12px rgba(30,155,208,.65); transition:width .9s cubic-bezier(.2,.9,.3,1); }
-.yt-barra .num { font-weight:800; font-variant-numeric:tabular-nums; color:#fff; white-space:nowrap; }
-.yt-barra .num span { font-weight:600; color:var(--ig-mut); }
-@media (max-width: 560px) {
-  .yt-seg { flex-wrap:wrap; border-radius:16px; }
-  .yt-barra { grid-template-columns:minmax(80px, 1fr) 64px auto; gap:10px; }
-}
-.yt-bloco + .yt-bloco { margin-top:18px; }
-.yt-bloco h3 { font-size:.62rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ig-mut); margin:0 0 10px; }
-.yt-tabela tr.clicavel { cursor:pointer; }
-.yt-tabela tr.sel td { background:rgba(30,155,208,.13); }
-.yt-video { display:flex; align-items:center; gap:10px; min-width:260px; }
-.yt-video img { width:72px; height:40px; object-fit:cover; border-radius:6px; flex:0 0 auto; border:1px solid rgba(255,255,255,.12); }
-.yt-video a { color:#fff; text-decoration:none; line-height:1.35; }
-.yt-video a:hover { color:var(--ig-brilho); }
-.yt-tag { display:inline-block; font-size:.6rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:99px; border:1px solid rgba(255,255,255,.18); color:var(--ig-mut); white-space:nowrap; }
-.yt-tag.short { border-color:rgba(127,216,255,.4); color:var(--ig-brilho); }
-.yt-mais { margin-top:12px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.05); color:#fff; font-weight:700; font-size:.78rem; padding:8px 16px; border-radius:999px; cursor:pointer; }
-.yt-mais:hover { border-color:rgba(127,216,255,.5); }
-.yt-sel { max-width:100%; background:rgba(8,16,12,.7) !important; color:#fff !important; border:1px solid rgba(127,216,255,.35) !important; border-radius:10px; padding:8px 12px; font-size:.84rem; font-weight:600; }
-.yt-ret-cels { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px; margin:14px 0 6px; }
-.yt-nota { font-size:.72rem; color:var(--ig-mut); margin-top:10px; }
+/* aba YouTube — visual do YouTube Studio (fundo preto, cards cinza, azul de gráfico, vermelho só na marca e na meta).
+   Escuro nos dois temas do painel, então as cores são fixas aqui e no YT_COR do JS. */
+#tab-youtube { --yt-bg:#0f0f0f; --yt-card:#1b1b1b; --yt-cel:#242424; --yt-borda:#2e2e2e; --yt-txt:#f1f1f1; --yt-sec:#aaaaaa;
+  --yt-azul:#3ea6ff; --yt-verm:#ff0033; --yt-bom:#2ba640; --yt-atras:#f0b400;
+  font-family:Roboto, "Helvetica Neue", Arial, sans-serif; color:var(--yt-txt); }
+#tab-youtube.active { display:block; background:var(--yt-bg); border-radius:18px; padding:22px; }
+#tab-youtube .yt-topo { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+#tab-youtube .yt-marca { display:flex; align-items:center; gap:10px; font-size:1.25rem; font-weight:700; letter-spacing:-.01em; }
+#tab-youtube .yt-marca small { display:block; font-size:.78rem; font-weight:400; color:var(--yt-sec); letter-spacing:0; }
+#tab-youtube .yt-sync { display:inline-flex; align-items:center; gap:8px; font-size:.78rem; color:var(--yt-sec); }
+#tab-youtube .yt-sync i { width:8px; height:8px; border-radius:50%; background:var(--yt-bom); }
+#tab-youtube .yt-card { background:var(--yt-card); border:1px solid var(--yt-borda); border-radius:14px; padding:20px 22px; margin-bottom:16px; }
+#tab-youtube .yt-card-topo { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:4px; }
+#tab-youtube .yt-card h2 { margin:0; font-size:1.05rem; font-weight:700; color:var(--yt-txt); letter-spacing:-.005em; }
+#tab-youtube .yt-desc { margin:4px 0 16px; font-size:.82rem; line-height:1.5; color:var(--yt-sec); }
+#tab-youtube .yt-duas { display:grid; grid-template-columns:repeat(auto-fit, minmax(330px, 1fr)); gap:16px; }
+#tab-youtube .yt-duas .yt-card { margin-bottom:0; }
+#tab-youtube .yt-duas + .yt-duas, #tab-youtube .yt-duas + .yt-card { margin-top:16px; }
+/* meta */
+#tab-youtube .yt-meta-grade { display:grid; grid-template-columns:minmax(200px, 250px) 1fr; gap:26px; align-items:center; }
+@media (max-width: 760px) { #tab-youtube .yt-meta-grade { grid-template-columns:1fr; justify-items:center; } }
+#tab-youtube .yt-anel svg { display:block; width:100%; max-width:250px; height:auto; }
+#tab-youtube .yt-anel .arco { transition:stroke-dashoffset 1.4s cubic-bezier(.2,.9,.3,1); }
+#tab-youtube .yt-cels { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; width:100%; }
+#tab-youtube .yt-cel { background:var(--yt-cel); border-radius:12px; padding:14px 16px; border-top:3px solid transparent; }
+#tab-youtube .yt-cel-rot { font-size:.74rem; color:var(--yt-sec); }
+#tab-youtube .yt-cel-val { margin-top:6px; font-size:1.75rem; font-weight:700; letter-spacing:-.02em; line-height:1.1; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#tab-youtube .yt-cel-val small { font-size:.85rem; font-weight:500; color:var(--yt-sec); }
+#tab-youtube .yt-cel-sub { margin-top:4px; font-size:.74rem; color:var(--yt-sec); line-height:1.4; }
+#tab-youtube .yt-cel.bom { border-top-color:var(--yt-bom); }
+#tab-youtube .yt-cel.bom .yt-cel-val { color:#4cd964; }
+#tab-youtube .yt-cel.atras { border-top-color:var(--yt-atras); }
+#tab-youtube .yt-cel.atras .yt-cel-val { color:#ffcc33; }
+/* visão geral: abas de métrica como no Studio */
+#tab-youtube .yt-kpis { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); border:1px solid var(--yt-borda); border-radius:12px; overflow:hidden; margin:6px 0 14px; }
+@media (max-width: 760px) { #tab-youtube .yt-kpis { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+#tab-youtube .yt-kpi { text-align:left; background:none; border:0; border-right:1px solid var(--yt-borda); border-top:3px solid transparent; padding:14px 16px 13px; color:var(--yt-txt); cursor:pointer; font:inherit; transition:background .15s; }
+#tab-youtube .yt-kpi:last-child { border-right:0; }
+#tab-youtube .yt-kpi:hover { background:#222; }
+#tab-youtube .yt-kpi.on { background:#242424; border-top-color:var(--yt-azul); }
+#tab-youtube .yt-kpi .r { font-size:.76rem; color:var(--yt-sec); }
+#tab-youtube .yt-kpi .v { font-size:1.6rem; font-weight:700; letter-spacing:-.02em; margin-top:4px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#tab-youtube .yt-kpi .d { font-size:.74rem; margin-top:3px; color:var(--yt-sec); }
+#tab-youtube .yt-kpi .d.sobe { color:#4cd964; }
+#tab-youtube .yt-kpi .d.desce { color:#ff6b6b; }
+#tab-youtube .yt-kpi.estatico { cursor:default; }
+#tab-youtube .yt-kpi.estatico:hover { background:none; }
+#tab-youtube .yt-seg { display:inline-flex; gap:2px; background:#121212; border:1px solid var(--yt-borda); border-radius:999px; padding:3px; flex-wrap:wrap; }
+#tab-youtube .yt-seg button { white-space:nowrap; border:0; background:none; color:var(--yt-sec); font:inherit; font-size:.78rem; font-weight:500; padding:6px 13px; border-radius:999px; cursor:pointer; transition:background .15s, color .15s; }
+#tab-youtube .yt-seg button:hover { color:#fff; }
+#tab-youtube .yt-seg button.on { background:#3a3a3a; color:#fff; }
+@media (max-width: 560px) { #tab-youtube .yt-seg { border-radius:14px; } }
+#tab-youtube .yt-legenda { display:flex; gap:16px; flex-wrap:wrap; font-size:.74rem; color:var(--yt-sec); margin-top:8px; }
+#tab-youtube .yt-legenda i { display:inline-block; width:14px; height:3px; border-radius:2px; background:var(--yt-azul); vertical-align:middle; margin-right:6px; }
+#tab-youtube .yt-legenda .yt-tri { color:var(--yt-verm); font-size:.7rem; margin-right:6px; }
+/* tooltip: fica dentro do gráfico e vira de lado perto da borda (antes subia e ficava atrás dos controles) */
+#tab-youtube .viz-chart-wrap { position:relative; }
+#tab-youtube .viz-tip { transform:none; background:#282828; border:1px solid #3f3f3f; color:var(--yt-txt); border-radius:10px; box-shadow:0 10px 28px rgba(0,0,0,.55); font-size:.74rem; padding:10px 12px; }
+#tab-youtube .viz-tip .tip-mes { color:#fff; }
+/* barras */
+#tab-youtube .yt-barra { display:grid; grid-template-columns:minmax(96px, 170px) 1fr auto; align-items:center; gap:12px; font-size:.82rem; margin-bottom:10px; }
+#tab-youtube .yt-barra > span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--yt-txt); }
+#tab-youtube .yt-barra .trilho { height:6px; border-radius:99px; background:#303030; overflow:hidden; }
+#tab-youtube .yt-barra .trilho > b { display:block; height:100%; border-radius:99px; background:var(--yt-azul); transition:width .9s cubic-bezier(.2,.9,.3,1); }
+#tab-youtube .yt-barra .num { font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#tab-youtube .yt-barra .num span { font-weight:400; color:var(--yt-sec); }
+@media (max-width: 560px) { #tab-youtube .yt-barra { grid-template-columns:minmax(80px, 1fr) 60px auto; gap:10px; } }
+#tab-youtube .yt-bloco + .yt-bloco { margin-top:18px; }
+#tab-youtube .yt-bloco h3 { font-size:.72rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--yt-sec); margin:0 0 10px; }
+#tab-youtube .fv-vazio { color:var(--yt-sec); font-size:.82rem; padding:8px 0; }
+/* tabela de vídeos */
+#tab-youtube .yt-tabela { width:100%; border-collapse:collapse; font-size:.82rem; }
+#tab-youtube .yt-tabela th { text-align:left; font-size:.72rem; font-weight:500; color:var(--yt-sec); padding:10px; border-bottom:1px solid var(--yt-borda); white-space:nowrap; }
+#tab-youtube .yt-tabela td { padding:10px; border-bottom:1px solid #262626; vertical-align:middle; font-variant-numeric:tabular-nums; }
+#tab-youtube .yt-tabela td.n { color:var(--yt-txt); }
+#tab-youtube .yt-tabela td.top { color:var(--yt-azul); font-weight:700; }
+#tab-youtube .yt-tabela td.vazio { color:var(--yt-sec); }
+#tab-youtube .yt-tabela tr:hover td { background:#222; }
+#tab-youtube .yt-tabela tr.clicavel { cursor:pointer; }
+#tab-youtube .yt-tabela tr.sel td { background:#263850; }
+#tab-youtube .yt-video { display:flex; align-items:center; gap:12px; min-width:280px; }
+#tab-youtube .yt-video .capa { position:relative; flex:0 0 auto; }
+#tab-youtube .yt-video img { width:96px; height:54px; object-fit:cover; border-radius:8px; display:block; background:#2a2a2a; }
+#tab-youtube .yt-video .dur { position:absolute; right:4px; bottom:4px; font-size:.64rem; font-weight:600; background:rgba(0,0,0,.82); color:#fff; padding:1px 4px; border-radius:4px; }
+#tab-youtube .yt-video .dur.short { background:var(--yt-verm); }
+#tab-youtube .yt-video a { color:var(--yt-txt); text-decoration:none; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+#tab-youtube .yt-video a:hover { color:var(--yt-azul); }
+#tab-youtube .yt-mais { margin-top:14px; border:1px solid var(--yt-borda); background:#272727; color:#fff; font:inherit; font-weight:500; font-size:.82rem; padding:9px 18px; border-radius:999px; cursor:pointer; }
+#tab-youtube .yt-mais:hover { background:#333; }
+#tab-youtube .yt-sel { max-width:100%; background:#121212 !important; color:#fff !important; border:1px solid var(--yt-borda) !important; border-radius:10px; padding:9px 12px; font:inherit; font-size:.84rem; }
+#tab-youtube .yt-ret-cels { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px; margin:4px 0 16px; }
+#tab-youtube .yt-nota { font-size:.74rem; color:var(--yt-sec); margin-top:10px; }
+@media (prefers-reduced-motion: reduce) { #tab-youtube * { animation:none !important; transition:none !important; } }
 .viz-etapas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: .8rem; margin-top: 4px; }
 .viz-etapa { display: inline-flex; align-items: baseline; gap: 7px; }
 .viz-etapa i { width: 9px; height: 9px; border-radius: 2px; flex: 0 0 auto; transform: translateY(0); }
@@ -3316,83 +3378,84 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
     </div>
 
     <div class="tab-panel" id="tab-youtube">
-      <section class="lanc ig-hud">
-        <div class="ig-hud-topo">
-          <span class="lanc-selo">YouTube · Igor Miguel</span>
-          <span class="ig-sync"><i></i><span id="yt-atualizado">aguardando dados</span></span>
+      <div class="yt-topo">
+        <div class="yt-marca">
+          <svg viewBox="0 0 28 20" width="34" height="24" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#ff0033"/><polygon points="11,5.5 19,10 11,14.5" fill="#fff"/></svg>
+          <div>Igor Miguel<small>Studio do canal</small></div>
         </div>
-        <h2 class="lanc-titulo">Centro de comando do canal</h2>
-        <p class="fv-sub">O anel vai de zero ao próximo marco de inscritos. A marca branca é onde o canal estava 28 dias atrás: o arco depois dela é o crescimento do mês.</p>
-        <div class="ig-hud-grade">
-          <div class="ig-reator" id="yt-reator"></div>
-          <div class="ig-leituras" id="yt-leituras"></div>
-        </div>
-        <div class="ig-hud-chart">
-          <div class="ig-hud-rot">
-            <span id="yt-serie-rot">Views por dia</span>
-            <span class="yt-ctrls">
-              <span class="yt-seg" id="yt-seg-metrica"><button data-v="views" class="on">Views</button><button data-v="horas">Horas</button><button data-v="inscritos">Inscritos</button></span>
-              <span class="yt-seg" id="yt-seg-dias"><button data-v="28">28d</button><button data-v="90" class="on">90d</button><button data-v="365">12m</button></span>
-            </span>
-          </div>
-          <div class="viz-chart-wrap" id="viz-yt-wrap">
-            <svg id="chart-yt" class="chart"></svg>
-            <div class="viz-tip" id="tip-yt"></div>
-          </div>
-          <p class="yt-nota">▶ no eixo = dia em que saiu vídeo novo. O YouTube fecha os números com uns 3 dias de atraso.</p>
+        <span class="yt-sync"><i></i><span id="yt-atualizado">aguardando dados</span></span>
+      </div>
+
+      <section class="yt-card">
+        <div class="yt-card-topo"><h2>Meta: 10 mil inscritos</h2></div>
+        <p class="yt-desc">O anel vermelho é o caminho até 10 mil. A marca branca é onde o canal precisava estar hoje pra bater a meta no prazo.</p>
+        <div class="yt-meta-grade">
+          <div class="yt-anel" id="yt-reator"></div>
+          <div class="yt-cels" id="yt-leituras"></div>
         </div>
       </section>
 
-      <section class="lanc ig-hud" style="padding:14px 20px;">
-        <div class="ig-hud-topo">
-          <span class="lanc-selo" style="margin:0;">Recortes do canal</span>
-          <span class="yt-seg" id="yt-seg-janela"><button data-v="28d" class="on">Últimos 28 dias</button><button data-v="365d">Últimos 12 meses</button></span>
+      <section class="yt-card">
+        <div class="yt-card-topo">
+          <h2>Visão geral</h2>
+          <span class="yt-seg" id="yt-seg-dias"><button data-v="28">28 dias</button><button data-v="90" class="on">90 dias</button><button data-v="365">12 meses</button></span>
+        </div>
+        <div class="yt-kpis" id="yt-kpis"></div>
+        <div class="viz-chart-wrap" id="viz-yt-wrap">
+          <svg id="chart-yt" class="chart"></svg>
+          <div class="viz-tip" id="tip-yt"></div>
+        </div>
+        <div class="yt-legenda"><span><i></i><span id="yt-serie-rot">Views por dia</span></span><span><b class="yt-tri">▲</b>vídeo novo publicado</span><span>O YouTube fecha os números com uns 3 dias de atraso.</span></div>
+      </section>
+
+      <section class="yt-card" style="padding:14px 22px;">
+        <div class="yt-card-topo" style="margin:0;">
+          <h2>Público e alcance</h2>
+          <span class="yt-seg" id="yt-seg-janela"><button data-v="28d" class="on">28 dias</button><button data-v="365d">12 meses</button></span>
         </div>
       </section>
-      <div class="ig-hud-duas">
-        <section class="lanc ig-hud">
-          <span class="lanc-selo">De onde vêm as views</span>
-          <p class="fv-sub">Origem do tráfego. O número pequeno é o tempo assistido, que pesa mais no algoritmo do que a view.</p>
+      <div class="yt-duas">
+        <section class="yt-card">
+          <h2>De onde vêm as views</h2>
+          <p class="yt-desc">Origem do tráfego. O número menor é o tempo assistido, que pesa mais no algoritmo do que a view.</p>
           <div id="yt-trafego"></div>
         </section>
-        <section class="lanc ig-hud">
-          <span class="lanc-selo">Shorts × vídeos longos</span>
-          <p class="fv-sub">Short traz gente nova; vídeo longo é o que segura o tempo assistido.</p>
+        <section class="yt-card">
+          <h2>Shorts × vídeos longos</h2>
+          <p class="yt-desc">Short traz gente nova; vídeo longo é o que segura o tempo assistido.</p>
           <div id="yt-formato"></div>
         </section>
       </div>
-      <div class="ig-hud-duas">
-        <section class="lanc ig-hud">
-          <span class="lanc-selo">O que buscam pra te achar</span>
-          <p class="fv-sub">Termos digitados na busca do YouTube e sites que mandaram gente. É a lista de títulos e palavras-chave que já funcionam.</p>
+      <div class="yt-duas">
+        <section class="yt-card">
+          <h2>O que buscam pra te achar</h2>
+          <p class="yt-desc">Termos digitados na busca do YouTube e sites que mandaram gente. É a lista de títulos e palavras-chave que já funcionam.</p>
           <div id="yt-busca"></div>
         </section>
-        <section class="lanc ig-hud">
-          <span class="lanc-selo">Quem assiste</span>
-          <p class="fv-sub">Aparelho, idade e se já é inscrito.</p>
+        <section class="yt-card">
+          <h2>Quem assiste</h2>
+          <p class="yt-desc">Aparelho, idade e se já é inscrito.</p>
           <div id="yt-publico"></div>
         </section>
       </div>
 
-      <section class="lanc ig-hud">
-        <div class="ig-hud-topo">
-          <span class="lanc-selo">Vídeos</span>
-          <span class="yt-ctrls">
-            <span class="yt-seg" id="yt-seg-formato"><button data-v="todos" class="on">Todos</button><button data-v="longo">Longos</button><button data-v="short">Shorts</button></span>
-            <span class="yt-seg" id="yt-seg-ordem"><button data-v="v7" class="on">Em alta</button><button data-v="views">Total</button><button data-v="d7">1ª semana</button><button data-v="pct">Retenção</button><button data-v="insc">Inscritos</button></span>
-          </span>
+      <section class="yt-card" style="margin-top:16px;">
+        <div class="yt-card-topo">
+          <h2>Conteúdo</h2>
+          <span class="yt-seg" id="yt-seg-formato"><button data-v="todos" class="on">Todos</button><button data-v="longo">Vídeos</button><button data-v="short">Shorts</button></span>
         </div>
-        <p class="fv-sub">"1ª semana" compara vídeo novo com antigo de igual pra igual. Clique num vídeo longo pra abrir a curva de retenção dele.</p>
-        <div class="tabela-wrap"><table class="ig-tabela yt-tabela" id="yt-tabela"></table></div>
+        <p class="yt-desc">"1ª semana" compara vídeo novo com antigo de igual pra igual. Clique num vídeo longo pra abrir a curva de retenção dele.</p>
+        <div style="margin-bottom:12px;"><span class="yt-seg" id="yt-seg-ordem"><button data-v="v7" class="on">Em alta</button><button data-v="views">Mais vistos</button><button data-v="d7">Melhor 1ª semana</button><button data-v="pct">Maior retenção</button><button data-v="insc">Mais inscritos</button></span></div>
+        <div class="tabela-wrap"><table class="yt-tabela" id="yt-tabela"></table></div>
         <div id="yt-tabela-mais"></div>
       </section>
 
-      <section class="lanc ig-hud" id="yt-retencao-sec">
-        <div class="ig-hud-topo">
-          <span class="lanc-selo">Retenção</span>
+      <section class="yt-card" id="yt-retencao-sec">
+        <div class="yt-card-topo">
+          <h2>Retenção do público</h2>
           <select class="yt-sel" id="yt-ret-video"></select>
         </div>
-        <p class="fv-sub">Quantos % das pessoas ainda estavam assistindo em cada momento do vídeo. Queda forte no começo é gancho fraco; queda no meio é trecho pra cortar na edição.</p>
+        <p class="yt-desc">Quantos % das pessoas ainda estavam assistindo em cada momento. Queda forte no começo é gancho fraco; queda no meio é trecho pra cortar na edição.</p>
         <div class="yt-ret-cels" id="yt-ret-cels"></div>
         <div class="viz-chart-wrap" id="viz-ytret-wrap">
           <svg id="chart-ytret" class="chart"></svg>
@@ -9453,7 +9516,7 @@ function renderInstagram() {
 }
 
 // anel tipo reator: 270° de 0 a 10 mil, marca branca = onde a curva da meta está hoje
-function desenharReatorIg(atual, metaHoje, alvo, alvoId = 'ig-reator', pre = 'ig', rotulo = 'SEGUIDORES') {
+function desenharReatorIg(atual, metaHoje, alvo) {
   const C = 150, R = 100, INI = 135, VARRE = 270;
   const ponto = (r, a) => [C + r * Math.cos(a * Math.PI / 180), C + r * Math.sin(a * Math.PI / 180)];
   const arco = (r, f) => {
@@ -9477,30 +9540,30 @@ function desenharReatorIg(atual, metaHoje, alvo, alvoId = 'ig-reator', pre = 'ig
   const [hx0, hy0] = ponto(R - 13, INI + VARRE * fHoje), [hx1, hy1] = ponto(R + 13, INI + VARRE * fHoje);
   const pct = Math.round(f * 100);
 
-  document.getElementById(alvoId).innerHTML = `
-  <svg viewBox="0 0 300 300" role="img" aria-label="${igNum(atual)} ${rotulo.toLowerCase()}, ${pct}% de ${igMil(alvo)}">
+  document.getElementById('ig-reator').innerHTML = `
+  <svg viewBox="0 0 300 300" role="img" aria-label="${igNum(atual)} seguidores, ${pct}% de ${igMil(alvo)}">
     <defs>
-      <linearGradient id="${pre}-grad-arco" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#13668a"/><stop offset=".6" stop-color="${IG_HUD.serie}"/><stop offset="1" stop-color="${IG_HUD.brilho}"/></linearGradient>
-      <radialGradient id="${pre}-grad-nucleo"><stop offset="0" stop-color="rgba(30,155,208,.28)"/><stop offset="1" stop-color="rgba(30,155,208,0)"/></radialGradient>
-      <filter id="${pre}-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <linearGradient id="ig-grad-arco" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#13668a"/><stop offset=".6" stop-color="${IG_HUD.serie}"/><stop offset="1" stop-color="${IG_HUD.brilho}"/></linearGradient>
+      <radialGradient id="ig-grad-nucleo"><stop offset="0" stop-color="rgba(30,155,208,.28)"/><stop offset="1" stop-color="rgba(30,155,208,0)"/></radialGradient>
+      <filter id="ig-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     </defs>
     <circle cx="${C}" cy="${C}" r="148" fill="none" stroke="rgba(127,216,255,.30)" stroke-width="1" stroke-dasharray="2 7" class="giro"/>
     <circle cx="${C}" cy="${C}" r="128" fill="none" stroke="rgba(127,216,255,.14)" stroke-width="3" stroke-dasharray="46 16" class="giro inv"/>
-    <circle cx="${C}" cy="${C}" r="84" fill="url(#${pre}-grad-nucleo)" stroke="rgba(127,216,255,.18)" stroke-width="1"/>
+    <circle cx="${C}" cy="${C}" r="84" fill="url(#ig-grad-nucleo)" stroke="rgba(127,216,255,.18)" stroke-width="1"/>
     ${marcas}
     <path d="${arco(R, 1)}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="14" stroke-linecap="round"/>
-    <path class="arco" d="${arco(R, 1)}" fill="none" stroke="url(#${pre}-grad-arco)" stroke-width="14" stroke-linecap="round" filter="url(#${pre}-glow)"
+    <path class="arco" d="${arco(R, 1)}" fill="none" stroke="url(#ig-grad-arco)" stroke-width="14" stroke-linecap="round" filter="url(#ig-glow)"
       stroke-dasharray="${comp.toFixed(1)}" stroke-dashoffset="${comp.toFixed(1)}" data-alvo="${(comp * (1 - f)).toFixed(1)}"/>
     <line x1="${hx0.toFixed(1)}" y1="${hy0.toFixed(1)}" x2="${hx1.toFixed(1)}" y2="${hy1.toFixed(1)}" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-    <text x="${C}" y="${C - 22}" font-size="9" font-weight="800" letter-spacing="2.2" fill="${IG_HUD.mut}" text-anchor="middle">${rotulo}</text>
-    <text x="${C}" y="${C + 16}" font-size="44" font-weight="800" letter-spacing="-1.5" fill="#fff" text-anchor="middle" style="font-variant-numeric:tabular-nums" id="${pre}-contador">0</text>
+    <text x="${C}" y="${C - 22}" font-size="9" font-weight="800" letter-spacing="2.2" fill="${IG_HUD.mut}" text-anchor="middle">SEGUIDORES</text>
+    <text x="${C}" y="${C + 16}" font-size="44" font-weight="800" letter-spacing="-1.5" fill="#fff" text-anchor="middle" style="font-variant-numeric:tabular-nums" id="ig-contador">0</text>
     <text x="${C}" y="${C + 38}" font-size="11.5" font-weight="700" fill="${IG_HUD.brilho}" text-anchor="middle">${pct}% de ${igMil(alvo)}</text>
   </svg>`;
 
   // arco enche e o número conta até o valor (pula a animação se o sistema pedir menos movimento)
-  const svg = document.querySelector('#' + alvoId + ' svg');
+  const svg = document.querySelector('#ig-reator svg');
   const arcoEl = svg.querySelector('.arco');
-  const cont = svg.querySelector('#' + pre + '-contador');
+  const cont = svg.querySelector('#ig-contador');
   const parado = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   requestAnimationFrame(() => { arcoEl.style.strokeDashoffset = arcoEl.dataset.alvo; });
   if (parado) { cont.textContent = igNum(atual); return; }
@@ -9608,10 +9671,11 @@ function desenharSeguidoresIg(meta, conta) {
 // ---------- YOUTUBE ----------
 // Alimentado pelo youtube-agente (Mac do Igor): metricas.py lê a Data API + Analytics API e grava yt_*.
 // O Analytics fecha o dia com ~3 dias de atraso, então o "agora" aqui é o último dia fechado. Só admin lê.
-// Reaproveita o HUD da aba Instagram (classes ig-*, IG_HUD, desenharReatorIg).
+// Visual do YouTube Studio: escuro nos dois temas, por isso as cores são fixas (YT_COR), como no IG_HUD.
 let ytDados = null;
 const ytEstado = { metrica: 'views', dias: 90, janela: '28d', formato: 'todos', ordem: 'v7', video: null, todos: false };
 const ytRetCache = {};
+const YT_COR = { azul: '#3ea6ff', verm: '#ff0033', txt: '#f1f1f1', sec: '#aaaaaa', grade: 'rgba(255,255,255,.07)', base: 'rgba(255,255,255,.2)', fundo: '#1b1b1b' };
 
 const YT_NOMES = {
   trafego: { SUBSCRIBER: 'Início e inscrições', YT_SEARCH: 'Busca do YouTube', SHORTS: 'Feed do Shorts', EXT_URL: 'Externo (sites, Google)',
@@ -9633,14 +9697,12 @@ function ytTempo(s) {
   return h ? `${h}:${String(m).padStart(2, '0')}:${seg}` : `${m}:${seg}`;
 }
 function ytHoras(min) { return Math.round(Number(min || 0) / 60).toLocaleString('pt-BR') + ' h'; }
-function ytVar(atual, antes) {
-  if (!antes) return '';
-  const p = Math.round((atual - antes) / antes * 100);
-  return p >= 0 ? `▲ ${p}% vs 28 dias antes` : `▼ ${Math.abs(p)}% vs 28 dias antes`;
+function ytCel(rot, val, sub, classe) {
+  return `<div class="yt-cel ${classe || ''}"><div class="yt-cel-rot">${rot}</div><div class="yt-cel-val">${val}</div><div class="yt-cel-sub">${sub}</div></div>`;
 }
 
 async function carregarYoutube() {
-  const desde = new Date(); desde.setDate(desde.getDate() - 400);
+  const desde = new Date(); desde.setDate(desde.getDate() - 800);
   const [meta, canal, videos, largada, recortes] = await Promise.all([
     sb.from('yt_meta').select('*').maybeSingle(),
     sb.from('yt_canal_diario').select('*').gte('data', desde.toISOString().slice(0, 10)).order('data'),
@@ -9651,7 +9713,7 @@ async function carregarYoutube() {
   const erro = meta.error || canal.error || videos.error || largada.error || recortes.error;
   if (erro || !meta.data || !(canal.data || []).length) {
     document.getElementById('yt-leituras').innerHTML =
-      `<div class="empty">Não consegui carregar os dados do YouTube${erro ? ': ' + igEsc(erro.message) : ''}.</div>`;
+      `<div class="fv-vazio">Não consegui carregar os dados do YouTube${erro ? ': ' + igEsc(erro.message) : ''}.</div>`;
     return;
   }
   const larg = {};
@@ -9664,118 +9726,186 @@ async function carregarYoutube() {
   renderYoutube();
 }
 
+// onde o canal precisa estar no dia d pra chegar na meta no prazo (rampa linear, igual à do Instagram)
+function ytMetaNoDia(meta, d) {
+  const total = igDiasEntre(igDia(meta.inicio), igDia(meta.prazo));
+  const passados = Math.min(total, Math.max(0, igDiasEntre(igDia(meta.inicio), d)));
+  return Math.round(meta.inscritos_inicio + (meta.marco - meta.inscritos_inicio) * passados / total);
+}
+
 function renderYoutube() {
   const { meta, canal } = ytDados;
   const ult = canal[canal.length - 1];
-  const r28 = canal.slice(-28), a28 = canal.slice(-56, -28);
-  const soma = (l, k) => l.reduce((s, d) => s + Number(d[k] || 0), 0);
-  const liq = l => soma(l, 'inscritos_ganhos') - soma(l, 'inscritos_perdidos');
-  const durMedia = l => soma(l, 'views') ? soma(l, 'minutos') * 60 / soma(l, 'views') : 0;
+  const r28 = canal.slice(-28);
+  const liq28 = r28.reduce((s, d) => s + Number(d.inscritos_ganhos || 0) - Number(d.inscritos_perdidos || 0), 0);
   const atual = ult.inscritos_total;
-  const ha28 = (canal[canal.length - 29] || canal[0]).inscritos_total;
-  const ritmo = liq(r28) / 28;
-  const diasMarco = ritmo > 0 ? Math.ceil((meta.marco - atual) / ritmo) : null;
-
-  document.getElementById('yt-atualizado').textContent = 'dados até ' + igDiaCurto(igDia(ult.data));
-  desenharReatorIg(atual, ha28, meta.marco, 'yt-reator', 'yt', 'INSCRITOS');
-
+  const diaAtual = igDia(ult.data);
+  const metaHoje = ytMetaNoDia(meta, diaAtual);
+  const diasRestantes = Math.max(1, igDiasEntre(diaAtual, igDia(meta.prazo)));
+  const ritmoNec = Math.ceil(Math.max(0, meta.marco - atual) / diasRestantes);
+  const ritmoAtual = liq28 / 28;
+  const dif = atual - metaHoje;
   const sinal = v => (v >= 0 ? '+' : '−') + igNum(Math.abs(v));
-  document.getElementById('yt-leituras').innerHTML =
-    igCel('Inscritos · 28d', sinal(liq(r28)), diasMarco == null ? ytVar(liq(r28), liq(a28)) : `${igMil(meta.marco)} em ~${diasMarco} dias nesse ritmo`, liq(r28) >= liq(a28) ? 'bom' : 'atras')
-    + igCel('Views · 28d', igMil(soma(r28, 'views')), ytVar(soma(r28, 'views'), soma(a28, 'views')))
-    + igCel('Horas assistidas · 28d', ytHoras(soma(r28, 'minutos')), ytVar(soma(r28, 'minutos'), soma(a28, 'minutos')))
-    + igCel('Duração média · 28d', ytTempo(durMedia(r28)), ytVar(durMedia(r28), durMedia(a28)).replace('%', '% na duração'));
 
-  desenharSerieYt();
+  document.getElementById('yt-atualizado').textContent = 'Dados até ' + diaAtual.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+  desenharAnelYt(atual, metaHoje, meta.marco);
+
+  // adiantado/atrasado é status: seta + palavra + cor, nunca só a cor
+  const fmtRitmo = v => v.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+  document.getElementById('yt-leituras').innerHTML =
+    (dif >= 0
+      ? ytCel('▲ Adiantado', sinal(dif), `acima da curva de hoje (${igNum(metaHoje)})`, 'bom')
+      : ytCel('▼ Atrasado', sinal(dif), `abaixo da curva de hoje (${igNum(metaHoje)})`, 'atras'))
+    + ytCel('Ritmo necessário', `+${igNum(ritmoNec)}<small> /dia</small>`, `hoje o canal faz +${fmtRitmo(ritmoAtual)}/dia (média de 28 dias)`, ritmoAtual >= ritmoNec ? 'bom' : 'atras')
+    + ytCel('Inscritos · 28 dias', sinal(liq28), `${sinal(atual - meta.inscritos_inicio)} desde o início da meta (${igDiaCurto(igDia(meta.inicio))})`)
+    + ytCel('Faltam', `${diasRestantes}<small> dias</small>`, `prazo ${igDia(meta.prazo).toLocaleDateString('pt-BR')} · faltam ${igNum(Math.max(0, meta.marco - atual))} inscritos`);
+
+  renderVisaoGeralYt();
   renderRecortesYt();
   renderVideosYt();
   renderRetencaoYt();
 }
 
+// anel no vermelho do YouTube: 0 → meta, marca branca = curva da meta hoje
+function desenharAnelYt(atual, metaHoje, alvo) {
+  const C = 125, R = 100, comp = 2 * Math.PI * R;
+  const f = Math.max(0, Math.min(1, atual / alvo)), fHoje = Math.max(0, Math.min(1, metaHoje / alvo));
+  const ang = fr => (-90 + 360 * fr) * Math.PI / 180;
+  const [hx0, hy0, hx1, hy1] = [C + (R - 13) * Math.cos(ang(fHoje)), C + (R - 13) * Math.sin(ang(fHoje)), C + (R + 13) * Math.cos(ang(fHoje)), C + (R + 13) * Math.sin(ang(fHoje))];
+  const pct = (atual / alvo * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+  document.getElementById('yt-reator').innerHTML = `
+  <svg viewBox="0 0 250 250" role="img" aria-label="${igNum(atual)} inscritos, ${pct}% de ${igMil(alvo)}">
+    <defs><linearGradient id="yt-grad-anel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff4e45"/><stop offset="1" stop-color="${YT_COR.verm}"/></linearGradient></defs>
+    <circle cx="${C}" cy="${C}" r="${R}" fill="none" stroke="#2c2c2c" stroke-width="16"/>
+    <circle class="arco" cx="${C}" cy="${C}" r="${R}" fill="none" stroke="url(#yt-grad-anel)" stroke-width="16" stroke-linecap="round"
+      transform="rotate(-90 ${C} ${C})" stroke-dasharray="${comp.toFixed(1)}" stroke-dashoffset="${comp.toFixed(1)}" data-alvo="${(comp * (1 - f)).toFixed(1)}"/>
+    <line x1="${hx0.toFixed(1)}" y1="${hy0.toFixed(1)}" x2="${hx1.toFixed(1)}" y2="${hy1.toFixed(1)}" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <text x="${C}" y="${C - 24}" font-size="11" fill="${YT_COR.sec}" text-anchor="middle">Inscritos</text>
+    <text x="${C}" y="${C + 14}" font-size="40" font-weight="700" fill="#fff" text-anchor="middle" style="font-variant-numeric:tabular-nums" id="yt-contador">0</text>
+    <text x="${C}" y="${C + 38}" font-size="12" fill="${YT_COR.sec}" text-anchor="middle">${pct}% de ${igMil(alvo)}</text>
+  </svg>`;
+  const svg = document.querySelector('#yt-reator svg'), arco = svg.querySelector('.arco'), cont = svg.querySelector('#yt-contador');
+  requestAnimationFrame(() => { arco.style.strokeDashoffset = arco.dataset.alvo; });
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { cont.textContent = igNum(atual); return; }
+  const t0 = performance.now();
+  const passo = t => {
+    const k = Math.max(0, Math.min(1, (t - t0) / 1400)), e = 1 - Math.pow(1 - k, 3);
+    cont.textContent = igNum(Math.round(atual * e));
+    if (k < 1) requestAnimationFrame(passo);
+  };
+  requestAnimationFrame(passo);
+}
+
+// tooltip dentro do gráfico: abre do lado do cursor e vira pro outro lado perto da borda
+function ytLigarTooltip(wrapId, tipId, textos, pts, idMira, idPonto) {
+  const wrap = document.getElementById(wrapId), tip = document.getElementById(tipId);
+  const svg = wrap.querySelector('svg');
+  const mira = svg.querySelector('#' + idMira), ponto = svg.querySelector('#' + idPonto);
+  svg.querySelectorAll('.viz-banda').forEach(b => {
+    b.addEventListener('mouseenter', () => {
+      const i = Number(b.dataset.i), [x, y] = pts[i];
+      tip.innerHTML = textos[i] || '';
+      tip.style.opacity = '1';
+      const larg = tip.offsetWidth, visivel = x - wrap.scrollLeft;
+      tip.style.left = (visivel + 16 + larg < wrap.clientWidth ? visivel + 16 : Math.max(4, visivel - 16 - larg)) + 'px';
+      tip.style.top = (Number(b.dataset.topo) + 4) + 'px';
+      mira.setAttribute('x1', x); mira.setAttribute('x2', x); mira.setAttribute('opacity', '.5');
+      ponto.setAttribute('cx', x); ponto.setAttribute('cy', y); ponto.setAttribute('opacity', '1');
+    });
+    b.addEventListener('mouseleave', () => { tip.style.opacity = '0'; mira.setAttribute('opacity', '0'); ponto.setAttribute('opacity', '0'); });
+  });
+}
+
+const YT_METRICAS = {
+  views: { rot: 'Visualizações', serie: 'Views por dia', val: d => Number(d.views || 0), fmt: v => igNum(Math.round(v)),
+    total: l => l.reduce((s, d) => s + Number(d.views || 0), 0), fmtTotal: v => igNum(v) },
+  horas: { rot: 'Tempo de exibição', serie: 'Horas assistidas por dia', val: d => Number(d.minutos || 0) / 60, fmt: v => v.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' h',
+    total: l => l.reduce((s, d) => s + Number(d.minutos || 0), 0) / 60, fmtTotal: v => Math.round(v).toLocaleString('pt-BR') + ' h' },
+  inscritos: { rot: 'Inscritos', serie: 'Inscritos líquidos por dia', val: d => Number(d.inscritos_ganhos || 0) - Number(d.inscritos_perdidos || 0), fmt: v => (v >= 0 ? '+' : '−') + igNum(Math.abs(v)),
+    total: l => l.reduce((s, d) => s + Number(d.inscritos_ganhos || 0) - Number(d.inscritos_perdidos || 0), 0), fmtTotal: v => (v >= 0 ? '+' : '−') + igNum(Math.abs(v)) },
+  duracao: { rot: 'Duração média', serie: 'Duração média da view por dia', val: d => Number(d.duracao_media_s || 0), fmt: v => ytTempo(v),
+    total: l => { const v = l.reduce((s, d) => s + Number(d.views || 0), 0); return v ? l.reduce((s, d) => s + Number(d.minutos || 0), 0) * 60 / v : 0; }, fmtTotal: v => ytTempo(v) },
+};
+
+function renderVisaoGeralYt() {
+  const { canal } = ytDados;
+  const n = ytEstado.dias;
+  const agora = canal.slice(-n), antes = canal.slice(-2 * n, -n);
+  document.getElementById('yt-kpis').innerHTML = Object.entries(YT_METRICAS).map(([k, m]) => {
+    const a = m.total(agora), b = antes.length === n ? m.total(antes) : null;
+    let d = '<div class="d">&nbsp;</div>';
+    if (b) {
+      const p = Math.round((a - b) / Math.abs(b) * 100);
+      d = `<div class="d ${p >= 0 ? 'sobe' : 'desce'}">${p >= 0 ? '▲' : '▼'} ${Math.abs(p)}% vs ${n === 365 ? '12 meses' : n + ' dias'} antes</div>`;
+    }
+    return `<button class="yt-kpi ${k === ytEstado.metrica ? 'on' : ''}" data-m="${k}"><div class="r">${m.rot}</div><div class="v">${m.fmtTotal(a)}</div>${d}</button>`;
+  }).join('');
+  document.querySelectorAll('#yt-kpis .yt-kpi').forEach(b => b.addEventListener('click', () => { ytEstado.metrica = b.dataset.m; renderVisaoGeralYt(); }));
+  desenharSerieYt();
+}
+
 function desenharSerieYt() {
   const { canal, videos } = ytDados;
   const dias = canal.slice(-ytEstado.dias);
-  const M = {
-    views: { rot: 'Views por dia', val: d => Number(d.views || 0), fmt: v => igNum(v) },
-    horas: { rot: 'Horas assistidas por dia', val: d => Number(d.minutos || 0) / 60, fmt: v => v.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' h' },
-    inscritos: { rot: 'Inscritos ganhos por dia', val: d => Number(d.inscritos_ganhos || 0), fmt: v => igNum(v) },
-  }[ytEstado.metrica];
-  document.getElementById('yt-serie-rot').textContent = M.rot;
+  const M = YT_METRICAS[ytEstado.metrica];
+  document.getElementById('yt-serie-rot').textContent = M.serie;
 
   const lancamentos = {};
   videos.forEach(v => { const k = (v.publicado_em || '').slice(0, 10); (lancamentos[k] = lancamentos[k] || []).push(v); });
 
   const svg = document.getElementById('chart-yt');
-  const padEsq = 46, padDir = 16, padTopo = 22, bandaX = 30, alturaPlot = 200;
+  const padEsq = 46, padDir = 12, padTopo = 14, bandaX = 38, alturaPlot = 220;
   const h = padTopo + alturaPlot + bandaX;
-  const w = vizLarguraDisponivel('viz-yt-wrap', 340);
+  const w = vizLarguraDisponivel('viz-yt-wrap', 320);
   const n = dias.length;
   const passoX = (w - padEsq - padDir) / Math.max(1, n - 1);
   const escalaX = i => padEsq + passoX * i;
   const valores = dias.map(M.val);
+  const minimo = Math.min(0, ...valores);
   const { topo, ticks } = vizEscala(Math.max(1, ...valores), 4);
-  const escalaY = v => padTopo + alturaPlot - alturaPlot * (v / topo);
-  const baseY = padTopo + alturaPlot;
+  const escalaY = v => padTopo + alturaPlot - alturaPlot * ((v - minimo) / (topo - minimo));
+  const baseY = escalaY(0), pisoY = padTopo + alturaPlot;
+  const rotY = ytEstado.metrica === 'duracao' ? v => ytTempo(v) : ytEstado.metrica === 'horas' ? v => v + ' h' : v => igMil(v);
 
-  const grade = ticks.map(v => `<line x1="${padEsq}" y1="${escalaY(v)}" x2="${w - padDir}" y2="${escalaY(v)}" stroke="${IG_HUD.grade}" stroke-width="1"/>
-    <text x="${padEsq - 8}" y="${escalaY(v) + 3.5}" font-size="9.5" fill="${IG_HUD.mut}" text-anchor="end" style="font-variant-numeric:tabular-nums">${igMil(v)}</text>`).join('');
+  const grade = ticks.map(v => `<line x1="${padEsq}" y1="${escalaY(v)}" x2="${w - padDir}" y2="${escalaY(v)}" stroke="${YT_COR.grade}" stroke-width="1"/>
+    <text x="${padEsq - 8}" y="${escalaY(v) + 3.5}" font-size="10" fill="${YT_COR.sec}" text-anchor="end" style="font-variant-numeric:tabular-nums">${rotY(v)}</text>`).join('');
 
-  const cada = n <= 31 ? 7 : n <= 100 ? 14 : 60;
+  const cada = n <= 31 ? 7 : n <= 100 ? 14 : 61;
   let eixoX = '', marcas = '';
   dias.forEach((d, i) => {
-    if ((n - 1 - i) % cada === 0 && i > 2) eixoX += `<text x="${escalaX(i)}" y="${h - 6}" font-size="10" fill="${i === n - 1 ? '#fff' : IG_HUD.mut}" font-weight="${i === n - 1 ? 700 : 400}" text-anchor="${i === n - 1 ? 'end' : 'middle'}">${igDiaCurto(igDia(d.data))}</text>`;
-    if (lancamentos[d.data]) marcas += `<text x="${escalaX(i)}" y="${baseY + 12}" font-size="8" fill="${IG_HUD.brilho}" text-anchor="middle">▶</text>`;
+    const ultimo = i === n - 1;
+    if ((n - 1 - i) % cada === 0 && (ultimo || i > 3)) eixoX += `<text x="${escalaX(i)}" y="${h - 2}" font-size="10" fill="${ultimo ? '#fff' : YT_COR.sec}" text-anchor="${ultimo ? 'end' : 'middle'}">${igDiaCurto(igDia(d.data))}</text>`;
+    if (lancamentos[d.data]) marcas += `<path d="M${escalaX(i) - 4},${pisoY + 13} L${escalaX(i) + 4},${pisoY + 13} L${escalaX(i)},${pisoY + 6} Z" fill="${YT_COR.verm}"/>`;
   });
 
   const pts = valores.map((v, i) => [escalaX(i), escalaY(v)]);
   const linha = pts.map(p => p.map(x => x.toFixed(1)).join(',')).join(' ');
   const [ux, uy] = pts[pts.length - 1];
   const serie = `<polygon points="${pts[0][0].toFixed(1)},${baseY} ${linha} ${ux.toFixed(1)},${baseY}" fill="url(#yt-grad-area)"/>`
-    + `<polyline points="${linha}" fill="none" stroke="${IG_HUD.serie}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" filter="url(#yt-glow-linha)"/>`
-    + `<circle cx="${ux}" cy="${uy}" r="5" fill="${IG_HUD.brilho}" class="ig-pulso"/>`
-    + `<circle cx="${ux}" cy="${uy}" r="5" fill="${IG_HUD.brilho}" stroke="#0b130e" stroke-width="2"/>`;
+    + `<polyline points="${linha}" fill="none" stroke="${YT_COR.azul}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`
+    + `<circle cx="${ux}" cy="${uy}" r="4.5" fill="${YT_COR.azul}" stroke="${YT_COR.fundo}" stroke-width="2"/>`;
 
   let bandas = '';
-  const textos = [];
-  dias.forEach((d, i) => {
-    bandas += `<rect class="viz-banda" x="${escalaX(i) - passoX / 2}" y="${padTopo}" width="${passoX}" height="${alturaPlot + 16}" fill="transparent" data-i="${i}" data-cx="${escalaX(i)}" data-topo="${padTopo}"/>`;
-    const lanc = (lancamentos[d.data] || []).map(v => `<div class="tip-linha" style="color:${IG_HUD.brilho};">▶ ${igEsc(v.titulo.slice(0, 42))}${v.titulo.length > 42 ? '…' : ''}</div>`).join('');
-    textos.push(`<div class="tip-mes">${igDia(d.data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}</div>`
-      + `<div class="tip-linha"><i style="background:${IG_HUD.serie}"></i>${M.rot.replace(' por dia', '')}<b>${M.fmt(valores[i])}</b></div>`
-      + (ytEstado.metrica !== 'views' ? `<div class="tip-linha" style="opacity:.75;">Views<b>${igNum(d.views)}</b></div>` : '')
-      + (ytEstado.metrica !== 'horas' ? `<div class="tip-linha" style="opacity:.75;">Horas<b>${(Number(d.minutos || 0) / 60).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}</b></div>` : '')
-      + `<div class="tip-linha" style="opacity:.75;">Inscritos<b>+${igNum(d.inscritos_ganhos)} / −${igNum(d.inscritos_perdidos)}</b></div>`
-      + `<div class="tip-linha" style="opacity:.75;">Duração média<b>${ytTempo(d.duracao_media_s)}</b></div>` + lanc);
+  const textos = dias.map((d, i) => {
+    bandas += `<rect class="viz-banda" x="${escalaX(i) - passoX / 2}" y="${padTopo}" width="${passoX}" height="${alturaPlot + 18}" fill="transparent" data-i="${i}" data-topo="${padTopo}"/>`;
+    const lanc = (lancamentos[d.data] || []).map(v => `<div class="tip-linha" style="color:#ff6b81;">▲ ${igEsc(v.titulo.slice(0, 44))}${v.titulo.length > 44 ? '…' : ''}</div>`).join('');
+    return `<div class="tip-mes">${igDia(d.data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}</div>`
+      + `<div class="tip-linha"><i style="background:${YT_COR.azul}"></i>${M.rot}<b>${M.fmt(valores[i])}</b></div>`
+      + Object.entries(YT_METRICAS).filter(([k]) => k !== ytEstado.metrica)
+        .map(([, m]) => `<div class="tip-linha" style="opacity:.7;">${m.rot}<b>${m.fmt(m.val(d))}</b></div>`).join('')
+      + lanc;
   });
 
   svg.setAttribute('width', w);
   svg.setAttribute('height', h);
-  svg.innerHTML = `<defs>
-      <linearGradient id="yt-grad-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(30,155,208,.42)"/><stop offset="1" stop-color="rgba(30,155,208,0)"/></linearGradient>
-      <linearGradient id="yt-grad-varre" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(127,216,255,0)"/><stop offset="1" stop-color="rgba(127,216,255,.35)"/></linearGradient>
-      <filter id="yt-glow-linha" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>`
+  svg.innerHTML = `<defs><linearGradient id="yt-grad-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(62,166,255,.28)"/><stop offset="1" stop-color="rgba(62,166,255,0)"/></linearGradient></defs>`
     + grade
-    + `<line x1="${padEsq}" y1="${baseY}" x2="${w - padDir}" y2="${baseY}" stroke="${IG_HUD.base}" stroke-width="1"/>`
+    + `<line x1="${padEsq}" y1="${baseY}" x2="${w - padDir}" y2="${baseY}" stroke="${YT_COR.base}" stroke-width="1"/>`
     + eixoX + marcas + serie
-    + `<rect class="ig-varredura" x="${padEsq - 40}" y="${padTopo}" width="40" height="${alturaPlot}" fill="url(#yt-grad-varre)" style="--ig-dist:${Math.max(0, ux - padEsq + 40)}px"/>`
-    + `<line id="yt-mira" x1="0" y1="${padTopo}" x2="0" y2="${baseY}" stroke="${IG_HUD.brilho}" stroke-width="1" opacity="0"/>`
-    + `<circle id="yt-mira-ponto" r="6" fill="none" stroke="${IG_HUD.brilho}" stroke-width="2" opacity="0"/>`
+    + `<line id="yt-mira" x1="0" y1="${padTopo}" x2="0" y2="${pisoY}" stroke="#fff" stroke-width="1" opacity="0"/>`
+    + `<circle id="yt-mira-ponto" r="5.5" fill="${YT_COR.azul}" stroke="#fff" stroke-width="2" opacity="0"/>`
     + bandas;
-  vizLigarTooltip('viz-yt-wrap', 'tip-yt', textos);
-  ytLigarMira(svg, 'yt-mira', 'yt-mira-ponto', pts);
-}
-
-function ytLigarMira(svg, idMira, idPonto, pts) {
-  const mira = svg.querySelector('#' + idMira), ponto = svg.querySelector('#' + idPonto);
-  svg.querySelectorAll('.viz-banda').forEach(b => {
-    b.addEventListener('mouseenter', () => {
-      const [x, y] = pts[Number(b.dataset.i)];
-      mira.setAttribute('x1', x); mira.setAttribute('x2', x); mira.setAttribute('opacity', '.55');
-      ponto.setAttribute('cx', x); ponto.setAttribute('cy', y); ponto.setAttribute('opacity', '1');
-    });
-    b.addEventListener('mouseleave', () => { mira.setAttribute('opacity', '0'); ponto.setAttribute('opacity', '0'); });
-  });
+  ytLigarTooltip('viz-yt-wrap', 'tip-yt', textos, pts, 'yt-mira', 'yt-mira-ponto');
 }
 
 // barras de uma cor só: aqui a cor não identifica nada, o comprimento é que lê a grandeza
@@ -9819,12 +9949,12 @@ function renderRecortesYt() {
   ytAnimarBarras(elBusca);
 
   const disp = doRecorte('dispositivo'), totDisp = disp.reduce((s, r) => s + Number(r.views || 0), 0);
-  const idade = doRecorte('idade').filter(r => Number(r.valor) > 0);
+  const idade = doRecorte('idade').filter(r => Number(r.valor) > 0).sort((a, b) => a.chave.localeCompare(b.chave));
   const insc = doRecorte('inscrito'), totInsc = insc.reduce((s, r) => s + Number(r.views || 0), 0);
   const elPub = document.getElementById('yt-publico');
   elPub.innerHTML = `
     <div class="yt-bloco"><h3>Aparelho</h3>${disp.length ? ytBarras(disp, r => Number(r.views || 0), r => ytNome('dispositivo', r.chave), r => `${pct(r.views, totDisp)} <span>· ${ytHoras(r.minutos)}</span>`) : vazio}</div>
-    <div class="yt-bloco"><h3>Idade</h3>${idade.length ? ytBarras(idade.sort((a, b) => a.chave.localeCompare(b.chave)), r => Number(r.valor), r => ytNome('idade', r.chave), r => `${Number(r.valor).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`) : vazio}</div>
+    <div class="yt-bloco"><h3>Idade</h3>${idade.length ? ytBarras(idade, r => Number(r.valor), r => ytNome('idade', r.chave), r => `${Number(r.valor).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`) : vazio}</div>
     <div class="yt-bloco"><h3>Inscrito ou não</h3>${insc.length ? ytBarras(insc, r => Number(r.views || 0), r => ytNome('inscrito', r.chave), r => `${pct(r.views, totInsc)} <span>· média ${ytTempo(r.valor)}</span>`) : vazio}</div>`;
   ytAnimarBarras(elPub);
 }
@@ -9837,15 +9967,14 @@ function renderVideosYt() {
   const lista = ytDados.videos.filter(v => ytEstado.formato === 'todos' || v.formato === ytEstado.formato)
     .sort((a, b) => ordens[ytEstado.ordem](b) - ordens[ytEstado.ordem](a));
   const mostrar = ytEstado.todos ? lista : lista.slice(0, 15);
-  const col = { v7: 'v7', views: 'views', d7: 'd7', pct: 'pct', insc: 'insc' }[ytEstado.ordem];
-  const cls = (c, i) => (c === col && i === 0 ? 'top' : 'n');
+  const cls = (c, i) => (c === ytEstado.ordem && i === 0 ? 'top' : 'n');
   document.getElementById('yt-tabela').innerHTML = lista.length ? `
     <tr><th>Vídeo</th><th>Publicado</th><th>Views</th><th>7 dias</th><th>1ª semana</th><th>Duração média</th><th>% assistido</th><th>Inscritos</th><th>Likes</th><th>Coment.</th></tr>
-    ${mostrar.map((v, i) => `<tr class="${v.formato === 'longo' ? 'clicavel' : ''} ${v.id === ytEstado.video ? 'sel' : ''}" data-id="${v.id}" data-formato="${v.formato}">
-      <td><div class="yt-video">${v.thumb ? `<img src="${igEsc(v.thumb)}" alt="" loading="lazy">` : ''}<div>
-        <a href="https://www.youtube.com/watch?v=${igEsc(v.id)}" target="_blank" rel="noopener">${igEsc(v.titulo)}</a><br>
-        <span class="yt-tag ${v.formato}">${v.formato === 'short' ? 'Short' : ytTempo(v.duracao_s)}</span></div></div></td>
-      <td style="white-space:nowrap;">${v.publicado_em ? igDia(v.publicado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '—'}</td>
+    ${mostrar.map((v, i) => `<tr class="${v.formato === 'longo' ? 'clicavel' : ''} ${v.id === ytEstado.video ? 'sel' : ''}" data-id="${v.id}">
+      <td><div class="yt-video"><div class="capa">${v.thumb ? `<img src="${igEsc(v.thumb)}" alt="" loading="lazy">` : '<img alt="">'}
+        <span class="dur ${v.formato}">${v.formato === 'short' ? 'Short' : ytTempo(v.duracao_s)}</span></div>
+        <a href="https://www.youtube.com/watch?v=${igEsc(v.id)}" target="_blank" rel="noopener">${igEsc(v.titulo)}</a></div></td>
+      <td style="white-space:nowrap;color:${YT_COR.sec};">${v.publicado_em ? igDia(v.publicado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: '2-digit' }) : '—'}</td>
       <td class="${cls('views', i)}">${igNum(v.views)}</td>
       <td class="${cls('v7', i)}">${igNum(v.views_7d)}</td>
       <td class="${cls('d7', i)}">${igNum(v.l.views_d7)}</td>
@@ -9874,10 +10003,10 @@ async function renderRetencaoYt() {
   if (!video) return;
   if (!ytRetCache[video.id]) {
     const { data, error } = await sb.from('yt_retencao').select('pos,assistindo,relativa').eq('video_id', video.id).order('pos');
-    if (error) { document.getElementById('yt-ret-cels').innerHTML = `<div class="empty">${igEsc(error.message)}</div>`; return; }
+    if (error) { document.getElementById('yt-ret-cels').innerHTML = `<div class="fv-vazio">${igEsc(error.message)}</div>`; return; }
     ytRetCache[video.id] = (data || []).map(p => ({ pos: Number(p.pos), a: Number(p.assistindo), r: Number(p.relativa) }));
   }
-  if (ytEstado.video !== video.id) return; // o usuário trocou de vídeo enquanto carregava
+  if (ytEstado.video !== video.id) return; // trocou de vídeo enquanto carregava
   const curva = ytRetCache[video.id];
   const cels = document.getElementById('yt-ret-cels');
   const svg = document.getElementById('chart-ytret');
@@ -9890,66 +10019,64 @@ async function renderRetencaoYt() {
   const noSegundo = s => { const alvo = Math.min(1, s / dur); return curva.reduce((m, p) => Math.abs(p.pos - alvo) < Math.abs(m.pos - alvo) ? p : m, curva[0]); };
   const metade = curva.find(p => p.a < 0.5);
   const final = curva[curva.length - 1];
-  const relMedia = curva.reduce((s, p) => s + p.r, 0) / curva.length;
-  const relIntro = curva.filter(p => p.pos * dur <= 30);
-  const relIntroMed = relIntro.length ? relIntro.reduce((s, p) => s + p.r, 0) / relIntro.length : relMedia;
+  const media = l => l.reduce((s, p) => s + p.r, 0) / l.length;
+  const relMedia = media(curva);
+  const intro = curva.filter(p => p.pos * dur <= 30);
+  const relIntro = intro.length ? media(intro) : relMedia;
   const pctTxt = v => Math.round(v * 100) + '%';
   // relativa: 0,5 = igual aos vídeos de duração parecida no YouTube inteiro
-  const vsParecidos = r => r >= 0.5 ? `▲ acima de vídeos parecidos` : `▼ abaixo de vídeos parecidos`;
+  const vs = r => r >= 0.5 ? '▲ acima de vídeos parecidos' : '▼ abaixo de vídeos parecidos';
   cels.innerHTML =
-    igCel('Ficaram até 0:30', pctTxt(noSegundo(30).a), 'o gancho · ' + vsParecidos(relIntroMed), relIntroMed >= 0.5 ? 'bom' : 'atras')
-    + igCel('Metade saiu em', metade ? ytTempo(metade.pos * dur) : 'nunca', metade ? `${pctTxt(metade.pos)} do vídeo` : 'mais da metade viu até o fim')
-    + igCel('Chegaram ao fim', pctTxt(final.a), `vídeo de ${ytTempo(dur)}`)
-    + igCel('Retenção geral', vsParecidos(relMedia).replace(' de vídeos parecidos', ''), `nota ${relMedia.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} · 0,5 = igual aos parecidos`, relMedia >= 0.5 ? 'bom' : 'atras');
+    ytCel('Ficaram até 0:30', pctTxt(noSegundo(30).a), 'gancho · ' + vs(relIntro), relIntro >= 0.5 ? 'bom' : 'atras')
+    + ytCel('Metade saiu em', metade ? ytTempo(metade.pos * dur) : 'nunca', metade ? `${pctTxt(metade.pos)} do vídeo` : 'mais da metade viu até o fim')
+    + ytCel('Chegaram ao fim', pctTxt(final.a), `vídeo de ${ytTempo(dur)}`)
+    + ytCel('Retenção geral', relMedia >= 0.5 ? '▲ acima' : '▼ abaixo', `nota ${relMedia.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} · 0,5 = igual a vídeos parecidos`, relMedia >= 0.5 ? 'bom' : 'atras');
 
-  const padEsq = 46, padDir = 16, padTopo = 20, bandaX = 28, alturaPlot = 210;
+  const padEsq = 46, padDir = 12, padTopo = 14, bandaX = 28, alturaPlot = 220;
   const h = padTopo + alturaPlot + bandaX;
-  const w = vizLarguraDisponivel('viz-ytret-wrap', 340);
+  const w = vizLarguraDisponivel('viz-ytret-wrap', 320);
   const escalaX = pos => padEsq + (w - padEsq - padDir) * pos;
   const topo = Math.max(1, ...curva.map(p => p.a));
   const escalaY = v => padTopo + alturaPlot - alturaPlot * (v / topo);
   const baseY = padTopo + alturaPlot;
-  const ticksY = [0, .25, .5, .75, 1].filter(v => v <= topo);
-  const grade = ticksY.map(v => `<line x1="${padEsq}" y1="${escalaY(v)}" x2="${w - padDir}" y2="${escalaY(v)}" stroke="${IG_HUD.grade}" stroke-width="1"/>
-    <text x="${padEsq - 8}" y="${escalaY(v) + 3.5}" font-size="9.5" fill="${IG_HUD.mut}" text-anchor="end">${v * 100}%</text>`).join('');
-  const eixoX = [0, .25, .5, .75, 1].map(f => `<text x="${escalaX(f)}" y="${h - 8}" font-size="10" fill="${IG_HUD.mut}" text-anchor="${f === 0 ? 'start' : f === 1 ? 'end' : 'middle'}">${ytTempo(f * dur)}</text>`).join('');
+  const grade = [0, .25, .5, .75, 1].filter(v => v <= topo).map(v => `<line x1="${padEsq}" y1="${escalaY(v)}" x2="${w - padDir}" y2="${escalaY(v)}" stroke="${YT_COR.grade}" stroke-width="1"/>
+    <text x="${padEsq - 8}" y="${escalaY(v) + 3.5}" font-size="10" fill="${YT_COR.sec}" text-anchor="end">${v * 100}%</text>`).join('');
+  const eixoX = [0, .25, .5, .75, 1].map(f => `<text x="${escalaX(f)}" y="${h - 8}" font-size="10" fill="${YT_COR.sec}" text-anchor="${f === 0 ? 'start' : f === 1 ? 'end' : 'middle'}">${ytTempo(f * dur)}</text>`).join('');
   const pts = curva.map(p => [escalaX(p.pos), escalaY(p.a)]);
   const linha = pts.map(p => p.map(x => x.toFixed(1)).join(',')).join(' ');
   const x30 = escalaX(Math.min(1, 30 / dur));
-  // marcadores de referência: fim do gancho (0:30) e onde a metade saiu
-  let refs = `<line x1="${x30}" y1="${padTopo}" x2="${x30}" y2="${baseY}" stroke="${IG_HUD.mut}" stroke-width="1" stroke-dasharray="3 4" opacity=".7"/>
-    <text x="${x30 + 5}" y="${padTopo + 10}" font-size="9.5" font-weight="700" fill="${IG_HUD.mut}">0:30</text>`;
+  // referências: fim do gancho (0:30) e onde a metade saiu
+  let refs = `<line x1="${x30}" y1="${padTopo}" x2="${x30}" y2="${baseY}" stroke="${YT_COR.sec}" stroke-width="1" stroke-dasharray="3 4" opacity=".6"/>
+    <text x="${x30 + 5}" y="${padTopo + 10}" font-size="10" fill="${YT_COR.sec}">0:30</text>`;
   if (metade) {
     const xm = escalaX(metade.pos), ym = escalaY(metade.a);
-    refs += `<circle cx="${xm}" cy="${ym}" r="5" fill="#fff" stroke="#0b130e" stroke-width="2"/>
-      <text x="${xm + 9}" y="${ym - 8}" font-size="11" font-weight="800" fill="#fff">metade saiu · ${ytTempo(metade.pos * dur)}</text>`;
+    refs += `<circle cx="${xm}" cy="${ym}" r="5" fill="#fff" stroke="${YT_COR.fundo}" stroke-width="2"/>
+      <text x="${xm + 9}" y="${ym - 9}" font-size="11.5" font-weight="700" fill="#fff">metade saiu · ${ytTempo(metade.pos * dur)}</text>`;
   }
   const passo = (w - padEsq - padDir) / curva.length;
   let bandas = '';
   const textos = curva.map((p, i) => {
-    bandas += `<rect class="viz-banda" x="${pts[i][0] - passo / 2}" y="${padTopo}" width="${passo}" height="${alturaPlot}" fill="transparent" data-i="${i}" data-cx="${pts[i][0]}" data-topo="${padTopo}"/>`;
+    bandas += `<rect class="viz-banda" x="${pts[i][0] - passo / 2}" y="${padTopo}" width="${passo}" height="${alturaPlot}" fill="transparent" data-i="${i}" data-topo="${padTopo}"/>`;
     return `<div class="tip-mes">${ytTempo(p.pos * dur)} · ${pctTxt(p.pos)} do vídeo</div>`
-      + `<div class="tip-linha"><i style="background:${IG_HUD.serie}"></i>Ainda assistindo<b>${pctTxt(p.a)}</b></div>`
-      + `<div class="tip-linha" style="opacity:.75;">${p.r >= .5 ? '▲' : '▼'} vs parecidos<b>${p.r.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}</b></div>`;
+      + `<div class="tip-linha"><i style="background:${YT_COR.azul}"></i>Ainda assistindo<b>${pctTxt(p.a)}</b></div>`
+      + `<div class="tip-linha" style="opacity:.7;">${p.r >= .5 ? '▲' : '▼'} vs parecidos<b>${p.r.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}</b></div>`;
   });
   svg.setAttribute('width', w);
   svg.setAttribute('height', h);
-  svg.innerHTML = `<defs><linearGradient id="ytret-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(30,155,208,.42)"/><stop offset="1" stop-color="rgba(30,155,208,0)"/></linearGradient></defs>`
-    + grade + `<line x1="${padEsq}" y1="${baseY}" x2="${w - padDir}" y2="${baseY}" stroke="${IG_HUD.base}" stroke-width="1"/>` + eixoX
+  svg.innerHTML = `<defs><linearGradient id="ytret-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(62,166,255,.28)"/><stop offset="1" stop-color="rgba(62,166,255,0)"/></linearGradient></defs>`
+    + grade + `<line x1="${padEsq}" y1="${baseY}" x2="${w - padDir}" y2="${baseY}" stroke="${YT_COR.base}" stroke-width="1"/>` + eixoX
     + `<polygon points="${pts[0][0].toFixed(1)},${baseY} ${linha} ${pts[pts.length - 1][0].toFixed(1)},${baseY}" fill="url(#ytret-grad)"/>`
-    + `<polyline points="${linha}" fill="none" stroke="${IG_HUD.serie}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`
+    + `<polyline points="${linha}" fill="none" stroke="${YT_COR.azul}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`
     + refs
-    + `<line id="ytret-mira" x1="0" y1="${padTopo}" x2="0" y2="${baseY}" stroke="${IG_HUD.brilho}" stroke-width="1" opacity="0"/>`
-    + `<circle id="ytret-mira-ponto" r="6" fill="none" stroke="${IG_HUD.brilho}" stroke-width="2" opacity="0"/>`
+    + `<line id="ytret-mira" x1="0" y1="${padTopo}" x2="0" y2="${baseY}" stroke="#fff" stroke-width="1" opacity="0"/>`
+    + `<circle id="ytret-mira-ponto" r="5.5" fill="${YT_COR.azul}" stroke="#fff" stroke-width="2" opacity="0"/>`
     + bandas;
-  vizLigarTooltip('viz-ytret-wrap', 'tip-ytret', textos);
-  ytLigarMira(svg, 'ytret-mira', 'ytret-mira-ponto', pts);
+  ytLigarTooltip('viz-ytret-wrap', 'tip-ytret', textos, pts, 'ytret-mira', 'ytret-mira-ponto');
 }
 
 // controles segmentados: cada grupo grava uma chave de ytEstado e redesenha só o que depende dela
-[['yt-seg-metrica', 'metrica', () => desenharSerieYt()], ['yt-seg-dias', 'dias', () => desenharSerieYt()],
- ['yt-seg-janela', 'janela', () => renderRecortesYt()], ['yt-seg-formato', 'formato', () => renderVideosYt()],
- ['yt-seg-ordem', 'ordem', () => renderVideosYt()]].forEach(([id, chave, redesenhar]) => {
+[['yt-seg-dias', 'dias', () => renderVisaoGeralYt()], ['yt-seg-janela', 'janela', () => renderRecortesYt()],
+ ['yt-seg-formato', 'formato', () => renderVideosYt()], ['yt-seg-ordem', 'ordem', () => renderVideosYt()]].forEach(([id, chave, redesenhar]) => {
   document.querySelectorAll('#' + id + ' button').forEach(b => b.addEventListener('click', () => {
     document.querySelectorAll('#' + id + ' button').forEach(x => x.classList.toggle('on', x === b));
     ytEstado[chave] = chave === 'dias' ? Number(b.dataset.v) : b.dataset.v;
