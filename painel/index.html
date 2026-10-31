@@ -2407,6 +2407,28 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 .pill[class*="st-"] { --c: var(--text-secondary); padding: 3px 11px; font-size: .72rem; font-weight: 700; border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); background: color-mix(in srgb, var(--c) 13%, transparent); color: color-mix(in srgb, var(--c) 68%, var(--text-primary)); }
 .st-agendada { --c: var(--chip-1) !important; } .st-realizada { --c: var(--chip-3) !important; } .st-proposta { --c: var(--chip-4) !important; }
 .st-venda { --c: var(--good) !important; } .st-no_show { --c: var(--chip-7) !important; } .st-remarcada { --c: var(--chip-6) !important; } .st-perdida { --c: var(--critical) !important; }
+#ig-rev { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; padding:16px; }
+#ig-rev.on { display:flex; }
+#ig-rev .rv { background:#121212; color:#f5f5f5; border:1px solid #262626; border-radius:16px; width:min(980px,100%); max-height:96vh; overflow:auto; display:grid; grid-template-columns:minmax(0,420px) 1fr; gap:22px; padding:22px; }
+@media (max-width:760px){ #ig-rev .rv { grid-template-columns:1fr; } }
+#ig-rev .rv-car { position:relative; }
+#ig-rev .rv-faixa { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; border-radius:10px; scrollbar-width:none; }
+#ig-rev .rv-faixa::-webkit-scrollbar { display:none; }
+#ig-rev .rv-faixa img { flex:0 0 100%; width:100%; aspect-ratio:4/5; object-fit:cover; scroll-snap-align:center; }
+#ig-rev .rv-nav { position:absolute; top:42%; width:36px; height:36px; border-radius:50%; border:0; background:rgba(255,255,255,.85); color:#000; font-size:18px; cursor:pointer; }
+#ig-rev .rv-pontos { display:flex; gap:6px; justify-content:center; margin-top:10px; }
+#ig-rev .rv-pontos i { width:7px; height:7px; border-radius:50%; background:#444; }
+#ig-rev .rv-pontos i.on { background:#3897f0; }
+#ig-rev h3 { font-size:1.05rem; margin-bottom:6px; }
+#ig-rev .rv-leg { white-space:pre-wrap; font-size:.88rem; line-height:1.5; color:#d8d8d8; background:#1a1a1a; border-radius:10px; padding:12px 14px; max-height:240px; overflow:auto; margin:10px 0 14px; }
+#ig-rev textarea { width:100%; min-height:70px; background:#1a1a1a; color:#f5f5f5; border:1px solid #333; border-radius:10px; padding:10px; font:inherit; }
+#ig-rev .rv-bt { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+#ig-rev .rv-bt button { border:0; border-radius:10px; padding:11px 18px; font-weight:700; cursor:pointer; font-size:.9rem; }
+#ig-rev .ok { background:#00c853; color:#000; } #ig-rev .aj { background:#f5a524; color:#000; } #ig-rev .no { background:#2a2a2a; color:#ff6b6b; } #ig-rev .fe { background:transparent; color:#aaa; margin-left:auto; }
+#ig-fila .ig-rev-lin { display:flex; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid #222; cursor:pointer; }
+#ig-fila .ig-rev-lin img { width:54px; aspect-ratio:4/5; object-fit:cover; border-radius:6px; }
+#ig-fila .ig-rev-lin small { color:#9a9a9a; display:block; }
+
 </style>
 </head>
 <body>
@@ -3512,7 +3534,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         </section>
         <section class="ig-card">
           <h2>Fila de aprovação</h2>
-          <p class="ig-desc">O que o agente mandou pro Discord e ainda não foi publicado.</p>
+          <p class="ig-desc">Clique no post pra ver os cards como no Instagram e aprovar, ajustar ou recusar.</p>
           <div id="ig-fila"></div>
         </section>
       </div>
@@ -9929,13 +9951,42 @@ function renderFormatosIg() {
 }
 
 function renderFilaIg() {
-  const fila = igDados.posts.filter(p => p.status === 'aguardando' || p.status === 'aprovado');
-  const rotulo = { aguardando: 'aguardando aprovação', aprovado: 'aprovado · vai publicar' };
-  document.getElementById('ig-fila').innerHTML = fila.length ? `<div class="tabela-wrap"><table class="ig-tabela">
-    <tr><th>Horário</th><th>Formato</th><th>Hook</th><th>Situação</th></tr>
-    ${fila.map(p => `<tr><td style="white-space:nowrap;">${p.slot ? igDiaCurto(igDia(p.slot)) + ' · ' + igEsc(p.slot.split('_')[1] || '') : '—'}</td><td>${IG_TIPO[p.tipo] || p.tipo}</td>
-      <td>${igEsc((p.hook || '').slice(0, 90))}</td><td><span class="ig-chip">${rotulo[p.status]}</span></td></tr>`).join('')}
-    </table></div>` : '<div class="fv-vazio">Nada na fila agora.</div>';
+  const fila = igDados.posts.filter(p => p.status === 'aguardando' || p.status === 'aprovado' || p.status === 'ajustar');
+  const rotulo = { aguardando: 'aguardando aprovação', aprovado: 'aprovado · vai publicar', ajustar: 'ajuste pedido' };
+  igDados.fila = fila;
+  document.getElementById('ig-fila').innerHTML = fila.length ? fila.map((p, i) => `<div class="ig-rev-lin" onclick="igRevAbrir(${i})">
+      ${p.cards && p.cards[0] ? `<img src="${igEsc(p.cards[0])}" alt="">` : ''}
+      <div style="flex:1;min-width:0;"><b style="font-size:.88rem;">${p.slot ? igDiaCurto(igDia(p.slot)) + ' · ' + igEsc(p.slot.split('_')[1] || '') : '—'} · ${igEsc(p.formato || IG_TIPO[p.tipo] || p.tipo)}</b>
+      <small>${igEsc((p.hook || '').replace(/\n/g, ' ').slice(0, 90))}</small></div>
+      <span class="ig-chip">${rotulo[p.status]}</span></div>`).join('') : '<div class="fv-vazio">Nada na fila agora.</div>';
+}
+
+let igRevI = 0;
+function igRevAbrir(i) {
+  igRevI = i; const p = igDados.fila[i];
+  document.getElementById('rv-faixa').innerHTML = (p.cards || []).map(u => `<img src="${igEsc(u)}" alt="">`).join('');
+  document.getElementById('rv-tit').textContent = (p.hook || '').replace(/\n/g, ' ').slice(0, 110);
+  document.getElementById('rv-meta').textContent = `${p.slot || ''} · ${p.formato || ''} · palavra-chave: ${p.palavra_chave || '—'} · ${(p.cards || []).length} cards`;
+  document.getElementById('rv-leg').textContent = p.legenda || '';
+  document.getElementById('rv-obs').value = p.ajuste || '';
+  document.getElementById('rv-msg').textContent = '';
+  const f = document.getElementById('rv-faixa');
+  document.getElementById('rv-pontos').innerHTML = (p.cards || []).map((_, k) => `<i class="${k ? '' : 'on'}"></i>`).join('');
+  f.scrollLeft = 0;
+  f.onscroll = () => { const k = Math.round(f.scrollLeft / f.clientWidth); document.querySelectorAll('#rv-pontos i').forEach((e, n) => e.classList.toggle('on', n === k)); };
+  document.getElementById('ig-rev').classList.add('on');
+}
+function igRevPasso(d) { const f = document.getElementById('rv-faixa'); f.scrollBy({ left: d * f.clientWidth, behavior: 'smooth' }); }
+function igRevFechar() { document.getElementById('ig-rev').classList.remove('on'); }
+async function igRevDecidir(acao) {
+  const p = igDados.fila[igRevI], obs = document.getElementById('rv-obs').value.trim();
+  if (acao !== 'aprovado' && !obs) { document.getElementById('rv-msg').textContent = 'Escreva o que mudar ou o motivo.'; return; }
+  const status = acao === 'ajustar' ? 'ajustar' : acao;
+  const { error } = await sb.from('ig_posts').update({ status, ajuste: obs || null }).eq('id', p.id);
+  if (error) { document.getElementById('rv-msg').textContent = 'Erro: ' + error.message; return; }
+  p.status = status; p.ajuste = obs;
+  igDados.posts = igDados.posts.map(x => x.id === p.id ? p : x);
+  igRevFechar(); renderFilaIg();
 }
 
 // ---------- YOUTUBE ----------
@@ -13626,5 +13677,15 @@ async function arqExcluir(id) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { arqFechaMenu(); arqFechaPrev(); } });
 })();
 </script>
+<div id="ig-rev"><div class="rv">
+  <div class="rv-car"><div class="rv-faixa" id="rv-faixa"></div>
+    <button class="rv-nav" style="left:8px" onclick="igRevPasso(-1)">‹</button><button class="rv-nav" style="right:8px" onclick="igRevPasso(1)">›</button>
+    <div class="rv-pontos" id="rv-pontos"></div></div>
+  <div><h3 id="rv-tit"></h3><div id="rv-meta" style="font-size:.78rem;color:#9a9a9a"></div>
+    <div class="rv-leg" id="rv-leg"></div>
+    <textarea id="rv-obs" placeholder="Se for ajustar ou recusar: o que mudar / o motivo"></textarea>
+    <div class="rv-bt"><button class="ok" onclick="igRevDecidir('aprovado')">✅ Aprovar</button><button class="aj" onclick="igRevDecidir('ajustar')">✏️ Ajustar</button><button class="no" onclick="igRevDecidir('recusado')">❌ Recusar</button><button class="fe" onclick="igRevFechar()">Fechar</button></div>
+    <div id="rv-msg" style="margin-top:10px;font-size:.82rem;color:#9a9a9a"></div></div>
+</div></div>
 </body>
 </html>
