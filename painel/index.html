@@ -9951,11 +9951,11 @@ function renderFormatosIg() {
 }
 
 function renderFilaIg() {
-  const fila = igDados.posts.filter(p => p.status === 'aguardando' || p.status === 'aprovado' || p.status === 'ajustar');
-  const rotulo = { aguardando: 'aguardando aprovação', aprovado: 'aprovado · vai publicar', ajustar: 'ajuste pedido' };
+  const fila = igDados.posts.filter(p => ['aguardando', 'aprovado', 'ajustar', 'publicando', 'erro'].includes(p.status));
+  const rotulo = { aguardando: 'aguardando aprovação', aprovado: 'aprovado · vai publicar', ajustar: 'ajuste pedido', publicando: 'publicando…', erro: 'erro · reaprove' };
   igDados.fila = fila;
   document.getElementById('ig-fila').innerHTML = fila.length ? fila.map((p, i) => `<div class="ig-rev-lin" onclick="igRevAbrir(${i})">
-      ${p.cards && p.cards[0] ? `<img src="${igEsc(p.cards[0])}" alt="">` : ''}
+      ${(p.tipo === 'reels' ? p.thumb_url : p.cards && p.cards[0]) ? `<img src="${igEsc(p.tipo === 'reels' ? p.thumb_url : p.cards[0])}" alt="">` : ''}
       <div style="flex:1;min-width:0;"><b style="font-size:.88rem;">${p.slot ? igDiaCurto(igDia(p.slot)) + ' · ' + igEsc(p.slot.split('_')[1] || '') : '—'} · ${igEsc(p.formato || IG_TIPO[p.tipo] || p.tipo)}</b>
       <small>${igEsc((p.hook || '').replace(/\n/g, ' ').slice(0, 90))}</small>${p.material_url ? `<small>📎 ${igEsc(p.palavra_chave || '')}</small>` : ''}</div>
       <span class="ig-chip">${rotulo[p.status]}</span></div>`).join('') : '<div class="fv-vazio">Nada na fila agora.</div>';
@@ -9964,7 +9964,9 @@ function renderFilaIg() {
 let igRevI = 0;
 function igRevAbrir(i) {
   igRevI = i; const p = igDados.fila[i];
-  document.getElementById('rv-faixa').innerHTML = (p.cards || []).map(u => `<img src="${igEsc(u)}" alt="">`).join('');
+  document.getElementById('rv-faixa').innerHTML = p.tipo === 'reels'
+    ? `<video src="${igEsc((p.cards || [])[0] || '')}" poster="${igEsc(p.thumb_url || '')}" controls playsinline style="width:100%;aspect-ratio:9/16;background:#000;border-radius:10px"></video>`
+    : (p.cards || []).map(u => `<img src="${igEsc(u)}" alt="">`).join('');
   document.getElementById('rv-tit').textContent = (p.hook || '').replace(/\n/g, ' ').slice(0, 110);
   document.getElementById('rv-meta').textContent = `${p.slot || ''} · ${p.formato || ''} · palavra-chave: ${p.palavra_chave || '—'} · ${(p.cards || []).length} cards`;
   document.getElementById('rv-leg').textContent = p.legenda || '';
