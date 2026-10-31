@@ -9957,7 +9957,7 @@ function renderFilaIg() {
   document.getElementById('ig-fila').innerHTML = fila.length ? fila.map((p, i) => `<div class="ig-rev-lin" onclick="igRevAbrir(${i})">
       ${p.cards && p.cards[0] ? `<img src="${igEsc(p.cards[0])}" alt="">` : ''}
       <div style="flex:1;min-width:0;"><b style="font-size:.88rem;">${p.slot ? igDiaCurto(igDia(p.slot)) + ' · ' + igEsc(p.slot.split('_')[1] || '') : '—'} · ${igEsc(p.formato || IG_TIPO[p.tipo] || p.tipo)}</b>
-      <small>${igEsc((p.hook || '').replace(/\n/g, ' ').slice(0, 90))}</small></div>
+      <small>${igEsc((p.hook || '').replace(/\n/g, ' ').slice(0, 90))}</small>${p.material_url ? `<small>📎 ${igEsc(p.palavra_chave || '')}</small>` : ''}</div>
       <span class="ig-chip">${rotulo[p.status]}</span></div>`).join('') : '<div class="fv-vazio">Nada na fila agora.</div>';
 }
 
@@ -9968,6 +9968,7 @@ function igRevAbrir(i) {
   document.getElementById('rv-tit').textContent = (p.hook || '').replace(/\n/g, ' ').slice(0, 110);
   document.getElementById('rv-meta').textContent = `${p.slot || ''} · ${p.formato || ''} · palavra-chave: ${p.palavra_chave || '—'} · ${(p.cards || []).length} cards`;
   document.getElementById('rv-leg').textContent = p.legenda || '';
+  document.getElementById('rv-mat').innerHTML = p.material_url ? `<a href="${igEsc(p.material_url)}" target="_blank" rel="noopener" style="color:#3897f0;font-weight:700;font-size:.9rem">📎 Material da isca: abrir ${igEsc(p.material_url.replace(/^https?:\/\//, ''))}</a>` : '<span style="color:#f5a524;font-size:.85rem">Sem material ligado a este post</span>';
   document.getElementById('rv-obs').value = p.ajuste || '';
   document.getElementById('rv-msg').textContent = '';
   const f = document.getElementById('rv-faixa');
@@ -13682,6 +13683,7 @@ async function arqExcluir(id) {
     <button class="rv-nav" style="left:8px" onclick="igRevPasso(-1)">‹</button><button class="rv-nav" style="right:8px" onclick="igRevPasso(1)">›</button>
     <div class="rv-pontos" id="rv-pontos"></div></div>
   <div><h3 id="rv-tit"></h3><div id="rv-meta" style="font-size:.78rem;color:#9a9a9a"></div>
+    <div id="rv-mat" style="margin:10px 0"></div>
     <div class="rv-leg" id="rv-leg"></div>
     <textarea id="rv-obs" placeholder="Se for ajustar ou recusar: o que mudar / o motivo"></textarea>
     <div class="rv-bt"><button class="ok" onclick="igRevDecidir('aprovado')">✅ Aprovar</button><button class="aj" onclick="igRevDecidir('ajustar')">✏️ Ajustar</button><button class="no" onclick="igRevDecidir('recusado')">❌ Recusar</button><button class="fe" onclick="igRevFechar()">Fechar</button></div>
