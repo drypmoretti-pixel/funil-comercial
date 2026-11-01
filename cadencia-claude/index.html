@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadência pós-reunião com o Claude | Método Demanda Infinita®</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:18px;line-height:1.6}
+h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;margin:0 0 12px}.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
+.cover{padding:48px 0 10px;text-align:center}.cover img{width:76px;height:76px;margin-bottom:18px}
+.kicker{font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase}
+.cover h1{font-size:42px;font-weight:800;margin-top:10px;line-height:1.15}.sub{font-size:19px;color:var(--gray);max-width:600px;margin:14px auto 0}
+.badge{display:inline-block;margin-top:18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px}
+h2.t{font-size:25px;font-weight:800;margin-top:52px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+h2.t small{display:block;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;font-size:15px}
+.flow div b{display:block;font:800 17px 'Plus Jakarta Sans',sans-serif;margin:4px 0}.flow div i{font:600 12px 'JetBrains Mono',monospace;color:var(--green);font-style:normal}
+.flow div:not(:last-child):after{content:"→";position:absolute;right:-14px;top:42%;color:var(--green);font-weight:800}
+@media(max-width:640px){.flow{grid-template-columns:1fr 1fr}.cover h1{font-size:32px}}
+.prompt{background:#111;color:#e9f5ec;border-radius:16px;margin:16px 0;overflow:hidden}
+.prompt .h{background:var(--green);color:#fff;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.4px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.prompt button{background:#fff;color:var(--green);border:0;border-radius:8px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px}
+.prompt pre{margin:0;padding:18px;white-space:pre-wrap;font:400 15px/1.55 'JetBrains Mono',monospace}
+.ex{background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;margin:16px 0;font-size:16px}
+.ex b{font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.2px;color:var(--green);display:block;margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.col{border-radius:14px;padding:16px 18px;font-size:16px}.col.no{background:#fbeeea;border:1px solid #f0c9be}.col.si{background:#e9f6ee;border:1px solid #b5e0c4}
+.col h4{margin:0 0 8px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.4px}.col.no h4{color:#b5483a}.col.si h4{color:var(--green)}
+.col ul{margin:0;padding-left:18px}.aviso{font-size:14px;color:var(--gray);margin-top:30px}
+.cta{margin-top:48px;background:#fff;border:2px solid var(--green);border-radius:18px;padding:24px;text-align:center}
+</style></head><body><div class="wrap">
+<div class="cover"><img src="logo-demanda-infinita.png" alt=""><div class="kicker">Método Demanda Infinita®</div>
+<h1>Cadência pós-reunião com o Claude</h1><p class="sub">Você cola a transcrição da reunião e o Claude monta 3 contatos com as palavras do cliente: já no canal certo, no dia certo, com lembrete na sua agenda.</p><span class="badge">Prompt completo · 15 minutos pra montar</span></div>
+
+<h2 class="t"><small>A ideia</small>A reunião acabou. O trabalho começa agora.</h2>
+<p>A maioria dos negócios não se perde na reunião. Se perde no silêncio depois dela: um “e aí, pensou?” três dias depois e mais nada. É como ter um assistente que <strong>assistiu à reunião com você</strong> e já deixa os próximos três contatos escritos e marcados na agenda.</p>
+<div class="two"><div class="col no"><h4>O QUE PERDE</h4><ul><li>Um contato só, e depois silêncio</li><li>“E aí, pensou?”</li><li>Fala do seu produto</li></ul></div>
+<div class="col si"><h4>O QUE FECHA</h4><ul><li>3 contatos, cada um com um papel</li><li>As palavras exatas do cliente</li><li>Um próximo passo claro em cada um</li></ul></div></div>
+
+<div class="flow"><div><i>TOQUE 1 · MESMO DIA</i><b>WhatsApp</b>resumo com as palavras dele + próximo passo</div><div><i>TOQUE 2 · DIA 2</i><b>E-mail</b>responde a dúvida que ele levantou</div><div><i>TOQUE 3 · DIA 5</i><b>WhatsApp</b>uma pergunta de sim ou não</div></div>
+
+<h2 class="t"><small>Passo 1</small>Crie o projeto no Claude</h2>
+<p>No Claude, clique em <strong>Projetos → Novo projeto</strong> e dê o nome de “Cadência pós-reunião”. Depois abra <strong>Instruções do projeto</strong> e cole o prompt abaixo. Isso é feito uma vez só: tudo que você mandar dentro do projeto segue essas regras.</p>
+<div class="prompt"><div class="h"><span>COLE NAS INSTRUÇÕES DO PROJETO</span><button onclick="cp(this)">Copiar</button></div><pre>Você é meu assistente de cadência pós-reunião.
+
+Toda vez que eu colar a transcrição (ou minhas anotações) de uma reunião de vendas, junto com nome, WhatsApp e e-mail do cliente, faça:
+
+1) LEIA A REUNIÃO
+- A dor principal, com as frases exatas do cliente (entre aspas)
+- O que combinamos e qual é o próximo passo
+- Dúvidas ou objeções que ele levantou
+- Prazo ou urgência que ele mencionou
+
+2) ESCREVA 3 TOQUES
+Toque 1 · mesmo dia · WhatsApp
+Resumo em 2 linhas com as palavras dele + UM próximo passo com dia e horário. Até 5 linhas.
+
+Toque 2 · 2 dias depois · e-mail
+Assunto curto com a dor dele. Responda a dúvida ou objeção que ele levantou e entregue algo útil sobre essa dor (um exemplo, um passo, um material meu). Até 8 linhas. Termine com o mesmo próximo passo.
+
+Toque 3 · 5 dias depois · WhatsApp
+Uma pergunta direta, fácil de responder com sim ou não, que lembra a dor e o prazo dele. Até 3 linhas.
+
+3) DEIXE PRONTO PRA ENVIAR
+- Me mostre os 3 toques e espere eu aprovar.
+- Depois de aprovado:
+  - E-mail: crie o toque 2 como rascunho no meu Gmail, para o e-mail do cliente.
+  - WhatsApp: para os toques 1 e 3, monte o link https://wa.me/[NÚMERO]?text=[MENSAGEM] (número só com dígitos, com 55 e DDD; mensagem codificada para URL), que abre a conversa com o texto pronto.
+  - Agenda: crie no meu Google Agenda um lembrete às 9h no dia de cada toque, com o link do WhatsApp ou o assunto do rascunho na descrição.
+
+REGRAS
+- Use só o que está na reunião. Se faltar informação, pergunte antes de escrever.
+- Nada de “espero que esteja bem”, “e aí, pensou?” ou “só passando pra lembrar”.
+- Fale do problema dele, não do meu produto.
+- Se o Gmail ou a Agenda não estiverem conectados, entregue os textos e os links pra eu copiar.</pre></div>
+
+<h2 class="t"><small>Passo 2</small>Conecte o Gmail e a Agenda</h2>
+<p>Em <strong>Configurações → Conectores</strong>, conecte o <strong>Gmail</strong> e o <strong>Google Agenda</strong>. É o que permite o Claude deixar o e-mail no seu rascunho e os lembretes na sua agenda. Sem conectar, funciona do mesmo jeito: ele te entrega os textos e os links pra copiar.</p>
+
+<h2 class="t"><small>Passo 3</small>Depois de cada reunião</h2>
+<p>Abra um chat novo <strong>dentro do projeto</strong> e cole isto, com a transcrição da reunião (a do Meet, Zoom, Teams ou do app que você usa pra gravar) ou as suas anotações:</p>
+<div class="prompt"><div class="h"><span>COPIE E COLE NO CHAT DO PROJETO</span><button onclick="cp(this)">Copiar</button></div><pre>Reunião com [NOME], [CARGO] da [EMPRESA], em [DATA].
+WhatsApp: [55 + DDD + NÚMERO]
+E-mail: [E-MAIL]
+
+Transcrição:
+[COLE AQUI]</pre></div>
+<div class="ex"><b>EXEMPLO ILUSTRATIVO (dados fictícios)</b>Na reunião, o Carlos disse: “perdemos lead porque ninguém responde fora do horário” e “preciso resolver antes de janeiro”.<br><br><strong>Toque 1 · WhatsApp, mesmo dia:</strong> “Oi, Carlos! Você comentou que perdem lead porque ninguém responde fora do horário. Te mostro como resolver isso amanhã às 10h?”<br><br><strong>Toque 2 · e-mail, dia 2:</strong> “Assunto: os leads que chegam depois das 18h. Carlos, você perguntou se o atendimento ia soar robótico. Separei como ficaria a resposta pra uma mensagem real de cliente...”<br><br><strong>Toque 3 · WhatsApp, dia 5:</strong> “Carlos, ainda faz sentido resolver isso antes de janeiro?”</div>
+
+<h2 class="t"><small>Passo 4</small>Aprove e deixe rodar</h2>
+<p>Leia os 3 toques, peça ajuste se quiser (“deixa o toque 3 mais leve”) e aprove. O e-mail fica no seu rascunho: no Gmail, use <strong>Programar envio</strong> pro dia 2. No dia de cada WhatsApp, o lembrete aparece na agenda: é só tocar no link e enviar.</p>
+
+<h2 class="t"><small>Checklist antes de aprovar</small>4 perguntas</h2>
+<ul><li>Cada toque cita algo que o cliente realmente disse?</li><li>Cada um tem um papel diferente (resumo, dúvida, decisão)?</li><li>Todos terminam com um único próximo passo?</li><li>Fala do problema dele, e não do seu produto?</li></ul>
+
+<div class="cta"><b style="font-family:'Plus Jakarta Sans';font-size:20px">Quer captar clientes qualificados sem investir em tráfego pago?</b><p style="margin:8px 0 0;color:var(--gray);font-size:16px">Conheça o Método Demanda Infinita®: <a href="https://demandainfinita.com" style="color:var(--green)">demandainfinita.com</a></p></div>
+<p class="aviso">Os exemplos desta página são fictícios e servem só para mostrar o formato. Revise sempre as mensagens antes de enviar. Conectores e recursos do Claude podem variar conforme o seu plano.</p>
+</div>
+<script>function cp(b){var t=b.closest('.prompt').querySelector('pre').innerText;navigator.clipboard.writeText(t);b.textContent='Copiado!';setTimeout(function(){b.textContent='Copiar'},1500)}</script>
+</body></html>
