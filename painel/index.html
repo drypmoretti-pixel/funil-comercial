@@ -2428,6 +2428,23 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 #ig-fila .ig-rev-lin { display:flex; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid #222; cursor:pointer; }
 #ig-fila .ig-rev-lin img { width:54px; aspect-ratio:4/5; object-fit:cover; border-radius:6px; }
 #ig-fila .ig-rev-lin small { color:#9a9a9a; display:block; }
+/* Fila de Shorts do YouTube (02/11): mesma janela da fila do Instagram, com título e descrição editáveis */
+#yt-fila .yt-fila-lin { display:flex; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid var(--yt-borda); cursor:pointer; }
+#yt-fila .yt-fila-lin img { width:40px; aspect-ratio:9/16; object-fit:cover; border-radius:6px; background:#000; }
+#yt-fila .yt-fila-lin small { color:#aaa; display:block; }
+#yt-fila .yt-chip { font-size:.7rem; font-weight:600; padding:3px 10px; border-radius:99px; background:#272727; color:#f1f1f1; white-space:nowrap; }
+#yt-fila .yt-chip.ok { background:#0f3d24; color:#7be58a; } #yt-fila .yt-chip.err { background:#3d1212; color:#ff8a8a; }
+#yt-rev { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.88); display:none; align-items:center; justify-content:center; padding:16px; }
+#yt-rev.on { display:flex; }
+#yt-rev .rv { background:#0f0f0f; color:#f1f1f1; border:1px solid #272727; border-radius:16px; width:min(940px,100%); max-height:96vh; overflow:auto; display:grid; grid-template-columns:minmax(0,320px) 1fr; gap:22px; padding:22px; }
+@media (max-width:760px){ #yt-rev .rv { grid-template-columns:1fr; } }
+#yt-rev video { width:100%; aspect-ratio:9/16; background:#000; border-radius:12px; }
+#yt-rev label { display:block; font-size:.75rem; color:#aaa; margin:12px 0 4px; }
+#yt-rev input, #yt-rev textarea { width:100%; background:#1b1b1b; color:#f1f1f1; border:1px solid #333; border-radius:10px; padding:10px; font:inherit; }
+#yt-rev textarea#yr-desc { min-height:200px; } #yt-rev textarea#yr-obs { min-height:60px; }
+#yt-rev .rv-bt { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+#yt-rev .rv-bt button { border:0; border-radius:10px; padding:11px 18px; font-weight:700; cursor:pointer; font-size:.9rem; }
+#yt-rev .ok { background:#00c853; color:#000; } #yt-rev .aj { background:#f5a524; color:#000; } #yt-rev .no { background:#2a2a2a; color:#ff6b6b; } #yt-rev .fe { background:transparent; color:#aaa; margin-left:auto; }
 
 </style>
 </head>
@@ -3551,6 +3568,12 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <button class="yt-btn-plano" onclick="abrirPlanoYt()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Plano de ação</button>
         </div>
       </div>
+
+      <section class="yt-card" id="yt-fila-sec">
+        <div class="yt-card-topo"><h2>Fila de Shorts</h2></div>
+        <p style="color:#aaa;font-size:.85rem;margin:-4px 0 8px">Os Reels do agente viram Shorts. Clique pra assistir, editar título e descrição e aprovar, ajustar ou recusar. Aprovado sai no horário do slot.</p>
+        <div id="yt-fila"><div class="fv-vazio">Carregando…</div></div>
+      </section>
 
       <section class="yt-card">
         <div class="yt-card-topo"><h2 id="yt-meta-titulo">Meta</h2></div>
@@ -9992,6 +10015,50 @@ async function igRevDecidir(acao) {
   igRevFechar(); renderFilaIg();
 }
 
+// ---------- FILA DE SHORTS (02/11) ----------
+// O enviar_painel.py põe cada Reel também em yt_fila; o publicar_short.py (Mac do Igor) sobe no YouTube o que for aprovado aqui.
+let ytFila = [];
+const YT_FILA_ROT = { aguardando: 'aguardando aprovação', aprovado: 'aprovado · sai no horário', ajustar: 'ajuste pedido', publicando: 'publicando…', erro: 'erro · reaprove', publicado: 'publicado' };
+async function carregarFilaYt() {
+  const tres = new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10);
+  const { data, error } = await sb.from('yt_fila').select('*').neq('status', 'recusado').gte('slot', tres).order('slot');
+  const el = document.getElementById('yt-fila');
+  if (error) { el.innerHTML = `<div class="fv-vazio">Não consegui carregar a fila: ${igEsc(error.message)}</div>`; return; }
+  ytFila = data || [];
+  el.innerHTML = ytFila.length ? ytFila.map((r, i) => {
+    const naoPublico = r.status === 'publicado' && r.privacidade && r.privacidade !== 'public';
+    const cls = r.status === 'erro' || naoPublico ? 'err' : r.status === 'publicado' ? 'ok' : '';
+    const rot = YT_FILA_ROT[r.status] + (naoPublico ? ' · ' + r.privacidade : '');
+    return `<div class="yt-fila-lin" onclick="ytRevAbrir(${i})">${r.thumb_url ? `<img src="${igEsc(r.thumb_url)}" alt="">` : ''}
+      <div style="flex:1;min-width:0;"><b style="font-size:.88rem;">${igDiaCurto(igDia(r.slot))} · ${igEsc(r.slot.split('_')[1] || '')}</b>
+      <small>${igEsc(r.titulo)}</small>${r.yt_video_id ? `<small><a href="https://youtube.com/shorts/${igEsc(r.yt_video_id)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:#3ea6ff">abrir no YouTube</a></small>` : ''}</div>
+      <span class="yt-chip ${cls}">${rot}</span></div>`;
+  }).join('') : '<div class="fv-vazio">Nenhum Short na fila agora.</div>';
+}
+let ytRevI = 0;
+function ytRevAbrir(i) {
+  ytRevI = i; const r = ytFila[i], trava = ['publicando', 'publicado'].includes(r.status);
+  document.getElementById('yr-video').innerHTML = `<video src="${igEsc(r.video_url)}" poster="${igEsc(r.thumb_url || '')}" controls playsinline></video>`;
+  document.getElementById('yr-meta').textContent = `${r.slot} · ${YT_FILA_ROT[r.status] || r.status}`;
+  document.getElementById('yr-tit').value = r.titulo || '';
+  document.getElementById('yr-desc').value = r.descricao || '';
+  document.getElementById('yr-obs').value = r.ajuste || '';
+  ['yr-tit', 'yr-desc', 'yr-obs'].forEach(id => { document.getElementById(id).disabled = trava; });
+  document.querySelectorAll('#yt-rev .ok, #yt-rev .aj, #yt-rev .no').forEach(b => { b.style.display = trava ? 'none' : ''; });
+  document.getElementById('yr-msg').textContent = trava ? 'Já foi pro YouTube. Pra mudar, edite no Studio.' : '';
+  document.getElementById('yt-rev').classList.add('on');
+}
+function ytRevFechar() { document.getElementById('yt-rev').classList.remove('on'); document.getElementById('yr-video').innerHTML = ''; }
+async function ytRevDecidir(acao) {
+  const r = ytFila[ytRevI], msg = document.getElementById('yr-msg');
+  const titulo = document.getElementById('yr-tit').value.trim(), descricao = document.getElementById('yr-desc').value.trim(), obs = document.getElementById('yr-obs').value.trim();
+  if (acao !== 'aprovado' && !obs) { msg.textContent = 'Escreva o que mudar ou o motivo.'; return; }
+  if (!titulo || titulo.length > 100 || /[<>]/.test(titulo)) { msg.textContent = 'O título precisa ter de 1 a 100 caracteres, sem < ou >.'; return; }
+  const { error } = await sb.from('yt_fila').update({ status: acao, ajuste: obs || null, titulo, descricao }).eq('id', r.id);
+  if (error) { msg.textContent = 'Erro: ' + error.message; return; }
+  ytRevFechar(); carregarFilaYt();
+}
+
 // ---------- YOUTUBE ----------
 // Alimentado pelo youtube-agente (Mac do Igor): metricas.py lê a Data API + Analytics API e grava yt_*.
 // O Analytics fecha o dia com ~3 dias de atraso, então o "agora" aqui é o último dia fechado. Só admin lê.
@@ -10026,6 +10093,7 @@ function ytCel(rot, val, sub, classe) {
 }
 
 async function carregarYoutube() {
+  carregarFilaYt();
   const desde = new Date(); desde.setDate(desde.getDate() - 800);
   const [marcos, rampa, canal, videos, largada, recortes] = await Promise.all([
     sb.from('yt_marcos').select('*').order('marco'),
@@ -13690,6 +13758,15 @@ async function arqExcluir(id) {
     <textarea id="rv-obs" placeholder="Se for ajustar ou recusar: o que mudar / o motivo"></textarea>
     <div class="rv-bt"><button class="ok" onclick="igRevDecidir('aprovado')">✅ Aprovar</button><button class="aj" onclick="igRevDecidir('ajustar')">✏️ Ajustar</button><button class="no" onclick="igRevDecidir('recusado')">❌ Recusar</button><button class="fe" onclick="igRevFechar()">Fechar</button></div>
     <div id="rv-msg" style="margin-top:10px;font-size:.82rem;color:#9a9a9a"></div></div>
+</div></div>
+<div id="yt-rev" onclick="if (event.target === this) ytRevFechar()"><div class="rv">
+  <div id="yr-video"></div>
+  <div><div id="yr-meta" style="font-size:.78rem;color:#aaa"></div>
+    <label for="yr-tit">Título (até 100 caracteres)</label><input id="yr-tit" maxlength="100">
+    <label for="yr-desc">Descrição</label><textarea id="yr-desc"></textarea>
+    <label for="yr-obs">Se for ajustar ou recusar: o que mudar / o motivo</label><textarea id="yr-obs"></textarea>
+    <div class="rv-bt"><button class="ok" onclick="ytRevDecidir('aprovado')">✅ Aprovar</button><button class="aj" onclick="ytRevDecidir('ajustar')">✏️ Ajustar</button><button class="no" onclick="ytRevDecidir('recusado')">❌ Recusar</button><button class="fe" onclick="ytRevFechar()">Fechar</button></div>
+    <div id="yr-msg" style="margin-top:10px;font-size:.82rem;color:#aaa"></div></div>
 </div></div>
 </body>
 </html>
