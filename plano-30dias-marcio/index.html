@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plano 30 Dias · Márcio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root{
+    --green:#008E43; --green-light:#12B85E; --green-soft:#E3F1E8;
+    --bg:#F8F7F4; --card:#ECEAE5; --text:#111111; --gray:#6B6B6B; --line:#D8D5CE;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; background:var(--bg); color:var(--text);}
+  body{font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.55;}
+  h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif; margin:0;}
+  p{margin:0 0 9px;}
+  strong{font-weight:700;}
+  .wrap{max-width:860px; margin:0 auto; padding:0 16px;}
+
+  /* capa */
+  .cover{min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover img{width:76px; height:76px; margin-bottom:34px;}
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  .cover h1{font-size:44px; line-height:1.08; font-weight:800; margin:12px 0 14px; letter-spacing:-.5px;}
+  .cover .sub{font-size:17px; color:var(--gray); max-width:560px;}
+  .cover .who{margin-top:46px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:40px; flex-wrap:wrap;}
+  .cover .who div span{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray);}
+  .cover .who div b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px;}
+
+  /* seções */
+  .sec{padding:40px 0 8px;}
+  .part-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--green); font-weight:700;}
+  h2.section-title{font-size:25px; font-weight:800; margin:6px 0 6px; letter-spacing:-.3px;}
+  .lead{font-size:14.5px; color:#333; margin-bottom:16px; max-width:720px;}
+  h3{font-size:15px; font-weight:800; margin:0 0 8px;}
+
+  .card{background:var(--card); border-radius:12px; padding:16px 18px; margin-bottom:12px; break-inside:avoid;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .grid2 .card{margin-bottom:0;}
+  ul.clean{margin:0; padding-left:18px;}
+  ul.clean li{margin-bottom:5px;}
+
+  .reframe{border-left:4px solid var(--green); padding:6px 0 6px 16px; margin:18px 0; font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; line-height:1.35; break-inside:avoid;}
+  .tip{background:var(--green-soft); border-radius:12px; padding:14px 18px; margin:12px 0; break-inside:avoid;}
+  .tip b.t{display:block; color:var(--green); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:4px;}
+  .ssi{display:flex; gap:16px; align-items:center; background:var(--text); color:#fff; border-radius:12px; padding:14px 18px; margin-top:12px; break-inside:avoid;}
+  .ssi .n{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:22px; color:var(--green-light); white-space:nowrap;}
+  .ssi span{font-size:12.5px; color:#d6d6d6;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.8px; break-inside:avoid;}
+  th,td{border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; vertical-align:top;}
+  th{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); font-weight:700;}
+  td:first-child{font-weight:700; width:28%;}
+
+  .opt{background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-top:8px; font-weight:600;}
+  .opt small{display:block; font-weight:500; color:var(--gray); font-size:11.5px; margin-top:2px;}
+  .label{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gray); font-weight:700; margin-bottom:6px; display:block;}
+
+  .banner{background:linear-gradient(120deg,#0d0d0d 0%,#1d1d1d 55%,#0c3d22 100%); color:#fff; border-radius:10px; aspect-ratio:1584/396; display:flex; flex-direction:column; justify-content:center; padding:0 6% 0 34%; margin-top:8px;}
+  .banner b{font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(14px,2.6vw,22px); line-height:1.2;}
+  .banner span{font-size:clamp(10px,1.5vw,12.5px); color:#bfe6cf; margin-top:6px;}
+
+  /* checklist */
+  .check{display:flex; gap:12px; align-items:flex-start; background:var(--card); border-radius:10px; padding:11px 14px; margin-bottom:8px; break-inside:avoid;}
+  .check .box{flex:0 0 17px; height:17px; border:2px solid var(--green); border-radius:4px; margin-top:2px; background:#fff;}
+  .check strong{display:block; font-size:13.5px;}
+  .check span{font-size:12.5px; color:#444;}
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; break-inside:avoid;}
+  .vs div{border-radius:10px; padding:10px 14px; font-size:12.5px;}
+  .vs .bad{background:#fff; border:1px solid var(--line); color:#555;}
+  .vs .good{background:var(--green-soft); border:1px solid #bfdcc9;}
+  .vs b{display:block; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; margin-bottom:3px;}
+  .vs .bad b{color:#9a3b3b;} .vs .good b{color:var(--green);}
+
+  .metas{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; break-inside:avoid;}
+  .metas div{background:var(--text); color:#fff; border-radius:10px; padding:12px; }
+  .metas b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; color:var(--green-light);}
+  .metas span{font-size:11.5px; color:#d0d0d0;}
+
+  /* semanas */
+  .week{border:1px solid var(--line); background:#fff; border-radius:12px; padding:14px 18px; margin-bottom:12px; break-inside:avoid;}
+  .week .wh{display:flex; justify-content:space-between; align-items:baseline; gap:10px; border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:10px;}
+  .week .wh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:800;}
+  .week .wh span{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--green); font-weight:700; letter-spacing:1px; text-transform:uppercase; white-space:nowrap;}
+  .week ul{list-style:none; margin:0; padding:0;}
+  .week li{position:relative; padding-left:24px; margin-bottom:6px;}
+  .week li:before{content:''; position:absolute; left:0; top:3px; width:13px; height:13px; border:2px solid var(--green); border-radius:3px;}
+
+  /* moldes */
+  .molde{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:14px; background:#fff; break-inside:avoid;}
+  .molde .mh{background:var(--text); color:#fff; padding:11px 18px; display:flex; justify-content:space-between; gap:10px; align-items:baseline;}
+  .molde .mh b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px;}
+  .molde .mh span{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--green-light); white-space:nowrap;}
+  .molde .mb{padding:14px 18px;}
+  .skel{font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.65; background:var(--bg); border-radius:8px; padding:12px 14px; white-space:pre-wrap; margin:8px 0;}
+  .ex{font-size:12.8px; border-left:3px solid var(--green); padding:2px 0 2px 12px; color:#333; margin-top:8px;}
+  .ex i{font-style:normal; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--gray); display:block;}
+
+  /* diagrama base */
+  .flow{display:flex; align-items:stretch; gap:8px; margin:14px 0; flex-wrap:wrap; break-inside:avoid;}
+  .flow .node{flex:1 1 120px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px;}
+  .flow .node b{display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:13.5px; margin-bottom:2px;}
+  .flow .node.hl{background:var(--green); color:#fff; border-color:var(--green);}
+  .flow .arrow{align-self:center; color:var(--green); font-weight:800;}
+  .flow.tight{gap:5px;} .flow.tight .node{flex:1 1 72px; padding:8px 9px; font-size:11.2px;} .flow.tight .node b{font-size:12.5px;}
+
+  .prompt{background:#141414; color:#e9e9e9; border-radius:10px; padding:12px 16px; font-family:'JetBrains Mono',monospace; font-size:11.8px; line-height:1.6; margin:8px 0 12px; white-space:pre-wrap; break-inside:avoid;}
+  .prompt b{color:var(--green-light); font-weight:700; display:block; margin-bottom:4px; font-size:10px; letter-spacing:1px; text-transform:uppercase;}
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0;}
+  ol.steps li{counter-increment:s; position:relative; padding:0 0 10px 40px; break-inside:avoid;}
+  ol.steps li:before{content:counter(s); position:absolute; left:0; top:0; width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-weight:800; font-size:12.5px; display:flex; align-items:center; justify-content:center;}
+
+  .paulo{background:var(--text); color:#eee; border-radius:14px; padding:20px 22px; break-inside:avoid;}
+  .paulo h3{color:#fff; font-size:17px;}
+  .paulo .part-tag{color:var(--green-light);}
+  .paulo ul{margin:8px 0 0; padding-left:18px;} .paulo li{margin-bottom:7px;}
+  .paulo b{color:#fff;}
+  .paulo .opt{background:#222; border-color:#333; color:#fff;}
+
+  .foot{margin-top:36px; padding:16px 0 40px; border-top:1px solid var(--line); font-size:11px; color:var(--gray); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+  /* web: downloads + checklist interativo */
+  .dl{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .btn{display:inline-flex; align-items:center; gap:8px; background:var(--green); color:#fff; text-decoration:none; font-weight:700; font-size:13.5px; padding:12px 18px; border-radius:10px; border:0; cursor:pointer; font-family:'Inter',sans-serif;}
+  .btn:hover{background:var(--green-light);}
+  .btn.ghost{background:#fff; color:var(--text); border:1px solid var(--line);}
+  .btn.ghost:hover{border-color:var(--green); color:var(--green);}
+  .btn svg{width:16px; height:16px; flex:0 0 16px;}
+  .dlbox{background:var(--text); color:#fff; border-radius:14px; padding:18px 20px; margin:16px 0; display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;}
+  .dlbox b{font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; display:block;}
+  .dlbox span{font-size:12.5px; color:#cfcfcf;}
+  .check,.week li{cursor:pointer; user-select:none; transition:opacity .15s;}
+  .check:hover .box{background:var(--green-soft);}
+  .check.done .box,.week li.done:before{background:var(--green); border-color:var(--green);}
+  .check .box{position:relative;}
+  .check.done .box:after,.week li.done:after{content:''; position:absolute; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);}
+  .check.done .box:after{left:4px; top:1px;}
+  .week li.done:after{left:5px; top:5px;}
+  .check.done strong,.week li.done{text-decoration:line-through; text-decoration-color:rgba(0,0,0,.35); opacity:.6;}
+  .progress{position:sticky; top:0; z-index:5; background:rgba(248,247,244,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line);}
+  .progress .in{max-width:860px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; gap:12px; font-size:12px;}
+  .progress .bar{flex:1; height:6px; background:var(--card); border-radius:99px; overflow:hidden;}
+  .progress .bar i{display:block; height:100%; width:0; background:var(--green); transition:width .25s;}
+  .progress b{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green); white-space:nowrap;}
+  .progress button{background:none; border:0; color:var(--gray); font-size:11px; cursor:pointer; text-decoration:underline;}
+
+  @media (max-width:640px){
+    .grid2,.vs{grid-template-columns:1fr;}
+    .metas{grid-template-columns:1fr 1fr;}
+    .cover h1{font-size:34px;}
+    td:first-child{width:36%;}
+  }
+
+  @media print{
+    .no-print{display:none !important;}
+    @page{size:A4; margin:13mm 14mm 14mm;}
+    html,body{background:#fff; font-size:12.6px;}
+    .wrap{max-width:none; padding:0;}
+    .cover{min-height:268mm; padding:0;}
+    .sec{padding-top:0; break-before:page;}
+    .sec.cont{break-before:auto; padding-top:22px;}
+    .grid2{grid-template-columns:1fr 1fr;}
+    .vs{grid-template-columns:1fr 1fr;}
+    .metas{grid-template-columns:repeat(4,1fr);}
+    .banner{padding-left:34%;}
+    .banner b{font-size:17px;} .banner span{font-size:11px;}
+    .card,.week,.molde,.check,.tip,.prompt,.paulo{break-inside:avoid;}
+    table{break-inside:auto;} tr{break-inside:avoid;}
+    h2.section-title,h3{break-after:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="progress no-print"><div class="in"><span>Seu progresso</span><div class="bar"><i id="pbar"></i></div><b id="pnum">0/0</b><button id="preset" type="button">zerar</button></div></div>
+<div class="wrap">
+
+  <!-- CAPA -->
+  <section class="cover">
+    <img src="logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker">Método Demanda Infinita®</div>
+    <h1>Plano de ação:<br>30 dias no LinkedIn</h1>
+    <div class="sub">Você já tem a oferta e os cases. Agora é fazer o seu perfil e os seus posts abrirem a porta que hoje você abre na unha.</div>
+    <div class="who">
+      <div><span>Preparado para</span><b>Márcio Pereira</b></div>
+      <div><span>Empresa</span><b>K2A</b></div>
+      <div><span>Data</span><b>Novembro de 2026</b></div>
+    </div>
+    <div class="dl no-print">
+      <a class="btn" href="skill-conteudo-linkedin-marcio.txt" download="skill-conteudo-linkedin-marcio.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a sua skill de conteúdo</a>
+      <a class="btn ghost" href="plano-30-dias-marcio.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar o plano em PDF</a>
+    </div>
+  </section>
+
+  <!-- 01 DIAGNÓSTICO -->
+  <section class="sec">
+    <div class="part-tag">Parte 01</div>
+    <h2 class="section-title">Onde você está hoje</h2>
+    <p class="lead">Márcio, você tem o que a maioria dos vendedores B2B não tem: uma oferta que o cliente não consegue recusar e cases de nomes que todo mundo conhece. O que falta é o decisor enxergar isso antes de você falar com ele.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O que você já tem</h3>
+        <ul class="clean">
+          <li>Uma oferta de entrada forte: o diagnóstico é gratuito e a K2A só recebe depois que a conta baixou</li>
+          <li>Resultado de referência na casa de 40% de redução, mantendo o mesmo serviço</li>
+          <li>Cases de peso no site, como Burger King, Ultragaz, Ipiranga, Carrefour, Vale, Quero Quero e Gov.br</li>
+          <li>Uma calculadora de economia no site: material pronto para virar post</li>
+          <li>Quando você chega ao decisor, o interesse vem: de cada 10, cerca de 9 querem a proposta</li>
+          <li>Autorização do seu CEO para postar, e uma rotina de outbound que você já domina (Apollo, e-mail, WhatsApp, automação no LinkedIn)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>O que trava hoje</h3>
+        <ul class="clean">
+          <li>Chegar ao CIO de uma grande empresa: ele não responde a um desconhecido</li>
+          <li>O seu perfil mostra o profissional Márcio, não o que a K2A faz nem o que muda para o cliente</li>
+          <li>A empresa comunica “governança, gestão de contratos e otimização de custos”: ninguém entende em 5 segundos</li>
+          <li>Os posts compartilhados são institucionais, e a atenção do mercado já não está neles</li>
+          <li>A prova social existe, mas está escondida no site e na sua boca na reunião, não na frente do decisor</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="reframe">O seu outbound já funciona depois que o decisor responde.<br>O perfil e os posts existem para ele responder.</div>
+
+    <div class="tip"><b class="t">O decisor sempre abre o seu perfil</b>Quando você manda uma mensagem, a primeira coisa que o CIO faz é pesquisar o seu nome. Se em 5 segundos ele entende o que a K2A faz, para quem e com que prova, a chance de responder sobe. É o que o Igor chamou de “arrumar a casa antes de receber a visita”.</div>
+
+    <div class="ssi"><div class="n">SSI: ?</div><span>Ainda não temos o seu SSI, a nota de 0 a 100 que o LinkedIn dá pro seu uso da rede. É a tarefa do Dia 1: abra <b>linkedin.com/sales/ssi</b>, tire um print e mande pra gente no WhatsApp. Anote também a <b>taxa de resposta do seu outbound</b> hoje. No Dia 30, a gente compara os dois números.</span></div>
+  </section>
+
+  <!-- 02 ICP -->
+  <section class="sec">
+    <div class="part-tag">Parte 02</div>
+    <h2 class="section-title">Pra quem você vai falar</h2>
+    <p class="lead">Este é o retrato que tiramos da conversa. Ajuste o que não bater com a sua realidade.</p>
+    <table>
+      <tr><th>O quê</th><th>Quem é</th></tr>
+      <tr><td>Empresa</td><td>Pelo menos 200 funcionários e pelo menos R$ 50 mil por mês somando telecom e tecnologia. Abaixo de R$ 30 mil, o esforço não compensa para nenhum dos lados.</td></tr>
+      <tr><td>Quem sente a dor</td><td>CIO, diretor de TI, gerente de TI, gerente de infraestrutura. É o público principal dos seus posts.</td></tr>
+      <tr><td>Quem também decide</td><td>Compras, CFO (olha o custo) e CEO (olha a estrutura toda).</td></tr>
+      <tr><td>O que ele sente</td><td>“Pago contrato que ninguém revisa.” “Não sei se estou pagando o preço justo.” “Tenho linha, licença e link que ninguém usa.” “Não tenho tempo nem gente para renegociar com tantos fornecedores.”</td></tr>
+      <tr><td>O que ele quer</td><td>Gastar menos sem perder qualidade e sem ter trabalho.</td></tr>
+      <tr><td>O que ele não sabe</td><td>Que a renegociação pode custar zero até a conta baixar. Esse é o seu ponto mais forte, e hoje ele não aparece em lugar nenhum.</td></tr>
+    </table>
+    <div class="tip" style="margin-top:12px"><b class="t">Fale a língua dele</b>O blog e o site já falam com o gestor de TI, e está certo. Só troque o vocabulário: em vez de “governança e otimização de custos”, “a sua conta de TI e telecom pode ser até X% menor, sem trocar de fornecedor”.</div>
+  </section>
+
+  <!-- 03 VITRINE -->
+  <section class="sec">
+    <div class="part-tag">Parte 03 · Semana 1</div>
+    <h2 class="section-title">Arrumar a vitrine</h2>
+    <p class="lead">Hoje o seu LinkedIn mostra o profissional. Precisa mostrar a oferta. A regra que o Igor deu na call: o decisor bateu o olho e entendeu o que a K2A faz, pra quem e com que prova. Sem entrar no site.</p>
+
+    <div class="card">
+      <h3>Headline (a frase embaixo do seu nome)</h3>
+      <p>Escolha uma e ajuste. Os números precisam ser confirmados com a K2A antes de ir para o ar.</p>
+      <div class="opt">Reduzo de 35% a 45% as contas de TI e telecom de grandes empresas | Sem investimento inicial | Diretor de Novos Negócios na K2A<small>A mais direta: promessa, redução de risco e cargo. Usa a faixa do case do Burger King.</small></div>
+      <div class="opt">Sua empresa pode estar pagando de 35% a 70% a mais em TI e telecom | Diagnóstico gratuito | K2A<small>A frase do próprio site, transformada em headline. Gera curiosidade e conta o diagnóstico grátis.</small></div>
+      <div class="opt">Diretor de Novos Negócios na K2A | 10 anos reduzindo custos de TI e telecom de Ipiranga, Burger King e Ultragaz<small>Para quando os nomes estiverem liberados: a prova vem antes do convite.</small></div>
+    </div>
+
+    <div class="card">
+      <h3>Capa (a imagem atrás da sua foto)</h3>
+      <p>Hoje ela fala em governança e eficiência, com uma imagem genérica. Troque pela promessa, pelos anos de empresa e pelos logos dos clientes que puderem aparecer. Lado esquerdo livre, porque a foto cobre. Tamanho: 1584 × 396 px.</p>
+      <div class="banner"><b>Reduzimos até [X]% das contas de TI e telecom.<br>Sem trocar de fornecedor.</b><span>10 anos de K2A · logos dos clientes liberados · diagnóstico gratuito</span></div>
+      <p style="margin:10px 0 0;font-size:12.5px;color:#444">Os logos dependem de cláusula de contrato. Antes de colocar, o CEO da K2A confirma quais podem aparecer e por quanto tempo.</p>
+    </div>
+
+    <div class="card">
+      <h3>Sobre, em 5 blocos</h3>
+      <div class="skel">1. A dor, na língua do cliente
+   "A conta de TI e telecom só sobe, e quase ninguém revisa os contratos."
+2. Quem é você, com prova
+   Diretor de Novos Negócios na K2A. Antes, executivo comercial na Samsung. [confirmar]
+3. Como funciona
+   Diagnóstico gratuito → renegociamos com os fornecedores → você só paga depois que a conta baixar.
+4. Um caso
+   Burger King: de 35% a 45% de redução, em cerca de 850 unidades. [conferir no site]
+5. Como falar com você
+   "O link pra agendar o diagnóstico gratuito está em Destaques."</div>
+    </div>
+
+    <h3 style="margin-top:18px">Checklist da vitrine</h3>
+    <div class="check"><div class="box"></div><div><strong>Headline, capa e “Sobre”</strong><span>Os três ajustes acima, com os números confirmados pela K2A.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Destaques: o link do diagnóstico e os cases</strong><span>O link para agendar o diagnóstico gratuito, os depoimentos e os vídeos ou PDFs de cases que a K2A tiver.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Pedir ao CEO a lista de clientes que podem aparecer</strong><span>Nome, logo e por quanto tempo. É essa lista que libera a capa, os destaques e os posts de case.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Sugerir o mesmo ajuste no perfil do CEO e do time comercial</strong><span>Quanto mais perfis da K2A comunicando a mesma promessa, mais claro fica quando o decisor pesquisa quem o procurou.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Print do SSI e taxa de resposta atual do outbound</strong><span>linkedin.com/sales/ssi. Mande o print no WhatsApp.</span></div></div>
+  </section>
+
+  <!-- 04 CAMINHO -->
+  <section class="sec">
+    <div class="part-tag">Parte 04</div>
+    <h2 class="section-title">O caminho do post até a reunião</h2>
+    <p class="lead">O seu produto é de ticket alto e decisão em comitê: a venda é uma conversa, não um clique. Por isso o caminho é curto: o post gera confiança, o comentário fixado leva ao diagnóstico, e o diagnóstico leva à reunião.</p>
+
+    <div class="flow tight">
+      <div class="node"><b>Post</b>case ou número, sem link</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Comentário fixado</b>o convite e o link da agenda</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Diagnóstico</b>agendado, gratuito</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>Reunião</b>levantamento e proposta</div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>O comentário fixado</h3>
+        <p>O LinkedIn reduz o alcance de post com link no texto. Então o link vai no primeiro comentário, que você fixa logo depois de publicar:</p>
+        <div class="prompt" style="margin-bottom:0"><b>Modelo</b>Quer ver quanto a sua empresa pode reduzir? O diagnóstico é gratuito e sem compromisso. Agende aqui: [link]</div>
+      </div>
+      <div class="card">
+        <h3>A imagem</h3>
+        <p>Fundo branco, logo da K2A, logo do cliente do case (se liberado) e uma frase com o resultado. Minimalista: o brasileiro não lê letra miúda, a imagem gera curiosidade e o texto converte.</p>
+        <p style="margin:0">Se preferir, o convite também pode ir na própria imagem (“Reduza também as suas contas de TI e telecom”). O texto do post continua sem pedir comentário.</p>
+      </div>
+    </div>
+
+    <div class="tip"><b class="t">O post também ajuda o outbound</b>Quando você manda o convite ou a mensagem para um CIO, ele vai pesquisar o seu perfil. Com os posts e a vitrine novos, ele encontra cases e a promessa em vez de um currículo. Foi o que aconteceu com um cliente da Demanda Infinita, citado na call: o dono de uma rede de supermercados caiu num post dele, viu a própria situação ali e foi quem o procurou.</div>
+
+    <div class="prompt"><b>Mensagem pra quem comentou o post</b>Oi, [nome]! Obrigado pelo comentário. Se quiser ver quanto a [empresa] pode reduzir, o diagnóstico é gratuito e sem compromisso: [link da agenda]. Posso te explicar como funciona em 15 minutos.</div>
+    <div class="prompt"><b>Mensagem pro decisor depois que aceitou o convite (só com o case liberado)</b>[nome], obrigado por aceitar. Dei uma olhada na [empresa]: é do porte das que a gente costuma ajudar a reduzir a conta de TI e telecom, sem trocar de fornecedor.
+Fizemos isso na [case liberado], com [resultado]. Faz sentido eu te mostrar quanto daria na [empresa]? O diagnóstico é gratuito.</div>
+    <div class="tip"><b class="t">Na conversa: primeiro o diagnóstico</b>Entenda o que a empresa paga, de quais fornecedores e quem cuida disso. A proposta vem depois. Se não avançar agora, anote e volte a falar em 30 a 60 dias.</div>
+  </section>
+
+  <!-- 05 POSTS -->
+  <section class="sec">
+    <div class="part-tag">Parte 05</div>
+    <h2 class="section-title">O que postar: os cases e as contas que você já tem</h2>
+    <p class="lead">Você não precisa inventar assunto. O site da K2A já tem desafio, solução e resultado de cada cliente, e uma calculadora de economia. Isso dá dezenas de posts. A ideia é postar um case por vez e voltar aos melhores depois de 30 a 40 dias, com outro começo.</p>
+
+    <div class="molde">
+      <div class="mh"><b>Estrutura A · Case</b><span>Segunda · quarta · sexta</span></div>
+      <div class="mb">
+        <p><b>Resultado ou situação → desafio → o que a K2A fez → resultado → para quem lê.</b></p>
+        <div class="skel">[Começo: o resultado ou a situação em até 2 linhas]
+[O desafio: o que o cliente vivia]
+[O que a K2A fez: 3 a 5 linhas, sem jargão]
+[O resultado: só com número liberado]
+[Para quem lê: "Se a sua empresa tem esse perfil, vale olhar."]
+[Fecho seco: "Não é corte de serviço. É pagar o preço justo."]
+
+IMAGEM: fundo branco · logo K2A + logo do cliente · resultado em 1 frase
+COMENTÁRIO FIXADO: convite + link do diagnóstico</div>
+        <div class="ex"><i>Exemplo de começo</i>Uma rede com 850 unidades reduziu entre 35% e 45% a conta de TI e telecom.</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura B · A conta feita</b><span>Quarta · sexta</span></div>
+      <div class="mb">
+        <div class="skel">[Começo: a pergunta ou o número que dói]
+[A conta, passo a passo, rotulada como EXEMPLO]
+[O que está por trás do número: onde costuma estar o desperdício]
+[Como descobrir o da sua empresa: o diagnóstico gratuito]</div>
+        <div class="ex"><i>Exemplo de começo</i>R$ 50 mil por mês em TI e telecom. Quanto disso é desperdício? (Exemplo: com 40% de redução, são R$ 20 mil por mês e R$ 240 mil por ano.)</div>
+      </div>
+    </div>
+    <div class="molde">
+      <div class="mh"><b>Estrutura C · Opinião ou bastidor</b><span>Terça · quinta</span></div>
+      <div class="mb">
+        <div class="skel">[A opinião ou a cena em 1 linha, firme]
+[Por que eu penso assim: o que eu vi numa reunião]
+[O que eu faria primeiro]</div>
+        <div class="ex"><i>Exemplo de começo</i>O diagnóstico é gratuito. E a K2A só recebe depois que a sua conta baixar.</div>
+      </div>
+    </div>
+
+    <div class="tip"><b class="t">Regras que valem pra todas</b>Começo de no máximo 2 linhas, porque é o que aparece antes do “ver mais”. Parágrafos de 1 a 3 linhas. Uma ideia por post. Linguagem simples. Link nunca no texto. De 1 a 3 hashtags. Nada de “comente”, “curta” ou “compartilhe” no texto. Número e nome de cliente só quando liberados.</div>
+
+    <h3 style="margin-top:18px">10 posts pra começar</h3>
+    <table>
+      <tr><th>Estrutura</th><th>Tema</th></tr>
+      <tr><td>A · Case</td><td>Burger King: de 35% a 45% de redução, em cerca de 850 unidades (desafio, solução, resultado)</td></tr>
+      <tr><td>B · Conta</td><td>“Se a sua empresa gasta R$ 50 mil por mês em TI e telecom…”: a conta de exemplo e o que fica na mesa em um ano</td></tr>
+      <tr><td>C · Opinião</td><td>Por que o diagnóstico é gratuito: a K2A só recebe depois que a conta baixou</td></tr>
+      <tr><td>A · Case</td><td>Ultragaz [pegar o resultado no site]</td></tr>
+      <tr><td>C · Opinião</td><td>Reduzir custo não é trocar por um plano pior: o mesmo serviço, pagando menos</td></tr>
+      <tr><td>B · Conta</td><td>Quantas linhas móveis a sua empresa paga e ninguém usa? (exemplo: 80 linhas contratadas, 20 paradas)</td></tr>
+      <tr><td>A · Case</td><td>Ipiranga, Carrefour, Vale, Quero Quero ou Gov.br [um por semana, depois de liberados]</td></tr>
+      <tr><td>A · Case</td><td>Dois clientes largaram uma solução grande e cara de monitoramento e escolheram a nacional [só com autorização da K2A, sem citar a marca]</td></tr>
+      <tr><td>C · Bastidor</td><td>Foto de reunião, evento ou cliente (terça e quinta), com uma lição de 3 linhas</td></tr>
+      <tr><td>C · Convite</td><td>Um evento no LinkedIn: “Como reduzir até X% de TI e telecom” (a ideia do Igor, depende do aval do CEO)</td></tr>
+    </table>
+  </section>
+
+  <!-- 06 CADÊNCIA -->
+  <section class="sec">
+    <div class="part-tag">Parte 06</div>
+    <h2 class="section-title">A cadência e a rotina diária</h2>
+    <p class="lead">Constância ganha de volume. Você precisa aparecer na frente do decisor com frequência, mesmo que um post alcance poucas pessoas. Três posts bons por semana valem mais que dez fracos.</p>
+
+    <table>
+      <tr><th>Dia</th><th>O que sai</th></tr>
+      <tr><td>Segunda</td><td>Case (a prova social, sempre no topo da semana)</td></tr>
+      <tr><td>Terça</td><td>Pessoal e leve: bastidor, evento, aprendizado</td></tr>
+      <tr><td>Quarta</td><td>Conta feita ou case</td></tr>
+      <tr><td>Quinta</td><td>Pessoal e leve</td></tr>
+      <tr><td>Sexta</td><td>Case, conta ou opinião</td></tr>
+      <tr><td>Sábado</td><td>Opcional: uma foto ou reflexão curta</td></tr>
+    </table>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><h3>Status do WhatsApp</h3><p style="margin:0">Você falou com muita gente por WhatsApp. Todo post da empresa vira status no mesmo dia: a imagem do post, sem o texto longo. O LinkedIn é leitura; o WhatsApp é visual.</p></div>
+      <div class="card"><h3>Post bom volta</h3><p style="margin:0">Depois de 30 a 40 dias, o case que funcionou pode voltar com outro começo e outra imagem. Dá para trabalhar o mesmo cliente várias vezes. Guarde os melhores.</p></div>
+    </div>
+
+    <h3 style="margin-top:18px">Todo dia útil: 20 a 30 minutos</h3>
+    <div class="check"><div class="box"></div><div><strong>Comentar em 5 a 10 posts de CIOs, diretores de TI e CFOs</strong><span>2 ou 3 linhas com o que você vê nos contratos das grandes empresas, não “parabéns”. Cada comentário leva o seu nome para a rede daquela pessoa.</span></div></div>
+    <div class="vs">
+      <div class="bad"><b>Comentário que some</b>“Excelente reflexão, parabéns!”</div>
+      <div class="good"><b>Comentário que traz visita ao perfil</b>“Vejo muito isso: contrato de telecom que ninguém revisa há anos e cobra por linha parada. O primeiro passo é saber o que está contratado e o que está em uso.”</div>
+    </div>
+    <div class="check" style="margin-top:10px"><div class="box"></div><div><strong>Responder todo comentário na primeira hora do post</strong><span>E mandar o link do diagnóstico a quem comentar, no mesmo dia.</span></div></div>
+    <div class="check"><div class="box"></div><div><strong>Seguir o outbound que já funciona, agora com a vitrine nova</strong><span>Apollo, e-mail, WhatsApp e a automação do LinkedIn continuam. A diferença é o que o decisor encontra quando abre o seu perfil.</span></div></div>
+
+    <h3 style="margin-top:18px">Metas do mês (de esforço, que dependem só de você)</h3>
+    <div class="metas">
+      <div><b>12</b><span>posts de empresa publicados</span></div>
+      <div><b>4</b><span>cases no ar</span></div>
+      <div><b>100 a 200</b><span>comentários em posts do seu público</span></div>
+      <div><b>1</b><span>conversa nova por semana vinda do LinkedIn</span></div>
+    </div>
+    <p style="font-size:11.5px;color:var(--gray);margin-top:8px">Anote, por post, quantos comentários e quantas conversas ele trouxe. No Dia 30, é com esses números e com a taxa de resposta do outbound que a gente vê o que repetir.</p>
+  </section>
+
+  <!-- 07 CALENDÁRIO -->
+  <section class="sec">
+    <div class="part-tag">Parte 07</div>
+    <h2 class="section-title">O mês, semana a semana</h2>
+    <p class="lead">Marque cada item quando fizer. A rotina diária da Parte 06 vale todas as semanas. Primeiro a casa, depois os posts: não publique antes de a vitrine estar pronta.</p>
+
+    <div class="week">
+      <div class="wh"><b>Semana 1 · Arrumar a casa</b><span>Dias 1 a 7</span></div>
+      <ul>
+        <li>Dia 1: print do SSI e a taxa de resposta do seu outbound, enviados no WhatsApp</li>
+        <li>Pedir ao CEO a lista de clientes que podem aparecer (nome, logo, prazo)</li>
+        <li>Confirmar com a K2A os números que vão para a headline e a capa</li>
+        <li>Instalar a skill no Claude (Parte 08)</li>
+        <li>Trocar headline, capa e “Sobre” (Parte 03)</li>
+        <li>Montar os Destaques com o link do diagnóstico e os cases</li>
+        <li>Quando a vitrine estiver pronta: primeiro post, o case do Burger King (Estrutura A), com o comentário fixado</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 2 · Cadência</b><span>Dias 8 a 14</span></div>
+      <ul>
+        <li>Segunda: case Ultragaz (ou outro liberado)</li>
+        <li>Terça: post pessoal leve (foto de reunião ou aprendizado)</li>
+        <li>Quarta: a conta feita, com o gasto de R$ 50 mil de exemplo</li>
+        <li>Quinta: post pessoal leve</li>
+        <li>Sexta: opinião “por que o diagnóstico é gratuito”</li>
+        <li>Status do WhatsApp com a imagem de cada post da empresa</li>
+        <li>Mandar o link do diagnóstico a quem comentou</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 3 · Mais cases e a calculadora</b><span>Dias 15 a 21</span></div>
+      <ul>
+        <li>Segunda: case de outro cliente (Ipiranga, Carrefour, Vale, Quero Quero ou Gov.br)</li>
+        <li>Terça e quinta: posts pessoais leves</li>
+        <li>Quarta: post das linhas móveis paradas (exemplo)</li>
+        <li>Sexta: repetir o formato do post que mais trouxe comentário</li>
+        <li>Conversar com o CEO sobre o evento no LinkedIn (“Como reduzir até X% de TI e telecom”)</li>
+      </ul>
+    </div>
+    <div class="week">
+      <div class="wh"><b>Semana 4 · Do comentário à reunião</b><span>Dias 22 a 30</span></div>
+      <ul>
+        <li>Segunda: um segundo case</li>
+        <li>Quarta: o case dos dois clientes que largaram a solução grande, se a K2A autorizar</li>
+        <li>Sexta: o case que mais trouxe resposta, com outro começo</li>
+        <li>Chamar para o diagnóstico quem comentou e quem visitou o seu perfil depois de um post</li>
+        <li>Dia 30: novo print do SSI, a taxa de resposta do outbound e a tabela de cada post (comentários, conversas)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 08 SKILL -->
+  <section class="sec">
+    <div class="part-tag">Parte 08</div>
+    <h2 class="section-title">A skill: como instalar no Claude</h2>
+    <p class="lead">A skill é um arquivo com a sua ficha, os cases do site, as estruturas de post e as regras do LinkedIn. Depois de instalada, o Claude escreve os seus posts já no seu jeito, sem você explicar tudo de novo a cada vez.</p>
+
+    <div class="dlbox no-print"><div><b>Skill de conteúdo LinkedIn · Márcio</b><span>Arquivo .md, já com a sua ficha preenchida. Os campos que faltam estão marcados como [A CONFIRMAR].</span></div><a class="btn" href="skill-conteudo-linkedin-marcio.txt" download="skill-conteudo-linkedin-marcio.md" data-skill><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Baixar a skill</a></div>
+
+    <h3 style="margin-top:6px">Passo a passo (uns 5 minutos)</h3>
+    <ol class="steps">
+      <li><b>Baixe o arquivo</b> pelo botão acima. Ele vai para a pasta Downloads com o nome <b>skill-conteudo-linkedin-marcio.md</b>.</li>
+      <li><b>Abra o claude.ai</b> e entre na sua conta. No menu da esquerda, clique em <b>Projetos</b> e depois em <b>Novo projeto</b>. Dê o nome <b>LinkedIn · Márcio</b>.</li>
+      <li><b>Coloque a skill nas instruções do projeto.</b> Abra o arquivo baixado (no Bloco de Notas ou no TextEdit), copie tudo e cole em <b>Instruções do projeto</b> (em inglês, “Set project instructions”). Salve.</li>
+      <li><b>Adicione o material de apoio</b> em <b>Arquivos do projeto</b>: o texto dos cases do site da K2A (um por arquivo ou tudo num PDF) e, se tiver, o PDF da apresentação da K2A.</li>
+      <li><b>Abra um chat dentro do projeto</b> e cole o <b>Prompt 1</b> abaixo. O Claude vai fazer perguntas curtas para completar a ficha.</li>
+    </ol>
+    <p style="font-size:12.5px;color:#444;margin-top:6px">Se a sua conta não tiver Projetos, o caminho é o mesmo no ChatGPT (Projetos → Instruções) ou, em último caso, colar o conteúdo da skill no começo de cada conversa. Se travar em algum passo, é só chamar no WhatsApp.</p>
+
+    <p style="margin-top:6px;font-size:12.5px;color:#444">Uma hora por semana basta: na sexta, você produz e agenda os posts da semana seguinte no próprio LinkedIn. Durante a semana, sobra só a rotina diária e as conversas.</p>
+    <div class="flow" style="margin-top:14px">
+      <div class="node"><b>Você</b>pede o post da semana</div>
+      <div class="arrow">→</div>
+      <div class="node hl"><b>Skill + cases</b>sua ficha, os cases, as estruturas</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Claude</b>escreve o post, a imagem e o comentário fixado</div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Você</b>lê em voz alta e publica</div>
+    </div>
+
+    <div class="prompt"><b>Prompt 1 · Completar a ficha</b>Leia a seção "Ficha" desta skill. Para cada campo marcado [A CONFIRMAR], me faça uma pergunta curta, uma de cada vez. No final, me devolva a ficha completa pra eu colar no lugar.</div>
+    <div class="prompt"><b>Prompt 2 · Post de case</b>Escreva o post de [segunda] na Estrutura A sobre o case [Burger King], usando o texto do site que está nos arquivos do projeto. Depois me dê o texto da imagem (fundo branco, logos e uma frase de resultado) e o texto do comentário fixado com o convite pro diagnóstico.</div>
+    <div class="prompt"><b>Prompt 3 · A conta feita</b>Escreva um post na Estrutura B com a conta de exemplo de uma empresa que gasta R$ 50 mil por mês em TI e telecom e reduz 40%. Rotule como exemplo. Mostre onde costuma estar o desperdício e termine no diagnóstico gratuito.</div>
+    <div class="prompt"><b>Prompt 4 · Post pessoal da semana</b>Quero postar na terça uma foto de [reunião / evento / cliente]. Me faça 3 perguntas sobre o que aconteceu e escreva um post curto na Estrutura C, sem parecer comunicado da empresa.</div>
+  </section>
+
+  <!-- 09 PRÓXIMOS -->
+  <section class="sec">
+    <div class="part-tag">Parte 09</div>
+    <h2 class="section-title">Próximos passos</h2>
+    <ol class="steps" style="margin-top:12px">
+      <li><b>Mandar o print do SSI e a taxa de resposta do outbound.</b> É com eles que a gente compara o Dia 1 e o Dia 30.</li>
+      <li><b>Falar com o CEO sobre os logos e os números.</b> A lista de clientes liberados destrava a capa, os Destaques e os posts de case.</li>
+      <li><b>Instalar a skill e fazer a vitrine na Semana 1.</b> O primeiro post só sai com o perfil pronto.</li>
+      <li><b>Daqui a uma semana, mandar o primeiro retorno.</b> Como você combinou: o que saiu, o que o perfil mostra agora e o que travou. A gente ajusta de graça, sem compromisso.</li>
+      <li><b>No Dia 30, a gente conversa.</b> Você terá visto se funciona na prática. Se der certo e você quiser que a gente implemente junto (encontros semanais, em 3 ou 6 meses), a gente desenha o formato. Se der certo e você quiser levar para o time, também.</li>
+    </ol>
+
+    <div class="foot"><span>Plano de Ação · 30 dias no LinkedIn · Márcio Pereira</span><span>Demanda Infinita® · Novembro de 2026</span></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var KEY='plano30-marcio-v1', st={};
+  try{ st=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ st={}; }
+  var items=[].slice.call(document.querySelectorAll('.check, .week li'));
+  var bar=document.getElementById('pbar'), num=document.getElementById('pnum');
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+  function render(){
+    var n=0;
+    items.forEach(function(el,i){ var on=!!st[i]; el.classList.toggle('done',on); el.setAttribute('aria-checked',on); if(on) n++; });
+    num.textContent=n+'/'+items.length;
+    bar.style.width=(items.length? n/items.length*100 : 0)+'%';
+  }
+  items.forEach(function(el,i){
+    el.setAttribute('role','checkbox'); el.setAttribute('tabindex','0');
+    function t(){ st[i]=!st[i]; save(); render(); }
+    el.addEventListener('click',t);
+    el.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); t(); } });
+  });
+  document.getElementById('preset').addEventListener('click',function(){ if(confirm('Desmarcar todos os itens?')){ st={}; save(); render(); } });
+  render();
+})();
+</script>
+<script type="text/plain" id="skill-src">---
+name: conteudo-linkedin-marcio-pereira
+description: "Skill de produção de conteúdo LinkedIn do Márcio Pereira (Diretor de Novos Negócios da K2A, redução de custos de TI e telecom para grandes empresas), no Método Demanda Infinita®. Use sempre que for escrever post de case, post de número, post pessoal, comentário fixado com CTA, convite de conexão ou mensagem de abordagem. Contém a ficha já preenchida, os cases do site, as estruturas de post, as regras do LinkedIn e o checklist antes de entregar."
+---
+
+# Skill de Conteúdo LinkedIn: Márcio Pereira
+**Método Demanda Infinita® · versão personalizada**
+
+Você é o redator de LinkedIn do Márcio Pereira. O seu trabalho é fazer um CIO, diretor de TI ou CFO de uma empresa grande pensar "a minha conta também está assim" e pedir o diagnóstico gratuito.
+
+**Regra de ouro:** você só escreve o que está nesta ficha e nos arquivos do projeto. Nunca invente cliente, número, porcentagem ou resultado. Se faltar matéria-prima, pergunte antes de escrever. Se um dado for necessário e não existir, escreva `[A CONFIRMAR]`.
+
+**Regra do case:** só cite o nome de um cliente (e só use o logo) se ele estiver marcado como LIBERADO na tabela de cases abaixo. Resultado em % só com a fonte (site da K2A ou dado confirmado pelo Márcio). Cálculo de exemplo sempre vem rotulado como "exemplo".
+
+---
+
+## 0. Ficha
+
+> Preenchida a partir da reunião de 02/11/2026. O que está como [A CONFIRMAR] o Márcio completa.
+
+**Nome:** Márcio Pereira
+**Cargo:** Diretor de Novos Negócios (área comercial) na K2A. [A CONFIRMAR o cargo exato como está no LinkedIn]
+**Empresa:** K2A, empresa de tecnologia que vai completar 10 anos, com software e uma camada de consultoria. 100% B2B. [A CONFIRMAR o ano de fundação]
+**Trajetória:** antes da K2A, executivo comercial na Samsung. Entrou na K2A para trazer novos clientes: até então, todos os clientes vinham do relacionamento do CEO, e a rede de contatos dele se esgotou. [A CONFIRMAR o que pode ser contado da Samsung]
+**Como se apresenta (1 linha):** [A CONFIRMAR] Sugestão: "Ajudo grandes empresas a pagar menos por TI e telecom, sem trocar de fornecedor e sem investir nada antes."
+
+### O que a K2A vende (a escada)
+1. **Porta de entrada: diagnóstico de contratos, gratuito e sem compromisso.** A K2A levanta tudo o que a empresa paga de telefonia e tecnologia (links, linhas móveis, Microsoft e outros contratos) e entrega um diagnóstico com quanto dá para reduzir.
+2. **Renegociação com pagamento por sucesso.** Se a empresa autoriza, a K2A negocia com os fornecedores. O cliente participa das negociações e mantém o mesmo serviço, pagando menos. A empresa só paga depois que a conta baixou: uma taxa pelo sucesso. Sem investimento inicial.
+3. **Sustentação operacional (mensal).** A K2A passa a cuidar dos contratos todo mês: baixa as contas, confere se o que paga bate com o que usa, cancela o que sobra na hora (sem esperar o fim do contrato), mantém inventário, relatórios, rateio por centro de custo e suporte (a K2A aciona o fornecedor quando algo para).
+> Faixa de preço e percentual da taxa servem só para entender o porte. Nunca vão para o post.
+
+**Resultado de referência (dito pelo Márcio):** o diagnóstico costuma apontar redução na casa de 40% do que a empresa paga hoje. [A CONFIRMAR o número que a K2A pode usar em público]
+**Afirmação do site da K2A:** "sua empresa pode estar pagando de 35% a 70% a mais do que deveria em TI e telecom." [A CONFIRMAR com a K2A antes de usar em headline ou post]
+**Calculadora no site:** o visitante informa o gasto e vê a economia estimada. [A CONFIRMAR o link]
+
+### Cases (do site da K2A)
+| Cliente | O que o site diz | Pode citar o nome e o logo? |
+|---|---|---|
+| Burger King | Redução de 35% a 45% em TI e telecom, em cerca de 850 unidades | [A CONFIRMAR] |
+| Ultragaz | [pegar o texto do case no site] | [A CONFIRMAR] |
+| Ipiranga | [pegar o texto do case no site] | [A CONFIRMAR] |
+| Carrefour | [pegar o texto do case no site] | [A CONFIRMAR] |
+| Vale | [pegar o texto do case no site] | [A CONFIRMAR] |
+| Quero Quero | [pegar o texto do case no site] | [A CONFIRMAR] |
+| Gov.br | [pegar o texto do case no site] | [A CONFIRMAR] |
+> Cada case do site tem desafio, solução e resultado. Esse é o molde do post. A liberação do nome costuma estar em cláusula de contrato (prazo de uso): o Márcio confirma com o CEO e o jurídico. Sem liberação, o post descreve o caso sem nome ("uma rede de fast food com 850 unidades").
+
+**Prova social de venda (dita pelo Márcio):** dois clientes recentes cancelaram uma solução grande e cara de monitoramento de equipamentos (de uma multinacional) e contrataram a solução nacional da K2A. O motivo: preço alto, atendimento distante, sem customização. Um terceiro projeto está a caminho. [A CONFIRMAR se pode ser contado, e sem citar o nome da multinacional]
+
+### Cliente ideal (ICP)
+**Empresa:** pelo menos 200 funcionários e gasto de pelo menos R$ 50 mil por mês somando telecom e tecnologia. Abaixo de R$ 30 mil, o esforço não compensa para nenhum dos lados.
+**Quem sente a dor (público principal):** CIO, diretor de TI, gerente de TI, gerente de infraestrutura.
+**Quem também decide:** compras, CFO (olha o custo), CEO (olha a estrutura toda).
+**Dores, nas palavras do cliente:**
+- "Eu pago contrato de telefonia e tecnologia que ninguém revisa."
+- "Não sei se estou pagando o preço justo."
+- "Tenho linha, licença e link que ninguém usa e eu continuo pagando."
+- "Não tenho tempo nem gente para renegociar com 20 fornecedores."
+**O que ele quer:** gastar menos sem perder qualidade e sem ter trabalho.
+**O que ele não sabe:** que a renegociação pode custar zero até a conta baixar.
+
+### A maior dor do Márcio hoje
+Ele consegue o interesse quando chega no decisor ("de 10, 9 querem a proposta"). O problema é chegar: o CIO de uma grande empresa não responde a mensagem de um desconhecido. O LinkedIn precisa fazer o trabalho de abrir a porta: quando o decisor pesquisa o Márcio, em 5 segundos ele tem de entender o que a K2A faz, para quem e com que prova.
+
+### Canais que ele já usa
+Outbound: e-mail frio, ferramenta de automação no LinkedIn (cadência de mensagens para C-levels), Apollo para achar contato, WhatsApp. Quer somar a isso conteúdo no LinkedIn e no status do WhatsApp. O CEO aceita posts, mas é contra vídeo.
+
+---
+
+## 1. Como o LinkedIn distribui hoje (regras de todo post)
+
+- **Tempo de leitura é o que mais pesa.** Parágrafos curtos, uma ideia por post, história com começo, meio e fim.
+- **O post pesa mais que o número de conexões.** O LinkedIn testa o post com gente de fora da rede.
+- **Comentário vale muito mais que curtida.** Responder todos, de preferência na primeira hora.
+- **Pedido de interação no texto derruba o alcance.** Nunca escrever "comente", "curta", "compartilhe" no texto do post.
+- **Link externo no texto reduz alcance.** O link vai no **comentário fixado**, logo depois de publicar.
+- **De 1 a 3 hashtags.**
+- **Post bom pode voltar.** Depois de 30 a 40 dias, o mesmo case com começo e imagem novos pode performar de novo.
+- **Constância ganha de volume.** Melhor 3 posts bons por semana do que 10 fracos.
+
+---
+
+## 2. Mix e calendário
+
+| Dia | O que sai |
+|---|---|
+| Segunda | Case ou número (empresa) |
+| Terça | Pessoal e leve (bastidor, evento, aprendizado) |
+| Quarta | Case ou número (empresa) |
+| Quinta | Pessoal e leve |
+| Sexta | Case, número ou opinião (empresa) |
+| Sábado | Opcional: foto ou reflexão curta |
+
+**Status do WhatsApp:** todo post da empresa vira status no mesmo dia (imagem do post, sem o texto longo).
+**Horário:** entre 7h e 9h ou 17h e 19h.
+
+---
+
+## 3. As estruturas
+
+### Estrutura A: case
+**Desafio → o que a K2A fez → resultado → o que isso diz para quem lê.** O texto é conteúdo. O pedido mora no comentário fixado.
+```
+[Começo: o resultado ou a situação em até 2 linhas]
+[O desafio: o que o cliente vivia, 2 a 4 linhas]
+[O que a K2A fez: 3 a 5 linhas, sem jargão]
+[O resultado: número só se for real e liberado]
+[Para quem lê: "Se a sua empresa tem esse perfil, vale olhar."]
+[Fecho seco: "Não é X. É Y."]
+```
+**Imagem:** fundo branco, logo da K2A + logo do cliente (só se liberado), uma frase com o resultado. Minimalista: o brasileiro não lê letra miúda.
+**Comentário fixado:** "Quer ver quanto a sua empresa pode reduzir? O diagnóstico é gratuito e sem compromisso: [link da agenda]."
+
+### Estrutura B: número (a conta feita)
+```
+[Começo: a pergunta ou o número que dói]
+[A conta de exemplo, passo a passo, rotulada como exemplo]
+[O que está por trás do número: onde costuma estar o desperdício]
+[Como descobrir o da sua empresa: o diagnóstico gratuito]
+```
+Exemplo de conta (rotulada): gasto de R$ 50 mil por mês em TI e telecom; redução de 40%; R$ 20 mil por mês; R$ 240 mil por ano. **Sempre escrever "exemplo".**
+
+### Estrutura C: opinião ou bastidor
+```
+[A opinião ou a cena em 1 linha, firme]
+[Por que eu penso assim: o que eu vi numa reunião]
+[O que eu faria primeiro]
+```
+Serve para os dias pessoais (terça, quinta): foto de evento, reunião com cliente, uma coisa que o Márcio aprendeu.
+
+---
+
+## 4. Começos que param a rolagem
+
+- **Resultado:** "Uma rede com 850 unidades reduziu entre 35% e 45% a conta de TI e telecom."
+- **Pergunta que dói:** "Quantas linhas corporativas a sua empresa paga e ninguém usa?"
+- **Número na mesa:** "R$ 50 mil por mês em TI e telecom. Quanto disso é desperdício?"
+- **Contradição:** "O diagnóstico é gratuito. E a K2A só recebe depois que a sua conta baixar."
+
+Regras do começo: no máximo 2 linhas; nunca começar com "Eu" ou "Olá"; sem ponto de exclamação; no máximo 1 emoji.
+
+---
+
+## 5. Tom e estilo
+
+**Sempre:** linguagem simples, de quem conversa com diretor; número no começo quando existe; cases com desafio, solução e resultado; fechos secos ("Não é corte de serviço. É pagar o preço justo.").
+**Nunca:** jargão de contrato e governança sem explicar ("otimização de OPEX", "gestão de ciclo de vida"); prometer redução garantida; inventar número; falar mal de fornecedor ou de concorrente pelo nome; pedir interação no texto; post institucional ("a K2A tem o prazer de..."). Post que parece comunicado da empresa não performa: o Márcio fala como pessoa.
+**Importante:** a K2A mantém o mesmo serviço pagando menos. Nunca escrever que reduz custo trocando por plano inferior.
+
+---
+
+## 6. Rotina fora dos posts
+
+### Comentários (5 a 10 por dia) em posts de CIOs, diretores de TI, CFOs e compras
+```
+[Concordo/discordo em 1 linha] + [o que eu vejo nos contratos das grandes empresas] + [o que olhar primeiro]
+```
+
+### Convite de conexão (sem vender)
+```
+Olá, [nome]. Trabalho com redução de custos de TI e telecom em grandes empresas. Acompanho o que você compartilha sobre [tema] e gostaria de ter você na minha rede.
+```
+
+### Mensagem depois que aceitou (quando o perfil já mostra o que a K2A faz)
+```
+[nome], obrigado por aceitar. Dei uma olhada na [empresa]: é do porte das que a gente costuma ajudar a reduzir a conta de TI e telecom, sem trocar de fornecedor.
+Fizemos isso na [case liberado ou "uma rede com 850 unidades"], com [resultado].
+Faz sentido eu te mostrar quanto daria na [empresa]? O diagnóstico é gratuito.
+```
+> Só enviar com o case liberado. Uma mensagem, sem insistir no mesmo dia.
+
+### Para quem comentou ou respondeu o post
+```
+Oi, [nome]! Obrigado pelo comentário. Se quiser ver quanto a [empresa] pode reduzir, o diagnóstico é gratuito e sem compromisso: [link da agenda]. Posso te explicar como funciona em 15 minutos.
+```
+
+### Na conversa
+Primeiro o diagnóstico: o que a empresa paga hoje, de quais fornecedores, quem cuida disso. Só depois a proposta. Se não avançar agora, anotar e voltar em 30 a 60 dias.
+
+---
+
+## 7. Formato de entrega
+
+1. **O post pronto**, com as quebras de linha.
+2. **Estrutura usada** (A, B ou C) e **qual case, número ou história do Márcio entrou**.
+3. **Hashtags** (1 a 3).
+4. Se for case: **texto da imagem** e o **texto do comentário fixado**.
+5. **Perguntas**, se algum dado ficou como `[A CONFIRMAR]`.
+
+---
+
+## 8. Checklist final
+
+- [ ] O começo cabe em 2 linhas e faz um diretor de TI ou CFO pensar "a minha conta também está assim"?
+- [ ] Todo número e todo nome de cliente estão na ficha ou nos arquivos, e o cliente está liberado?
+- [ ] Cálculo de exemplo está rotulado como "exemplo"?
+- [ ] Não tem pedido de interação no texto nem link no corpo (o link vai no comentário fixado)?
+- [ ] Não promete redução garantida e deixa claro que o serviço continua o mesmo?
+- [ ] Soa como o Márcio falando, lido em voz alta, e não como comunicado da empresa?
+</script>
+<script>
+(function(){
+  var src=document.getElementById('skill-src');
+  if(!src||!window.Blob||!window.URL) return;
+  var txt=src.textContent.replace(/^\n/,'');
+  [].forEach.call(document.querySelectorAll('a[data-skill]'),function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var url=URL.createObjectURL(new Blob([txt],{type:'text/markdown;charset=utf-8'}));
+      var t=document.createElement('a'); t.href=url; t.download='skill-conteudo-linkedin-marcio.md';
+      document.body.appendChild(t); t.click(); t.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); },2000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
