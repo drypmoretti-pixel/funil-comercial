@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Aula de Inglês · Igor</title>
+<style>
+:root{--bg:#050b09;--panel:#0b1613;--line:#16302a;--tx:#e9f5ef;--mut:#7fa396;--g:#2be08a;--g2:#13a860;--bad:#ff6b6b;--warn:#f5c451}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);color:var(--tx);font-family:Inter,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100%}
+body{background:radial-gradient(1200px 600px at 50% -10%,#0d2a20 0,transparent 60%),var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px;display:grid;grid-template-columns:1fr 320px;gap:20px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{font-size:15px;font-weight:600;letter-spacing:.04em;color:var(--mut);text-transform:uppercase}
+header h1 b{color:var(--g)}
+.timer{font-variant-numeric:tabular-nums;font-size:15px;color:var(--mut)}
+.timer b{color:var(--tx)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+.stage{display:flex;flex-direction:column;align-items:center;padding:26px 18px 18px;gap:14px}
+#orbWrap{position:relative;width:min(300px,70vw);aspect-ratio:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#orb{width:100%;height:100%;display:block}
+.status{min-height:24px;font-size:15px;color:var(--mut);text-align:center}
+.status b{color:var(--g)}
+.live{min-height:44px;font-size:18px;text-align:center;color:var(--tx);max-width:640px;line-height:1.4}
+.live.dim{color:var(--mut)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#0f1f1a;color:var(--tx);padding:10px 18px;border-radius:12px;transition:.15s}
+button:hover{border-color:var(--g)}
+button.pri{background:var(--g);color:#032013;border-color:var(--g);font-weight:700}
+button.pri:hover{filter:brightness(1.08)}
+button.sm{padding:6px 12px;font-size:13px}
+.ask{text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.ask h2{font-size:22px;font-weight:600}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.big{padding:16px 30px;font-size:18px}
+.opts{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center;color:var(--mut);font-size:13px}
+select,input[type=range]{background:#0f1f1a;color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font:inherit;font-size:13px;max-width:220px}
+.txt{display:flex;gap:8px;width:100%;max-width:640px}
+.txt input{flex:1;background:#0f1f1a;border:1px solid var(--line);color:var(--tx);border-radius:12px;padding:10px 14px;font:inherit}
+h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:10px;font-weight:600}
+.col{display:flex;flex-direction:column;gap:20px}
+#chat{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow:auto;padding-right:4px}
+.b{padding:9px 13px;border-radius:14px;font-size:15px;line-height:1.45;max-width:88%}
+.b.ai{background:#0f2a21;border:1px solid #17463a;align-self:flex-start}
+.b.me{background:#14231f;border:1px solid var(--line);align-self:flex-end}
+.fix{border:1px solid var(--line);border-left:3px solid var(--g);border-radius:12px;padding:10px 13px;margin-bottom:8px;background:#0a1512}
+.fix .w{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1px;font-size:15px}
+.fix .c{color:var(--g);font-size:15px;font-weight:600;margin-top:3px;display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.fix .y{color:var(--mut);font-size:12.5px;margin-top:4px}
+.fix .l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.fix button{padding:2px 8px;font-size:12px}
+.empty{color:var(--mut);font-size:14px}
+/* checklist */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:#0a1512;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px;color:var(--g)}
+.stat span{font-size:11px;color:var(--mut)}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:14px;font-weight:600}
+.mh button{padding:2px 10px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .dw{font-size:10px;color:var(--mut);text-align:center}
+.d{aspect-ratio:1;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;border:1px solid var(--line);color:var(--mut);position:relative}
+.d.ok{background:var(--g2);border-color:var(--g);color:#031a0f;font-weight:700}
+.d.part{background:#3d3410;border-color:var(--warn);color:var(--warn)}
+.d.miss{background:#2a1214;border-color:#5a2227;color:#ff8f8f}
+.d.today{outline:2px solid var(--g);outline-offset:1px}
+.d.fut,.d.pre{opacity:.35}
+.leg{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--mut);margin-top:10px}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.warn{color:var(--warn);font-size:13px;text-align:center}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Aula de <b>Inglês</b> · Igor</h1>
+    <div class="timer" id="timer"></div>
+  </header>
+
+  <div class="col">
+    <div class="card stage">
+      <div id="orbWrap"><canvas id="orb" width="600" height="600"></canvas></div>
+      <div class="status" id="status">Carregando…</div>
+
+      <div class="ask" id="ask">
+        <h2>Bom dia, Igor! Hoje vai ser…</h2>
+        <div class="row">
+          <button class="pri big" data-min="30">30 minutos</button>
+          <button class="pri big" data-min="60">1 hora</button>
+        </div>
+        <div class="opts">
+          <label>Voz <select id="voiceSel"></select></label>
+          <label>Velocidade <input type="range" id="rate" min="0.7" max="1.2" step="0.05" value="0.95"></label>
+        </div>
+        <div class="warn hide" id="noSR">Seu navegador não tem reconhecimento de voz. Abra no Chrome, ou use o campo de texto durante a aula.</div>
+      </div>
+
+      <div id="live" class="live dim"></div>
+      <div class="btns hide" id="ctrl">
+        <button id="pauseBtn">⏸ Pausar</button>
+        <button id="skipBtn">Pular a vez</button>
+        <button id="endBtn">Encerrar aula</button>
+      </div>
+      <div class="txt hide" id="txtRow">
+        <input id="txtIn" placeholder="Ou escreva em inglês aqui e aperte Enter…" autocomplete="off">
+        <button class="pri" id="txtBtn">Enviar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Correções de hoje · errado → certo</h3>
+      <div id="fixes"><div class="empty">Quando você errar, aparece aqui o que falou e a forma correta.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Conversa</h3>
+      <div id="chat"><div class="empty">A conversa aparece aqui.</div></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card">
+      <h3>Checklist de aulas</h3>
+      <div class="stats">
+        <div class="stat"><b id="sStreak">0</b><span>dias seguidos</span></div>
+        <div class="stat"><b id="sDone">0</b><span>aulas feitas</span></div>
+        <div class="stat"><b id="sMiss">0</b><span>dias perdidos</span></div>
+      </div>
+      <div class="mh"><button class="sm" id="prevM">‹</button><span id="mTitle"></span><button class="sm" id="nextM">›</button></div>
+      <div class="cal" id="cal"></div>
+      <div class="leg"><span><i style="background:var(--g2)"></i>Feita</span><span><i style="background:#3d3410"></i>Parcial</span><span><i style="background:#2a1214"></i>Perdida</span></div>
+    </div>
+    <div class="card">
+      <h3>Revisar · últimos erros</h3>
+      <div id="hist"><div class="empty">Sem histórico ainda.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='https://okolawlvmfyxzvnnpvtv.supabase.co/functions/v1/aula-ingles';
+const START='2026-11-04'; // primeiro dia contado no checklist
+const $=id=>document.getElementById(id);
+let TOKEN=''; try{const u=new URL(location.href);const k=u.searchParams.get('k');if(k){localStorage.setItem('aula_k',k);history.replaceState(null,'',location.pathname)}TOKEN=localStorage.getItem('aula_k')||''}catch(e){}
+
+async function api(action,body={}){
+  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','x-aula-token':TOKEN},body:JSON.stringify({action,...body})});
+  if(!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+/* ---------- estado ---------- */
+const S={meta:30,run:false,paused:false,elapsed:0,turnos:0,erros:0,msgs:[],phase:'idle',tick:null,saved:0,done:false,today:'',days:{},month:null};
+let level=0,target=0; // energia do orb
+
+/* ---------- ORB ---------- */
+const cv=$('orb'),cx=cv.getContext('2d');let t0=0;
+function drawOrb(ts){
+  const W=600,c=W/2;cx.clearRect(0,0,W,W);
+  const ph=S.phase;const tt=ts/1000;
+  const base=ph==='speaking'?0.55+0.25*Math.sin(tt*9)*Math.sin(tt*3.1):ph==='listening'?0.35+level*0.9:ph==='thinking'?0.3+0.1*Math.sin(tt*6):0.18+0.05*Math.sin(tt*1.6);
+  target=base;level+=(target-level)*0.12;const e=Math.max(0,level);
+  const R=120+e*70;
+  const g=cx.createRadialGradient(c,c,R*0.2,c,c,R*2.1);
+  g.addColorStop(0,`rgba(43,224,138,${0.35+e*0.35})`);g.addColorStop(0.5,`rgba(19,168,96,${0.12+e*0.12})`);g.addColorStop(1,'rgba(5,11,9,0)');
+  cx.fillStyle=g;cx.beginPath();cx.arc(c,c,R*2.1,0,7);cx.fill();
+  // anéis ondulantes
+  for(let k=0;k<4;k++){
+    cx.beginPath();
+    for(let a=0;a<=360;a+=3){
+      const rad=a*Math.PI/180;
+      const wob=Math.sin(rad*(3+k)+tt*(1.2+k*0.5)*(ph==='idle'?0.5:1.6))*(4+e*26)+Math.sin(rad*(5+k*2)-tt*2.1)*(2+e*12);
+      const rr=R*(0.72+k*0.09)+wob;
+      const x=c+Math.cos(rad)*rr,y=c+Math.sin(rad)*rr;
+      a?cx.lineTo(x,y):cx.moveTo(x,y);
+    }
+    cx.closePath();cx.strokeStyle=`rgba(${60+k*30},230,${150+k*20},${0.75-k*0.15})`;cx.lineWidth=2.2-k*0.3;cx.stroke();
+  }
+  // núcleo
+  const n=cx.createRadialGradient(c-R*0.2,c-R*0.25,2,c,c,R*0.7);
+  n.addColorStop(0,'rgba(220,255,238,.98)');n.addColorStop(0.35,'rgba(43,224,138,.95)');n.addColorStop(1,'rgba(10,90,55,.85)');
+  cx.fillStyle=n;cx.beginPath();cx.arc(c,c,R*0.6+e*18,0,7);cx.fill();
+  requestAnimationFrame(drawOrb);
+}
+requestAnimationFrame(drawOrb);
+
+/* ---------- mic (energia) ---------- */
+let actx,an,buf,micStream;
+async function initMic(){
+  try{
+    micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    actx=new (window.AudioContext||window.webkitAudioContext)();const src=actx.createMediaStreamSource(micStream);
+    an=actx.createAnalyser();an.fftSize=512;buf=new Uint8Array(an.fftSize);src.connect(an);
+    setInterval(()=>{if(S.phase!=='listening'||!an)return;an.getByteTimeDomainData(buf);let s=0;for(const v of buf){const d=(v-128)/128;s+=d*d}micLvl=Math.sqrt(s/buf.length)},60);
+  }catch(e){}
+}
+let micLvl=0;
+setInterval(()=>{if(S.phase==='listening'){level=Math.max(level,0.35+Math.min(1,micLvl*5)*0.7)}},60);
+
+/* ---------- voz (TTS) ---------- */
+let voices=[],voice=null;
+function loadVoices(){
+  voices=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
+  const pri=[/Aria|Jenny|Guy|Ava|Andrew|Emma|Brian|Natural/i,/Google US English/i,/Samantha|Ava|Allison|Evan|Nathan|Tom|Zoe/i,/Google UK English/i,/en[-_]US/i];
+  voices.sort((a,b)=>{const ia=pri.findIndex(r=>r.test(a.name+a.lang)),ib=pri.findIndex(r=>r.test(b.name+b.lang));return (ia<0?9:ia)-(ib<0?9:ib)});
+  const sel=$('voiceSel');sel.innerHTML='';voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name+' ('+v.lang+')';sel.appendChild(o)});
+  let saved='';try{saved=localStorage.getItem('aula_voice')||''}catch(e){}
+  const si=voices.findIndex(v=>v.name===saved);sel.value=si>=0?si:0;voice=voices[sel.value]||null;
+}
+speechSynthesis.onvoiceschanged=loadVoices;loadVoices();
+$('voiceSel').onchange=e=>{voice=voices[e.target.value];try{localStorage.setItem('aula_voice',voice.name)}catch(_){}speak('Hi Igor, this is my voice. Is it good?')};
+function speak(text){
+  return new Promise(res=>{
+    if(!text){res();return}
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);u.lang='en-US';if(voice)u.voice=voice;u.rate=parseFloat($('rate').value)||0.95;u.pitch=1;
+    let fin=false;const done=()=>{if(!fin){fin=true;clearInterval(kp);res()}};
+    u.onend=done;u.onerror=done;
+    const kp=setInterval(()=>{if(speechSynthesis.speaking&&!speechSynthesis.paused){speechSynthesis.pause();speechSynthesis.resume()}},9000);
+    setTimeout(done,45000);
+    speechSynthesis.speak(u);
+  });
+}
+
+/* ---------- reconhecimento ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null,recWanted=false,finalTxt='';
+function startListen(){
+  if(!SR||!S.run||S.paused)return;
+  setPhase('listening');finalTxt='';$('live').textContent='';$('live').classList.add('dim');
+  rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;rec.maxAlternatives=1;
+  let silTimer=null;
+  const flush=()=>{const txt=finalTxt.trim();if(txt){recWanted=false;try{rec.stop()}catch(e){}handleUser(txt)}};
+  rec.onresult=ev=>{
+    let interim='';
+    for(let i=ev.resultIndex;i<ev.results.length;i++){const r=ev.results[i];if(r.isFinal)finalTxt+=' '+r[0].transcript;else interim+=r[0].transcript}
+    $('live').textContent=(finalTxt+' '+interim).trim();$('live').classList.remove('dim');
+    clearTimeout(silTimer);silTimer=setTimeout(()=>{if((finalTxt+interim).trim()){if(!finalTxt.trim())finalTxt=interim;flush()}},1900);
+  };
+  rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){setStatus('Libere o microfone no navegador e clique no círculo.');recWanted=false;S.paused=true;syncPause()}};
+  rec.onend=()=>{clearTimeout(silTimer);if(recWanted&&S.run&&!S.paused&&S.phase==='listening'){setTimeout(()=>{if(recWanted)try{rec.start()}catch(e){}},250)}};
+  recWanted=true;try{rec.start()}catch(e){}
+}
+function stopListen(){recWanted=false;try{rec&&rec.stop()}catch(e){}}
+
+/* ---------- fluxo ---------- */
+function setStatus(h){$('status').innerHTML=h}
+function setPhase(p){S.phase=p;
+  setStatus(p==='listening'?'<b>Pode falar…</b> estou te ouvindo':p==='thinking'?'Pensando…':p==='speaking'?'<b>Falando</b> · ouça':S.run?(S.paused?'Pausado · clique no círculo':''):'Clique no círculo ou escolha o tempo')}
+function bubble(who,text){
+  const c=$('chat');if(c.querySelector('.empty'))c.innerHTML='';
+  const d=document.createElement('div');d.className='b '+who;d.textContent=text;c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function addFixes(list){
+  const f=$('fixes');if(f.querySelector('.empty'))f.innerHTML='';
+  list.forEach(x=>{
+    const d=document.createElement('div');d.className='fix';
+    d.innerHTML='<div class="l">Você disse</div><div class="w"></div><div class="c"><span></span><button class="sm">🔊</button></div><div class="y"></div>';
+    d.querySelector('.w').textContent=x.wrong;d.querySelector('.c span').textContent=x.correct;d.querySelector('.y').textContent=x.why||'';
+    d.querySelector('button').onclick=()=>speak(x.correct);
+    f.prepend(d);
+  });
+}
+async function turn(userText){
+  setPhase('thinking');
+  if(userText){S.msgs.push({role:'user',content:userText});S.turnos++}
+  let r;
+  try{r=await api('chat',{messages:S.msgs})}
+  catch(e){setStatus('Sem conexão com o professor. Tentando de novo…');await new Promise(r=>setTimeout(r,2500));if(S.run&&!S.paused)return turn(null);return}
+  if(!S.run)return;
+  if(r.corrections&&r.corrections.length){S.erros+=r.corrections.length;addFixes(r.corrections)}
+  S.msgs.push({role:'assistant',content:r.reply});bubble('ai',r.reply);
+  setPhase('speaking');
+  if(r.spoken_fix){await speak(r.spoken_fix)}
+  await speak(r.reply);
+  if(S.run&&!S.paused){
+    if(S.finishing){return finish(true)}
+    startListen();
+  }
+}
+async function handleUser(txt){bubble('me',txt);$('live').textContent='';await turn(txt)}
+
+function fmt(s){const m=Math.floor(s/60),x=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
+function updTimer(){$('timer').innerHTML=S.run?`<b>${fmt(S.elapsed)}</b> / ${S.meta}:00`:''}
+function tickFn(){
+  if(!S.run||S.paused)return;
+  S.elapsed++;updTimer();
+  if(S.elapsed-S.saved>=30){S.saved=S.elapsed;save(false)}
+  if(S.elapsed>=S.meta*60&&!S.finishing){S.finishing=true}
+}
+async function save(concl){
+  try{await api('progress',{meta_min:S.meta,minutos:Math.round(S.elapsed/60*10)/10,turnos:S.turnos,erros:S.erros,concluido:concl});await refresh()}catch(e){}
+}
+async function begin(min){
+  S.meta=min;S.run=true;S.paused=false;S.elapsed=0;S.turnos=0;S.erros=0;S.msgs=[];S.saved=0;S.finishing=false;
+  $('ask').classList.add('hide');$('ctrl').classList.remove('hide');$('txtRow').classList.remove('hide');
+  $('chat').innerHTML='';
+  try{speechSynthesis.cancel()}catch(e){}
+  await initMic();
+  S.tick=setInterval(tickFn,1000);updTimer();
+  save(false);
+  turn(null);
+}
+async function finish(complete){
+  S.run=false;stopListen();clearInterval(S.tick);try{speechSynthesis.cancel()}catch(e){}
+  const ok=complete||S.elapsed>=S.meta*60;
+  setPhase('idle');
+  const min=Math.round(S.elapsed/60);
+  if(ok){
+    setStatus('<b>Aula concluída! ✅</b> Dia marcado no checklist.');
+    await save(true);
+    speak(`That's all for today, Igor. Great job! You practiced for ${min} minutes. See you tomorrow at eight.`);
+  }else{
+    setStatus(`Aula encerrada com ${min} min (meta ${S.meta}). Dia fica como parcial.`);
+    await save(false);
+  }
+  $('ctrl').classList.add('hide');$('txtRow').classList.add('hide');$('ask').classList.remove('hide');
+  $('ask').querySelector('h2').textContent=ok?'Quer continuar mais um pouco?':'Voltar à aula?';
+  try{micStream&&micStream.getTracks().forEach(t=>t.stop())}catch(e){}
+  updTimer();
+}
+function syncPause(){$('pauseBtn').textContent=S.paused?'▶ Continuar':'⏸ Pausar';}
+function togglePause(){
+  if(!S.run)return;S.paused=!S.paused;syncPause();
+  if(S.paused){stopListen();try{speechSynthesis.cancel()}catch(e){}setPhase('idle');setStatus('Pausado · clique no círculo para continuar')}
+  else{startListen()}
+}
+document.querySelectorAll('[data-min]').forEach(b=>b.onclick=()=>begin(+b.dataset.min));
+$('orbWrap').onclick=()=>{if(!S.run){begin(S.meta)}else togglePause()};
+$('pauseBtn').onclick=togglePause;
+$('skipBtn').onclick=()=>{if(S.run&&S.phase==='listening'){stopListen();turn('(Igor has nothing to say. Suggest a new topic and ask an easy question.)')}};
+$('endBtn').onclick=()=>finish(false);
+async function sendTxt(){
+  const v=$('txtIn').value.trim();if(!v||!S.run)return;$('txtIn').value='';
+  stopListen();try{speechSynthesis.cancel()}catch(e){}handleUser(v);
+}
+$('txtBtn').onclick=sendTxt;$('txtIn').onkeydown=e=>{if(e.key==='Enter')sendTxt()};
+window.addEventListener('beforeunload',()=>{if(S.run&&S.elapsed>5){navigator.sendBeacon&&0}});
+
+/* ---------- checklist ---------- */
+const pad=n=>String(n).padStart(2,'0');
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function renderCal(){
+  const m=S.month,y=m.getFullYear(),mo=m.getMonth();
+  $('mTitle').textContent=m.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const cal=$('cal');cal.innerHTML='';['D','S','T','Q','Q','S','S'].forEach(x=>{const e=document.createElement('div');e.className='dw';e.textContent=x;cal.appendChild(e)});
+  const first=new Date(y,mo,1).getDay(),n=new Date(y,mo+1,0).getDate();
+  for(let i=0;i<first;i++)cal.appendChild(document.createElement('div'));
+  for(let d=1;d<=n;d++){
+    const key=y+'-'+pad(mo+1)+'-'+pad(d),el=document.createElement('div');el.className='d';el.textContent=d;
+    const r=S.days[key];
+    if(key<START)el.classList.add('pre');
+    else if(key>S.today)el.classList.add('fut');
+    else if(r&&r.concluido){el.classList.add('ok');el.textContent='✓';el.title=`${d}: ${r.minutos} min · ${r.erros} correções`}
+    else if(r&&r.minutos>0&&key!==S.today){el.classList.add('part');el.title=r.minutos+' min (parcial)'}
+    else if(key!==S.today)el.classList.add('miss');
+    if(key===S.today){el.classList.add('today');if(r&&r.minutos>0&&!r.concluido)el.classList.add('part')}
+    cal.appendChild(el);
+  }
+}
+function stats(){
+  let done=0,miss=0,streak=0;
+  const t=new Date(S.today+'T12:00:00');
+  for(let d=new Date(START+'T12:00:00');iso(d)<S.today;d.setDate(d.getDate()+1)){const r=S.days[iso(d)];if(!(r&&r.concluido))miss++}
+  Object.values(S.days).forEach(r=>{if(r.concluido)done++});
+  const c=new Date(t);if(!(S.days[iso(c)]&&S.days[iso(c)].concluido))c.setDate(c.getDate()-1);
+  while(iso(c)>=START&&S.days[iso(c)]&&S.days[iso(c)].concluido){streak++;c.setDate(c.getDate()-1)}
+  $('sStreak').textContent=streak;$('sDone').textContent=done;$('sMiss').textContent=miss;
+}
+async function refresh(){
+  const r=await api('state');S.today=r.hoje;S.days={};r.dias.forEach(x=>S.days[x.dia]=x);
+  if(!S.month){const t=new Date(S.today+'T12:00:00');S.month=new Date(t.getFullYear(),t.getMonth(),1)}
+  renderCal();stats();
+  const h=$('hist');
+  if(r.correcoes.length){h.innerHTML='';r.correcoes.slice(0,15).forEach(x=>{
+    const d=document.createElement('div');d.className='fix';
+    d.innerHTML='<div class="w"></div><div class="c"><span></span></div><div class="y"></div>';
+    d.querySelector('.w').textContent=x.errado;d.querySelector('.c span').textContent=x.correto;d.querySelector('.y').textContent=x.dia.slice(8)+'/'+x.dia.slice(5,7)+(x.motivo?' · '+x.motivo:'');h.appendChild(d)})}
+  const hoje=S.days[S.today];
+  if(hoje&&hoje.concluido&&!S.run)setStatus('<b>Aula de hoje já feita ✅</b> · quer praticar mais?');
+  else if(!S.run)setStatus('Escolha o tempo e clique para começar');
+  return r;
+}
+$('prevM').onclick=()=>{S.month=new Date(S.month.getFullYear(),S.month.getMonth()-1,1);renderCal()};
+$('nextM').onclick=()=>{S.month=new Date(S.month.getFullYear(),S.month.getMonth()+1,1);renderCal()};
+
+if(!SR)$('noSR').classList.remove('hide');
+if(!TOKEN){setStatus('Abra pelo link que chega no seu WhatsApp (ele traz a chave de acesso).');$('ask').classList.add('hide')}
+else refresh().catch(()=>setStatus('Link de acesso inválido ou sem conexão. Abra de novo pelo link do WhatsApp.'));
+</script>
+</body>
+</html>
