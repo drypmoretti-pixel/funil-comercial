@@ -19,7 +19,7 @@ header h1 b{color:var(--g)}
 .timer b{color:var(--tx)}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
 .stage{display:flex;flex-direction:column;align-items:center;padding:26px 18px 18px;gap:14px}
-#orbWrap{position:relative;width:min(300px,70vw);aspect-ratio:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#orbWrap{position:relative;width:min(380px,86vw);aspect-ratio:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
 #orb{width:100%;height:100%;display:block}
 .status{min-height:24px;font-size:15px;color:var(--mut);text-align:center}
 .status b{color:var(--g)}
@@ -69,6 +69,12 @@ h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)
 .d.fut,.d.pre{opacity:.35}
 .leg{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--mut);margin-top:10px}
 .leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+
+.lv{display:flex;gap:6px;margin-bottom:12px}.lv button{flex:1;padding:6px 4px;font-size:12px}.lv button.on{background:var(--g);color:#032013;border-color:var(--g);font-weight:700}
+.tk{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1px solid var(--line);border-radius:12px;margin-bottom:7px;background:#0a1512;cursor:pointer;font-size:14px;line-height:1.4}
+.tk i{flex:none;width:20px;height:20px;border-radius:6px;border:2px solid var(--mut);margin-top:1px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:13px;color:#031a0f}
+.tk.on{border-color:#17463a}.tk.on i{background:var(--g);border-color:var(--g)}.tk.on span{color:var(--mut);text-decoration:line-through}
+.tprog{font-size:12px;color:var(--mut);text-align:center;margin-top:4px}
 .warn{color:var(--warn);font-size:13px;text-align:center}
 .hide{display:none!important}
 </style>
@@ -134,6 +140,12 @@ h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)
       <div class="leg"><span><i style="background:var(--g2)"></i>Feita</span><span><i style="background:#3d3410"></i>Parcial</span><span><i style="background:#2a1214"></i>Perdida</span></div>
     </div>
     <div class="card">
+      <h3>Tarefas do dia</h3>
+      <div class="lv" id="lv"><button data-lv="0">Básico</button><button data-lv="1">Intermediário</button><button data-lv="2">Avançado</button></div>
+      <div id="tasks"></div>
+      <div class="tprog" id="tprog"></div>
+    </div>
+    <div class="card">
       <h3>Revisar · últimos erros</h3>
       <div id="hist"><div class="empty">Sem histórico ainda.</div></div>
     </div>
@@ -153,36 +165,63 @@ async function api(action,body={}){
 }
 
 /* ---------- estado ---------- */
-const S={meta:30,run:false,paused:false,elapsed:0,turnos:0,erros:0,msgs:[],phase:'idle',tick:null,saved:0,done:false,today:'',days:{},month:null};
+const S={meta:30,run:false,paused:false,elapsed:0,turnos:0,erros:0,msgs:[],phase:'idle',tick:null,saved:0,done:false,today:new Date(Date.now()-3*3600*1000).toISOString().slice(0,10),days:{},month:null};
 let level=0,target=0; // energia do orb
 
-/* ---------- ORB ---------- */
-const cv=$('orb'),cx=cv.getContext('2d');let t0=0;
-function drawOrb(ts){
-  const W=600,c=W/2;cx.clearRect(0,0,W,W);
-  const ph=S.phase;const tt=ts/1000;
-  const base=ph==='speaking'?0.55+0.25*Math.sin(tt*9)*Math.sin(tt*3.1):ph==='listening'?0.35+level*0.9:ph==='thinking'?0.3+0.1*Math.sin(tt*6):0.18+0.05*Math.sin(tt*1.6);
-  target=base;level+=(target-level)*0.12;const e=Math.max(0,level);
-  const R=120+e*70;
-  const g=cx.createRadialGradient(c,c,R*0.2,c,c,R*2.1);
-  g.addColorStop(0,`rgba(43,224,138,${0.35+e*0.35})`);g.addColorStop(0.5,`rgba(19,168,96,${0.12+e*0.12})`);g.addColorStop(1,'rgba(5,11,9,0)');
-  cx.fillStyle=g;cx.beginPath();cx.arc(c,c,R*2.1,0,7);cx.fill();
-  // anéis ondulantes
-  for(let k=0;k<4;k++){
-    cx.beginPath();
-    for(let a=0;a<=360;a+=3){
-      const rad=a*Math.PI/180;
-      const wob=Math.sin(rad*(3+k)+tt*(1.2+k*0.5)*(ph==='idle'?0.5:1.6))*(4+e*26)+Math.sin(rad*(5+k*2)-tt*2.1)*(2+e*12);
-      const rr=R*(0.72+k*0.09)+wob;
-      const x=c+Math.cos(rad)*rr,y=c+Math.sin(rad)*rr;
-      a?cx.lineTo(x,y):cx.moveTo(x,y);
-    }
-    cx.closePath();cx.strokeStyle=`rgba(${60+k*30},230,${150+k*20},${0.75-k*0.15})`;cx.lineWidth=2.2-k*0.3;cx.stroke();
+/* ---------- ORB (esfera de partículas 3D) ---------- */
+const cv=$('orb'),cx=cv.getContext('2d');
+const N=1100,P=[];
+for(let i=0;i<N;i++){const y=1-2*(i+.5)/N,r=Math.sqrt(1-y*y),th=i*2.399963;P.push({x:Math.cos(th)*r,y,z:Math.sin(th)*r,s:Math.random()*6.28,k:.6+Math.random()*.8})}
+const PAL={idle:[90,230,170],listening:[70,215,255],thinking:[185,140,255],speaking:[60,255,150]};
+let col=[90,230,170],spin=0;
+function ring(c,tt,rad,tilt,rot,e,rgb,n,w){
+  for(let i=0;i<n;i++){
+    const a=i/n*6.283+rot;let x=Math.cos(a)*rad,y=Math.sin(a)*rad*Math.cos(tilt),z=Math.sin(a)*rad*Math.sin(tilt);
+    const f=700/(700-z*0.8),px=c+x*f,py=c+y*f,al=Math.max(.1,(z/rad+1)/2)*(.7+e*.3);
+    cx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${al})`;cx.beginPath();cx.arc(px,py,w*f*(1+((i*7)%5===0?.9:0)),0,7);cx.fill();
   }
-  // núcleo
-  const n=cx.createRadialGradient(c-R*0.2,c-R*0.25,2,c,c,R*0.7);
-  n.addColorStop(0,'rgba(220,255,238,.98)');n.addColorStop(0.35,'rgba(43,224,138,.95)');n.addColorStop(1,'rgba(10,90,55,.85)');
-  cx.fillStyle=n;cx.beginPath();cx.arc(c,c,R*0.6+e*18,0,7);cx.fill();
+}
+function drawOrb(ts){
+  const W=600,c=W/2,tt=ts/1000,ph=S.phase;cx.clearRect(0,0,W,W);
+  const base=ph==='speaking'?0.5+0.3*Math.abs(Math.sin(tt*7.3)*Math.sin(tt*2.9+1)):ph==='listening'?0.25+level*0.8:ph==='thinking'?0.35:0.12+0.04*Math.sin(tt*1.4);
+  level+=(base-level)*0.14;const e=Math.max(0,level);
+  const tg=PAL[ph]||PAL.idle;for(let i=0;i<3;i++)col[i]+=(tg[i]-col[i])*0.06;
+  const rgb=col.map(Math.round);
+  spin+=(ph==='thinking'?0.045:ph==='idle'?0.006:0.016)+e*0.02;
+  // halo
+  cx.globalCompositeOperation='lighter';
+  const R0=150+e*40,g=cx.createRadialGradient(c,c,R0*.3,c,c,R0*2);
+  g.addColorStop(0,`rgba(${rgb},${.28+e*.3})`);g.addColorStop(.55,`rgba(${rgb},${.06+e*.07})`);g.addColorStop(1,`rgba(${rgb},0)`);
+  cx.fillStyle=g;cx.beginPath();cx.arc(c,c,R0*2,0,7);cx.fill();
+  // HUD: anel de ticks + arcos
+  cx.save();cx.translate(c,c);cx.rotate(spin*.4);
+  for(let i=0;i<120;i++){const a=i/120*6.283,l=i%10===0?16:7;cx.strokeStyle=`rgba(${rgb},${i%10===0?.7:.28})`;cx.lineWidth=i%10===0?2:1;cx.beginPath();cx.moveTo(Math.cos(a)*268,Math.sin(a)*268);cx.lineTo(Math.cos(a)*(268-l),Math.sin(a)*(268-l));cx.stroke()}
+  cx.restore();
+  cx.lineWidth=3;
+  for(let k=0;k<3;k++){const st=spin*(k%2?-1.3:1.1)+k*2.1,len=.9+e*1.4+k*.3;cx.strokeStyle=`rgba(${rgb},${.55-k*.12})`;cx.beginPath();cx.arc(c,c,238-k*14,st,st+len);cx.stroke()}
+  // partículas
+  const ay=spin,ax=.38+Math.sin(tt*.3)*.12,sy=Math.sin(ay),cyy=Math.cos(ay),sx=Math.sin(ax),cxx=Math.cos(ax);
+  const Rb=150+e*20,pts=[];
+  for(const p of P){
+    const nz=Math.sin(p.x*3.1+tt*1.7*p.k)+Math.sin(p.y*4.3-tt*2.3)+Math.sin(p.z*3.7+tt*1.1+p.s);
+    const d=1+(e*.55)*nz*.38+(ph==='thinking'?.06*Math.sin(tt*5+p.s):0);
+    let x=p.x*d,y=p.y*d,z=p.z*d;
+    let x1=x*cyy+z*sy,z1=-x*sy+z*cyy;
+    let y1=y*cxx-z1*sx,z2=y*sx+z1*cxx;
+    const f=520/(520-z2*Rb*1.1);
+    pts.push([c+x1*Rb*f,c+y1*Rb*f,z2,f]);
+  }
+  pts.sort((a,b)=>a[2]-b[2]);
+  for(const q of pts){const al=.25+(q[2]+1)/2*.75,r=(.9+(q[2]+1)*.9)*q[3]*(1+e*.5);cx.fillStyle=`rgba(${rgb},${al})`;cx.beginPath();cx.arc(q[0],q[1],r,0,7);cx.fill()}
+  // anéis orbitais de partículas
+  ring(c,tt,Rb*1.42+e*10,1.25,spin*1.6,e,rgb,150,1.5);
+  ring(c,tt,Rb*1.58,.55,-spin*1.2+1,e,rgb,170,1.4);
+  ring(c,tt,Rb*1.72,-.9,spin*.8+2,e,[255,255,255],90,1.1);
+  // núcleo brilhante
+  const n=cx.createRadialGradient(c,c,0,c,c,64+e*50);
+  n.addColorStop(0,`rgba(255,255,255,${.85})`);n.addColorStop(.25,`rgba(${rgb},.65)`);n.addColorStop(1,`rgba(${rgb},0)`);
+  cx.fillStyle=n;cx.beginPath();cx.arc(c,c,64+e*50,0,7);cx.fill();
+  cx.globalCompositeOperation='source-over';
   requestAnimationFrame(drawOrb);
 }
 requestAnimationFrame(drawOrb);
@@ -340,6 +379,54 @@ async function sendTxt(){
 $('txtBtn').onclick=sendTxt;$('txtIn').onkeydown=e=>{if(e.key==='Enter')sendTxt()};
 window.addEventListener('beforeunload',()=>{if(S.run&&S.elapsed>5){navigator.sendBeacon&&0}});
 
+
+/* ---------- tarefas do dia ---------- */
+const BANK=[
+ [ // básico
+  'Diga em voz alta 5 frases sobre sua rotina de hoje (I wake up, I work, I eat…)',
+  'Apresente-se em inglês em 1 minuto: nome, trabalho, cidade, o que faz',
+  'Aprenda 5 palavras novas e use cada uma em uma frase na aula',
+  'Descreva sua casa ou seu escritório com 6 frases (There is… / There are…)',
+  'Pratique perguntas: What / Where / When / Who / Why / How — faça 1 de cada para a IA',
+  'Fale sobre o que você comeu hoje usando passado simples (I ate, I drank…)',
+  'Peça algo em um restaurante e em um hotel (Could I have… / I would like…)',
+  'Conte sobre sua família e seus amigos em 6 frases',
+  'Fale as horas, os dias e a data de hoje em inglês, sem olhar'],
+ [ // intermediário
+  'Conte o que fez ontem usando passado simples e passado contínuo (I was working when…)',
+  'Explique seu trabalho a um estrangeiro em 2 minutos, sem usar português',
+  'Dê sua opinião sobre um assunto: I think… because… / In my opinion…',
+  'Faça 5 frases com present perfect (I have worked, I have never…)',
+  'Simule uma ligação de vendas: apresente-se, pergunte a dor do cliente e marque uma reunião',
+  'Aprenda 5 phrasal verbs (follow up, set up, figure out, bring up, carry out) e use na aula',
+  'Fale dos seus planos para a semana com will / going to / planning to',
+  'Reclame educadamente de algo e peça solução (I am afraid there is a problem…)',
+  'Resuma em inglês uma notícia ou vídeo que você viu hoje'],
+ [ // avançado
+  'Faça um pitch de 2 minutos da Demanda Infinita em inglês, como se falasse com um investidor',
+  'Negocie um preço: contra-proposta, objeção e fechamento, tudo em inglês',
+  'Debata um tema polêmico por 5 minutos defendendo um lado (AI vai substituir vendedores?)',
+  'Use 5 expressões idiomáticas nativas na conversa (hit the ground running, touch base, on the same page…)',
+  'Conte uma história pessoal com início, conflito e lição, sem pausas longas',
+  'Explique um conceito técnico (funil, CRM, IA) como se falasse com uma criança de 10 anos',
+  'Grave 3 minutos falando sem parar sobre seus objetivos de 2027 e escute o que errou',
+  'Pratique sotaque: repita 10 frases da lista de correções de ontem imitando a pronúncia certa',
+  'Conduza uma reunião de 5 minutos: abertura, agenda, decisão e próximos passos (next steps)']
+];
+let LV=0;try{LV=+localStorage.getItem('aula_lv')||0}catch(e){}
+let TK={};
+function dayIdx(){return Math.max(0,Math.round((new Date(S.today+'T12:00:00')-new Date(START+'T12:00:00'))/86400000))}
+function tasksToday(){const b=BANK[LV],d=dayIdx();return [0,1,2,3].map(i=>({id:LV+'-'+((d*4+i)%b.length),t:b[(d*4+i)%b.length]}))}
+function renderTasks(){
+  document.querySelectorAll('#lv button').forEach(b=>b.classList.toggle('on',+b.dataset.lv===LV));
+  const box=$('tasks');box.innerHTML='';let n=0;const list=tasksToday();
+  list.forEach(x=>{const d=document.createElement('div');d.className='tk'+(TK[x.id]?' on':'');if(TK[x.id])n++;
+    d.innerHTML='<i>'+(TK[x.id]?'✓':'')+'</i><span></span>';d.querySelector('span').textContent=x.t;
+    d.onclick=()=>{TK[x.id]=!TK[x.id];if(!TK[x.id])delete TK[x.id];renderTasks();api('tarefas',{tarefas:TK}).catch(()=>{})};box.appendChild(d)});
+  $('tprog').textContent=n+' de '+list.length+' tarefas feitas hoje';
+}
+document.querySelectorAll('#lv button').forEach(b=>b.onclick=()=>{LV=+b.dataset.lv;try{localStorage.setItem('aula_lv',LV)}catch(e){}renderTasks()});
+
 /* ---------- checklist ---------- */
 const pad=n=>String(n).padStart(2,'0');
 function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
@@ -373,7 +460,7 @@ function stats(){
 async function refresh(){
   const r=await api('state');S.today=r.hoje;S.days={};r.dias.forEach(x=>S.days[x.dia]=x);
   if(!S.month){const t=new Date(S.today+'T12:00:00');S.month=new Date(t.getFullYear(),t.getMonth(),1)}
-  renderCal();stats();
+  const hj=S.days[S.today];TK=(hj&&hj.tarefas)||{};renderCal();stats();renderTasks();
   const h=$('hist');
   if(r.correcoes.length){h.innerHTML='';r.correcoes.slice(0,15).forEach(x=>{
     const d=document.createElement('div');d.className='fix';
@@ -387,6 +474,7 @@ async function refresh(){
 $('prevM').onclick=()=>{S.month=new Date(S.month.getFullYear(),S.month.getMonth()-1,1);renderCal()};
 $('nextM').onclick=()=>{S.month=new Date(S.month.getFullYear(),S.month.getMonth()+1,1);renderCal()};
 
+renderTasks();
 if(!SR)$('noSR').classList.remove('hide');
 if(!TOKEN){setStatus('Abra pelo link que chega no seu WhatsApp (ele traz a chave de acesso).');$('ask').classList.add('hide')}
 else refresh().catch(()=>setStatus('Link de acesso inválido ou sem conexão. Abra de novo pelo link do WhatsApp.'));
