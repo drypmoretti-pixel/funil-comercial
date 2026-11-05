@@ -4410,7 +4410,7 @@ function metricasDoMes() {
   const agendadas = negocios.filter(n => noMes(n.data_agendada, mesRef));
   const realizadas = negocios.filter(n => noMes(n.data_realizacao, mesRef));
   const propostas = negocios.filter(n => noMes(n.data_proposta, mesRef));
-  const vendas = negocios.filter(n => noMes(n.data_venda, mesRef));
+  const vendas = negocios.filter(n => n.status === 'venda' && noMes(n.data_venda, mesRef));
   const noShow = negocios.filter(n => n.status === 'no_show' && noMes(n.data_agendada, mesRef));
   const faturamentos = negocios.filter(n => noMes(n.data_faturamento, mesRef));
   const faturamentoTotal = faturamentos.reduce((s,n) => s + Number(n.valor_faturado || 0), 0);
@@ -4557,7 +4557,7 @@ function renderDesempenhoIndividual() {
   const mesRef = fmtMesRef(mesAtual);
   const sdrs = perfis.filter(p => p.papel === 'sdr');
   const vendedores = perfis.filter(p => p.papel === 'vendedor' || p.papel === 'admin');
-  const vendasDoMes = negocios.filter(n => noMes(n.data_venda, mesRef));
+  const vendasDoMes = negocios.filter(n => n.status === 'venda' && noMes(n.data_venda, mesRef));
   const iniciais = nome => {
     const p = (nome || '?').trim().split(/\s+/);
     return ((p[0][0] || '?') + (p[1] ? p[1][0] : (p[0][1] || ''))).toUpperCase();
@@ -4587,7 +4587,7 @@ function renderDesempenhoIndividual() {
   });
 
   const cardsVendedor = vendedores.map(p => {
-    const vendas = negocios.filter(n => n.vendedor_id === p.id && noMes(n.data_venda, mesRef));
+    const vendas = negocios.filter(n => n.status === 'venda' && n.vendedor_id === p.id && noMes(n.data_venda, mesRef));
     const total = vendas.reduce((s, n) => s + valorDaVenda(n), 0);
     const ticket = vendas.length ? total / vendas.length : 0;
     const part = vendasDoMes.length ? Math.round((vendas.length / vendasDoMes.length) * 100) : null;
@@ -8896,7 +8896,7 @@ function renderInsightChecklist() {
     outcomeLabel = 'reuniões agendadas de verdade';
   } else {
     metricaChave = 'follow_ups';
-    outcomeFn = (d) => negocios.filter(n => n.vendedor_id === perfil.id && n.data_venda === d).length;
+    outcomeFn = (d) => negocios.filter(n => n.status === 'venda' && n.vendedor_id === perfil.id && n.data_venda === d).length;
     outcomeLabel = 'vendas fechadas';
   }
   const metrica = checklistMetricas.find(m => m.chave === metricaChave);
@@ -8962,7 +8962,7 @@ function renderCalendario() {
   for (let dia = 1; dia <= totalDias; dia++) {
     const dataStr = `${ano}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
     const reunioesDia = negocios.filter(n => n.data_agendada === dataStr);
-    const vendasDia = negocios.filter(n => n.data_venda === dataStr);
+    const vendasDia = negocios.filter(n => n.status === 'venda' && n.data_venda === dataStr);
 
     let pills = '';
     if (reunioesDia.length) {
@@ -9264,7 +9264,7 @@ async function renderFunilComparativo() {
   if (seq !== funilCompSeq) return;   // o usuário já trocou de mês enquanto buscava
   const agendadasAtual = negocios.filter(n => noMes(n.data_agendada, mesRef)).length;
   const realizadasAtual = negocios.filter(n => noMes(n.data_realizacao, mesRef)).length;
-  const vendasAtual = negocios.filter(n => noMes(n.data_venda, mesRef)).length;
+  const vendasAtual = negocios.filter(n => n.status === 'venda' && noMes(n.data_venda, mesRef)).length;
   const faturamentoAtual = negocios.filter(n => noMes(n.data_faturamento, mesRef)).reduce((s, n) => s + Number(n.valor_faturado || 0), 0);
 
   const valores = { leads: leadsAtual, mql: mqlAtual, agendadas: agendadasAtual, realizadas: realizadasAtual, vendas: vendasAtual };
@@ -9329,7 +9329,7 @@ function serieMensal() {
     mes: mesRef,
     agendadas: negocios.filter(n => noMes(n.data_agendada, mesRef)).length,
     realizadas: negocios.filter(n => noMes(n.data_realizacao, mesRef)).length,
-    vendas: negocios.filter(n => noMes(n.data_venda, mesRef)).length,
+    vendas: negocios.filter(n => n.status === 'venda' && noMes(n.data_venda, mesRef)).length,
     faturamento: negocios.filter(n => noMes(n.data_faturamento, mesRef)).reduce((s,n)=>s+Number(n.valor_faturado||0),0),
   }));
 }
