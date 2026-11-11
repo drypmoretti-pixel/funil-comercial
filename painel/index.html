@@ -10941,30 +10941,40 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-10-13b',
-  titulo: 'Chegou coisa nova',
+  versao: '2026-11-11',
+  titulo: 'A IA SDR assumiu a pré-venda',
   passos: [
     {
-      emoji: '📅',
-      titulo: 'Contrato com prazo sob medida',
-      texto: 'Na aba <b>Contrato</b>, passo 4, agora você marca o <b>tempo da consultoria: 3 meses ou 6 meses</b> (o padrão é 3). O prazo <b>começa na data em que o contrato é elaborado</b>, então não existe mais campo de data de início. O tempo vai sozinho pro objeto, pra vigência, pro valor e pra data de término, e a meta garantida vale até esse fim. A <b>meta garantida</b> também deixou de ser obrigatória: deixou em branco, o contrato sai <b>sem a cláusula de garantia</b> (o resumo ao lado avisa "Sem garantia"). Contratos antigos continuam como foram emitidos.',
-      aba: 'contrato', onde: 'Contrato · passo 4, Tempo da consultoria',
+      emoji: '🤖',
+      titulo: 'A IA do Igor agora é a SDR',
+      texto: 'Todo lead que baixa um material recebe mensagem no WhatsApp em <b>até 2 minutos</b>, pelo número <b>19 99792-9873</b> (seg a sex, 8h às 19h). Ela se apresenta como <b>"a IA do Igor"</b>, conversa sobre a dor que o lead marcou no formulário, qualifica e <b>marca a reunião direto na agenda</b>: <b>70% Bruno, 30% Igor</b>. Quem não responde recebe <b>5 follow-ups em 10 dias</b>, com humor.',
+      aba: 'whatsapp', onde: 'WhatsApp · caixa IA SDR',
     },
     {
-      emoji: '✍️',
-      titulo: 'O Igor já assina junto',
-      texto: 'Todo contrato enviado pelo botão <b>Enviar pra assinar (Autentique)</b> agora já leva o Igor como <b>segundo signatário</b> (CONTRATADA), ao lado do cliente. Ninguém precisa adicionar nada: o convite chega pros dois ao mesmo tempo.',
-      aba: 'contrato', onde: 'Contrato · botão Enviar pra assinar',
+      emoji: '🗂️',
+      titulo: 'Tudo fica registrado no card',
+      texto: 'A IA anda com o card sozinha no funil <b>[SDR] - Lead Magnet</b>: <b>Mensagem enviada → Contato realizado → Follow Up</b> (ou <b>MQL Frio</b>, se o lead some ou pede pra parar). Cada ação vira uma linha <b>"IA SDR: ..."</b> no histórico, e a <b>Anotação SDR</b> traz o resumo da conversa (como ele resolve hoje, porte, interesse, objeções, próximo passo) e a linha do tempo do que a IA fez.',
+      aba: 'crm', onde: 'CRM · card do lead · Anotação SDR e Histórico',
     },
     {
-      emoji: '🔁',
-      titulo: 'Duplicar e editar contrato',
-      texto: 'Na lista <b>Últimos contratos gerados</b>, cada contrato agora tem <b>Duplicar</b> e <b>Editar</b>. <b>Duplicar</b> joga os dados dele no formulário pra você montar um contrato novo sem digitar tudo de novo (o prazo começa de novo na data de hoje). <b>Editar</b> corrige aquele contrato mesmo: o botão <b>Salvar alterações</b> atualiza o registro em vez de criar outro. Se ele já foi enviado pro Autentique, o painel avisa que o documento do cliente não muda.',
-      aba: 'contrato', onde: 'Contrato · Últimos contratos gerados',
+      emoji: '🤝',
+      titulo: 'Reunião marcada: a partir daí é do closer',
+      texto: 'Quando a IA agenda, o card vai pro funil <b>[Closer]</b> já com o <b>closer como responsável</b> (Bruno ou Igor) e a reunião aparece no Dashboard. Daí pra frente o processo é <b>humano</b>: reunião, proposta, fechamento. A IA só manda o <b>lembrete da véspera e de 1h antes</b>, e, se você marcar <b>no-show</b> no painel, ela chama o lead pra remarcar.',
+      aba: 'crm', onde: 'CRM · funil [Closer]',
+    },
+    {
+      emoji: '✋',
+      titulo: 'Quer assumir uma conversa? É só responder',
+      texto: 'Respondeu um lead pelo número da IA (no painel ou no celular)? <b>Ela para naquela conversa</b> na hora. Ela também passa a bola sozinha quando o lead pede pra falar com alguém ou quer negociar: aí chega aviso no <b>Discord</b> e uma <b>tarefa pra hoje</b> no card, que aparece no sino.',
+      aba: 'whatsapp', onde: 'WhatsApp · caixa IA SDR',
+    },
+    {
+      emoji: '📊',
+      titulo: 'Resumo do dia às 19h no Discord',
+      texto: 'Todo dia útil às 19h a IA manda no Discord: quantos leads contatou, quantos follow-ups fez, quem respondeu, quem não respondeu, <b>reuniões marcadas</b> (com nome e closer) e <b>reagendadas</b>.',
     },
   ],
 };
-
 
 
 let tourPasso = 0;
