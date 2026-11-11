@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Seu material | Método Demanda Infinita®</title>
+<!--
+  Página de captura dos leads do Instagram (11/11/2026).
+  A DM automática (Edge Function instagram-dm) manda: /ig/?m=<pasta-do-material>&p=<PALAVRA>&u=<@ do instagram>
+  O formulário do Tally "Material do Instagram" (Nql0BQ) roda embutido e recebe origem/material/palavra/ig como campos ocultos.
+  Quando a pessoa envia, o Tally avisa esta página (Tally.FormSubmitted) e ela abre o material.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+  :root{ --green:#008E43; --green-dark:#0B3D26; --bg:#F8F7F4; --text:#111; --gray:#6B6B6B; --line:#D8D5CE; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; font-size:17px; line-height:1.55;}
+  .wrap{max-width:620px; margin:0 auto; padding:32px 16px 60px;}
+  .top{text-align:center;}
+  .top img{width:64px; height:64px;}
+  .kicker{font-size:13px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--green); margin-top:14px;}
+  h1{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:28px; line-height:1.2; margin:8px 0 6px;}
+  .sub{color:var(--gray); margin:0 auto; max-width:460px;}
+  .form{background:#fff; border:1px solid var(--line); border-radius:16px; padding:8px 18px 4px; margin-top:24px;}
+  .pronto{display:none; text-align:center; background:#fff; border:1px solid var(--line); border-radius:16px; padding:32px 20px; margin-top:24px;}
+  .pronto h2{font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:24px; margin:0 0 8px;}
+  .btn{display:inline-block; margin-top:16px; background:var(--green); color:#fff; text-decoration:none; font-weight:600; padding:14px 26px; border-radius:999px;}
+  .rodape{text-align:center; color:var(--gray); font-size:13px; margin-top:28px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <img src="/logo-demanda-infinita.png" alt="Demanda Infinita">
+    <div class="kicker" id="kicker">Material do Instagram</div>
+    <h1>Falta só um passo</h1>
+    <p class="sub">Preencha seus dados abaixo e o material abre na hora.</p>
+  </div>
+
+  <div class="form" id="caixa">
+    <iframe id="tally" data-tally-src="" loading="eager" width="100%" height="520" frameborder="0" marginheight="0" marginwidth="0" title="Material do Instagram"></iframe>
+  </div>
+
+  <div class="pronto" id="pronto">
+    <h2>Pronto! 🚀</h2>
+    <p>Abrindo o seu material…</p>
+    <a class="btn" id="abrir" href="/">Abrir o material</a>
+  </div>
+
+  <p class="rodape">@igorr_miguel · Método Demanda Infinita®</p>
+</div>
+
+<script>
+  var q = new URLSearchParams(location.search);
+  var limpa = function (v, re) { v = (v || '').trim(); return re.test(v) ? v : ''; };
+  var material = limpa(q.get('m'), /^[a-z0-9-]{1,60}$/);
+  var palavra = limpa(q.get('p'), /^[\p{L}0-9 ]{1,30}$/u).toUpperCase();
+  var ig = limpa((q.get('u') || '').replace(/^@/, ''), /^[A-Za-z0-9._]{1,30}$/);
+  var destino = material ? '/' + material + '/' : '/';
+
+  if (palavra) document.getElementById('kicker').textContent = 'Você comentou ' + palavra;
+  document.getElementById('abrir').href = destino;
+
+  var p = new URLSearchParams({ alignLeft: '1', hideTitle: '1', transparentBackground: '1', dynamicHeight: '1',
+                                origem: 'instagram', material: material, palavra: palavra, ig: ig });
+  document.getElementById('tally').setAttribute('data-tally-src', 'https://tally.so/embed/Nql0BQ?' + p.toString());
+
+  var aberto = false;
+  function abrir() {
+    if (aberto) return; aberto = true;
+    document.getElementById('caixa').style.display = 'none';
+    document.getElementById('pronto').style.display = 'block';
+    setTimeout(function () { location.href = destino; }, 1200);
+  }
+  window.addEventListener('message', function (e) {
+    if (e.origin !== 'https://tally.so') return;
+    var d = e.data;
+    if (typeof d === 'string') { try { d = JSON.parse(d); } catch (_) { return; } }
+    if (d && d.event === 'Tally.FormSubmitted') abrir();
+  });
+</script>
+<script src="https://tally.so/widgets/embed.js" onload="Tally.loadEmbeds()" async></script>
+<noscript><p style="text-align:center"><a href="https://tally.so/r/Nql0BQ?origem=instagram">Abrir o formulário</a></p></noscript>
+</body>
+</html>
