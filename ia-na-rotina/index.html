@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IA dentro da rotina: o modelo de 1 página | Método Demanda Infinita®</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:18px;line-height:1.6}
+h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;margin:0 0 12px}.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
+.cover{padding:48px 0 10px;text-align:center}.cover img{width:76px;height:76px;margin-bottom:18px}
+.kicker{font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase}
+.cover h1{font-size:42px;font-weight:800;margin-top:10px;line-height:1.15}.sub{font-size:19px;color:var(--gray);max-width:600px;margin:14px auto 0}
+.badge{display:inline-block;margin-top:18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px}
+h2.t{font-size:25px;font-weight:800;margin-top:52px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+h2.t small{display:block;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;font-size:15px}
+.flow div b{display:block;font:800 17px 'Plus Jakarta Sans',sans-serif;margin:4px 0}.flow div i{font:600 12px 'JetBrains Mono',monospace;color:var(--green);font-style:normal}
+.flow div:not(:last-child):after{content:"→";position:absolute;right:-14px;top:42%;color:var(--green);font-weight:800}
+@media(max-width:640px){.flow{grid-template-columns:1fr 1fr}.cover h1{font-size:32px}}
+.prompt{background:#111;color:#e9f5ec;border-radius:16px;margin:16px 0;overflow:hidden}
+.prompt .h{background:var(--green);color:#fff;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.4px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.prompt button{background:#fff;color:var(--green);border:0;border-radius:8px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px}
+.prompt pre{margin:0;padding:18px;white-space:pre-wrap;font:400 15px/1.55 'JetBrains Mono',monospace}
+.ex{background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;margin:16px 0;font-size:16px}
+.ex b{font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.2px;color:var(--green);display:block;margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.col{border-radius:14px;padding:16px 18px;font-size:16px}.col.no{background:#fbeeea;border:1px solid #f0c9be}.col.si{background:#e9f6ee;border:1px solid #b5e0c4}
+.col h4{margin:0 0 8px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.4px}.col.no h4{color:#b5483a}.col.si h4{color:var(--green)}
+.col ul{margin:0;padding-left:18px}.aviso{font-size:14px;color:var(--gray);margin-top:30px}
+.cta{margin-top:48px;background:#fff;border:2px solid var(--green);border-radius:18px;padding:24px;text-align:center}
+</style>
+
+</head><body>
+<div class="wrap">
+<div class="cover"><img src="logo-demanda-infinita.png" alt=""><div class="kicker">Método Demanda Infinita®</div>
+<h1>IA dentro da rotina: o modelo de 1 página</h1>
+<p class="sub">Pra parar de pagar IA "pra testar" e começar a medir resultado. O teste das 3 perguntas, o modelo pronto pra preencher e 10 tarefas pra começar essa semana.</p>
+<div class="badge">Modelo · 10 minutos</div></div>
+
+<h2 class="t">Por que isso importa</h2>
+<p>Uma pesquisa da HFS Research com a Rackspace (12/11/2026, 502 líderes de IA de empresas grandes) mostrou que só <b>33%</b> bateram a meta do maior projeto de IA. No grupo que espalhou a IA em várias áreas, sem processo: <b>28%</b>. No grupo em que a IA já faz parte da rotina de trabalho: <b>56%</b>.</p>
+<p>O problema não é a IA não dar resultado. É IA solta, fora da rotina.</p>
+
+<h2 class="t">O teste das 3 perguntas</h2>
+<div class="flow">
+<div><i>PERGUNTA 1</i><b>Qual tarefa?</b>Uma tarefa que já se repete toda semana. Uma só.</div>
+<div><i>PERGUNTA 2</i><b>Quem é o dono?</b>Uma pessoa com nome. Ela usa, confere e ajusta.</div>
+<div><i>PERGUNTA 3</i><b>Qual número?</b>Tempo, resposta ou venda. Anote o antes, hoje.</div>
+</div>
+<p>Sem as 3 respostas, ainda é teste. Com as 3, virou rotina.</p>
+
+<h2 class="t">O modelo de 1 página (copie e preencha)</h2>
+<div class="prompt"><div class="h"><span>IA NA ROTINA · 1 PÁGINA</span><button onclick="cp(this)">Copiar</button></div><pre>TAREFA: [o que a IA vai fazer, toda semana]
+QUANDO: [dia e momento, ex.: toda segunda, 9h / a cada proposta]
+DONO: [nome da pessoa]
+FERRAMENTA: [ChatGPT / Claude / Gemini, sempre na conta da empresa]
+O PEDIDO PRONTO: [o texto que a pessoa cola na IA, sempre o mesmo]
+QUEM CONFERE ANTES DE SAIR: [nome]
+NÚMERO ANTES (hoje): [ex.: 3 horas por proposta]
+NÚMERO DEPOIS (em 30 dias): [anotar]
+DECISÃO EM 30 DIAS: [manter / ajustar / parar]</pre></div>
+<div class="ex"><b>EXEMPLO</b>Tarefa: primeira versão da proposta comercial. Quando: logo depois de cada reunião. Dono: a Ana, do comercial. Número antes: 2 dias pra proposta sair. Em 30 dias, a Ana olha de novo e decide se mantém.</div>
+
+<h2 class="t">10 tarefas prontas pra começar</h2>
+<div class="ex"><b>01 · Comercial / atendimento</b>Responder as perguntas repetidas do WhatsApp<br><span style="color:var(--gray);font-size:15px">Número pra olhar: tempo médio até a 1ª resposta</span></div>
+<div class="ex"><b>02 · Quem fez a reunião</b>Resumo da reunião com o cliente + próximos passos<br><span style="color:var(--gray);font-size:15px">Número pra olhar: reuniões com resumo enviado no mesmo dia</span></div>
+<div class="ex"><b>03 · Comercial</b>Primeira versão da proposta comercial<br><span style="color:var(--gray);font-size:15px">Número pra olhar: horas pra mandar a proposta</span></div>
+<div class="ex"><b>04 · Comercial</b>Follow-up de quem não respondeu<br><span style="color:var(--gray);font-size:15px">Número pra olhar: % de propostas com retorno</span></div>
+<div class="ex"><b>05 · Marketing</b>Post da semana a partir de uma conversa real<br><span style="color:var(--gray);font-size:15px">Número pra olhar: posts publicados por semana</span></div>
+<div class="ex"><b>06 · Financeiro</b>Conferir o contas a pagar e receber da semana<br><span style="color:var(--gray);font-size:15px">Número pra olhar: erros/atrasos no mês</span></div>
+<div class="ex"><b>07 · Marketing / atendimento</b>Responder avaliações e comentários<br><span style="color:var(--gray);font-size:15px">Número pra olhar: avaliações respondidas em 24 h</span></div>
+<div class="ex"><b>08 · Gestor da área</b>Roteiro de treinamento de um processo<br><span style="color:var(--gray);font-size:15px">Número pra olhar: dias pra pessoa nova rodar sozinha</span></div>
+<div class="ex"><b>09 · Atendimento</b>Organizar as reclamações do mês por motivo<br><span style="color:var(--gray);font-size:15px">Número pra olhar: top 3 motivos, mês a mês</span></div>
+<div class="ex"><b>10 · Dono / gestor</b>Relatório do mês em 1 página<br><span style="color:var(--gray);font-size:15px">Número pra olhar: horas gastas no relatório</span></div>
+
+<div class="two" style="margin-top:20px">
+<div class="col no"><h4>NÃO FAÇA</h4><ul><li>Ligar IA em 5 áreas ao mesmo tempo.</li><li>Deixar cada um usar do seu jeito, na conta pessoal.</li><li>Julgar a IA sem ter anotado o número de antes.</li></ul></div>
+<div class="col si"><h4>FAÇA</h4><ul><li>Comece por 1 tarefa e 1 dono.</li><li>Use sempre o mesmo pedido pronto.</li><li>Olhe o número em 30 dias e decida.</li></ul></div>
+</div>
+
+<div class="cta"><b style="font-family:'Plus Jakarta Sans';font-size:20px">Quer captar clientes qualificados sem investir em tráfego pago?</b><p style="margin:8px 0 0;color:var(--gray);font-size:16px">Conheça o Método Demanda Infinita®: <a href="https://demandainfinita.com" style="color:var(--green)">demandainfinita.com</a></p></div>
+<p style="font-size:13px;color:var(--gray);margin-top:30px">Fontes: HFS Research em colaboração com a Rackspace, "Run Your AI as One, or Keep Paying for Parts That Never Add Up" (comunicado GlobeNewswire de 12/11/2026; 502 líderes de IA de empresas com receita acima de US$ 100 milhões, agosto e setembro de 2026); MarketScale (15/11/2026). Os números comparam grupos diferentes de empresas; o próprio comunicado diz que eles não provam causa.</p>
+</div>
+<script>function cp(b){navigator.clipboard.writeText(b.closest('.prompt').querySelector('pre').innerText).then(()=>{b.textContent='Copiado!';setTimeout(()=>b.textContent='Copiar',1500)})}</script>
+</body></html>
