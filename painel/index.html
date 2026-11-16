@@ -2257,6 +2257,8 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 .ct-modo { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; margin-bottom: 14px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--good); background: var(--surface-2); font-size: .86rem; line-height: 1.4; }
 .ct-modo[hidden], .ct-acoes [hidden] { display: none !important; }
 /* aba Plano de 30 dias */
+.ct-tipo.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .ct-tipo.tres { grid-template-columns: 1fr; } }
 #form-plano30.ct-form { display: flex; flex-direction: column; gap: 16px; margin: 0; }
 .ct-campos[hidden], #tab-plano30 [hidden] { display: none !important; }
 .p30-chip { display: inline-flex; align-items: center; gap: 7px; font-size: .72rem; font-weight: 700; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted); white-space: nowrap; }
@@ -3683,15 +3685,27 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 
           <div class="ct-grupo">
             <div class="ct-grupo-cab"><span class="ct-num">2</span><span class="ct-tit">O que foi dito na call<small>É daqui que o plano sai</small></span></div>
-            <div class="ct-tipo" role="radiogroup" aria-label="Como informar a call" style="margin-bottom:14px;">
+            <div class="ct-tipo tres" role="radiogroup" aria-label="Como informar a call" style="margin-bottom:14px;">
               <label class="ct-tipo-op"><input type="radio" name="p30-modo" value="notas" checked onchange="p30AplicarModo()"><span><b>Colar anotações</b><small>Suas anotações ou a transcrição da reunião</small></span></label>
               <label class="ct-tipo-op"><input type="radio" name="p30-modo" value="gravacao" onchange="p30AplicarModo()"><span><b>Enviar a gravação</b><small>Vídeo ou áudio da reunião; o sistema transcreve sozinho</small></span></label>
+              <label class="ct-tipo-op"><input type="radio" name="p30-modo" value="link" onchange="p30AplicarModo()"><span><b>Link pro lead preencher</b><small>Sem informações da call? O próprio lead responde e o plano sai sozinho</small></span></label>
             </div>
             <div class="ct-campos" id="p30-bloco-notas">
               <div class="full">
                 <label>Anotações ou transcrição</label>
                 <textarea id="p30-notas" rows="12" placeholder="O que ele vende, pra quem vende, qual a dor do cliente dele, o que quer alcançar em 30 dias, números e fatos que ele citou, como ele fala..." style="min-height:240px;resize:vertical;"></textarea>
                 <small class="ct-ajuda">Pode colar a transcrição do Meet inteira. O que não foi dito na call não entra no plano: o que faltar sai marcado como “a confirmar”.</small>
+              </div>
+            </div>
+            <div class="ct-campos" id="p30-bloco-link" hidden>
+              <div class="full ct-regra">
+                <b>Como funciona o link</b>
+                <ul>
+                  <li>Você só precisa do nome do lead (e do que mais souber, que já vem preenchido pra ele).</li>
+                  <li>O sistema cria um link único e secreto, válido por 14 dias, que você copia e manda.</li>
+                  <li>O lead responde algumas perguntas sobre o negócio dele e o plano é gerado na hora.</li>
+                  <li>O PDF aparece na lista abaixo e você confere antes de mandar. Nada vai pro lead sozinho.</li>
+                </ul>
               </div>
             </div>
             <div class="ct-campos" id="p30-bloco-gravacao" hidden>
@@ -3704,12 +3718,16 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
               </div>
             </div>
           </div>
+          <div class="ct-modo" id="p30-link-pronto" hidden style="flex-direction:column;align-items:stretch;">
+            <div><b>Link criado e copiado</b><span>Mande para o lead. Vale por 14 dias e só pode ser usado uma vez.</span></div>
+            <div style="display:flex;gap:8px;margin-top:8px;"><input type="text" id="p30-link-url" readonly style="flex:1;min-width:0;"><button type="button" class="btn btn-secondary" onclick="p30CopiarCampo()">Copiar</button></div>
+          </div>
         </form>
 
         <aside class="lanc ct-resumo" aria-label="Como funciona">
           <span class="lanc-selo">Como funciona</span>
           <div class="ct-r-cliente" style="font-size:1rem;">Você preenche, o Claude escreve, você confere e manda</div>
-          <div class="ct-r-linha"><span>1</span><b>Você envia o pedido</b></div>
+          <div class="ct-r-linha"><span>1</span><b>Você envia o pedido (ou o lead preenche)</b></div>
           <div class="ct-r-linha"><span>2</span><b>Transcrição (se for gravação)</b></div>
           <div class="ct-r-linha"><span>3</span><b>Claude escreve o plano</b></div>
           <div class="ct-r-linha"><span>4</span><b>PDF aparece na lista abaixo</b></div>
@@ -11235,13 +11253,13 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-11-16',
-  titulo: 'Agora o plano de 30 dias sai em minutos',
+  versao: '2026-11-16b',
+  titulo: 'Plano de 30 dias: agora o lead pode preencher sozinho',
   passos: [
     {
       emoji: '🚩',
       titulo: 'Plano de 30 dias do lead, em PDF',
-      texto: 'Na aba <b>Plano de 30 dias</b> você coloca o que o lead disse na call, em anotações ou na gravação da reunião, e o Claude monta o plano dele: <b>posicionamento do perfil, banner e 12 ideias de conteúdo</b>, em PDF com a logo e a identidade da Demanda Infinita. Leva de 3 a 15 minutos, o PDF aparece na lista da própria aba e o que o lead não falou fica marcado como “a confirmar”. Leia antes de mandar.',
+      texto: 'Na aba <b>Plano de 30 dias</b> você coloca o que o lead disse na call, em anotações ou na gravação da reunião, e o Claude monta o plano dele: <b>posicionamento do perfil, banner e 12 ideias de conteúdo</b>, em PDF com a logo e a identidade da Demanda Infinita. Leva de 3 a 15 minutos, o PDF aparece na lista da própria aba e o que o lead não falou fica marcado como “a confirmar”. Leia antes de mandar. <b>Novo:</b> sem informações da call? Escolha <b>Link pro lead preencher</b>, copie o link e mande: o lead responde algumas perguntas e o plano sai sozinho.',
       aba: 'plano30', onde: 'Plano de 30 dias · bandeira na barra lateral',
     },
   ],
@@ -13909,14 +13927,28 @@ const P30_BUCKET = 'com-planos';
 const P30_PARTE = 45 * 1024 * 1024;
 const P30_MAX = 900 * 1024 * 1024;
 const P30_ANDANDO = ['pendente', 'transcrevendo', 'gerando'];
-const P30_STATUS = { pendente: 'Na fila', transcrevendo: 'Transcrevendo', gerando: 'Escrevendo o plano', pronto: 'Pronto', erro: 'Erro' };
+const P30_LINK_BASE = 'https://demandainfinita.com/meu-plano/?t=';
+const P30_STATUS = { aguardando: 'Aguardando o lead', pendente: 'Na fila', transcrevendo: 'Transcrevendo', gerando: 'Escrevendo o plano', pronto: 'Pronto', erro: 'Erro' };
 let p30Cache = [], p30Timer = null, p30Enviando = false;
 
 function p30Modo() { const r = document.querySelector('input[name="p30-modo"]:checked'); return r ? r.value : 'notas'; }
 function p30AplicarModo() {
-  const g = p30Modo() === 'gravacao';
-  document.getElementById('p30-bloco-notas').hidden = g;
-  document.getElementById('p30-bloco-gravacao').hidden = !g;
+  const m = p30Modo();
+  document.getElementById('p30-bloco-notas').hidden = m !== 'notas';
+  document.getElementById('p30-bloco-gravacao').hidden = m !== 'gravacao';
+  document.getElementById('p30-bloco-link').hidden = m !== 'link';
+  document.getElementById('p30-btn').textContent = m === 'link' ? 'Gerar link para o lead' : 'Gerar plano de 30 dias';
+  document.getElementById('p30-link-pronto').hidden = true;
+}
+function p30NovoToken() { const b = new Uint8Array(16); crypto.getRandomValues(b); return Array.from(b, x => x.toString(16).padStart(2, '0')).join(''); }
+function p30Copiar(texto) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(texto).then(() => true, () => false);
+  const t = document.createElement('textarea'); t.value = texto; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} t.remove(); return Promise.resolve(ok);
+}
+async function p30CopiarCampo() {
+  const el = document.getElementById('p30-link-url'); el.select();
+  if (!(await p30Copiar(el.value))) alert('Não consegui copiar sozinho. O link está selecionado: use Ctrl+C.');
 }
 function p30EscolheuArquivo() {
   const f = document.getElementById('p30-arquivo').files[0];
@@ -13971,11 +14003,16 @@ async function p30Enviar(ev) {
   const linha = {
     lead_nome: nome, empresa: v('p30-empresa') || null, cargo: v('p30-cargo') || null, contato: v('p30-contato') || null,
     linkedin_url: v('p30-linkedin') || null, site: v('p30-site') || null, pais: document.getElementById('p30-pais').value,
-    funcionario: document.getElementById('p30-func').checked, origem: modo, criado_por_nome: currentPerfil ? currentPerfil.nome : 'Igor',
+    funcionario: document.getElementById('p30-func').checked, origem: modo === 'link' ? 'formulario' : modo, criado_por_nome: currentPerfil ? currentPerfil.nome : 'Igor',
   };
   const enviadas = [];
   try {
-    if (modo === 'notas') linha.notas = notas;
+    let linkNovo = null;
+    if (modo === 'link') {
+      linha.token = p30NovoToken(); linha.status = 'aguardando';
+      linha.link_expira_em = new Date(Date.now() + 14 * 86400000).toISOString();
+      linkNovo = P30_LINK_BASE + linha.token;
+    } else if (modo === 'notas') linha.notas = notas;
     else {
       const sess = (await sb.auth.getSession()).data.session;
       if (!sess) throw new Error('sua sessão expirou, entre de novo');
@@ -14002,13 +14039,18 @@ async function p30Enviar(ev) {
     if (error) throw new Error(error.message);
     document.getElementById('form-plano30').reset();
     p30AplicarModo(); p30EscolheuArquivo();
+    if (linkNovo) {
+      document.getElementById('p30-link-url').value = linkNovo;
+      document.getElementById('p30-link-pronto').hidden = false;
+      p30Copiar(linkNovo);
+    }
     document.getElementById('p30-prog').hidden = true; document.getElementById('p30-prog-txt').hidden = true;
     await p30Carregar();
   } catch (err) {
     if (enviadas.length) { try { await sb.storage.from(P30_BUCKET).remove(enviadas); } catch (e) {} }
     alert('Não consegui enviar o pedido: ' + err.message);
   } finally {
-    p30Enviando = false; btn.disabled = false; btn.textContent = 'Gerar plano de 30 dias';
+    p30Enviando = false; btn.disabled = false; btn.textContent = p30Modo() === 'link' ? 'Gerar link para o lead' : 'Gerar plano de 30 dias';
   }
   return false;
 }
@@ -14020,37 +14062,40 @@ async function p30Carregar() {
   const wrap = document.getElementById('p30-lista');
   if (!wrap) return;
   const { data, error } = await sb.from('com_planos30')
-    .select('id, created_at, lead_nome, empresa, criado_por_nome, origem, status, etapa_msg, erro, pdf_path, tentativas, a_confirmar:conteudo->a_confirmar')
+    .select('id, created_at, lead_nome, empresa, criado_por_nome, origem, status, etapa_msg, erro, pdf_path, tentativas, token, link_expira_em, a_confirmar:conteudo->a_confirmar')
     .order('id', { ascending: false }).limit(30);
   if (error) { wrap.innerHTML = '<div class="empty">Não consegui carregar a lista.</div>'; return; }
   p30Cache = data || [];
   p30Desenhar();
   const aba = document.getElementById('tab-plano30');
-  if (aba && aba.classList.contains('active') && p30Cache.some(p => P30_ANDANDO.includes(p.status))) p30Timer = setTimeout(p30Carregar, 6000);
+  if (aba && aba.classList.contains('active') && p30Cache.some(p => P30_ANDANDO.includes(p.status) || p.status === 'aguardando')) p30Timer = setTimeout(p30Carregar, 6000);
 }
 
 function p30Desenhar() {
   const wrap = document.getElementById('p30-lista');
   const resumo = document.getElementById('p30-resumo');
-  const prontos = p30Cache.filter(p => p.status === 'pronto').length, fila = p30Cache.filter(p => P30_ANDANDO.includes(p.status)).length;
-  if (resumo) resumo.textContent = p30Cache.length ? `${prontos} pronto(s)${fila ? ` · ${fila} em andamento` : ''}` : '';
+  const prontos = p30Cache.filter(p => p.status === 'pronto').length, fila = p30Cache.filter(p => P30_ANDANDO.includes(p.status)).length, esperando = p30Cache.filter(p => p.status === 'aguardando').length;
+  if (resumo) resumo.textContent = p30Cache.length ? `${prontos} pronto(s)${fila ? ` · ${fila} em andamento` : ''}${esperando ? ` · ${esperando} aguardando o lead` : ''}` : '';
   if (!p30Cache.length) { wrap.innerHTML = '<div class="empty">Nenhum plano pedido ainda.</div>'; return; }
   wrap.innerHTML = p30Cache.map(p => {
     const andando = P30_ANDANDO.includes(p.status);
     const quando = new Date(p.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-    const meta = [p.empresa, p.origem === 'gravacao' ? 'gravação' : 'anotações', p.criado_por_nome ? 'por ' + p.criado_por_nome : '', quando].filter(Boolean).join(' · ');
+    const meta = [p.empresa, { gravacao: 'gravação', formulario: 'formulário do lead' }[p.origem] || 'anotações', p.criado_por_nome ? 'por ' + p.criado_por_nome : '', quando].filter(Boolean).join(' · ');
     const pend = Array.isArray(p.a_confirmar) ? p.a_confirmar.filter(Boolean) : [];
-    const rotulo = andando && p.etapa_msg ? p.etapa_msg : P30_STATUS[p.status] || p.status;
+    const expirado = p.status === 'aguardando' && p.link_expira_em && new Date(p.link_expira_em) < new Date();
+    const rotulo = expirado ? 'Link expirado' : andando && p.etapa_msg ? p.etapa_msg : P30_STATUS[p.status] || p.status;
     const acoes = [
       p.status === 'pronto' ? `<button class="add-toggle" onclick="p30Baixar(${p.id})">Baixar PDF</button>` : '',
       p.status === 'erro' ? `<button class="add-toggle" onclick="p30Refazer(${p.id})">Tentar de novo</button>` : '',
+      p.status === 'aguardando' && !expirado ? `<button class="add-toggle" onclick="p30CopiarLink(${p.id})">Copiar link</button>` : '',
+      expirado ? `<button class="add-toggle" onclick="p30RenovarLink(${p.id})">Gerar novo link</button>` : '',
       `<button class="add-toggle" onclick="p30Excluir(${p.id})">Excluir</button>`,
     ].join('');
     return `<div class="p30-linha">
       <div class="ct-hist-item">
         <div class="tl-avatar">${wzEsc(iniciaisDe(p.lead_nome))}</div>
         <div class="ct-hist-nome"><b title="${wzEsc(p.lead_nome)}">${wzEsc(p.lead_nome)}</b><span>${wzEsc(meta)}</span></div>
-        <span class="p30-chip ${andando ? 'andando' : p.status}">${wzEsc(rotulo)}</span>
+        <span class="p30-chip ${andando ? 'andando' : expirado ? 'erro' : p.status}">${wzEsc(rotulo)}</span>
         <div class="ct-hist-acoes">${acoes}</div>
       </div>
       ${p.status === 'erro' && p.erro ? `<div class="p30-erro">${wzEsc(p.erro)}</div>` : ''}
@@ -14065,6 +14110,18 @@ async function p30Baixar(id) {
   const { data, error } = await sb.storage.from(P30_BUCKET).createSignedUrl(p.pdf_path, 300, { download: 'Plano-30-dias-' + p30Slug(p.lead_nome) + '.pdf' });
   if (error || !data) { alert('Não consegui abrir o PDF: ' + (error ? error.message : 'sem link')); return; }
   const a = document.createElement('a'); a.href = data.signedUrl; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
+}
+async function p30CopiarLink(id) {
+  const p = p30Cache.find(x => x.id === id);
+  if (!p || !p.token) return;
+  const url = P30_LINK_BASE + p.token;
+  if (await p30Copiar(url)) alert('Link copiado. Mande para ' + p.lead_nome + '.'); else prompt('Copie o link:', url);
+}
+async function p30RenovarLink(id) {
+  const token = p30NovoToken();
+  const { error } = await sb.from('com_planos30').update({ token, link_expira_em: new Date(Date.now() + 14 * 86400000).toISOString(), atualizado_em: new Date().toISOString() }).eq('id', id).eq('status', 'aguardando');
+  if (error) { alert('Não consegui renovar: ' + error.message); return; }
+  await p30Carregar(); p30CopiarLink(id);
 }
 async function p30Refazer(id) {
   const { error } = await sb.from('com_planos30').update({ status: 'pendente', tentativas: 0, erro: null, atualizado_em: new Date().toISOString() }).eq('id', id);
