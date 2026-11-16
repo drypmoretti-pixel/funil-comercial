@@ -2256,6 +2256,25 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 .ct-r-leg { position: relative; margin: -8px 0 14px; font-size: .74rem; color: #b6c9bb; }
 .ct-modo { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; margin-bottom: 14px; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--good); background: var(--surface-2); font-size: .86rem; line-height: 1.4; }
 .ct-modo[hidden], .ct-acoes [hidden] { display: none !important; }
+/* aba Plano de 30 dias */
+#form-plano30.ct-form { display: flex; flex-direction: column; gap: 16px; margin: 0; }
+.ct-campos[hidden], #tab-plano30 [hidden] { display: none !important; }
+.p30-chip { display: inline-flex; align-items: center; gap: 7px; font-size: .72rem; font-weight: 700; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+.p30-chip.pronto { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, transparent); background: color-mix(in srgb, var(--good) 10%, transparent); }
+.p30-chip.erro { color: var(--critical); border-color: color-mix(in srgb, var(--critical) 40%, transparent); background: color-mix(in srgb, var(--critical) 9%, transparent); }
+.p30-chip.andando::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: p30pulse 1.2s ease-in-out infinite; }
+@keyframes p30pulse { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .p30-chip.andando::before { animation: none; } }
+.p30-linha { border-bottom: 1px solid var(--grid); }
+.p30-linha:last-child { border-bottom: none; }
+.p30-linha .ct-hist-item { border-bottom: none; grid-template-columns: auto minmax(0, 1fr) auto auto; }
+.p30-det { margin: -2px 0 12px 50px; font-size: .78rem; color: var(--muted); line-height: 1.45; }
+.p30-det summary { cursor: pointer; font-weight: 600; color: var(--text-primary); }
+.p30-det ul { margin: 6px 0 0; padding-left: 18px; }
+.p30-erro { margin: -2px 0 12px 50px; font-size: .78rem; color: var(--critical); }
+.p30-barra { height: 6px; background: var(--field-bg); border-radius: 99px; overflow: hidden; }
+.p30-barra i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width .15s linear; }
+@media (max-width: 640px) { .p30-linha .ct-hist-item { grid-template-columns: auto minmax(0, 1fr); } .p30-linha .ct-hist-acoes, .p30-linha .p30-chip { grid-column: 1 / -1; justify-self: start; } .p30-det, .p30-erro { margin-left: 0; } }
 .ct-modo b { display: block; }
 .ct-modo span { color: var(--muted); }
 @media (max-width: 640px) { .ct-hist-item { grid-template-columns: auto minmax(0, 1fr) auto; } .ct-hist-valor { grid-column: 2; } .ct-hist-acoes { grid-column: 1 / -1; justify-content: flex-start; } }
@@ -2486,6 +2505,7 @@ form.form-grid.form-collapse:not(.open) { display: none; }
         <button data-tab="calendario" title="Calendário"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
         <button data-tab="formulario" title="Formulário"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></button>
         <button data-tab="contrato" title="Contrato"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
+        <button data-tab="plano30" title="Plano de 30 dias"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></button>
         <button data-tab="dicas" title="Dicas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
         <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
         <button data-tab="checklist" title="Checklist de análise comercial"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
@@ -3611,6 +3631,101 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <span class="muted" id="ctr-hist-resumo"></span>
         </div>
         <div id="ctr-lista"><div class="empty">Carregando...</div></div>
+      </section>
+    </div>
+
+    <div class="tab-panel" id="tab-plano30">
+      <div class="ct-cab">
+        <div>
+          <h2>Plano de 30 dias</h2>
+          <p class="muted">Depois da call, coloque aqui o que foi dito (anotações ou a gravação). O Claude monta o plano do lead (posicionamento do perfil, banner e ideias de conteúdo) em PDF, com a logo e a identidade da Demanda Infinita, pronto pra você mandar.</p>
+        </div>
+      </div>
+
+      <div class="ct-layout">
+        <form class="form-grid ct-form" id="form-plano30" onsubmit="return p30Enviar(event)" autocomplete="off">
+          <div class="ct-grupo">
+            <div class="ct-grupo-cab"><span class="ct-num">1</span><span class="ct-tit">Quem é o lead<small>Só o nome é obrigatório; quanto mais, melhor o plano</small></span></div>
+            <div class="ct-campos">
+              <div class="full">
+                <label>Nome</label>
+                <input type="text" id="p30-nome" placeholder="Nome de quem vai receber o plano" required maxlength="120">
+              </div>
+              <div>
+                <label>Empresa</label>
+                <input type="text" id="p30-empresa" maxlength="120">
+              </div>
+              <div>
+                <label>Cargo</label>
+                <input type="text" id="p30-cargo" placeholder="Ex.: sócio, diretor comercial" maxlength="120">
+              </div>
+              <div>
+                <label>LinkedIn do lead</label>
+                <input type="url" id="p30-linkedin" placeholder="https://www.linkedin.com/in/..." maxlength="300">
+              </div>
+              <div>
+                <label>Site da empresa</label>
+                <input type="text" id="p30-site" placeholder="empresa.com.br (o Claude lê a página inicial)" maxlength="300">
+              </div>
+              <div>
+                <label>E-mail ou WhatsApp</label>
+                <input type="text" id="p30-contato" maxlength="160">
+              </div>
+              <div>
+                <label>País do lead</label>
+                <select id="p30-pais"><option value="BR">Brasil (português do Brasil)</option><option value="PT">Portugal (português de Portugal)</option></select>
+              </div>
+              <div class="full">
+                <label class="ct-opcao" style="display:inline-flex;gap:8px;align-items:center;cursor:pointer;"><input type="checkbox" id="p30-func"><span>Ele é funcionário de outra empresa (o plano não usa a marca do empregador)</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="ct-grupo">
+            <div class="ct-grupo-cab"><span class="ct-num">2</span><span class="ct-tit">O que foi dito na call<small>É daqui que o plano sai</small></span></div>
+            <div class="ct-tipo" role="radiogroup" aria-label="Como informar a call" style="margin-bottom:14px;">
+              <label class="ct-tipo-op"><input type="radio" name="p30-modo" value="notas" checked onchange="p30AplicarModo()"><span><b>Colar anotações</b><small>Suas anotações ou a transcrição da reunião</small></span></label>
+              <label class="ct-tipo-op"><input type="radio" name="p30-modo" value="gravacao" onchange="p30AplicarModo()"><span><b>Enviar a gravação</b><small>Vídeo ou áudio da reunião; o sistema transcreve sozinho</small></span></label>
+            </div>
+            <div class="ct-campos" id="p30-bloco-notas">
+              <div class="full">
+                <label>Anotações ou transcrição</label>
+                <textarea id="p30-notas" rows="12" placeholder="O que ele vende, pra quem vende, qual a dor do cliente dele, o que quer alcançar em 30 dias, números e fatos que ele citou, como ele fala..." style="min-height:240px;resize:vertical;"></textarea>
+                <small class="ct-ajuda">Pode colar a transcrição do Meet inteira. O que não foi dito na call não entra no plano: o que faltar sai marcado como “a confirmar”.</small>
+              </div>
+            </div>
+            <div class="ct-campos" id="p30-bloco-gravacao" hidden>
+              <div class="full">
+                <label>Gravação da reunião</label>
+                <input type="file" id="p30-arquivo" accept="video/*,audio/*,.mp4,.mov,.m4a,.mp3,.wav,.webm,.mkv" onchange="p30EscolheuArquivo()">
+                <small class="ct-ajuda" id="p30-arq-info">Aceita vídeo ou áudio (mp4, mov, m4a, mp3, webm), até 900 MB. Arquivo grande sobe em partes e é apagado assim que a transcrição termina.</small>
+                <div class="arq-barra" id="p30-prog" hidden style="margin-top:10px;"><i style="width:0%"></i></div>
+                <small class="ct-ajuda" id="p30-prog-txt" hidden></small>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <aside class="lanc ct-resumo" aria-label="Como funciona">
+          <span class="lanc-selo">Como funciona</span>
+          <div class="ct-r-cliente" style="font-size:1rem;">Você preenche, o Claude escreve, você confere e manda</div>
+          <div class="ct-r-linha"><span>1</span><b>Você envia o pedido</b></div>
+          <div class="ct-r-linha"><span>2</span><b>Transcrição (se for gravação)</b></div>
+          <div class="ct-r-linha"><span>3</span><b>Claude escreve o plano</b></div>
+          <div class="ct-r-linha"><span>4</span><b>PDF aparece na lista abaixo</b></div>
+          <div class="ct-prog"><small>De 3 a 15 minutos, conforme o tamanho da gravação. O trabalho roda no computador do Igor: se ele estiver desligado, o pedido espera na fila. Leia o PDF antes de mandar e confira os pontos “a confirmar”.</small></div>
+          <div class="ct-acoes">
+            <button class="btn" type="submit" form="form-plano30" id="p30-btn">Gerar plano de 30 dias</button>
+          </div>
+        </aside>
+      </div>
+
+      <section class="card">
+        <div class="ct-hist-cab">
+          <h2>Planos gerados</h2>
+          <span class="muted" id="p30-resumo"></span>
+        </div>
+        <div id="p30-lista"><div class="empty">Carregando...</div></div>
       </section>
     </div>
 
@@ -11120,14 +11235,14 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-11-12',
-  titulo: 'Agora dá pra gerar o contrato de Serviço',
+  versao: '2026-11-16',
+  titulo: 'Agora o plano de 30 dias sai em minutos',
   passos: [
     {
-      emoji: '📝',
-      titulo: 'Contrato de Consultoria ou de Serviço',
-      texto: 'Na aba <b>Gerar contrato</b> tem uma escolha nova no topo: <b>Consultoria</b> (a de sempre) ou <b>Serviço</b>, o <b>Demanda Infinita Service</b>, em que a equipe implementa e opera o LinkedIn do cliente por 4 meses. Escolhendo Serviço, o formulário muda: implementação e mensalidade, forma de pagamento (Pix e/ou cartão), meta de leads da garantia e os itens opcionais. O resto funciona igual: gerar o PDF, enviar pra assinar na Autentique e reabrir, duplicar ou editar pelo histórico.',
-      aba: 'contrato', onde: 'Gerar contrato · escolha do tipo no topo',
+      emoji: '🚩',
+      titulo: 'Plano de 30 dias do lead, em PDF',
+      texto: 'Na aba <b>Plano de 30 dias</b> você coloca o que o lead disse na call, em anotações ou na gravação da reunião, e o Claude monta o plano dele: <b>posicionamento do perfil, banner e 12 ideias de conteúdo</b>, em PDF com a logo e a identidade da Demanda Infinita. Leva de 3 a 15 minutos, o PDF aparece na lista da própria aba e o que o lead não falou fica marcado como “a confirmar”. Leia antes de mandar.',
+      aba: 'plano30', onde: 'Plano de 30 dias · bandeira na barra lateral',
     },
   ],
 };
@@ -13764,6 +13879,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     ajustarIndicadores(btn.dataset.tab);
     if (btn.dataset.tab === 'whatsapp') document.getElementById('whats-badge').style.display = 'none';
     if (btn.dataset.tab === 'arquivos') carregarArquivos();
+    if (btn.dataset.tab === 'plano30') p30Iniciar();
     if (btn.dataset.tab === 'social') ssSupIniciar();
     if (btn.dataset.tab === 'relatorio') carregarRelatorio();
     if (btn.dataset.tab === 'instagram') carregarInstagram();
@@ -13782,6 +13898,186 @@ function recarregarLadoEspelhado(aba) {
   if (Date.now() - ultimaCargaEspelhada < 2500) return;
   if (aba === 'crm') { ultimaCargaEspelhada = Date.now(); carregarCardsDoFunil(); }
   else if (ABAS_DO_PAINEL_CENTRAL.includes(aba)) { ultimaCargaEspelhada = Date.now(); carregarTudo(); }
+}
+
+// ---------- PLANO DE 30 DIAS (pedido do closer → job no Mac do Igor → PDF) ----------
+// O closer cola as anotações da call OU sobe a gravação. O pedido vira uma linha em com_planos30 (status
+// 'pendente'); o job plano30_auto.py (launchd, Mac do Igor) transcreve, chama o Claude e devolve o PDF no
+// bucket privado com-planos. Aqui só enviamos e acompanhamos. Gravação: o plano gratuito do Supabase aceita
+// 50 MB por arquivo, então o vídeo vai em fatias de 45 MB que o job remonta byte a byte.
+const P30_BUCKET = 'com-planos';
+const P30_PARTE = 45 * 1024 * 1024;
+const P30_MAX = 900 * 1024 * 1024;
+const P30_ANDANDO = ['pendente', 'transcrevendo', 'gerando'];
+const P30_STATUS = { pendente: 'Na fila', transcrevendo: 'Transcrevendo', gerando: 'Escrevendo o plano', pronto: 'Pronto', erro: 'Erro' };
+let p30Cache = [], p30Timer = null, p30Enviando = false;
+
+function p30Modo() { const r = document.querySelector('input[name="p30-modo"]:checked'); return r ? r.value : 'notas'; }
+function p30AplicarModo() {
+  const g = p30Modo() === 'gravacao';
+  document.getElementById('p30-bloco-notas').hidden = g;
+  document.getElementById('p30-bloco-gravacao').hidden = !g;
+}
+function p30EscolheuArquivo() {
+  const f = document.getElementById('p30-arquivo').files[0];
+  const info = document.getElementById('p30-arq-info');
+  if (!f) { info.textContent = 'Aceita vídeo ou áudio (mp4, mov, m4a, mp3, webm), até 900 MB. Arquivo grande sobe em partes e é apagado assim que a transcrição termina.'; return; }
+  const mb = (f.size / 1048576).toFixed(0);
+  info.textContent = f.size > P30_MAX ? `${f.name} tem ${mb} MB: passa do limite de 900 MB. Mande só o áudio ou cole a transcrição.` : `${f.name} · ${mb} MB · vai em ${Math.max(1, Math.ceil(f.size / P30_PARTE))} parte(s).`;
+}
+function p30Slug(n) { return String(n || 'lead').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'lead'; }
+
+function p30UploadXHR(path, blob, token, onProg) {
+  return new Promise(res => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', SUPA_URL + '/storage/v1/object/' + P30_BUCKET + '/' + path);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+    xhr.setRequestHeader('apikey', SUPA_KEY);
+    xhr.setRequestHeader('x-upsert', 'true');
+    xhr.upload.onprogress = e => { if (e.lengthComputable) onProg(e.loaded); };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) return res({ ok: true });
+      let msg = 'erro ' + xhr.status; try { msg = JSON.parse(xhr.responseText).message || msg; } catch (e) {}
+      res({ ok: false, msg });
+    };
+    xhr.onerror = () => res({ ok: false, msg: 'sem conexão' });
+    const fd = new FormData(); fd.append('cacheControl', '3600'); fd.append('', blob);
+    xhr.send(fd);
+  });
+}
+function p30Progresso(feito, total, texto) {
+  const barra = document.getElementById('p30-prog'), t = document.getElementById('p30-prog-txt');
+  barra.hidden = false; t.hidden = false;
+  barra.firstElementChild.style.width = Math.min(100, Math.round(feito / total * 100)) + '%';
+  t.textContent = texto;
+}
+function p30Aviso(e) { if (p30Enviando) { e.preventDefault(); e.returnValue = ''; } }
+window.addEventListener('beforeunload', p30Aviso);
+
+async function p30Enviar(ev) {
+  if (ev) ev.preventDefault();
+  if (p30Enviando) return false;
+  const v = id => document.getElementById(id).value.trim();
+  const modo = p30Modo();
+  const nome = v('p30-nome');
+  if (!nome) { alert('Escreva o nome do lead.'); return false; }
+  const notas = v('p30-notas');
+  const arq = document.getElementById('p30-arquivo').files[0];
+  if (modo === 'notas' && notas.length < 80) { alert('Cole mais do que foi dito na call (pelo menos algumas linhas). Sem isso o plano sai genérico.'); return false; }
+  if (modo === 'gravacao' && !arq) { alert('Escolha o arquivo da gravação.'); return false; }
+  if (modo === 'gravacao' && arq.size > P30_MAX) { alert('A gravação passa de 900 MB. Mande só o áudio ou cole a transcrição.'); return false; }
+  const btn = document.getElementById('p30-btn');
+  p30Enviando = true; btn.disabled = true; btn.textContent = 'Enviando...';
+  const linha = {
+    lead_nome: nome, empresa: v('p30-empresa') || null, cargo: v('p30-cargo') || null, contato: v('p30-contato') || null,
+    linkedin_url: v('p30-linkedin') || null, site: v('p30-site') || null, pais: document.getElementById('p30-pais').value,
+    funcionario: document.getElementById('p30-func').checked, origem: modo, criado_por_nome: currentPerfil ? currentPerfil.nome : 'Igor',
+  };
+  const enviadas = [];
+  try {
+    if (modo === 'notas') linha.notas = notas;
+    else {
+      const sess = (await sb.auth.getSession()).data.session;
+      if (!sess) throw new Error('sua sessão expirou, entre de novo');
+      const partes = Math.max(1, Math.ceil(arq.size / P30_PARTE));
+      const pasta = 'gravacoes/' + (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2));
+      let anterior = 0;
+      for (let i = 0; i < partes; i++) {
+        const nomeParte = pasta + '/parte-' + String(i).padStart(3, '0');
+        const bloco = arq.slice(i * P30_PARTE, Math.min(arq.size, (i + 1) * P30_PARTE));
+        let ok = false, msg = '';
+        for (let tentativa = 1; tentativa <= 3 && !ok; tentativa++) {
+          const r = await p30UploadXHR(nomeParte, bloco, sess.access_token, carregado => {
+            const feito = anterior + carregado;
+            p30Progresso(feito, arq.size, `Enviando a gravação · parte ${i + 1} de ${partes} · ${Math.round(feito / arq.size * 100)}%`);
+          });
+          ok = r.ok; msg = r.msg || '';
+        }
+        if (!ok) throw new Error('falhou no envio da gravação (' + msg + ')');
+        enviadas.push(nomeParte); anterior += bloco.size;
+      }
+      Object.assign(linha, { gravacao_path: pasta, gravacao_partes: partes, gravacao_nome: arq.name });
+    }
+    const { error } = await sb.from('com_planos30').insert(linha);
+    if (error) throw new Error(error.message);
+    document.getElementById('form-plano30').reset();
+    p30AplicarModo(); p30EscolheuArquivo();
+    document.getElementById('p30-prog').hidden = true; document.getElementById('p30-prog-txt').hidden = true;
+    await p30Carregar();
+  } catch (err) {
+    if (enviadas.length) { try { await sb.storage.from(P30_BUCKET).remove(enviadas); } catch (e) {} }
+    alert('Não consegui enviar o pedido: ' + err.message);
+  } finally {
+    p30Enviando = false; btn.disabled = false; btn.textContent = 'Gerar plano de 30 dias';
+  }
+  return false;
+}
+
+async function p30Iniciar() { p30AplicarModo(); await p30Carregar(); }
+
+async function p30Carregar() {
+  clearTimeout(p30Timer);
+  const wrap = document.getElementById('p30-lista');
+  if (!wrap) return;
+  const { data, error } = await sb.from('com_planos30')
+    .select('id, created_at, lead_nome, empresa, criado_por_nome, origem, status, etapa_msg, erro, pdf_path, tentativas, a_confirmar:conteudo->a_confirmar')
+    .order('id', { ascending: false }).limit(30);
+  if (error) { wrap.innerHTML = '<div class="empty">Não consegui carregar a lista.</div>'; return; }
+  p30Cache = data || [];
+  p30Desenhar();
+  const aba = document.getElementById('tab-plano30');
+  if (aba && aba.classList.contains('active') && p30Cache.some(p => P30_ANDANDO.includes(p.status))) p30Timer = setTimeout(p30Carregar, 6000);
+}
+
+function p30Desenhar() {
+  const wrap = document.getElementById('p30-lista');
+  const resumo = document.getElementById('p30-resumo');
+  const prontos = p30Cache.filter(p => p.status === 'pronto').length, fila = p30Cache.filter(p => P30_ANDANDO.includes(p.status)).length;
+  if (resumo) resumo.textContent = p30Cache.length ? `${prontos} pronto(s)${fila ? ` · ${fila} em andamento` : ''}` : '';
+  if (!p30Cache.length) { wrap.innerHTML = '<div class="empty">Nenhum plano pedido ainda.</div>'; return; }
+  wrap.innerHTML = p30Cache.map(p => {
+    const andando = P30_ANDANDO.includes(p.status);
+    const quando = new Date(p.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    const meta = [p.empresa, p.origem === 'gravacao' ? 'gravação' : 'anotações', p.criado_por_nome ? 'por ' + p.criado_por_nome : '', quando].filter(Boolean).join(' · ');
+    const pend = Array.isArray(p.a_confirmar) ? p.a_confirmar.filter(Boolean) : [];
+    const rotulo = andando && p.etapa_msg ? p.etapa_msg : P30_STATUS[p.status] || p.status;
+    const acoes = [
+      p.status === 'pronto' ? `<button class="add-toggle" onclick="p30Baixar(${p.id})">Baixar PDF</button>` : '',
+      p.status === 'erro' ? `<button class="add-toggle" onclick="p30Refazer(${p.id})">Tentar de novo</button>` : '',
+      `<button class="add-toggle" onclick="p30Excluir(${p.id})">Excluir</button>`,
+    ].join('');
+    return `<div class="p30-linha">
+      <div class="ct-hist-item">
+        <div class="tl-avatar">${wzEsc(iniciaisDe(p.lead_nome))}</div>
+        <div class="ct-hist-nome"><b title="${wzEsc(p.lead_nome)}">${wzEsc(p.lead_nome)}</b><span>${wzEsc(meta)}</span></div>
+        <span class="p30-chip ${andando ? 'andando' : p.status}">${wzEsc(rotulo)}</span>
+        <div class="ct-hist-acoes">${acoes}</div>
+      </div>
+      ${p.status === 'erro' && p.erro ? `<div class="p30-erro">${wzEsc(p.erro)}</div>` : ''}
+      ${p.status === 'pronto' && pend.length ? `<details class="p30-det"><summary>${pend.length} ponto(s) pra confirmar com o lead antes de mandar</summary><ul>${pend.map(x => `<li>${wzEsc(x)}</li>`).join('')}</ul></details>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function p30Baixar(id) {
+  const p = p30Cache.find(x => x.id === id);
+  if (!p || !p.pdf_path) return;
+  const { data, error } = await sb.storage.from(P30_BUCKET).createSignedUrl(p.pdf_path, 300, { download: 'Plano-30-dias-' + p30Slug(p.lead_nome) + '.pdf' });
+  if (error || !data) { alert('Não consegui abrir o PDF: ' + (error ? error.message : 'sem link')); return; }
+  const a = document.createElement('a'); a.href = data.signedUrl; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
+}
+async function p30Refazer(id) {
+  const { error } = await sb.from('com_planos30').update({ status: 'pendente', tentativas: 0, erro: null, atualizado_em: new Date().toISOString() }).eq('id', id);
+  if (error) { alert('Não consegui reenviar: ' + error.message); return; }
+  p30Carregar();
+}
+async function p30Excluir(id) {
+  const p = p30Cache.find(x => x.id === id);
+  if (!p || !confirm(`Excluir o plano de ${p.lead_nome}? O PDF some do sistema (o lead que já recebeu continua com o dele).`)) return;
+  if (p.pdf_path) { try { await sb.storage.from(P30_BUCKET).remove([p.pdf_path]); } catch (e) {} }
+  const { error } = await sb.from('com_planos30').delete().eq('id', id);
+  if (error) { alert('Não consegui excluir: ' + error.message); return; }
+  p30Carregar();
 }
 
 // ---------- ARQUIVOS (biblioteca estilo Google Drive) ----------
