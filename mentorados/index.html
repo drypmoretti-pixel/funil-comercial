@@ -1194,7 +1194,13 @@ const ir = caminho => { const alvo = '#/' + caminho; if (location.hash === alvo)
 window.addEventListener('hashchange', () => render());
 
 const NAV_CLIENTE = [['inicio', 'Início'], ['plano', 'Plano de ação'], ['posts', 'Posts'], ['aulas', 'Aulas'], ['eventos', 'Eventos'], ['indicacoes', 'Indicações'], ['calendario', 'Calendário'], ['drive', 'Drive'], ['tutorial', 'Como funciona']];
-const NAV_ADMIN = [['dashboard', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['mentorados', 'Mentorados'], ['aulas', 'Aulas'], ['eventos', 'Eventos'], ['indicacoes', 'Indicações'], ['modelos', 'Modelos de plano'], ['config', 'Configurações']];
+const NAV_ALUNO = [['inicio', 'Início'], ['aulas', 'Aulas'], ['eventos', 'Eventos']];                  // aluno = comprou o curso: só vê aulas e encontros
+const TELAS_ALUNO = NAV_ALUNO.map(x => x[0]);
+const TIPOS = { mentorado: ['Mentorados', 'Mentorado', 'mentoria'], aluno: ['Alunos', 'Aluno', 'curso'], cliente: ['Clientes', 'Cliente', 'serviço'] };   // [plural, singular, o que comprou]
+const tipoDe = c => (c && TIPOS[c.tipo] ? c.tipo : 'mentorado');
+const tipoDoCtx = ctx => ctx.modo === 'admin' ? null : tipoDe((S.clientes || []).find(c => c.id === ctx.clienteId));
+const ehAluno = ctx => tipoDoCtx(ctx) === 'aluno';
+const NAV_ADMIN = [['dashboard', 'Dashboard'], ['aprovacoes', 'Aprovações'], ['mentorados', 'Pessoas'], ['aulas', 'Aulas'], ['eventos', 'Eventos'], ['indicacoes', 'Indicações'], ['modelos', 'Modelos de plano'], ['config', 'Configurações']];
 const ADMIN_ATIVA = { post: 'aprovacoes', mentorado: 'mentorados', modelo: 'modelos', lancamento: 'config' };
 
 function resolverCtx(p) {
@@ -1209,13 +1215,13 @@ const lnk = (ctx, x) => '#/' + (ctx.base ? ctx.base + '/' : '') + x;
 const lnkPost = (ctx, id) => ctx.modo === 'admin' ? `#/admin/post/${id}` : lnk(ctx, `posts/${id}`);
 
 function montarNav(ctx) {
-  const itens = ctx.modo === 'admin' ? NAV_ADMIN : NAV_CLIENTE;
+  const itens = ctx.modo === 'admin' ? NAV_ADMIN : ehAluno(ctx) ? NAV_ALUNO : NAV_CLIENTE;
   const ativa = ctx.modo === 'admin' ? (ADMIN_ATIVA[ctx.tela] || ctx.tela) : ctx.tela;
   $('#nav').innerHTML = itens.map(([id, nome]) => {
     const cont = id === 'aprovacoes' ? S.contAguardando : (id === 'indicacoes' && ctx.modo === 'admin') ? S.contIndicacoes : (id === 'posts' && ctx.modo === 'cliente') ? S.contPosts : 0;
     return `${id === 'config' ? '<div class="nav-sep"></div>' : ''}<button class="nav-item ${id === ativa ? 'ativo' : ''}" data-act="nav" data-to="${id}" ${id === ativa ? 'aria-current="page"' : ''}>${svg(id)}<span>${esc(nome)}</span><span class="cont" style="${cont ? 'display:inline-flex' : ''}">${cont || ''}</span></button>`;
   }).join('');
-  $('#side-rodape').textContent = ctx.modo === 'admin' ? 'Painel do Igor' : 'Portal dos mentorados';
+  $('#side-rodape').textContent = ctx.modo === 'admin' ? 'Painel do Igor' : ehAluno(ctx) ? 'Portal do aluno' : 'Portal dos mentorados';
 }
 ACT['ir-menu'] = el => { $('#user-menu').classList.remove('aberto'); ir((S.ctx && S.ctx.base ? S.ctx.base + '/' : '') + el.dataset.to); };
 ACT['nav'] = el => {
@@ -1240,7 +1246,7 @@ async function render(opt = {}) {
   } else faixa.hidden = true;
 
   const tabela = ctx.modo === 'admin' ? VIEWS_ADMIN : VIEWS_CLIENTE;
-  const fn = Object.hasOwn(tabela, ctx.tela) ? tabela[ctx.tela] : null;
+  const fn = Object.hasOwn(tabela, ctx.tela) && (ctx.modo === 'admin' || !ehAluno(ctx) || TELAS_ALUNO.includes(ctx.tela)) ? tabela[ctx.tela] : null;   // aluno só abre início/aulas/eventos
   if (!fn) { ir(ctx.modo === 'admin' ? 'admin/dashboard' : (ctx.base ? ctx.base + '/' : '') + 'inicio'); return; }
   const view = $('#view');
   if (!silencioso) view.innerHTML = '<div class="vazio">carregando…</div>';
@@ -1368,12 +1374,15 @@ async function iniciar() {
   const nome = perfil.nome || user.email;
   $('#user-nome').textContent = primeiroNome(nome); $('#user-av').textContent = iniciais(nome);
   $('#menu-tour').hidden = S.admin; $('#menu-tutorial').hidden = S.admin; $$('.menu-movel').forEach(b => { b.hidden = S.admin; });
+  if (!S.admin) await clientes();                                  // precisa do tipo (aluno x mentorado) antes de montar o menu
+  const aluno = !S.admin && tipoDe((S.clientes || []).find(c => c.id === perfil.cliente_id)) === 'aluno';
+  if (aluno) { $('#menu-tour').hidden = true; $('#menu-tutorial').hidden = true; $$('.menu-movel').forEach(b => { b.hidden = true; }); }
   $('#carregando').style.display = 'none'; $('#app').style.display = 'flex';
   if (!location.hash) history.replaceState(null, '', S.admin ? '#/admin/dashboard' : '#/inicio');   // replaceState não dispara hashchange (evita render duplicado)
   await carregarNotifs();
   await render();
   assinarRealtime();
-  if (!S.admin) { await verificarTour(); await lembreteChecklist(); }
+  if (!S.admin && !aluno) { await verificarTour(); await lembreteChecklist(); }
 }
 
 /* ---------- sino (notificações computadas ao vivo; só o "lida" é gravado) ---------- */
@@ -1381,11 +1390,12 @@ const NOTIF_SECOES = ['Aprovações', 'Indicações', 'Eventos', 'Posts', 'Aulas
 async function carregarNotifs() {
   const lista = [];
   try {
-    if (S.admin) await notifsAdmin(lista); else await notifsCliente(lista, S.perfil.cliente_id);
+    const aluno = !S.admin && tipoDe((S.clientes || []).find(c => c.id === S.perfil.cliente_id)) === 'aluno';
+    if (S.admin) await notifsAdmin(lista); else if (!aluno) await notifsCliente(lista, S.perfil.cliente_id);
   } catch (e) { console.warn('notifs', e); }
   try {
     if (S.admin) { const cls = await clientes(); await notifsIndicacaoAdmin(lista, id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado'); }
-    else { await notifsEventosAulas(lista); await notifsIndicacaoCliente(lista, S.perfil.cliente_id); }
+    else { await notifsEventosAulas(lista); if (tipoDe((S.clientes || []).find(c => c.id === S.perfil.cliente_id)) !== 'aluno') await notifsIndicacaoCliente(lista, S.perfil.cliente_id); }
   } catch (e) { console.warn('notifs (aulas/eventos/indicações)', e); }
   S.notifs = lista.sort((a, b) => b.quando - a.quando);
   try {
@@ -1418,7 +1428,7 @@ async function notifsAdmin(out) {
     const [perfis, tours] = await Promise.all([q(sb.from('cli_perfis').select('id,cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), q(sb.from('cli_novidades_vistas').select('perfil_id,vista_em'))]);
     const hoje0 = hojeISO(), estreou = new Set(tours.filter(t => isoLocal(new Date(t.vista_em)) < hoje0).map(t => t.perfil_id));
     const comLogin = new Set(perfis.filter(p => estreou.has(p.id)).map(p => p.cliente_id));
-    const ativos = cls.filter(c => c.status === 'ativo' && comLogin.has(c.id));
+    const ativos = cls.filter(c => c.status === 'ativo' && c.tipo !== 'aluno' && comLogin.has(c.id));   // aluno não tem checklist diário
     const ativ = await paginado(() => sb.from('cli_atividades_diarias').select('*').eq('data', ontem).order('id'));
     const parados = ativos.filter(c => statusAtividade(ativ.find(a => a.cliente_id === c.id), c) !== 'completo');
     if (parados.length) out.push({ chave: `parados-${ontem}`, sec: 'Checklist', titulo: `${parados.length} ${parados.length === 1 ? 'mentorado não fechou' : 'mentorados não fecharam'} o checklist de ${ontem === addDias(hojeISO(), -1) ? 'ontem' : 'sexta'}`,
@@ -1648,6 +1658,7 @@ function semanaHtml(mapa, cli, hoje) {
 async function vInicio(ctx) {
   const cli = await getCliente(ctx.clienteId);
   if (!cli) throw new Error('Mentorado não encontrado.');
+  if (tipoDe(cli) === 'aluno') return vInicioAluno(ctx, cli);
   const ro = ctx.modo === 'preview', hoje = hojeISO();
   const [prog, ativ, posts, planos, pend] = await Promise.all([
     q(sb.from('cli_progresso').select('*').eq('cliente_id', cli.id)),
@@ -2716,7 +2727,8 @@ async function vDashboard() {
   const [perfisV, videos] = await Promise.all([q(sb.from('cli_perfis').select('id,cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), q(sb.from('cli_novidades_vistas').select('perfil_id,vista_em').eq('versao', VIDEO_VISTO))]);
   const viuVideo = new Set(perfisV.filter(p => videos.some(v => v.perfil_id === p.id)).map(p => p.cliente_id));
   const itensAtras = planos.length ? await paginado(() => sb.from('cli_plano_itens').select('id,plano_id').in('plano_id', planos.map(p => p.id)).eq('concluido', false).lt('prazo', hoje).order('id')) : [];
-  const comLogin = new Set(perfis.map(p => p.cliente_id)), ativos = cls.filter(c => c.status === 'ativo');
+  const comLogin = new Set(perfis.map(p => p.cliente_id)), ativos = cls.filter(c => c.status === 'ativo' && c.tipo !== 'aluno');   // aluno não tem checklist/plano: fica de fora das métricas da mentoria
+  const alunosAtivos = cls.filter(c => c.status === 'ativo' && c.tipo === 'aluno').length;
   const ativosLogin = ativos.filter(c => comLogin.has(c.id));
   let ok = 0, parc = 0, parado = 0; const atencao = [];
   ativosLogin.forEach(c => { const st = statusAtividade(ativHoje.find(a => a.cliente_id === c.id), c); if (st === 'completo') ok++; else { if (st === 'parcial') parc++; else parado++; atencao.push({ c, st }); } });
@@ -2733,7 +2745,7 @@ async function vDashboard() {
         ${aguard.length ? `<a class="btn btn-primary btn-sm" href="#/admin/post/${aguard[0].id}">Revisar o primeiro</a>` : ''}</div>
       ${aguard.length ? aguard.slice(0, 6).map(p => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="#/admin/post/${p.id}"><div class="txt">${esc(p.titulo || 'Sem título')}<small>${esc(nomeDe(p.cliente_id))}${p.versao > 1 ? ' · versão ' + p.versao : ''} · enviado ${esc(tempoAtras(p.enviado_em))}</small></div>${chipSt('aguardando')}</a>`).join('') + (aguard.length > 6 ? `<div style="margin-top:8px"><a class="btn-link" href="#/admin/aprovacoes">ver as ${aguard.length} da fila</a></div>` : '')
         : '<div class="vazio" style="padding:12px 0">Nenhum post esperando você.</div>'}</div>
-      <div class="tiles"><div class="tile"><div class="v">${ativos.length}</div><div class="l">mentorados ativos</div></div>
+      <div class="tiles"><div class="tile"><div class="v">${ativos.length}</div><div class="l">${ativos.some(c => c.tipo === 'cliente') ? 'mentorados e clientes ativos' : 'mentorados ativos'}</div></div>${alunosAtivos ? `<a class="tile" href="#/admin/mentorados/aluno" style="text-decoration:none;color:inherit"><div class="v">${alunosAtivos}</div><div class="l">alunos ativos</div></a>` : ''}
       <div class="tile"><div class="v" style="color:var(--accent-deep)">${ok}</div><div class="l">em dia hoje</div></div>
       <div class="tile"><div class="v" style="color:var(--warning-text)">${parc}</div><div class="l">parcial hoje</div></div>
       <div class="tile"><div class="v" style="color:var(--critical)">${parado}</div><div class="l">parados hoje</div></div>
@@ -2751,9 +2763,10 @@ async function vDashboard() {
 }
 
 /* ---------- lista de mentorados ---------- */
-async function vMentorados() {
-  const hoje = hojeISO();
-  const [cls, prog, ativHoje, pend, perfis, aguard, planos, acs] = await Promise.all([
+let PESSOAS_TAB = 'mentorado';   // aba aberta em "Pessoas" (vira o tipo padrão do cadastro novo)
+async function vMentorados(ctx) {
+  const hoje = hojeISO(), tab = TIPOS[ctx.args[0]] ? ctx.args[0] : 'mentorado'; PESSOAS_TAB = tab;
+  const [todos, prog, ativHoje, pend, perfis, aguard, planos, acs] = await Promise.all([
     clientes(true), q(sb.from('cli_progresso').select('*')),
     paginado(() => sb.from('cli_atividades_diarias').select('*').eq('data', hoje).order('id')),
     q(sb.from('cli_materiais_pendentes').select('cliente_id').eq('status', 'pendente')),
@@ -2765,7 +2778,25 @@ async function vMentorados() {
   const viuVideo = new Set(perfisV.filter(p => videos.some(v => v.perfil_id === p.id)).map(p => p.cliente_id));
   const itens = planos.length ? await paginado(() => sb.from('cli_plano_itens').select('plano_id,concluido').in('plano_id', planos.map(p => p.id)).order('id')) : [];
   const comLogin = new Set(perfis.map(p => p.cliente_id));
-  const linha = c => {
+  const cls = todos.filter(c => tipoDe(c) === tab);
+  const abas = `<div class="tabs" role="tablist" style="margin-bottom:14px">${Object.entries(TIPOS).map(([t, n]) => { const k = todos.filter(c => tipoDe(c) === t && c.status === 'ativo').length;
+    return `<a class="tab ${t === tab ? 'ativo' : ''}" role="tab" href="#/admin/mentorados${t === 'mentorado' ? '' : '/' + t}" style="text-decoration:none">${n[0]} <span class="chip neutro sem-dot" style="margin-left:6px">${k}</span></a>`; }).join('')}</div>`;
+  const vazioTxt = { mentorado: 'Nenhum mentorado ativo.', aluno: 'Nenhum aluno ainda. Quando alguém comprar o curso, cadastre aqui e libere o acesso.', cliente: 'Nenhum cliente de serviço ativo.' }[tab];
+  const bib = tab === 'aluno' ? await carregarBiblioteca() : null;
+  const aulasAluno = bib ? bib.modulos.filter(m => m.publicado && (m.tipos || []).includes('aluno')).flatMap(m => m.aulas.filter(a => a.publicado)) : [];
+  const vistasPor = {};   // cliente_id -> aulas do curso assistidas até o fim
+  if (bib && perfisV.length) {
+    const dono = new Map(perfisV.map(p => [p.id, p.cliente_id])), ids = new Set(aulasAluno.map(a => a.id));
+    (await paginado(() => sb.from('cli_aula_progresso').select('perfil_id,aula_id,assistida_em').not('assistida_em', 'is', null).order('aula_id'))).forEach(v => { if (ids.has(v.aula_id) && dono.has(v.perfil_id)) vistasPor[dono.get(v.perfil_id)] = (vistasPor[dono.get(v.perfil_id)] || 0) + 1; });
+  }
+  const linhaAluno = c => {
+    const ac = acs ? acs.find(a => a.cliente_id === c.id) : null, n = vistasPor[c.id] || 0, tot = aulasAluno.length, pct = tot ? Math.round(n / tot * 100) : 0;
+    return `<a class="mrow" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${c.id}"><div class="row-between"><div><div class="nome">${esc(c.nome)}</div>
+      <div class="meta">${esc([c.empresa, c.nivel].filter(Boolean).join(' · ') || c.email || 'sem e-mail')} · ${esc(c.status)}</div></div>
+      <div class="row"><span class="chip ${!comLogin.has(c.id) ? 'neutro' : ac && ac.ultimo_login ? 'ok' : 'alerta'}">${!comLogin.has(c.id) ? 'sem login' : ac && ac.ultimo_login ? 'já entrou' : 'nunca entrou'}</span></div></div>
+      <div class="stats"><span>Curso: <b>${n}/${tot} aulas</b> (${pct}%)</span><span>Último acesso: <b>${!comLogin.has(c.id) ? '—' : ac && ac.ultimo_login ? esc(tempoAtras(ac.ultimo_login)) : 'nunca entrou'}</b></span>${c.data_inicio ? `<span>Desde: <b>${esc(fmtData(c.data_inicio))}</b></span>` : ''}</div></a>`;
+  };
+  const linha = tab === 'aluno' ? linhaAluno : c => {
     const st = statusAtividade(ativHoje.find(a => a.cliente_id === c.id), c);
     const badge = !comLogin.has(c.id) ? ['neutro', 'sem login'] : st === 'completo' ? ['ok', 'em dia'] : st === 'parcial' ? ['alerta', 'parcial hoje'] : ['critico', 'parado hoje'];
     const ac = acs ? acs.find(a => a.cliente_id === c.id) : null, pl = planos.find(p => p.cliente_id === c.id);
@@ -2780,13 +2811,14 @@ async function vMentorados() {
       <span>Último acesso: <b>${!comLogin.has(c.id) ? '—' : ac && ac.ultimo_login ? esc(tempoAtras(ac.ultimo_login)) : 'nunca entrou'}</b></span></div></a>`;
   };
   const ativos = cls.filter(c => c.status === 'ativo'), outros = cls.filter(c => c.status !== 'ativo');
-  return { kicker: 'Time', titulo: 'Mentorados',
-    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec">${ativos.length} ativos${outros.length ? ` · ${outros.length} fora da mentoria` : ''}</p>
-      <div class="row"><a class="btn" href="#/admin/lancamento">${svg('chave', 16)} Gerar acessos</a><button class="btn btn-primary" data-act="mentorado-novo">${svg('mais', 16)} Novo mentorado</button></div></div>
-      ${ativos.map(linha).join('') || '<div class="vazio">Nenhum mentorado ativo.</div>'}${outros.length ? `<h3 style="margin:18px 0 10px;color:var(--muted)">Pausados e encerrados</h3>${outros.map(linha).join('')}` : ''}` };
+  return { kicker: 'Time', titulo: 'Pessoas',
+    html: `${abas}<div class="row-between" style="margin-bottom:14px"><p class="sec">${ativos.length} ativos${outros.length ? ` · ${outros.length} pausados/encerrados` : ''} · ${TIPOS[tab][2]}</p>
+      <div class="row"><a class="btn" href="#/admin/lancamento">${svg('chave', 16)} Gerar acessos</a><button class="btn btn-primary" data-act="mentorado-novo">${svg('mais', 16)} Novo ${TIPOS[tab][1].toLowerCase()}</button></div></div>
+      ${ativos.map(linha).join('') || `<div class="vazio">${vazioTxt}</div>`}${outros.length ? `<h3 style="margin:18px 0 10px;color:var(--muted)">Pausados e encerrados</h3>${outros.map(linha).join('')}` : ''}` };
 }
-ACT['mentorado-novo'] = () => abrirModal('Novo mentorado', `<form data-sub="mentorado-novo"><div class="grid2">
-  <div class="campo"><label class="lbl" for="nc-nome">Nome</label><input type="text" id="nc-nome" required></div><div class="campo"><label class="lbl" for="nc-empresa">Empresa</label><input type="text" id="nc-empresa"></div>
+const seletorTipo = (id, atual) => `<div class="campo"><label class="lbl" for="${id}">Tipo</label><select id="${id}">${Object.entries(TIPOS).map(([t, n]) => `<option value="${t}" ${t === atual ? 'selected' : ''}>${n[1]} · ${n[2]}</option>`).join('')}</select></div>`;
+ACT['mentorado-novo'] = () => abrirModal('Novo ' + TIPOS[PESSOAS_TAB][1].toLowerCase(), `<form data-sub="mentorado-novo"><div class="grid2">
+  ${seletorTipo('nc-tipo', PESSOAS_TAB)}<div class="campo"><label class="lbl" for="nc-nome">Nome</label><input type="text" id="nc-nome" required></div><div class="campo"><label class="lbl" for="nc-empresa">Empresa</label><input type="text" id="nc-empresa"></div>
   <div class="campo"><label class="lbl" for="nc-nivel">Nível / plano</label><input type="text" id="nc-nivel"></div><div class="campo"><label class="lbl" for="nc-email">E-mail de contato (referência)</label><input type="email" id="nc-email"></div>
   <div class="campo"><label class="lbl" for="nc-ini">Data de início</label><input type="date" id="nc-ini" value="${hojeISO()}"></div><div class="campo"><label class="lbl" for="nc-meta">Posts por semana</label><input type="number" id="nc-meta" value="4" min="1" max="7"></div></div>
   <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:8px"><input type="checkbox" id="nc-login" data-chg="nc-login-toggle"> Criar o login de acesso agora</label>
@@ -2798,12 +2830,12 @@ SUB['mentorado-novo'] = async () => {
   const comLogin = $('#nc-login').checked, emailLogin = $('#nc-login-email').value.trim().toLowerCase();
   if (comLogin && emailLogin && !EMAIL_RE.test(emailLogin)) { toast('E-mail de login inválido.', true); return; }
   const { data, error } = await sb.from('cli_clientes').insert({ nome: $('#nc-nome').value.trim(), empresa: $('#nc-empresa').value.trim() || null, nivel: $('#nc-nivel').value.trim() || null,
-    email: $('#nc-email').value.trim() || null, data_inicio: $('#nc-ini').value || null, meta_semanal: parseInt($('#nc-meta').value) || 4, status: 'ativo' }).select('id').single();
+    email: $('#nc-email').value.trim() || null, data_inicio: $('#nc-ini').value || null, meta_semanal: parseInt($('#nc-meta').value) || 4, status: 'ativo', tipo: $('#nc-tipo').value }).select('id').single();
   if (error) throw error;
-  await clientes(true); fecharModal(); toast('Mentorado cadastrado.');
+  await clientes(true); fecharModal(); toast('Cadastro feito.');
   if (comLogin) {
-    try { const r = await fnAdmin({ acao: 'criar_login', cliente_id: data.id, ...(emailLogin ? { email: emailLogin } : {}) }); modalCredenciais({ nome: r.nome, email: r.email, senha: r.senha }); }
-    catch (e) { erroAcao(new Error('Mentorado cadastrado, mas o login não foi criado: ' + msgErro(e))); }
+    try { const r = await fnAdmin({ acao: 'criar_login', cliente_id: data.id, ...(emailLogin ? { email: emailLogin } : {}) }); modalCredenciais({ nome: r.nome, email: r.email, senha: r.senha, cliente_id: data.id }); }
+    catch (e) { erroAcao(new Error('Cadastro feito, mas o login não foi criado: ' + msgErro(e))); }
   }
   ir(`admin/mentorado/${data.id}/acesso`);
 };
@@ -2813,17 +2845,39 @@ const ABAS_MENTORADO = [['visao', 'Visão geral'], ['plano', 'Plano de ação'],
 async function vMentorado(ctx) {
   const id = Number(ctx.args[0]), aba = ctx.args[1] || 'visao'; ctx.clienteId = id; ctx.aba = aba;
   const cli = await getCliente(id); if (!cli) throw new Error('Mentorado não encontrado.');
+  const tp = tipoDe(cli), abas = tp === 'aluno' ? ABAS_MENTORADO.filter(a => ['visao', 'acesso'].includes(a[0])) : ABAS_MENTORADO;   // aluno só tem dados + acesso
+  if (!abas.some(a => a[0] === aba)) { ir(`admin/mentorado/${id}`); return { kicker: '', titulo: '', html: '' }; }
   let corpo = '';
   if (aba === 'plano') corpo = await planoConteudo(ctx);
   else if (aba === 'posts') { const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,texto,status,versao,data_prevista,enviado_em').eq('cliente_id', id).order('id', { ascending: false })); corpo = listaPostsHtml(ctx, posts); }
   else if (aba === 'calendario') corpo = `<div class="card">${await calendarioHtml(ctx)}</div>`;
   else if (aba === 'drive') corpo = await driveConteudo(ctx);
   else if (aba === 'acesso') corpo = await acessoConteudo(cli);
-  else corpo = await visaoConteudo(cli);
-  const tabs = `<div class="row-between" style="margin-bottom:6px"><a class="btn-link" href="#/admin/mentorados">← todos os mentorados</a><a class="btn btn-sm" href="#/ver/${id}/inicio">${svg('olho', 15)} Ver como mentorado</a></div>
-    <div class="tabs" role="tablist">${ABAS_MENTORADO.map(([a, n]) => `<a class="tab ${a === aba ? 'ativo' : ''}" role="tab" href="#/admin/mentorado/${id}/${a}" style="text-decoration:none">${n}</a>`).join('')}</div>`;
-  return { kicker: [cli.empresa, cli.nivel].filter(Boolean).join(' · ') || 'Mentorado', titulo: cli.nome, refrescavel: aba === 'visao' || aba === 'posts', html: tabs + corpo, depois: aba === 'drive' ? desenharDrive : null };
+  else corpo = tp === 'aluno' ? await visaoAluno(cli) : await visaoConteudo(cli);
+  const tabs = `<div class="row-between" style="margin-bottom:6px"><a class="btn-link" href="#/admin/mentorados${tp === 'mentorado' ? '' : '/' + tp}">← ${TIPOS[tp][0].toLowerCase()}</a><a class="btn btn-sm" href="#/ver/${id}/inicio">${svg('olho', 15)} Ver como ${TIPOS[tp][1].toLowerCase()}</a></div>
+    <div class="tabs" role="tablist">${abas.map(([a, n]) => `<a class="tab ${a === aba ? 'ativo' : ''}" role="tab" href="#/admin/mentorado/${id}/${a}" style="text-decoration:none">${n}</a>`).join('')}</div>`;
+  return { kicker: [cli.empresa, cli.nivel].filter(Boolean).join(' · ') || TIPOS[tp][1], titulo: cli.nome, refrescavel: aba === 'visao' || aba === 'posts', html: tabs + corpo, depois: aba === 'drive' ? desenharDrive : null };
 }
+/* aluno: sem etapas/checklist/pendências — só dados e como está indo no curso */
+async function visaoAluno(cli) {
+  const [bib, perfis] = await Promise.all([carregarBiblioteca(), q(sb.from('cli_perfis').select('id').eq('cliente_id', cli.id).eq('role', 'cliente'))]);
+  const mods = bib.modulos.filter(m => m.publicado && (m.tipos || []).includes('aluno')).map(m => ({ ...m, aulas: m.aulas.filter(a => a.publicado) })).filter(m => m.aulas.length);
+  const ids = mods.flatMap(m => m.aulas.map(a => a.id));
+  const vistas = perfis.length && ids.length ? await q(sb.from('cli_aula_progresso').select('aula_id,assistida_em,posicao_seg,duracao_seg,atualizado_em').in('perfil_id', perfis.map(p => p.id)).in('aula_id', ids)) : [];
+  const feita = id => vistas.some(v => v.aula_id === id && v.assistida_em), n = ids.filter(feita).length;
+  const ultima = vistas.map(v => v.atualizado_em).sort().pop();
+  return `<div class="card"><h2>Curso</h2><p class="desc">${n} de ${ids.length} aulas assistidas até o fim${ultima ? ` · última atividade ${esc(tempoAtras(ultima))}` : ''}.</p>
+    <div class="bar" style="margin-bottom:10px"><i style="width:${ids.length ? Math.round(n / ids.length * 100) : 0}%"></i></div>
+    ${mods.map(m => `<div style="margin-top:12px"><b>${esc(m.titulo)}</b>${m.aulas.map(a => `<div class="item-lista"><div class="txt">${esc(a.titulo)}</div><span class="chip ${feita(a.id) ? 'ok' : 'neutro'} sem-dot">${feita(a.id) ? 'assistida' : 'não assistida'}</span></div>`).join('')}</div>`).join('') || '<div class="vazio">Nenhuma aula do curso publicada ainda. Em Aulas, crie um módulo e marque “Alunos” em quem vê.</div>'}</div>
+    ${formDados(cli, false)}`;
+}
+const formDados = (cli, metas = true) => `<div class="card"><h2>${metas ? 'Dados e metas' : 'Dados'}</h2><form data-sub="mentorado-editar"><div class="grid2">
+      ${seletorTipo('ec-tipo', tipoDe(cli))}<div class="campo"><label class="lbl" for="ec-nome">Nome</label><input type="text" id="ec-nome" required value="${esc(cli.nome)}"></div><div class="campo"><label class="lbl" for="ec-empresa">Empresa</label><input type="text" id="ec-empresa" value="${esc(cli.empresa || '')}"></div>
+      <div class="campo"><label class="lbl" for="ec-nivel">Nível / plano</label><input type="text" id="ec-nivel" value="${esc(cli.nivel || '')}"></div>
+      <div class="campo"><label class="lbl" for="ec-status">Status</label><select id="ec-status">${['ativo', 'pausado', 'encerrado'].map(s => `<option value="${s}" ${cli.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}</select></div>
+      ${metas ? `<div class="campo"><label class="lbl" for="ec-meta">Posts por semana</label><input type="number" id="ec-meta" min="1" max="7" value="${cli.meta_semanal || 4}"></div><div class="campo"><label class="lbl" for="ec-con">Conexões por dia</label><input type="number" id="ec-con" min="0" value="${cli.meta_conexoes || 5}"></div>
+      <div class="campo"><label class="lbl" for="ec-cmin">Comentários por dia (mín)</label><input type="number" id="ec-cmin" min="0" value="${cli.meta_comentarios_min || 5}"></div><div class="campo"><label class="lbl" for="ec-cmax">Comentários por dia (máx)</label><input type="number" id="ec-cmax" min="0" value="${cli.meta_comentarios_max || 10}"></div>` : ''}</div>
+      <button class="btn btn-primary btn-sm" type="submit">Salvar</button></form></div>`;
 async function visaoConteudo(cli) {
   const [prog, pend, ativ] = await Promise.all([q(sb.from('cli_progresso').select('*').eq('cliente_id', cli.id)),
     q(sb.from('cli_materiais_pendentes').select('*').eq('cliente_id', cli.id).eq('status', 'pendente').order('pedido_em')),
@@ -2833,20 +2887,15 @@ async function visaoConteudo(cli) {
   return `<div class="card"><h2>Etapas do onboarding</h2><p class="desc">${completos}/7 dias completos na última semana.</p>${renderStepper(prog)}
     ${S.etapas.map(et => `<div class="item-lista"><div class="txt">${esc(et.nome)}${ok.has(et.id) ? `<small>concluída em ${esc(fmtData(isoLocal(new Date(ok.get(et.id)))))}</small>` : ''}</div>
       ${ok.has(et.id) ? '<span class="chip ok">concluída</span>' : `<button class="btn btn-sm" data-act="etapa-concluir" data-et="${et.id}">Marcar concluída</button>`}</div>`).join('')}</div>
-    <div class="card"><h2>Dados e metas</h2><form data-sub="mentorado-editar"><div class="grid2">
-      <div class="campo"><label class="lbl" for="ec-nome">Nome</label><input type="text" id="ec-nome" required value="${esc(cli.nome)}"></div><div class="campo"><label class="lbl" for="ec-empresa">Empresa</label><input type="text" id="ec-empresa" value="${esc(cli.empresa || '')}"></div>
-      <div class="campo"><label class="lbl" for="ec-nivel">Nível / plano</label><input type="text" id="ec-nivel" value="${esc(cli.nivel || '')}"></div>
-      <div class="campo"><label class="lbl" for="ec-status">Status</label><select id="ec-status">${['ativo', 'pausado', 'encerrado'].map(s => `<option value="${s}" ${cli.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}</select></div>
-      <div class="campo"><label class="lbl" for="ec-meta">Posts por semana</label><input type="number" id="ec-meta" min="1" max="7" value="${cli.meta_semanal || 4}"></div><div class="campo"><label class="lbl" for="ec-con">Conexões por dia</label><input type="number" id="ec-con" min="0" value="${cli.meta_conexoes || 5}"></div>
-      <div class="campo"><label class="lbl" for="ec-cmin">Comentários por dia (mín)</label><input type="number" id="ec-cmin" min="0" value="${cli.meta_comentarios_min || 5}"></div><div class="campo"><label class="lbl" for="ec-cmax">Comentários por dia (máx)</label><input type="number" id="ec-cmax" min="0" value="${cli.meta_comentarios_max || 10}"></div></div>
-      <button class="btn btn-primary btn-sm" type="submit">Salvar</button></form></div>
+    ${formDados(cli)}
     <div class="card"><h2>Pendências de material</h2><p class="desc">O que o mentorado precisa te enviar.</p>
       ${pend.length ? pend.map(p => `<div class="item-lista"><div class="txt">${esc(p.item)}<small>pedido em ${esc(new Date(p.pedido_em).toLocaleDateString('pt-BR'))}</small></div><button class="btn btn-sm" data-act="pend-recebido" data-id="${p.id}">Marcar recebido</button></div>`).join('') : '<div class="vazio">Nenhuma pendência aberta.</div>'}
       <form data-sub="pend-nova" class="row" style="margin-top:12px"><input type="text" id="np-item" placeholder="Ex: print do SSI atualizado" required style="flex:1;min-width:200px"><button class="btn btn-primary btn-sm" type="submit">Adicionar</button></form></div>`;
 }
 SUB['mentorado-editar'] = async () => {
-  const { error } = await sb.from('cli_clientes').update({ nome: $('#ec-nome').value.trim(), empresa: $('#ec-empresa').value.trim() || null, nivel: $('#ec-nivel').value.trim() || null, status: $('#ec-status').value,
-    meta_semanal: parseInt($('#ec-meta').value) || 4, meta_conexoes: parseInt($('#ec-con').value) || 5, meta_comentarios_min: parseInt($('#ec-cmin').value) || 5, meta_comentarios_max: parseInt($('#ec-cmax').value) || 10 }).eq('id', S.ctx.clienteId);
+  const d = { nome: $('#ec-nome').value.trim(), empresa: $('#ec-empresa').value.trim() || null, nivel: $('#ec-nivel').value.trim() || null, status: $('#ec-status').value, tipo: $('#ec-tipo').value };
+  if ($('#ec-meta')) Object.assign(d, { meta_semanal: parseInt($('#ec-meta').value) || 4, meta_conexoes: parseInt($('#ec-con').value) || 5, meta_comentarios_min: parseInt($('#ec-cmin').value) || 5, meta_comentarios_max: parseInt($('#ec-cmax').value) || 10 });   // aluno não tem metas
+  const { error } = await sb.from('cli_clientes').update(d).eq('id', S.ctx.clienteId);
   if (error) throw error; await clientes(true); toast('Salvo.'); await render();
 };
 ACT['etapa-concluir'] = async el => {
@@ -2861,7 +2910,9 @@ ACT['pend-recebido'] = async el => {
 };
 
 /* ---------- acesso: criar login / resetar senha ---------- */
-function mensagemBoasVindas(nome, email, senha) {
+function mensagemBoasVindas(nome, email, senha, clienteId) {
+  const c = (S.clientes || []).find(x => (clienteId ? x.id === Number(clienteId) : x.nome === nome));   // sem id, tenta pelo nome
+  if (tipoDe(c) === 'aluno') return `Oi, ${primeiroNome(nome)}! Seu acesso ao curso Demanda Infinita está pronto.\n\nLink: ${PORTAL_URL}\nE-mail: ${email}\nSenha: ${senha}\n\nLá estão as aulas do curso e a agenda dos encontros ao vivo. Quando entrar, pode trocar a senha pelo menu no canto superior direito.`;
   return `Oi, ${primeiroNome(nome)}! Seu acesso ao portal da mentoria Demanda Infinita está pronto.\n\nLink: ${PORTAL_URL}\nE-mail: ${email}\nSenha: ${senha}\n\nLá você acompanha seu plano de ação, manda seus posts pra aprovação e guarda seus arquivos. Quando entrar, pode trocar a senha pelo menu no canto superior direito.`;
 }
 async function acessoConteudo(cli) {
@@ -2875,7 +2926,7 @@ async function acessoConteudo(cli) {
     <div class="row"><button class="btn" data-act="cfg-senha" data-id="${cli.id}">${svg('chave', 16)} Gerar nova senha</button></div></div>`;
 }
 function modalCredenciais(r) {
-  const msg = mensagemBoasVindas(r.nome, r.email, r.senha);
+  const msg = mensagemBoasVindas(r.nome, r.email, r.senha, r.cliente_id);
   abrirModal('Acesso gerado', `<p class="desc">Copie agora: <b>a senha não fica salva em lugar nenhum</b> e não aparece de novo.</p><textarea id="cred-msg" rows="9" readonly>${esc(msg)}</textarea>
     <div class="row" style="margin-top:10px"><button class="btn btn-primary" data-act="copiar" data-alvo="cred-msg">Copiar mensagem</button></div>`);
 }
@@ -2889,8 +2940,9 @@ let LANC = null;
 async function vLancamento() {
   const [cls, perfis, acs] = await Promise.all([clientes(true), q(sb.from('cli_perfis').select('cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), acessos()]);
   const comLogin = new Set(perfis.map(p => p.cliente_id));
-  const linhas = cls.map(c => { const ac = acs ? acs.find(a => a.cliente_id === c.id) : null;
-    return `<label class="item-lista" style="cursor:pointer"><span class="row" style="gap:12px"><input type="checkbox" class="lanc-ck" value="${c.id}" ${c.status === 'ativo' ? 'checked' : ''}><span class="txt">${esc(c.nome)}<small>${esc(c.empresa || '')}${c.status !== 'ativo' ? ' · ' + esc(c.status) : ''}</small></span></span>
+  const ord = { mentorado: 0, cliente: 1, aluno: 2 }, ordenados = cls.slice().sort((a, b) => ord[tipoDe(a)] - ord[tipoDe(b)] || a.id - b.id);   // mentorados, clientes, alunos
+  const linhas = ordenados.map(c => { const ac = acs ? acs.find(a => a.cliente_id === c.id) : null;
+    return `<label class="item-lista" style="cursor:pointer"><span class="row" style="gap:12px"><input type="checkbox" class="lanc-ck" value="${c.id}" ${c.status === 'ativo' && tipoDe(c) !== 'aluno' ? 'checked' : ''}><span class="txt">${esc(c.nome)}<small>${esc(TIPOS[tipoDe(c)][1])}${c.empresa ? ' · ' + esc(c.empresa) : ''}${c.status !== 'ativo' ? ' · ' + esc(c.status) : ''}</small></span></span>
       <span class="chip ${comLogin.has(c.id) ? (ac && ac.ultimo_login ? 'ok' : 'alerta') : 'neutro'}">${comLogin.has(c.id) ? (ac && ac.ultimo_login ? 'já entrou' : 'nunca entrou') : 'sem login'}</span></label>`; }).join('');
   return { kicker: 'Lançamento', titulo: 'Gerar acessos', refrescavel: false,
     html: `<div style="margin-bottom:12px"><a class="btn-link" href="#/admin/mentorados">← voltar aos mentorados</a></div>
@@ -2914,13 +2966,13 @@ ACT['lanc-gerar'] = async el => {
     <button class="btn btn-primary" data-act="lanc-copiar-tudo">Copiar todas as mensagens</button></div>
     ${saida.map((r, i) => r.erro ? `<div class="item-lista"><div class="txt">${esc(r.nome || nomeDe(r.cliente_id))}<small style="color:var(--critical)">${esc(r.erro)}</small></div></div>`
       : `<div class="item-lista" style="align-items:flex-start"><div class="txt" style="flex:1"><b>${esc(r.nome || nomeDe(r.cliente_id))}</b><small>${esc(r.email)}</small>
-         <textarea id="lanc-msg-${i}" rows="6" readonly style="margin-top:8px;font-size:.82rem">${esc(mensagemBoasVindas(r.nome || nomeDe(r.cliente_id), r.email, r.senha))}</textarea></div>
+         <textarea id="lanc-msg-${i}" rows="6" readonly style="margin-top:8px;font-size:.82rem">${esc(mensagemBoasVindas(r.nome || nomeDe(r.cliente_id), r.email, r.senha, r.cliente_id))}</textarea></div>
          <button class="btn btn-sm" data-act="copiar" data-alvo="lanc-msg-${i}">Copiar</button></div>`).join('')}</div>`;
   $('#lanc-saida').scrollIntoView({ behavior: 'smooth' });
 };
 ACT['lanc-copiar-tudo'] = async () => {
   const cls = await clientes(), nomeDe = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
-  const txt = (LANC || []).filter(r => !r.erro).map(r => { const n = r.nome || nomeDe(r.cliente_id); return `=== ${n} ===\n${mensagemBoasVindas(n, r.email, r.senha)}`; }).join('\n\n\n');
+  const txt = (LANC || []).filter(r => !r.erro).map(r => { const n = r.nome || nomeDe(r.cliente_id); return `=== ${n} ===\n${mensagemBoasVindas(n, r.email, r.senha, r.cliente_id)}`; }).join('\n\n\n');
   if (await copiarTexto(txt)) toast('Todas as mensagens copiadas.'); else toast('Não consegui copiar tudo. Use o botão de cada mentorado.', true);
 };
 
@@ -3602,10 +3654,14 @@ function carregarYT() {
 }
 
 /* ---------- dados ---------- */
-async function carregarBiblioteca() {
-  const [modulos, aulas] = await Promise.all([
+const PUBLICO_PADRAO = ['mentorado', 'cliente'];   // quem vê um módulo/evento novo (o aluno só vê o que for marcado pra ele)
+const vePublico = (x, tipo) => (x.tipos || PUBLICO_PADRAO).includes(tipo);
+// `tipo`: no "ver como" do admin o RLS libera tudo, então filtra aqui pelo tipo da pessoa que está sendo vista
+async function carregarBiblioteca(tipo) {
+  const [modulos0, aulas] = await Promise.all([
     q(sb.from('cli_aula_modulos').select('*').order('ordem').order('id')),
     paginado(() => sb.from('cli_aulas').select('*').order('modulo_id').order('ordem').order('id'))]);
+  const modulos = tipo ? modulos0.filter(m => vePublico(m, tipo)) : modulos0;
   const porMod = modulos.map(m => ({ ...m, aulas: aulas.filter(a => a.modulo_id === m.id) }));
   return { modulos: porMod, aulas: porMod.flatMap(m => m.aulas) };   // aulas na ordem de exibição
 }
@@ -3641,7 +3697,7 @@ ACT['cine-rolar'] = el => { const t = $(`[data-trilho="${el.dataset.row}"]`); if
 
 async function vAulas(ctx) {
   if (ctx.args[0]) return vAula(ctx, Number(ctx.args[0]));
-  const [bib, perfil] = await Promise.all([carregarBiblioteca(), perfilAlvo(ctx)]);
+  const [bib, perfil] = await Promise.all([carregarBiblioteca(tipoDoCtx(ctx)), perfilAlvo(ctx)]);
   const prog = await progressoMapa(perfil);
   const mods = bib.modulos.filter(m => m.aulas.length);
   if (!mods.length) return { kicker: 'Biblioteca', titulo: 'Aulas', html: `<div class="cine cine-vazio"><div class="cine-vazio-ic">${svg('aulas', 30)}</div><h2>As aulas estão chegando</h2><p>Assim que o Igor publicar as aulas gravadas do método, elas aparecem aqui, organizadas por módulo.</p></div>` };
@@ -3715,7 +3771,7 @@ function tickAula(t, tocando, rate, dur) {
 }
 async function vAula(ctx, id) {
   pararAula(false);
-  const [bib, perfil] = await Promise.all([carregarBiblioteca(), perfilAlvo(ctx)]);
+  const [bib, perfil] = await Promise.all([carregarBiblioteca(tipoDoCtx(ctx)), perfilAlvo(ctx)]);
   const a = bib.aulas.find(x => x.id === id); if (!a) throw new Error('Aula não encontrada.');
   const prog = await progressoMapa(perfil), p = prog[a.id], mod = bib.modulos.find(m => m.id === a.modulo_id), i = mod.aulas.indexOf(a);
   const prox = bib.aulas[bib.aulas.indexOf(a) + 1] || null, v = videoInfo(a.video_url);
@@ -3802,7 +3858,7 @@ let EVS = [];
 ACT['ev-ics'] = el => { const e = EVS.find(x => x.id === Number(el.dataset.id)); if (e) baixarBlob(`${e.titulo}.ics`, new Blob([icsEvento(e)], { type: 'text/calendar;charset=utf-8' })); };
 const gravacaoHref = (ctx, e) => e.aula_id ? lnk(ctx, 'aulas/' + e.aula_id) : urlSegura(e.gravacao_url);
 async function vEventos(ctx) {
-  EVS = await q(sb.from('cli_eventos').select('*').order('inicio'));
+  EVS = (await q(sb.from('cli_eventos').select('*').order('inicio'))).filter(e => vePublico(e, tipoDoCtx(ctx)));
   const agora = new Date(), vivo = EVS.filter(e => new Date(e.inicio) <= agora && fimEvento(e) > agora);
   const prox = EVS.filter(e => new Date(e.inicio) > agora), pass = EVS.filter(e => fimEvento(e) <= agora).reverse();
   const top = vivo[0] || prox[0];
@@ -3831,7 +3887,8 @@ async function vEventos(ctx) {
 async function cardsInicioExtras(ctx) {
   try {
     const agora = new Date(), desde = new Date(agora.getTime() - 24 * 36e5).toISOString();
-    const [evs, perfil] = await Promise.all([q(sb.from('cli_eventos').select('*').gte('inicio', desde).order('inicio').limit(10)), perfilAlvo(ctx)]);
+    const [evs0, perfil] = await Promise.all([q(sb.from('cli_eventos').select('*').gte('inicio', desde).order('inicio').limit(30)), perfilAlvo(ctx)]);
+    const evs = evs0.filter(e => vePublico(e, tipoDoCtx(ctx))).slice(0, 10);
     let html = '';
     const e = evs.find(x => fimEvento(x) > agora);
     if (e && new Date(e.inicio) - agora < 14 * 864e5) {
@@ -3849,6 +3906,22 @@ async function cardsInicioExtras(ctx) {
     }
     return html;
   } catch (e) { console.warn('extras do início', e); return ''; }
+}
+
+/* ---------- Início do ALUNO (curso): só progresso, próxima aula e próximo encontro ---------- */
+async function vInicioAluno(ctx, cli) {
+  const [bib, perfil, extras] = await Promise.all([carregarBiblioteca('aluno'), perfilAlvo(ctx), cardsInicioExtras(ctx)]);
+  const prog = await progressoMapa(perfil), aulas = bib.modulos.filter(m => m.publicado).flatMap(m => m.aulas.filter(a => a.publicado));
+  const feita = a => !!(prog[a.id] && prog[a.id].assistida_em), n = aulas.filter(feita).length, pct = aulas.length ? Math.round(n / aulas.length * 100) : 0;
+  const prox = aulas.find(a => !feita(a)), md = prox ? bib.modulos.find(m => m.id === prox.modulo_id) : null;
+  const manchete = !aulas.length ? ['As aulas estão chegando', 'Assim que forem publicadas, elas aparecem aqui, em ordem.']
+    : !prox ? ['Curso concluído', 'Você assistiu todas as aulas. Revise quando quiser.']
+    : n === 0 ? ['Comece pela primeira aula', `${md.titulo}: ${prox.titulo}.`] : [`Próxima aula: ${prox.titulo}`, `${md.titulo}. Falta${aulas.length - n === 1 ? '' : 'm'} ${aulas.length - n} para terminar o curso.`];
+  return { kicker: cli.empresa || 'Curso Demanda Infinita', titulo: `Olá, ${primeiroNome(cli.nome)}`, refrescavel: false,
+    html: `<div class="hero"><div class="kicker">Curso Demanda Infinita</div><h2>${esc(manchete[0])}</h2><p>${esc(manchete[1])}</p>
+      <div class="hero-metrics"><div><b>${pct}<small>%</small></b><span>do curso assistido</span><div class="bar"><i style="width:${pct}%"></i></div></div>
+        <div><b>${n}<small>/${aulas.length}</small></b><span>aulas assistidas</span></div></div>
+      ${aulas.length ? `<div style="margin-top:16px"><a class="btn btn-primary" href="${lnk(ctx, prox ? 'aulas/' + prox.id : 'aulas')}">${n ? 'Continuar o curso' : 'Começar o curso'}</a></div>` : ''}</div>${extras}` };
 }
 
 /* ---------- sino: eventos e aulas novas ---------- */
@@ -3877,27 +3950,32 @@ async function vAdminAulas() {
   BIB = bib;
   const ids = new Set(alvos.map(a => a.perfil)), vistas = prog.filter(p => ids.has(p.perfil_id));
   const pub = bib.aulas.filter(a => a.publicado && (bib.modulos.find(m => m.id === a.modulo_id) || {}).publicado);
-  const quem = aId => vistas.filter(v => v.aula_id === aId).length;
-  const media = alvos.length && pub.length ? Math.round(alvos.reduce((s, x) => s + vistas.filter(v => v.perfil_id === x.perfil && pub.some(a => a.id === v.aula_id)).length / pub.length, 0) / alvos.length * 100) : 0;
+  // cada pessoa só é medida nas aulas que o tipo dela enxerga (aluno não "deve" aula de mentorado e vice-versa)
+  const modDe = a => bib.modulos.find(m => m.id === a.modulo_id), ve = (x, a) => vePublico(modDe(a), tipoDe(x.cli));
+  const alvosDe = a => alvos.filter(x => ve(x, a)), pubDe = x => pub.filter(a => ve(x, a));
+  const feitas = x => vistas.filter(v => v.perfil_id === x.perfil && pubDe(x).some(a => a.id === v.aula_id)).length;
+  const quem = a => { const al = new Set(alvosDe(a).map(x => x.perfil)); return vistas.filter(v => v.aula_id === a.id && al.has(v.perfil_id)).length; };
+  const comAula = alvos.filter(x => pubDe(x).length);
+  const media = comAula.length ? Math.round(comAula.reduce((s, x) => s + feitas(x) / pubDe(x).length, 0) / comAula.length * 100) : 0;
   const prev = alvos.slice().sort((a, b) => a.cli.nome.localeCompare(b.cli.nome, 'pt-BR'))[0];
   const linhaAula = (a, k, m) => `<div class="adm-aula"><div class="adm-aula-th">${capaDe(a) ? `<img src="${esc(capaDe(a))}" alt="">` : `<span>${k + 1}</span>`}</div>
       <div class="adm-aula-tx"><b>${esc(a.titulo)}</b><small>${esc([videoInfo(a.video_url).tipo === 'youtube' ? 'YouTube' : videoInfo(a.video_url).prov || (videoInfo(a.video_url).tipo === 'mp4' ? 'arquivo de vídeo' : 'link externo'), a.duracao_seg ? fmtMinSeg(a.duracao_seg) : ''].filter(Boolean).join(' · '))}</small></div>
-      <span class="chip ${quem(a.id) ? 'ok' : 'neutro'} sem-dot" title="Mentorados ativos que assistiram até o fim">${quem(a.id)}/${alvos.length} assistiram</span>${a.publicado ? '' : '<span class="chip alerta sem-dot">rascunho</span>'}
+      <span class="chip ${quem(a) ? 'ok' : 'neutro'} sem-dot" title="Pessoas ativas que veem esta aula e assistiram até o fim">${quem(a)}/${alvosDe(a).length} assistiram</span>${a.publicado ? '' : '<span class="chip alerta sem-dot">rascunho</span>'}
       <div class="acoes-ed"><button class="ic-btn" data-act="adm-aula-mover" data-id="${a.id}" data-d="-1" aria-label="Subir aula">${svg('cima', 16)}</button><button class="ic-btn" data-act="adm-aula-mover" data-id="${a.id}" data-d="1" aria-label="Descer aula">${svg('baixo', 16)}</button>
       <button class="ic-btn" data-act="adm-aula-editar" data-id="${a.id}" aria-label="Editar aula">${svg('editar', 16)}</button><button class="ic-btn" data-act="adm-aula-excluir" data-id="${a.id}" aria-label="Excluir aula">${svg('lixo', 16)}</button></div></div>`;
-  const mods = bib.modulos.map((m, k) => `<div class="card adm-mod"><div class="row-between"><div><div class="kicker">Módulo ${k + 1}${m.publicado ? '' : ' · rascunho'}</div><h2 style="margin-top:3px">${esc(m.titulo)}</h2>${m.descricao ? `<p class="desc" style="margin:2px 0 0">${esc(m.descricao)}</p>` : ''}</div>
+  const mods = bib.modulos.map((m, k) => `<div class="card adm-mod"><div class="row-between"><div><div class="kicker">Módulo ${k + 1}${m.publicado ? '' : ' · rascunho'}</div><h2 style="margin-top:3px">${esc(m.titulo)}</h2><div class="row" style="gap:6px;margin-top:6px">${chipsQuemVe(m)}</div>${m.descricao ? `<p class="desc" style="margin:2px 0 0">${esc(m.descricao)}</p>` : ''}</div>
       <div class="acoes-ed"><button class="ic-btn" data-act="adm-mod-mover" data-id="${m.id}" data-d="-1" aria-label="Subir módulo">${svg('cima', 16)}</button><button class="ic-btn" data-act="adm-mod-mover" data-id="${m.id}" data-d="1" aria-label="Descer módulo">${svg('baixo', 16)}</button>
       <button class="ic-btn" data-act="adm-mod-editar" data-id="${m.id}" aria-label="Editar módulo">${svg('editar', 16)}</button><button class="ic-btn" data-act="adm-mod-excluir" data-id="${m.id}" aria-label="Excluir módulo">${svg('lixo', 16)}</button></div></div>
     <div style="margin-top:12px">${m.aulas.map((a, i) => linhaAula(a, i, m)).join('') || '<div class="vazio" style="padding:10px 0">Nenhuma aula neste módulo.</div>'}</div>
     <button class="btn btn-sm" style="margin-top:10px" data-act="adm-aula-nova" data-mod="${m.id}">${svg('mais', 14)} Aula neste módulo</button></div>`).join('');
-  const ranking = alvos.map(x => ({ x, n: vistas.filter(v => v.perfil_id === x.perfil && pub.some(a => a.id === v.aula_id)).length })).sort((a, b) => b.n - a.n || a.x.cli.nome.localeCompare(b.x.cli.nome, 'pt-BR'));
+  const ranking = comAula.map(x => ({ x, n: feitas(x), tot: pubDe(x).length })).sort((a, b) => b.n - a.n || a.x.cli.nome.localeCompare(b.x.cli.nome, 'pt-BR'));
   return { kicker: 'Biblioteca', titulo: 'Aulas', refrescavel: false,
     html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">As aulas gravadas do método, em módulos. Cole o link do YouTube (não listado), Vimeo, Loom ou de um arquivo .mp4.</p>
       <div class="row">${prev ? `<a class="btn" href="#/ver/${prev.cli.id}/aulas">${svg('olho', 16)} Ver como mentorado</a>` : ''}<button class="btn" data-act="adm-mod-novo">${svg('mais', 16)} Novo módulo</button><button class="btn btn-primary" data-act="adm-aula-nova">${svg('mais', 16)} Nova aula</button></div></div>
       <div class="tiles"><div class="tile"><div class="v">${bib.modulos.length}</div><div class="l">módulos</div></div><div class="tile"><div class="v">${pub.length}</div><div class="l">aulas publicadas</div></div>
         <div class="tile"><div class="v">${media}%</div><div class="l">média do curso assistida</div></div><div class="tile"><div class="v">${vistas.length}</div><div class="l">aulas concluídas no total</div></div></div>
       ${mods || `<div class="card"><div class="vazio"><b>Nenhum módulo ainda.</b><br>Crie o primeiro módulo (ex.: “Módulo 1 · Posicionamento”) e depois adicione as aulas.</div></div>`}
-      ${pub.length && alvos.length ? `<div class="card"><h2>Quem está assistindo</h2><p class="desc">Aulas assistidas até o fim, por mentorado ativo.</p>${ranking.map(r => `<div class="item-lista"><div class="txt">${esc(r.x.cli.nome)}</div><div class="row" style="gap:10px;flex-wrap:nowrap;min-width:180px;justify-content:flex-end"><div class="bar fina" style="width:120px"><i style="width:${Math.round(r.n / pub.length * 100)}%"></i></div><b class="mono">${r.n}/${pub.length}</b></div></div>`).join('')}</div>` : ''}` };
+      ${pub.length && alvos.length ? `<div class="card"><h2>Quem está assistindo</h2><p class="desc">Aulas assistidas até o fim, por mentorado ativo.</p>${ranking.map(r => `<div class="item-lista"><div class="txt">${esc(r.x.cli.nome)}<small>${esc(TIPOS[tipoDe(r.x.cli)][1])}</small></div><div class="row" style="gap:10px;flex-wrap:nowrap;min-width:180px;justify-content:flex-end"><div class="bar fina" style="width:120px"><i style="width:${Math.round(r.n / r.tot * 100)}%"></i></div><b class="mono">${r.n}/${r.tot}</b></div></div>`).join('')}</div>` : ''}` };
 }
 const modPorId = id => BIB.modulos.find(m => m.id === Number(id));
 const aulaPorId = id => BIB.aulas.find(a => a.id === Number(id));
@@ -3905,13 +3983,19 @@ function modalModulo(m) {
   abrirModal(m ? 'Editar módulo' : 'Novo módulo', `<form data-sub="adm-mod"><input type="hidden" name="id" value="${m ? m.id : ''}">
     <div class="campo"><label class="lbl" for="mo-t">Nome do módulo</label><input type="text" id="mo-t" required maxlength="120" value="${esc(m ? m.titulo : '')}" placeholder="Ex: Módulo 1 · Posicionamento"></div>
     <div class="campo"><label class="lbl" for="mo-d">Descrição curta (opcional)</label><input type="text" id="mo-d" maxlength="600" value="${esc(m ? m.descricao || '' : '')}"></div>
-    <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:14px"><input type="checkbox" id="mo-p" ${!m || m.publicado ? 'checked' : ''}> Publicado (os mentorados veem)</label>
+    ${quemVe('mo', m)}
+    <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:14px"><input type="checkbox" id="mo-p" ${!m || m.publicado ? 'checked' : ''}> Publicado (quem está marcado acima já vê)</label>
     <button class="btn btn-primary" type="submit">Salvar</button></form>`);
 }
+// "quem vê": caixinhas mentorados / alunos / clientes (módulo e evento)
+const quemVe = (pre, x) => `<div class="campo"><span class="lbl">Quem vê</span><div class="row" style="gap:16px">${Object.entries(TIPOS).map(([t, n]) =>
+  `<label style="display:flex;gap:7px;align-items:center;font-weight:600;font-size:.88rem"><input type="checkbox" class="${pre}-qv" value="${t}" ${(x ? x.tipos || PUBLICO_PADRAO : PUBLICO_PADRAO).includes(t) ? 'checked' : ''}> ${n[0]}</label>`).join('')}</div></div>`;
+const lerQuemVe = pre => { const v = $$('.' + pre + '-qv:checked').map(c => c.value); if (!v.length) throw new Error('Marque pelo menos um público (mentorados, alunos ou clientes).'); return v; };
+const chipsQuemVe = x => { const t = x.tipos || PUBLICO_PADRAO; return t.length === Object.keys(TIPOS).length ? '<span class="chip neutro sem-dot">todos</span>' : t.map(k => `<span class="chip ${k === 'aluno' ? 'ok' : 'neutro'} sem-dot">${esc(TIPOS[k][0])}</span>`).join(''); };
 ACT['adm-mod-novo'] = () => modalModulo(null);
 ACT['adm-mod-editar'] = el => modalModulo(modPorId(el.dataset.id));
 SUB['adm-mod'] = async f => {
-  const id = Number(f.id.value) || null, d = { titulo: $('#mo-t').value.trim(), descricao: $('#mo-d').value.trim() || null, publicado: $('#mo-p').checked };
+  const id = Number(f.id.value) || null, d = { titulo: $('#mo-t').value.trim(), descricao: $('#mo-d').value.trim() || null, publicado: $('#mo-p').checked, tipos: lerQuemVe('mo') };
   if (id) { const { error } = await sb.from('cli_aula_modulos').update(d).eq('id', id); if (error) throw error; }
   else { d.ordem = BIB.modulos.reduce((m, x) => Math.max(m, x.ordem), 0) + 1; const { error } = await sb.from('cli_aula_modulos').insert(d); if (error) throw error; }
   fecharModal(); toast('Módulo salvo.'); await render();
@@ -3977,7 +4061,7 @@ async function vAdminEventos() {
   const agora = new Date(), prox = EVS.filter(e => fimEvento(e) > agora).reverse(), pass = EVS.filter(e => fimEvento(e) <= agora);
   const linha = e => { const d = new Date(e.inicio), passado = fimEvento(e) <= agora;
     return `<div class="ev-item adm"><div class="ev-data"><b>${d.getDate()}</b><span>${MES_CURTO[d.getMonth()]}</span></div>
-      <div class="ev-item-tx"><span class="chip neutro sem-dot">${esc(TIPO_EVENTO[e.tipo] || 'Evento')}${e.publicado ? '' : ' · rascunho'}</span><b>${esc(e.titulo)}</b>
+      <div class="ev-item-tx"><span class="row" style="gap:6px"><span class="chip neutro sem-dot">${esc(TIPO_EVENTO[e.tipo] || 'Evento')}${e.publicado ? '' : ' · rascunho'}</span>${chipsQuemVe(e)}</span><b>${esc(e.titulo)}</b>
         <small>${esc(passado ? fmtData(isoLocal(d)) + ' · ' + hora(d) : quandoEvento(e))} · ${e.duracao_min} min${e.sala_url ? ' · com link da sala' : passado ? '' : ' · <b style="color:var(--warning-text)">sem link da sala</b>'}</small></div>
       <div class="ev-item-bt">${passado ? (e.aula_id ? `<a class="btn btn-sm" href="#/admin/aulas">${svg('check', 14)} virou aula</a>` : e.gravacao_url ? `<button class="btn btn-sm btn-primary" data-act="ev-virar-aula" data-id="${e.id}">${svg('tutorial', 14)} Virar aula</button>` : `<button class="btn btn-sm" data-act="ev-editar" data-id="${e.id}">+ gravação</button>`) : ''}
         <button class="ic-btn" data-act="ev-editar" data-id="${e.id}" aria-label="Editar evento">${svg('editar', 16)}</button><button class="ic-btn" data-act="ev-excluir" data-id="${e.id}" aria-label="Excluir evento">${svg('lixo', 16)}</button></div></div>`; };
@@ -3998,7 +4082,8 @@ function modalEvento(e) {
     <div class="campo"><label class="lbl" for="ev-s">Link da sala (Meet, Zoom…)</label><input type="url" id="ev-s" maxlength="500" value="${esc(e ? e.sala_url || '' : '')}" placeholder="https://meet.google.com/…"></div>
     <div class="campo"><label class="lbl" for="ev-ds">Descrição (opcional)</label><textarea id="ev-ds" rows="3" maxlength="4000">${esc(e ? e.descricao || '' : '')}</textarea></div>
     <div class="campo"><label class="lbl" for="ev-g">Link da gravação (depois do evento)</label><input type="url" id="ev-g" maxlength="500" value="${esc(e ? e.gravacao_url || '' : '')}" placeholder="https://youtu.be/…"></div>
-    <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:14px"><input type="checkbox" id="ev-p" ${!e || e.publicado ? 'checked' : ''}> Publicado (os mentorados veem)</label>
+    ${quemVe('ev', e)}
+    <label style="display:flex;gap:9px;align-items:center;font-weight:700;font-size:.88rem;margin-bottom:14px"><input type="checkbox" id="ev-p" ${!e || e.publicado ? 'checked' : ''}> Publicado (quem está marcado acima já vê)</label>
     <button class="btn btn-primary" type="submit">Salvar evento</button></form>`, true);
 }
 ACT['ev-novo'] = () => modalEvento(null);
@@ -4009,7 +4094,7 @@ SUB['ev'] = async f => {
   if (grav && !urlSegura(grav)) { toast('O link da gravação precisa começar com https://', true); return; }
   const ini = new Date(`${$('#ev-d').value}T${$('#ev-h').value}`); if (isNaN(ini)) { toast('Confira a data e a hora.', true); return; }
   const d = { titulo: $('#ev-t').value.trim(), tipo: $('#ev-tp').value, inicio: ini.toISOString(), duracao_min: Math.max(5, Math.min(1440, parseInt($('#ev-du').value) || 60)),
-    sala_url: sala || null, descricao: $('#ev-ds').value.trim() || null, gravacao_url: grav || null, publicado: $('#ev-p').checked };
+    sala_url: sala || null, descricao: $('#ev-ds').value.trim() || null, gravacao_url: grav || null, publicado: $('#ev-p').checked, tipos: lerQuemVe('ev') };
   if (id) { const { error } = await sb.from('cli_eventos').update(d).eq('id', id); if (error) throw error; }
   else { const { error } = await sb.from('cli_eventos').insert(d); if (error) throw error; }
   fecharModal(); toast('Evento salvo.'); await render();
@@ -4021,15 +4106,16 @@ ACT['ev-excluir'] = async el => {
 const MOD_GRAVACOES = 'Gravações dos encontros';
 ACT['ev-virar-aula'] = async el => {
   const e = EVS.find(x => x.id === Number(el.dataset.id)); if (!e || !urlSegura(e.gravacao_url)) return;
+  const soAluno = (e.tipos || PUBLICO_PADRAO).every(t => t === 'aluno'), tituloMod = soAluno ? MOD_GRAVACOES + ' (alunos)' : MOD_GRAVACOES;   // gravação de encontro só de aluno não vaza pro módulo dos mentorados
   await ocupado(el, async () => {
-    let [m] = await q(sb.from('cli_aula_modulos').select('id').eq('titulo', MOD_GRAVACOES).limit(1));
-    if (!m) { const mods = await q(sb.from('cli_aula_modulos').select('ordem')); const { data, error } = await sb.from('cli_aula_modulos').insert({ titulo: MOD_GRAVACOES, descricao: 'Os encontros ao vivo, gravados.', ordem: mods.reduce((x, y) => Math.max(x, y.ordem), 0) + 1 }).select('id').single(); if (error) throw error; m = data; }
+    let [m] = await q(sb.from('cli_aula_modulos').select('id').eq('titulo', tituloMod).limit(1));
+    if (!m) { const mods = await q(sb.from('cli_aula_modulos').select('ordem')); const { data, error } = await sb.from('cli_aula_modulos').insert({ titulo: tituloMod, descricao: 'Os encontros ao vivo, gravados.', ordem: mods.reduce((x, y) => Math.max(x, y.ordem), 0) + 1, tipos: soAluno ? ['aluno'] : PUBLICO_PADRAO }).select('id').single(); if (error) throw error; m = data; }
     const ord = await q(sb.from('cli_aulas').select('ordem').eq('modulo_id', m.id));
     const { data: a, error } = await sb.from('cli_aulas').insert({ modulo_id: m.id, titulo: `${e.titulo} · ${fmtData(isoLocal(new Date(e.inicio)))}`, descricao: e.descricao, video_url: e.gravacao_url, ordem: ord.reduce((x, y) => Math.max(x, y.ordem), 0) + 1 }).select('id').single();
     if (error) throw error;
     const { error: e2 } = await sb.from('cli_eventos').update({ aula_id: a.id }).eq('id', e.id); if (e2) throw e2;
   });
-  toast(`Gravação publicada em Aulas › ${MOD_GRAVACOES}.`); await render();
+  toast(`Gravação publicada em Aulas › ${tituloMod}.`); await render();
 };
 
 /* =====================================================================
