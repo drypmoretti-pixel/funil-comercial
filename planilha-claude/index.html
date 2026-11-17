@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planilha, quadro e painel dentro do Claude | Método Demanda Infinita®</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:18px;line-height:1.6}
+h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;margin:0 0 12px}.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
+.cover{padding:48px 0 10px;text-align:center}.cover img{width:76px;height:76px;margin-bottom:18px}
+.kicker{font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase}
+.cover h1{font-size:42px;font-weight:800;margin-top:10px;line-height:1.15}.sub{font-size:19px;color:var(--gray);max-width:600px;margin:14px auto 0}
+.badge{display:inline-block;margin-top:18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px}
+h2.t{font-size:25px;font-weight:800;margin-top:52px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+h2.t small{display:block;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;font-size:15px}
+.flow div b{display:block;font:800 17px 'Plus Jakarta Sans',sans-serif;margin:4px 0}.flow div i{font:600 12px 'JetBrains Mono',monospace;color:var(--green);font-style:normal}
+.flow div:not(:last-child):after{content:"→";position:absolute;right:-14px;top:42%;color:var(--green);font-weight:800}
+@media(max-width:640px){.flow{grid-template-columns:1fr 1fr}.cover h1{font-size:32px}}
+.prompt{background:#111;color:#e9f5ec;border-radius:16px;margin:16px 0;overflow:hidden}
+.prompt .h{background:var(--green);color:#fff;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.4px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.prompt button{background:#fff;color:var(--green);border:0;border-radius:8px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px}
+.prompt pre{margin:0;padding:18px;white-space:pre-wrap;font:400 15px/1.55 'JetBrains Mono',monospace}
+.ex{background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;margin:16px 0;font-size:16px}
+.ex b{font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.2px;color:var(--green);display:block;margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.col{border-radius:14px;padding:16px 18px;font-size:16px}.col.no{background:#fbeeea;border:1px solid #f0c9be}.col.si{background:#e9f6ee;border:1px solid #b5e0c4}
+.col h4{margin:0 0 8px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.4px}.col.no h4{color:#b5483a}.col.si h4{color:var(--green)}
+.col ul{margin:0;padding-left:18px}.aviso{font-size:14px;color:var(--gray);margin-top:30px}
+.cta{margin-top:48px;background:#fff;border:2px solid var(--green);border-radius:18px;padding:24px;text-align:center}
+</style>
+
+</head><body>
+<div class="wrap">
+<div class="cover"><img src="logo-demanda-infinita.png" alt=""><div class="kicker">Método Demanda Infinita®</div>
+<h1>Planilha, quadro e painel de vendas dentro do Claude</h1>
+<p class="sub">Em 10/11/2026 o Claude ganhou 3 ferramentas novas: um quadro de planejamento, uma planilha com fórmula e um painel de números. O que é cada uma, quem já pode usar, o cuidado que ninguém comenta e 5 pedidos prontos pro seu negócio.</p>
+<div class="badge">Guia rápido · 5 minutos</div></div>
+
+<h2 class="t">O que é</h2>
+<p>Antes, você pedia uma planilha pro Claude e ele te devolvia um texto ou um arquivo pra baixar. Agora ele monta a coisa de verdade, ali dentro da conversa, e o seu time pode abrir e mexer junto.</p>
+<div class="ex"><b>1 · QUADRO (WHITEBOARDS) · BETA</b>Um quadro branco que o time preenche com o Claude. Você conta o plano e ele organiza em etapas, com dono e data. Dá pra mandar o quadro pra um documento ou apresentação.</div>
+<div class="ex"><b>2 · PLANILHA (SHEETS) · BETA</b>Uma planilha que o Claude monta e edita com você: várias abas, fórmulas, formatação e listinha de opções pra escolher. Cada mudança fica registrada. Quando precisar do Excel completo, exporta em .xlsx ou CSV.</div>
+<div class="ex"><b>3 · PAINEL (DATA)</b>Um painel de números que conta a história dos seus dados. Esse precisa estar ligado a uma fonte de dados, como o seu CRM (o sistema onde ficam os seus clientes).</div>
+
+<h2 class="t">Quem já pode usar</h2>
+<p>Todos os planos pagos do Claude, no site, no app do computador e no celular. No plano Team já vem ligado. No Enterprise, o administrador liga em <b>Configurações da organização › Artifacts</b>. Quadro e planilha ainda estão em teste (beta): pode mudar e pode ter erro.</p>
+
+<h2 class="t">Como começar hoje</h2>
+<div class="flow">
+<div><i>PASSO 1</i><b>Abra o Claude</b>Plano pago, no site, no app do computador ou no celular.</div>
+<div><i>PASSO 2</i><b>Peça a planilha</b>Diga o que você quer controlar e de onde vêm os números (pode colar ou anexar).</div>
+<div><i>PASSO 3</i><b>Confira as fórmulas</b>Clique nas células com total e veja se a conta faz sentido.</div>
+<div><i>PASSO 4</i><b>Chame o time</b>Compartilhe com quem vai preencher junto com você.</div>
+<div><i>PASSO 5</i><b>Exporte se precisar</b>Baixe em .xlsx (Excel) ou CSV pra usar fora do Claude.</div>
+<div><i>PASSO 6</i><b>Monte o quadro</b>Peça o plano do mês em quadro, com dono e data em cada etapa.</div>
+</div>
+
+<h2 class="t">5 pedidos prontos pro seu negócio</h2>
+<div class="prompt"><div class="h"><span>1 · CONTROLE DE VENDAS DO MÊS</span><button onclick="cp(this)">Copiar</button></div><pre>Monte uma planilha de controle de vendas do mês da minha empresa, que vende [o que você vende].
+Aba 1: cada venda com data, cliente, produto, valor e vendedor (vendedor com lista de opções: [nomes]).
+Aba 2: total por vendedor e por produto, com fórmula.
+Aba 3: meta do mês de [R$ valor] e quanto falta, atualizando sozinho.
+Explique em 3 linhas como a minha equipe preenche.</pre></div>
+<div class="prompt"><div class="h"><span>2 · FLUXO DE CAIXA SIMPLES</span><button onclick="cp(this)">Copiar</button></div><pre>Monte uma planilha de entradas e saídas dos próximos 90 dias.
+Colunas: data, descrição, categoria (lista de opções), entrada, saída e saldo acumulado com fórmula.
+Destaque em vermelho os dias em que o saldo fica negativo.</pre></div>
+<div class="prompt"><div class="h"><span>3 · ORÇAMENTO PRO CLIENTE</span><button onclick="cp(this)">Copiar</button></div><pre>Monte uma planilha de orçamento com: item, quantidade, preço unitário, desconto em % e total com fórmula.
+No fim, subtotal, impostos de [x]% e total final. Deixe pronta pra eu exportar em Excel e mandar pro cliente.</pre></div>
+<div class="prompt"><div class="h"><span>4 · PLANO DO MÊS EM QUADRO</span><button onclick="cp(this)">Copiar</button></div><pre>Crie um quadro com o plano de [lançamento / campanha / mutirão de vendas] da minha empresa nas próximas 4 semanas.
+Cada etapa com o nome do responsável, a data e o que precisa estar pronto. Agrupe por semana.</pre></div>
+<div class="prompt"><div class="h"><span>5 · FUNIL DE CLIENTES</span><button onclick="cp(this)">Copiar</button></div><pre>Com essa lista de clientes que eu vou colar, monte uma planilha com a etapa de cada um (lista de opções: novo, conversando, proposta, fechou, perdeu)
+e uma aba de resumo com quantos estão em cada etapa e o valor total parado em proposta.</pre></div>
+
+<h2 class="t">O cuidado que ninguém comenta</h2>
+<div class="two">
+<div class="col no"><h4>NÃO FAÇA</h4><ul><li>Confiar no total sem clicar na fórmula e conferir.</li><li>Colar dado sensível de cliente (CPF, saúde) numa ferramenta ainda em teste.</li><li>Jogar fora a sua planilha atual no primeiro dia.</li></ul></div>
+<div class="col si"><h4>FAÇA</h4><ul><li>Teste com um mês de números cujo resultado você já conhece.</li><li>Exporte uma cópia em Excel no fim do mês.</li><li>Use o histórico de mudanças pra ver quem mexeu no quê.</li></ul></div>
+</div>
+<div class="aviso">Ainda não tem plano pago? Faça assim hoje: peça no Claude grátis "monte essa planilha em formato de tabela e me diga a fórmula de cada coluna", e cole no Google Planilhas ou no Excel.</div>
+
+<div class="cta"><b style="font-family:'Plus Jakarta Sans';font-size:20px">Quer captar clientes qualificados sem investir em tráfego pago?</b><p style="margin:8px 0 0;color:var(--gray);font-size:16px">Conheça o Método Demanda Infinita®: <a href="https://demandainfinita.com" style="color:var(--green)">demandainfinita.com</a></p></div>
+<p style="font-size:13px;color:var(--gray);margin-top:30px">Fontes: Anthropic, "Introducing Claude Whiteboards, Claude Sheets, and Claude Data" (claude.com, 10/11/2026) e vídeo oficial no canal Claude do YouTube (10/11/2026); SD Times e Reworked (cobertura do lançamento, 11/2026).</p>
+</div>
+<script>function cp(b){navigator.clipboard.writeText(b.closest('.prompt').querySelector('pre').innerText).then(()=>{b.textContent='Copiado!';setTimeout(()=>b.textContent='Copiar',1500)})}</script>
+</body></html>
