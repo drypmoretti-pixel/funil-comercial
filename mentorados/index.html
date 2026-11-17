@@ -1356,16 +1356,18 @@ sb.auth.onAuthStateChange(ev => {
 });
 
 async function iniciar() {
-  const { data: { user } } = await sb.auth.getUser();
+  const { data: { session } } = await sb.auth.getSession();   // sessão local (getUser fazia uma ida e volta à rede só pra isso; o RLS é quem protege os dados)
+  const user = session.user;
   S.user = user;
-  const { data: perfil } = await sb.from('cli_perfis').select('*').eq('id', user.id).maybeSingle();
+  // perfil, etapas e lista de clientes são independentes: pedir juntos (cada ida ao Supabase custa ~0,7 s a partir do Brasil)
+  const [{ data: perfil }, etapas] = await Promise.all([sb.from('cli_perfis').select('*').eq('id', user.id).maybeSingle(), q(sb.from('cli_etapas').select('*').order('ordem')), clientes().catch(() => null)]);
   if (!perfil) {
     $('#carregando').style.display = 'flex';
     $('#carregando').innerHTML = 'Seu login não está vinculado a nenhum perfil. Fale com o Igor.<br><button class="btn" style="margin-top:14px" data-act="sair">Sair</button>';
     return;
   }
   S.perfil = perfil; S.admin = perfil.role === 'admin';
-  S.etapas = await q(sb.from('cli_etapas').select('*').order('ordem'));
+  S.etapas = etapas;
   if (!S.admin && !perfil.cliente_id) {
     $('#carregando').style.display = 'flex';
     $('#carregando').innerHTML = 'Seu perfil ainda não está vinculado a um mentorado. Fale com o Igor.<br><button class="btn" style="margin-top:14px" data-act="sair">Sair</button>';
@@ -1379,8 +1381,10 @@ async function iniciar() {
   if (aluno) { $('#menu-tour').hidden = true; $('#menu-tutorial').hidden = true; $$('.menu-movel').forEach(b => { b.hidden = true; }); }
   $('#carregando').style.display = 'none'; $('#app').style.display = 'flex';
   if (!location.hash) history.replaceState(null, '', S.admin ? '#/admin/dashboard' : '#/inicio');   // replaceState não dispara hashchange (evita render duplicado)
-  await carregarNotifs();
+  const pNotifs = carregarNotifs().catch(e => console.warn('notifs', e));   // mentorado: o sino carrega em paralelo, a tela não espera por ele
+  if (S.admin) await pNotifs;                                  // admin: contadores da fila (Aprovações etc.) já na 1ª tela
   await render();
+  await pNotifs;
   assinarRealtime();
   if (!S.admin && !aluno) { await verificarTour(); await lembreteChecklist(); }
 }
@@ -1389,19 +1393,21 @@ async function iniciar() {
 const NOTIF_SECOES = ['Aprovações', 'Indicações', 'Eventos', 'Posts', 'Aulas', 'Drive', 'Checklist', 'Plano', 'Pendências'];
 async function carregarNotifs() {
   const lista = [];
-  try {
-    const aluno = !S.admin && tipoDe((S.clientes || []).find(c => c.id === S.perfil.cliente_id)) === 'aluno';
-    if (S.admin) await notifsAdmin(lista); else if (!aluno) await notifsCliente(lista, S.perfil.cliente_id);
-  } catch (e) { console.warn('notifs', e); }
-  try {
-    if (S.admin) { const cls = await clientes(); await notifsIndicacaoAdmin(lista, id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado'); }
-    else { await notifsEventosAulas(lista); if (tipoDe((S.clientes || []).find(c => c.id === S.perfil.cliente_id)) !== 'aluno') await notifsIndicacaoCliente(lista, S.perfil.cliente_id); }
-  } catch (e) { console.warn('notifs (aulas/eventos/indicações)', e); }
+  const aluno = !S.admin && tipoDe((S.clientes || []).find(c => c.id === S.perfil.cliente_id)) === 'aluno';
+  await Promise.all([                                           // três grupos independentes: juntos custam o tempo do mais lento, não a soma
+    (async () => { try {
+      if (S.admin) await notifsAdmin(lista); else if (!aluno) await notifsCliente(lista, S.perfil.cliente_id);
+    } catch (e) { console.warn('notifs', e); } })(),
+    (async () => { try {
+      if (S.admin) { const cls = await clientes(); await notifsIndicacaoAdmin(lista, id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado'); }
+      else { await notifsEventosAulas(lista); if (!aluno) await notifsIndicacaoCliente(lista, S.perfil.cliente_id); }
+    } catch (e) { console.warn('notifs (aulas/eventos/indicações)', e); } })(),
+    (async () => { try {
+      const l = await paginado(() => sb.from('cli_notif_lidas').select('chave').eq('perfil_id', S.user.id).order('chave'));
+      S.lidas = new Set(l.map(x => x.chave));
+    } catch (e) { /* segue sem o estado de lida */ } })(),
+  ]);
   S.notifs = lista.sort((a, b) => b.quando - a.quando);
-  try {
-    const l = await paginado(() => sb.from('cli_notif_lidas').select('chave').eq('perfil_id', S.user.id).order('chave'));
-    S.lidas = new Set(l.map(x => x.chave));
-  } catch (e) { /* segue sem o estado de lida */ }
   renderNotifs();
   if (S.ctx) montarNav(S.ctx);
 }
@@ -1441,6 +1447,9 @@ async function notifsAdmin(out) {
   }
 }
 async function notifsCliente(out, clienteId) {
+  const p_novosArq = q(sb.from('cli_arquivos').select('id,nome,pasta,created_at,enviado_por').eq('cliente_id', clienteId).is('post_id', null).gte('created_at', new Date(Date.now() - 14 * 864e5).toISOString()).order('created_at', { ascending: false }).limit(30)); p_novosArq.catch(() => {});
+  const p_planos = q(sb.from('cli_planos').select('id').eq('cliente_id', clienteId).eq('status', 'ativo')); p_planos.catch(() => {});
+  const p_pend = q(sb.from('cli_materiais_pendentes').select('id,item,pedido_em').eq('cliente_id', clienteId).eq('status', 'pendente')); p_pend.catch(() => {});
   const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,status').eq('cliente_id', clienteId).order('id'));
   S.contPosts = posts.filter(p => p.status === 'aprovado' || p.status === 'ajustes').length;
   if (posts.length) {
@@ -1453,15 +1462,15 @@ async function notifsCliente(out, clienteId) {
     });
   }
   // material novo no Drive que NÃO foi o próprio mentorado que enviou (time ou automação das gravações)
-  const novosArq = await q(sb.from('cli_arquivos').select('id,nome,pasta,created_at,enviado_por').eq('cliente_id', clienteId).is('post_id', null).gte('created_at', new Date(Date.now() - 14 * 864e5).toISOString()).order('created_at', { ascending: false }).limit(30));
+  const novosArq = await p_novosArq;
   novosArq.filter(a => a.enviado_por !== S.user.id).forEach(a => out.push({ chave: `arq-${a.id}`, sec: 'Drive', titulo: 'Material novo no seu Drive', desc: `${a.nome}${a.pasta ? ' · ' + a.pasta : ''}`, quando: new Date(a.created_at), href: '#/drive' }));
-  const planos = await q(sb.from('cli_planos').select('id').eq('cliente_id', clienteId).eq('status', 'ativo'));
+  const planos = await p_planos;
   if (planos.length) {
     const atras = await q(sb.from('cli_plano_itens').select('id').eq('plano_id', planos[0].id).eq('concluido', false).lt('prazo', hojeISO()));
     if (atras.length) out.push({ chave: `plano-atrasado-${hojeISO()}`, sec: 'Plano', titulo: `${atras.length} ${atras.length === 1 ? 'item do plano está atrasado' : 'itens do plano estão atrasados'}`,
       desc: 'Abra o plano e marque o que já fez', quando: new Date(), href: '#/plano' });
   }
-  const pend = await q(sb.from('cli_materiais_pendentes').select('id,item,pedido_em').eq('cliente_id', clienteId).eq('status', 'pendente'));
+  const pend = await p_pend;
   pend.forEach(p => out.push({ chave: `pend-${p.id}`, sec: 'Pendências', titulo: 'Falta você enviar um material', desc: p.item, quando: new Date(p.pedido_em), href: '#/inicio' }));
 }
 function renderNotifs() {
