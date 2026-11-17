@@ -2683,6 +2683,16 @@ html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="
 #tab-ia .ia-cfg h4 { font-size:.98rem; } #tab-ia .ia-cfg p { font-size:.85rem; }
 #tab-ia #ia-modelos { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(420px,100%), 1fr)); gap:12px; align-items:start; }
 #tab-ia .ia-mod { margin-bottom:0; } #tab-ia .ia-mod textarea { min-height:84px; font-size:.92rem; line-height:1.5; }
+#tab-email .fx-no.cond::before { background:var(--accent); } #tab-email .fx-no.cond { border-style:solid; }
+#tab-email .fx-cond-q { font-size:1rem; font-weight:800; } #tab-email .fx-no .desc { font-size:.9rem; color:var(--text-secondary); line-height:1.5; margin:8px 0 0 42px; }
+#tab-email .fx-no details { margin:12px 0 0 42px; } #tab-email .fx-no details > summary { cursor:pointer; font-weight:700; font-size:.88rem; }
+#tab-email .fx-mat { display:grid; grid-template-columns:minmax(120px,1fr) minmax(0,1.6fr) auto; gap:8px; align-items:center; padding:8px 0; border-bottom:1px solid var(--grid); }
+#tab-email .fx-mat .n b { display:block; font-size:.88rem; } #tab-email .fx-mat .n span { font-size:.78rem; color:var(--text-secondary); }
+#tab-email .fx-mat input, #tab-email .fx-var textarea { width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; font-size:.88rem; color:var(--text-primary); box-sizing:border-box; }
+#tab-email .fx-var { padding:10px 0; border-bottom:1px solid var(--grid); } #tab-email .fx-var label { display:block; font-size:.8rem; font-weight:700; color:var(--text-secondary); margin-bottom:5px; }
+#tab-email .fx-var textarea { min-height:78px; resize:vertical; line-height:1.5; } #tab-email .fx-var .btn { margin-top:6px; }
+@media (max-width: 640px) { #tab-email .fx-mat { grid-template-columns:1fr; } #tab-email .fx-no .meta, #tab-email .fx-no .stats, #tab-email .fx-no .desc, #tab-email .fx-no details { margin-left:0; } }
+#tab-email .em-chk { display:flex; gap:8px; align-items:flex-start; font-size:.88rem; margin-top:10px; cursor:pointer; } #tab-email .em-chk input { margin-top:3px; }
 #em-previa { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
 #em-previa.on { display:flex; } #em-previa .caixa { background:var(--surface-1); border-radius:14px; width:min(640px, 100%); height:min(90vh, 900px); display:flex; flex-direction:column; overflow:hidden; }
 #em-previa .topo { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; font-weight:700; } #em-previa iframe { flex:1; border:0; background:#F8F7F4; }
@@ -14169,7 +14179,8 @@ const TABS_COM_INDICADORES = ['dashboard', 'crm'];
 // ABA "E-mails": máquina de nutrição e eventos por e-mail (lê em_painel; escreve por em_config_set / em_sequencia_set / em_email_set).
 // Envio real = Edge Function email-motor (a cada 5 min) via Resend. Aqui só se controla: ligar/desligar, aprovar, editar, agendar.
 // ============================================================================
-let emDados = null, emDias = 30; const emAbertos = new Set();
+let emDados = null, emDias = 30, emGat = {}; const emAbertos = new Set(), emDet = new Set();
+const emDetToggle = el => { if (el.open) emDet.add(el.id); else emDet.delete(el.id); };
 const emN = v => v == null ? '—' : Number(v).toLocaleString('pt-BR');
 const emPct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
 const emQuando = iso => new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', '');
@@ -14181,6 +14192,8 @@ async function carregarEmail(silencioso) {
   if (!silencioso) el.textContent = 'Carregando...';
   const { data, error } = await sb.rpc('em_painel', { p_dias: emDias });
   if (error || !data) { el.textContent = 'Não consegui carregar: ' + (error ? error.message : 'sem resposta'); return; }
+  emGat = {};
+  await Promise.all((data.sequencias || []).filter(q => q.tipo === 'gatilho').map(async q => { const r = await sb.rpc('em_gatilho_painel', { p_seq: q.id }); if (r.data) emGat[q.id] = r.data; }));
   emDados = data; emRender();
 }
 async function emRpc(fn, args, btn, rotulo) {
@@ -14235,23 +14248,84 @@ function emRender() {
 const emDur = min => { min = Math.abs(Math.round(min)); const d = Math.floor(min / 1440), h = Math.floor((min % 1440) / 60), m = min % 60;
   if (d) return d + (d === 1 ? ' dia' : ' dias') + (h ? ' e ' + h + ' h' : ''); if (h) return h + ' h' + (m ? ' ' + m + ' min' : ''); return m + ' min'; };
 function emEditorHtml(e, q) {
+  const gat = q.tipo === 'gatilho';
+  const quandoHtml = gat
+    ? `<div><label>Enviar quantos minutos depois do download</label><input type="number" id="em-f-delay-${e.id}" min="0" max="1440" value="${e.offset_min}"><div class="dica">Só sai se estiver <b>aprovado</b>, dentro do horário e do teto. Passou de 72 h do download, não sai.</div></div>`
+    : `<div><label>Quando enviar</label><input type="datetime-local" id="em-f-quando-${e.id}" value="${emInputData(e.quando)}"><div class="dica">Só sai se estiver <b>aprovado</b>, dentro do horário e do teto. Nunca dispara com mais de 36 h de atraso.</div></div>`;
   return `<div class="em-ed ${emAbertos.has(e.id) ? 'on' : ''}" id="em-ed-${e.id}">
         <label>Nome interno (só você vê)</label><input type="text" id="em-f-nome-${e.id}" value="${relEsc(e.nome)}" maxlength="80">
-        <div class="dois"><div><label>Quando enviar</label><input type="datetime-local" id="em-f-quando-${e.id}" value="${emInputData(e.quando)}"><div class="dica">Só sai se estiver <b>aprovado</b>, dentro do horário e do teto. Nunca dispara com mais de 36 h de atraso.</div></div>
+        <div class="dois">${quandoHtml}
           <div><label>Situação</label><select id="em-f-status-${e.id}"><option value="rascunho" ${e.status === 'rascunho' ? 'selected' : ''}>Rascunho (não envia)</option><option value="aprovado" ${e.status === 'aprovado' ? 'selected' : ''}>Aprovado (pode enviar)</option><option value="pausado" ${e.status === 'pausado' ? 'selected' : ''}>Pausado</option></select></div></div>
         <label>Assunto</label><input type="text" id="em-f-assunto-${e.id}" value="${relEsc(e.assunto)}" maxlength="150">
         <label>Texto de prévia (aparece ao lado do assunto na caixa de entrada)</label><input type="text" id="em-f-preview-${e.id}" value="${relEsc(e.preview)}" maxlength="200">
         <label>Texto do e-mail</label><textarea id="em-f-corpo-${e.id}">${relEsc(e.corpo)}</textarea>
-        <div class="dica">Parágrafo = linha em branco. <b>**negrito**</b> · links colam sozinhos · <b>[imagem]</b> numa linha sozinha marca onde entra a imagem · <b>{nome}</b> vira o primeiro nome (sem nome, a saudação some).</div>
+        <div class="dica">Parágrafo = linha em branco. <b>**negrito**</b> · links colam sozinhos · <b>[imagem]</b> numa linha sozinha marca onde entra a imagem · <b>{nome}</b> vira o primeiro nome (sem nome, a saudação some).${gat ? ' <b>{material}</b> vira o nome do material que ele baixou e <b>{dor_texto}</b> vira o parágrafo da dor que ele marcou (sem dor, entra o texto padrão).' : ''}</div>
         <div class="dois"><div><label>Imagem (link https, opcional)</label><input type="url" id="em-f-img-${e.id}" value="${relEsc(e.imagem_url || '')}" placeholder="https://..."></div><div><label>Legenda da imagem</label><input type="text" id="em-f-leg-${e.id}" value="${relEsc(e.imagem_legenda || '')}" maxlength="200"></div></div>
-        <div class="dois"><div><label>Botão principal: texto</label><input type="text" id="em-f-r1-${e.id}" value="${relEsc(e.cta_rotulo || '')}" maxlength="60"></div><div><label>Botão principal: link</label><input type="url" id="em-f-u1-${e.id}" value="${relEsc(e.cta_url || '')}" placeholder="https://..."></div></div>
+        <div class="dois"><div><label>Botão principal: texto</label><input type="text" id="em-f-r1-${e.id}" value="${relEsc(e.cta_rotulo || '')}" maxlength="60"></div><div><label>Botão principal: link</label><input type="url" id="em-f-u1-${e.id}" value="${relEsc(e.cta_url || '')}" placeholder="https://..." ${e.cta_usa_material ? 'disabled' : ''}></div></div>
+        ${gat ? `<label class="em-chk"><input type="checkbox" id="em-f-mat-${e.id}" ${e.cta_usa_material ? 'checked' : ''} onchange="document.getElementById('em-f-u1-${e.id}').disabled = this.checked"> O botão principal abre o link do material que a pessoa baixou (cadastrado no fluxo, em "Qual material ele baixou?")</label>` : ''}
         <div class="dois"><div><label>Botão secundário: texto (opcional)</label><input type="text" id="em-f-r2-${e.id}" value="${relEsc(e.cta2_rotulo || '')}" maxlength="80"></div><div><label>Botão secundário: link</label><input type="url" id="em-f-u2-${e.id}" value="${relEsc(e.cta2_url || '')}" placeholder="https://..."></div></div>
         <div class="acoes"><button type="button" class="btn" onclick="emSalvarEmail(${e.id}, ${q.id}, this)">Salvar</button>
           <button type="button" class="btn btn-secondary" onclick="emPrevia(${e.id})">Pré-visualizar</button>
           <button type="button" class="btn btn-secondary" onclick="emTeste(${e.id}, this)">Enviar teste pra mim</button>
           <button type="button" class="btn btn-secondary" onclick="emExcluirEmail(${e.id})">Excluir</button></div></div>`;
 }
+async function emSalvarMaterial(tagId, btn) { await emRpc('em_material_set', { p_tag_id: tagId, p_url: document.getElementById('em-mat-' + tagId).value.trim() }, btn); }
+async function emSalvarVariante(seqId, dor, idx, btn) { await emRpc('em_variante_set', { p_seq: seqId, p_dor: dor, p_texto: document.getElementById('em-var-' + seqId + '-' + idx).value }, btn); }
+async function emNovaVariante(seqId) {
+  const dor = prompt('Um trecho da dor (o formulário traz frases como "Meu comercial fica parado esperando lead aparecer"). Escreva uma palavra ou trecho que só essa dor tem:', ''); if (!dor || dor.trim().length < 3) return;
+  const texto = prompt('Texto que entra no e-mail pra quem marcou essa dor:', ''); if (!texto || !texto.trim()) return;
+  await emRpc('em_variante_set', { p_seq: seqId, p_dor: dor.trim(), p_texto: texto.trim() });
+}
+function emSeqGatilhoHtml(q) {
+  const g = emGat[q.id] || { variantes: [], materiais: [], dores: [] }, seg = (q.segmento && q.segmento.funis) || [];
+  const todosFunis = (emDados.audiencia.por_funil || []).map(f => f.funil).filter(f => f !== '(sem funil)');
+  const emails = [...q.emails].sort((a, b) => a.offset_min - b.offset_min || a.id - b.id);
+  const semLink = g.materiais.filter(m => !m.url && m.leads30 > 0), ativos = g.materiais.filter(m => m.leads30 > 0 || m.url), outros = g.materiais.filter(m => !(m.leads30 > 0 || m.url));
+  const linhaMat = m => `<div class="fx-mat"><div class="n"><b>${relEsc(m.nome)}</b><span>${m.leads30} lead${m.leads30 === 1 ? '' : 's'} em 30 dias${!m.url && m.leads30 > 0 ? ' · <b style="color:var(--warning)">sem link: não recebe</b>' : ''}</span></div>
+      <input type="url" id="em-mat-${m.tag_id}" value="${relEsc(m.url || '')}" placeholder="https://link-do-material"><button type="button" class="btn btn-secondary" onclick="emSalvarMaterial(${m.tag_id}, this)">Salvar</button></div>`;
+  const dId = k => 'em-det-' + k + '-' + q.id, aberto = k => emDet.has(dId(k)) ? 'open' : '';
+  const dorNome = d => d === 'padrao' ? 'Qualquer outra dor (ou sem dor marcada)' : 'Se a dor marcada contém “' + relEsc(d) + '”';
+  const marco = `<div class="fx-marco"><div class="rot">Gatilho</div><div class="q">Lead novo baixou um material</div>
+      <div class="dica" style="font-size:.84rem;color:var(--text-secondary);">${q.ativa && q.gatilho_desde ? 'Valendo para quem baixar a partir de ' + emQuando(q.gatilho_desde) + '.' : 'Ao ligar a cadência, vale só para quem baixar dali em diante. Quem já está no CRM não recebe.'}</div></div>`;
+  const noMaterial = `<div class="fx-no cond"><div class="topo"><div class="fx-num">?</div><div class="t"><b class="fx-cond-q">Qual material ele baixou?</b></div></div>
+      <div class="desc">O botão principal do e-mail leva ao link do material que ele baixou. <b>Sem link cadastrado, o e-mail daquela isca não sai.</b>${semLink.length ? ` <span class="em-tag warn">${semLink.length} isca${semLink.length === 1 ? '' : 's'} com lead recente sem link</span>` : ''}</div>
+      <details id="${dId('mat')}" ${aberto('mat')} ontoggle="emDetToggle(this)"><summary>Links dos materiais (${ativos.length})</summary>${ativos.map(linhaMat).join('') || '<p class="muted">Nenhuma isca com lead nos últimos 30 dias.</p>'}
+        ${outros.length ? `<details id="${dId('mat2')}" ${aberto('mat2')} ontoggle="emDetToggle(this)" style="margin:10px 0 0;"><summary>Outras iscas, sem lead nos últimos 30 dias (${outros.length})</summary>${outros.map(linhaMat).join('')}</details>` : ''}</details></div>`;
+  const noDor = `<div class="fx-no cond"><div class="topo"><div class="fx-num">?</div><div class="t"><b class="fx-cond-q">Qual dor ele marcou?</b></div></div>
+      <div class="desc">O parágrafo do meio muda conforme a dor que a pessoa marcou no formulário. Sem dor, vale o texto padrão. É texto pronto, sem IA: você edita quando quiser.</div>
+      <details id="${dId('dor')}" ${aberto('dor')} ontoggle="emDetToggle(this)"><summary>Textos por dor (${g.variantes.length})</summary>
+        ${g.variantes.map((v, i) => `<div class="fx-var"><label for="em-var-${q.id}-${i}">${dorNome(v.dor)}</label><textarea id="em-var-${q.id}-${i}" maxlength="700">${relEsc(v.texto)}</textarea>
+          <button type="button" class="btn btn-secondary" onclick="emSalvarVariante(${q.id}, '${relEsc(v.dor).replace(/'/g, '')}', ${i}, this)">Salvar</button></div>`).join('')}
+        <button type="button" class="btn btn-secondary" style="margin-top:10px;" onclick="emNovaVariante(${q.id})">+ Texto pra outra dor</button>
+        ${g.dores.length ? `<div class="dica" style="font-size:.8rem;color:var(--text-secondary);margin-top:12px;"><b>Dores mais marcadas (90 dias):</b><br>${g.dores.map(d => d.n + ' · ' + relEsc(d.dor)).join('<br>')}</div>` : ''}</details></div>`;
+  let fluxo = marco + '<div class="fx-lig"><span>novo lead</span></div>' + noMaterial + '<div class="fx-lig"></div>' + noDor, ant = null, n = 0;
+  for (const e of emails) {
+    n++; const dm = ant === null ? e.offset_min : e.offset_min - ant;
+    fluxo += `<div class="fx-lig"><span>${dm < 1 ? 'em seguida' : 'espera ' + emDur(dm)}${ant === null ? ' depois do download' : ''}</span></div>`;
+    fluxo += `<div class="fx-no em-mail ${e.status}" id="em-mail-${e.id}"><div class="topo em-mail-topo"><div class="fx-num">${n}</div>
+        <div class="t"><b>${relEsc(e.nome)}</b><span class="ass">${relEsc(e.assunto || '(sem assunto)')}</span></div>
+        <button type="button" class="btn btn-secondary" onclick="emAbrirEd(${e.id})">Editar</button></div>
+      <div class="meta"><span class="quando">${e.offset_min < 1 ? 'na hora do download' : emDur(e.offset_min) + ' depois do download'}</span>${emStatusTag(e.status)}</div>
+      <div class="stats"><span>enviados <b>${emN(e.enviados)}</b></span><span>abriram <b>${emN(e.abertos)}</b></span><span>clicaram <b>${emN(e.clicados)}</b></span>${e.falhas ? `<span style="color:var(--critical)">falhas <b>${e.falhas}</b></span>` : ''}</div>
+      ${emEditorHtml(e, q)}</div>`;
+    ant = e.offset_min;
+  }
+  fluxo += '<div class="fx-lig"></div><div class="fx-fim">Fim</div>';
+  const lado = `<div class="fx-lado">
+      <div class="fx-caixa entra"><h5>Quem entra</h5>Todo lead <b>novo</b> do CRM nos funis:
+        <ul style="margin-top:6px;">${seg.length ? seg.map(f => `<li>${relEsc(f)}</li>`).join('') : '<li style="color:var(--critical)">nenhum funil marcado: ninguém recebe</li>'}</ul>
+        <details><summary>Mudar quem entra</summary><div class="em-seg-funis" id="em-funis-${q.id}">
+          ${todosFunis.map(f => `<label><input type="checkbox" value="${relEsc(f)}" ${seg.includes(f) ? 'checked' : ''}> ${relEsc(f)}</label>`).join('')}</div>
+          <button type="button" class="btn btn-secondary" onclick="emSalvarFunis(${q.id}, this)">Salvar quem entra</button></details></div>
+      <div class="fx-caixa"><h5>Não recebe se</h5><ul><li>já é cliente, mentorado ou aluno</li><li>ganhou no CRM</li><li>já marcou reunião com a IA SDR, ou está com atendimento humano</li><li>a isca dele não tem link cadastrado</li><li>descadastrou, devolveu ou marcou spam</li><li>recebeu outro e-mail nas últimas 20 h (o dele sai assim que liberar)</li></ul></div>
+      <div class="fx-caixa"><h5>Regras de envio</h5>Só sai o que estiver <b>aprovado</b>, seg a sex dentro do horário e do teto. Passou de 72 h do download, não sai. Lead novo passa na frente do convite de evento no teto do dia.</div></div>`;
+  return `<section class="em-seq ${q.ativa ? '' : 'desl'}"><div class="em-seq-topo"><div><h3>${relEsc(q.nome)}</h3>
+      <div class="em-seq-meta" style="margin:6px 0 0;"><span class="em-tag ${q.ativa ? 'ok' : ''}">${q.ativa ? 'cadência ligada' : 'cadência desligada'}</span><span>1 e-mail por lead novo · dispara sozinha</span></div></div>
+      <div class="acoes"><button type="button" class="btn ${q.ativa ? 'btn-secondary' : ''}" onclick="emSeqLigar(${q.id}, ${!q.ativa})">${q.ativa ? 'Desligar cadência' : 'Ligar cadência'}</button></div></div>
+    <div class="fx-grade"><div class="fx">${fluxo}</div>${lado}</div></section>`;
+}
 function emSeqHtml(q) {
+  if (q.tipo === 'gatilho') return emSeqGatilhoHtml(q);
   const todosFunis = (emDados.audiencia.por_funil || []).map(f => f.funil).filter(f => f !== '(sem funil)');
   const seg = (q.segmento && q.segmento.funis) || [], ev = q.tipo === 'evento', base = new Date(q.base_em);
   // linha do tempo: e-mails + marco (evento ou início), em ordem de relógio
@@ -14295,13 +14369,17 @@ function emAbrirEd(id) { const el = document.getElementById('em-ed-' + id); el.c
 const emV = (id) => document.getElementById(id).value;
 async function emSalvarEmail(id, seqId, btn) {
   const seq = emDados.sequencias.find(q => q.id === seqId);
-  const quando = new Date(emV('em-f-quando-' + id));
-  if (isNaN(quando)) { alert('Confira a data e a hora do envio.'); return; }
+  const gat = seq.tipo === 'gatilho';
+  const quando = gat ? null : new Date(emV('em-f-quando-' + id));
+  if (!gat && isNaN(quando)) { alert('Confira a data e a hora do envio.'); return; }
+  const delay = gat ? parseInt(emV('em-f-delay-' + id), 10) : 0;
+  if (gat && !(delay >= 0)) { alert('Confira os minutos depois do download.'); return; }
   const st = emV('em-f-status-' + id);
-  if (st === 'aprovado' && !confirm('Aprovar este e-mail?\n\nSe a sequência e o envio estiverem ligados, ele sai em ' + emQuando(quando.toISOString()) + ' para todo mundo que estiver apto.')) return;
+  if (st === 'aprovado' && !confirm('Aprovar este e-mail?\n\n' + (gat ? 'Se a cadência e o envio estiverem ligados, ele sai ' + emDur(delay) + ' depois do download de cada lead NOVO (só quem baixar depois de você ligar).' : 'Se a sequência e o envio estiverem ligados, ele sai em ' + emQuando(quando.toISOString()) + ' para todo mundo que estiver apto.'))) return;
   const campos = { nome: emV('em-f-nome-' + id), assunto: emV('em-f-assunto-' + id), preview: emV('em-f-preview-' + id), corpo: emV('em-f-corpo-' + id), imagem_url: emV('em-f-img-' + id), imagem_legenda: emV('em-f-leg-' + id),
     cta_rotulo: emV('em-f-r1-' + id), cta_url: emV('em-f-u1-' + id), cta2_rotulo: emV('em-f-r2-' + id), cta2_url: emV('em-f-u2-' + id),
-    offset_min: Math.round((quando - new Date(seq.base_em)) / 60000), status: st };
+    offset_min: gat ? delay : Math.round((quando - new Date(seq.base_em)) / 60000), status: st };
+  if (gat) campos.cta_usa_material = document.getElementById('em-f-mat-' + id).checked;
   if (await emRpc('em_email_set', { p_id: id, p_campos: campos }, btn)) { emAbertos.add(id); emRender(); }
 }
 async function emNovoEmail(seqId) { const r = await emRpc('em_email_novo', { p_sequencia_id: seqId }); if (r && r.id) { emAbertos.add(r.id); emRender(); } }
@@ -14356,11 +14434,14 @@ function emFecharPrevia() { document.getElementById('em-previa').classList.remov
 function emPrevia(id) {
   const g = x => emV('em-f-' + x + '-' + id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const corpo = g('corpo').trim().replace(/\{nome\}/g, 'Maria'), blocos = corpo.split(/\n{2,}/).map(b => b.trim()).filter(Boolean);
+  const seqDe = (emDados.sequencias || []).find(q => q.emails.some(e => e.id === id)), gat = seqDe && seqDe.tipo === 'gatilho', gv = (gat && emGat[seqDe.id]) ? emGat[seqDe.id].variantes : [];
+  const dorEx = (gv.find(v => v.dor !== 'padrao') || gv[0] || {}).texto || '';
+  const usaMat = gat && document.getElementById('em-f-mat-' + id) && document.getElementById('em-f-mat-' + id).checked;
+  const corpo = g('corpo').trim().replace(/\{nome\}/g, 'Maria').replace(/\{material\}/g, 'Kit Claude').replace(/\{dor_texto\}/g, dorEx), blocos = corpo.split(/\n{2,}/).map(b => b.trim()).filter(Boolean);
   const inline = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1" style="color:#008E43;font-weight:700">$1</a>').replace(/\n/g, '<br>');
   const img = g('img') ? `<div style="padding:4px 0 18px"><img src="${esc(g('img'))}" style="width:100%;border-radius:10px;border:1px solid #dcd9d0">${g('leg') ? `<div style="font-size:12px;color:#6b7a70;padding-top:6px">${esc(g('leg'))}</div>` : ''}</div>` : '';
   const marca = blocos.includes('[imagem]');
-  const b1 = g('r1') && g('u1') ? `<a href="#" style="display:inline-block;background:#008E43;color:#fff;font-weight:700;padding:15px 28px;border-radius:10px;text-decoration:none;margin:6px 0 12px">${esc(g('r1'))}</a><br>` : '';
+  const b1 = g('r1') && (g('u1') || usaMat) ? `<a href="#" style="display:inline-block;background:#008E43;color:#fff;font-weight:700;padding:15px 28px;border-radius:10px;text-decoration:none;margin:6px 0 12px">${esc(g('r1'))}</a><br>` : '';
   const b2 = g('r2') && g('u2') ? `<a href="#" style="display:inline-block;border:2px solid #008E43;color:#008E43;font-weight:700;padding:11px 22px;border-radius:10px;text-decoration:none;margin:0 0 12px">${esc(g('r2'))}</a>` : '';
   const html = `<body style="margin:0;background:#F8F7F4;font-family:Helvetica,Arial,sans-serif"><div style="max-width:560px;margin:0 auto;padding:24px 12px"><div style="background:#fff;border-radius:16px;padding:24px 30px 28px"><div style="text-align:center"><img src="https://demandainfinita.com/logo-demanda-infinita.png" width="72" height="72"></div>
     <div style="font-size:12px;color:#8a978e;text-align:center;margin:6px 0 14px">Assunto: ${esc(g('assunto').replace(/\{nome\}/g, 'Maria'))}</div>
