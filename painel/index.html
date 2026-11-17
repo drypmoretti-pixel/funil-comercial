@@ -2550,6 +2550,65 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 #tab-ia .ia-mod textarea { width:100%; min-height:74px; resize:vertical; padding:9px 10px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; font-size:.86rem; line-height:1.45; }
 #tab-ia .ia-mod .linha { display:flex; align-items:center; gap:12px; margin-top:8px; flex-wrap:wrap; }
 #tab-ia .ia-mod.inativo { opacity:.65; }
+/* ---------- aba E-mails ---------- */
+#tab-email .ia-topo-dir { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+#tab-email .ia-topo-dir .btn, #tab-email .em-cfg .btn, #tab-email .em-seq .btn { width:auto; padding:8px 16px; font-size:.82rem; }
+#tab-email .em-pill { display:inline-flex; align-items:center; gap:8px; font-size:.82rem; font-weight:700; padding:7px 13px; border-radius:999px; background:var(--field-bg); color:var(--text-primary); }
+#tab-email .em-pill i { width:9px; height:9px; border-radius:50%; background:var(--muted); }
+#tab-email .em-pill.ok { background:rgba(63,203,74,.16); } #tab-email .em-pill.ok i { background:var(--good); box-shadow:0 0 0 3px rgba(12,163,12,.18); }
+#tab-email .em-pill.off { background:rgba(250,178,25,.18); } #tab-email .em-pill.off i { background:var(--warning); }
+#tab-email .em-alerta { border:1px solid var(--warning); background:#fff7e0; color:#6b4a00; border-radius:12px; padding:12px 16px; margin-bottom:14px; font-size:.88rem; line-height:1.5; }
+#tab-email .em-alerta.ruim { border-color:var(--critical); background:#fdeaea; color:#7a1f1f; }
+#tab-email .em-card { margin-bottom:16px; }
+#tab-email .em-agora { display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:16px; }
+#tab-email .em-bloco { border:1px solid var(--border); border-radius:var(--card-radius); padding:14px 16px; background:var(--surface-1); }
+#tab-email .em-bloco .rot { font-size:.7rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+#tab-email .em-bloco .val { font-size:1.7rem; font-weight:800; letter-spacing:-.03em; line-height:1.1; margin-top:6px; font-variant-numeric:tabular-nums; }
+#tab-email .em-bloco .val small { font-size:.95rem; font-weight:600; color:var(--muted); }
+#tab-email .em-bloco .sub { font-size:.78rem; color:var(--text-secondary); margin-top:6px; line-height:1.45; }
+#tab-email .em-seg { display:inline-flex; gap:2px; background:var(--field-bg); border-radius:999px; padding:3px; }
+#tab-email .em-seg button { border:0; background:none; font:inherit; font-size:.78rem; font-weight:600; color:var(--text-secondary); padding:6px 14px; border-radius:999px; cursor:pointer; }
+#tab-email .em-seg button.on { background:var(--surface-1); color:var(--text-primary); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+#tab-email .em-kpis { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px; }
+#tab-email .em-tag { font-size:.7rem; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--field-bg); color:var(--text-secondary); white-space:nowrap; }
+#tab-email .em-tag.ok { background:rgba(63,203,74,.16); color:#1b7a2a; } #tab-email .em-tag.warn { background:rgba(250,178,25,.2); color:#8a5a00; } #tab-email .em-tag.ruim { background:rgba(208,59,59,.2); color:#a12a2a; }
+#tab-email .em-seq { border:1px solid var(--border); border-radius:var(--card-radius); background:var(--surface-1); padding:16px 18px; margin-bottom:16px; }
+#tab-email .em-seq h3 { margin:0; font-size:1.05rem; }
+#tab-email .em-seq-topo { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+#tab-email .em-seq-meta { display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:.82rem; color:var(--text-secondary); margin:8px 0 12px; }
+#tab-email .em-seq-meta input[type=datetime-local] { padding:6px 8px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; font-size:.82rem; }
+#tab-email .em-mail { border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:10px; background:var(--surface-1); }
+#tab-email .em-mail-topo { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+#tab-email .em-mail-topo .t { flex:1 1 260px; min-width:0; }
+#tab-email .em-mail-topo .t b { display:block; font-size:.9rem; } #tab-email .em-mail-topo .t span { font-size:.78rem; color:var(--text-secondary); }
+#tab-email .em-mail-stats { display:flex; gap:14px; font-size:.78rem; color:var(--text-secondary); flex-wrap:wrap; }
+#tab-email .em-mail-stats b { color:var(--text-primary); font-variant-numeric:tabular-nums; }
+#tab-email .em-ed { display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--grid); }
+#tab-email .em-ed.on { display:block; }
+#tab-email .em-ed label { display:block; font-size:.74rem; font-weight:700; color:var(--text-secondary); margin:10px 0 4px; }
+#tab-email .em-ed input[type=text], #tab-email .em-ed input[type=url], #tab-email .em-ed input[type=datetime-local], #tab-email .em-ed select, #tab-email .em-ed textarea { width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; font-size:.86rem; box-sizing:border-box; }
+#tab-email .em-ed textarea { min-height:190px; resize:vertical; line-height:1.5; }
+#tab-email .em-ed .dois { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; }
+#tab-email .em-ed .dica { font-size:.74rem; color:var(--muted); margin-top:4px; line-height:1.4; }
+#tab-email .em-ed .acoes { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+#tab-email .em-seg-funis { display:flex; flex-wrap:wrap; gap:6px 14px; margin:8px 0; font-size:.82rem; }
+#tab-email .em-seg-funis label { display:inline-flex; gap:6px; align-items:center; cursor:pointer; }
+#tab-email .em-linha { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--grid); font-size:.84rem; }
+#tab-email .em-linha:last-child { border-bottom:0; } #tab-email .em-linha .q { flex:1 1 auto; min-width:0; } #tab-email .em-linha .n { font-variant-numeric:tabular-nums; font-weight:700; }
+#tab-email .em-feed { display:grid; grid-template-columns:110px 1fr; gap:10px; padding:7px 0; border-bottom:1px solid var(--grid); font-size:.82rem; }
+#tab-email .em-feed:last-child { border-bottom:0; } #tab-email .em-feed .h { color:var(--muted); font-variant-numeric:tabular-nums; }
+#tab-email .em-config { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap:14px; }
+#tab-email .em-cfg { border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
+#tab-email .em-cfg h4 { margin:0 0 4px; font-size:.9rem; } #tab-email .em-cfg p { margin:0 0 10px; font-size:.78rem; color:var(--text-secondary); line-height:1.45; }
+#tab-email .em-cfg .linha { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+#tab-email .em-cfg input[type=number] { width:72px; padding:7px 8px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; }
+#tab-email .em-cfg input[type=text], #tab-email .em-cfg input[type=email] { padding:7px 9px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; min-width:0; flex:1 1 150px; }
+#tab-email .em-cfg .dias { display:flex; gap:4px; flex-wrap:wrap; margin:8px 0; }
+#tab-email .em-cfg .dias label { font-size:.76rem; border:1px solid var(--border); border-radius:8px; padding:4px 9px; cursor:pointer; user-select:none; }
+#tab-email .em-cfg .dias input { display:none; } #tab-email .em-cfg .dias label.on { background:rgba(63,203,74,.16); border-color:var(--accent); font-weight:700; }
+#em-previa { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
+#em-previa.on { display:flex; } #em-previa .caixa { background:var(--surface-1); border-radius:14px; width:min(640px, 100%); height:min(90vh, 900px); display:flex; flex-direction:column; overflow:hidden; }
+#em-previa .topo { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; font-weight:700; } #em-previa iframe { flex:1; border:0; background:#F8F7F4; }
 </style>
 </head>
 <body>
@@ -2589,6 +2648,7 @@ form.form-grid.form-collapse:not(.open) { display: none; }
         <button data-tab="instagram" title="Instagram" id="nav-instagram" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></button>
         <button data-tab="youtube" title="YouTube" id="nav-youtube" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><polygon points="10,9 15,12 10,15" fill="currentColor"/></svg></button>
         <button data-tab="ia" title="IA SDR" id="nav-ia" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1"/><circle cx="9" cy="13" r="1" fill="currentColor"/><circle cx="15" cy="13" r="1" fill="currentColor"/><path d="M9.5 16.5h5"/></svg></button>
+        <button data-tab="email" title="E-mails" id="nav-email" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></button>
         <button data-tab="admin" title="Admin" id="nav-admin" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M18 8l1.5 1.5L22 7"/></svg></button>
       </nav>
     </aside>
@@ -4120,39 +4180,55 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </section>
     </div>
 
-    <div class="tab-panel" id="tab-admin">
-      <section class="card">
-        <div class="section-title">
-          <h2>Novo SDR ou vendedor</h2>
+    <div class="tab-panel" id="tab-email">
+      <div class="tl-cab">
+        <div>
+          <h2>E-mails</h2>
+          <p class="muted" id="em-gerado">Carregando...</p>
         </div>
-        <p class="muted">Cria o login (e-mail/senha) e já cadastra a pessoa no painel — sem precisar mexer em banco de dados.</p>
-        <form class="form-grid" id="form-admin-perfil" onsubmit="return criarPerfilAdmin(event)">
-          <div>
-            <label>Nome</label>
-            <input type="text" id="adm-nome" required>
+        <div class="ia-topo-dir">
+          <span class="em-pill" id="em-pill"></span>
+          <button type="button" class="btn" id="em-btn-ativo" onclick="emAlternarAtivo()"></button>
+          <button type="button" class="btn btn-secondary" onclick="carregarEmail()">Atualizar</button>
+        </div>
+      </div>
+      <div class="em-alerta" id="em-alerta" style="display:none;"></div>
+      <div class="em-agora" id="em-agora"></div>
+
+      <section class="card em-card">
+        <div class="tl-card-cab">
+          <h3>Resultado do período</h3>
+          <div class="em-seg" id="em-seg-dias">
+            <button type="button" data-d="7">7 dias</button>
+            <button type="button" data-d="30" class="on">30 dias</button>
+            <button type="button" data-d="90">90 dias</button>
           </div>
-          <div>
-            <label>Papel</label>
-            <select id="adm-papel" required>
-              <option value="sdr">SDR</option>
-              <option value="vendedor">Vendedor</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <div>
-            <label>E-mail</label>
-            <input type="email" id="adm-email" required>
-          </div>
-          <div>
-            <label>Senha</label>
-            <input type="text" id="adm-senha" required>
-          </div>
-          <div class="full">
-            <button class="btn" type="submit" id="adm-btn-perfil">Criar login</button>
-          </div>
-        </form>
+        </div>
+        <div class="em-kpis" id="em-kpis"></div>
       </section>
 
+      <div id="em-seqs"></div>
+
+      <div class="ia-duas" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:16px;margin-bottom:16px;">
+        <section class="card em-card" style="margin-bottom:0;">
+          <div class="tl-card-cab"><h3>Quem pode receber</h3><button type="button" class="btn btn-secondary" style="width:auto;padding:6px 14px;font-size:.78rem;" onclick="emSincronizar(this)">Sincronizar com o CRM</button></div>
+          <div id="em-aud"></div>
+        </section>
+        <section class="card em-card" style="margin-bottom:0;">
+          <div class="tl-card-cab"><h3>Atividade recente</h3><span class="muted">mais novo primeiro</span></div>
+          <div id="em-feed"></div>
+        </section>
+      </div>
+
+      <section class="card em-card">
+        <div class="tl-card-cab"><h3>Configurações</h3><span class="muted">cada mudança fica registrada na atividade</span></div>
+        <div class="em-config" id="em-config"></div>
+      </section>
+
+      <div id="em-previa" onclick="if (event.target === this) emFecharPrevia()"><div class="caixa"><div class="topo"><span>Pré-visualização</span><button type="button" class="btn btn-secondary" style="width:auto;padding:4px 12px;" onclick="emFecharPrevia()">Fechar</button></div><iframe id="em-previa-frame" title="Pré-visualização do e-mail"></iframe></div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-admin">
       <section class="card">
         <div class="section-title">
           <h2>Novo número de WhatsApp</h2>
@@ -4802,6 +4878,8 @@ async function carregarDadosBase(userId) {
   if (navIg) navIg.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
   const navYt = document.getElementById('nav-youtube');
   if (navYt) navYt.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
+  const navEmail = document.getElementById('nav-email');
+  if (navEmail) navEmail.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
   const navIa = document.getElementById('nav-ia');
   if (navIa) navIa.style.display = (currentPerfil && ['admin', 'vendedor'].includes(currentPerfil.papel)) ? '' : 'none';
 
@@ -13967,41 +14045,9 @@ async function ctrSalvarEdicao() {
   }
 }
 
-// ---------- ADMIN (criar SDR/vendedor e número de WhatsApp, via proxy no n8n) ----------
+// ---------- ADMIN (criar número de WhatsApp, via proxy; o cadastro de SDR/vendedor saiu daqui em 17/11/2026) ----------
 // As chaves que essas duas ações precisam (Supabase service_role, Evolution API) nunca ficam
 // aqui no HTML público — moram só no n8n. O painel só manda o pedido e mostra o resultado.
-async function criarPerfilAdmin(event) {
-  event.preventDefault();
-  const btn = document.getElementById('adm-btn-perfil');
-  const textoOriginal = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Criando...';
-  try {
-    const resp = await fetch(`${N8N_PROXY_URL}/admin-proxy`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        acao: 'criar_perfil',
-        nome: document.getElementById('adm-nome').value.trim(),
-        papel: document.getElementById('adm-papel').value,
-        email: document.getElementById('adm-email').value.trim(),
-        senha: document.getElementById('adm-senha').value,
-      }),
-    });
-    const resultado = await resp.json();
-    if (!resultado.ok) { alert('Não consegui criar: ' + (resultado.erro || 'erro desconhecido')); return; }
-    alert(resultado.nome + ' criado(a) como ' + resultado.papel + '. Já pode logar com ' + resultado.email + '.');
-    document.getElementById('form-admin-perfil').reset();
-    await carregarDadosBase((await sb.auth.getSession()).data.session.user.id);
-  } catch (e) {
-    alert('Não consegui criar: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = textoOriginal;
-  }
-  return false;
-}
-
 async function criarWhatsappAdmin(event) {
   event.preventDefault();
   const btn = document.getElementById('adm-btn-whatsapp');
@@ -14040,6 +14086,206 @@ async function criarWhatsappAdmin(event) {
 // todas as abas — inclusive WhatsApp, Checklist e Playbook, onde ela não diz nada. Agora só
 // acompanha as duas telas onde o número do mês é o assunto.
 const TABS_COM_INDICADORES = ['dashboard', 'crm'];
+// ============================================================================
+// ABA "E-mails": máquina de nutrição e eventos por e-mail (lê em_painel; escreve por em_config_set / em_sequencia_set / em_email_set).
+// Envio real = Edge Function email-motor (a cada 5 min) via Resend. Aqui só se controla: ligar/desligar, aprovar, editar, agendar.
+// ============================================================================
+let emDados = null, emDias = 30; const emAbertos = new Set();
+const emN = v => v == null ? '—' : Number(v).toLocaleString('pt-BR');
+const emPct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
+const emQuando = iso => new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', '');
+const emInputData = iso => { const d = new Date(iso), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
+const emStatusTag = s => s === 'aprovado' ? '<span class="em-tag ok">aprovado</span>' : s === 'pausado' ? '<span class="em-tag warn">pausado</span>' : '<span class="em-tag">rascunho</span>';
+
+async function carregarEmail(silencioso) {
+  const el = document.getElementById('em-gerado');
+  if (!silencioso) el.textContent = 'Carregando...';
+  const { data, error } = await sb.rpc('em_painel', { p_dias: emDias });
+  if (error || !data) { el.textContent = 'Não consegui carregar: ' + (error ? error.message : 'sem resposta'); return; }
+  emDados = data; emRender();
+}
+async function emRpc(fn, args, btn, rotulo) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+  const { data, error } = await sb.rpc(fn, args);
+  if (btn) { btn.disabled = false; btn.textContent = rotulo || 'Salvar'; }
+  if (error) { alert('Não salvou: ' + error.message.replace(/^.*?:\s*/, '')); return null; }
+  await carregarEmail(true);
+  return data || true;
+}
+function emRender() {
+  const d = emDados, s = d.status, c = d.config;
+  document.getElementById('em-gerado').textContent = 'Atualizado às ' + new Date(d.gerado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + '. Clique em Atualizar pra ver abertura e clique de novo.';
+  const pill = document.getElementById('em-pill'), btn = document.getElementById('em-btn-ativo');
+  pill.className = 'em-pill ' + (s.ativo ? 'ok' : 'off'); pill.innerHTML = '<i></i>' + (s.ativo ? 'Ligado' : 'Desligado · nada sai');
+  btn.textContent = s.ativo ? 'Desligar envios' : 'Ligar envios'; btn.className = s.ativo ? 'btn btn-secondary' : 'btn';
+  // avisos
+  const avisos = [];
+  const alertasRecentes = (d.feed || []).filter(f => f.tipo === 'alerta' && Date.now() - new Date(f.em).getTime() < 24 * 3600e3);
+  if (alertasRecentes.length) avisos.push(['ruim', '<b>Atenção:</b> ' + relEsc(alertasRecentes[0].texto)]);
+  const aprovados = (d.sequencias || []).filter(q => q.ativa).flatMap(q => q.emails.filter(e => e.status === 'aprovado'));
+  if (s.ativo && !aprovados.length) avisos.push(['', 'O envio está ligado, mas não há nenhum e-mail <b>aprovado</b> numa sequência <b>ligada</b>. Nada vai sair até você aprovar.']);
+  if (s.ativo && !s.dentro_horario) avisos.push(['', 'Agora está fora do horário de envio. O motor espera a próxima janela (veja Configurações).']);
+  if (s.ativo && s.restante <= 0) avisos.push(['', 'O teto de hoje já foi usado (' + s.enviados_hoje + ' de ' + s.teto_hoje + '). O resto sai amanhã.']);
+  const al = document.getElementById('em-alerta');
+  al.style.display = avisos.length ? '' : 'none'; al.className = 'em-alerta' + (avisos[0] && avisos[0][0] ? ' ruim' : ''); al.innerHTML = avisos.map(a => a[1]).join('<br>');
+  // painel "agora"
+  const futuros = (d.sequencias || []).filter(q => q.ativa).flatMap(q => q.emails.filter(e => e.status === 'aprovado' && new Date(e.quando) > new Date()).map(e => ({ ...e, seq: q.nome, aptos: q.aptos }))).sort((a, b) => new Date(a.quando) - new Date(b.quando));
+  const prox = futuros[0];
+  const aptosMax = Math.max(0, ...(d.sequencias || []).filter(q => q.ativa).map(q => q.aptos));
+  const bloco = (rot, val, sub) => `<div class="em-bloco"><div class="rot">${rot}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
+  document.getElementById('em-agora').innerHTML =
+    bloco('Enviados hoje', `${emN(s.enviados_hoje)}<small> de ${emN(s.teto_hoje)}</small>`, 'o teto sobe todo dia (aquecimento do domínio novo)') +
+    bloco('Próximo disparo', prox ? emQuando(prox.quando) : '—', prox ? `${relEsc(prox.nome)} · ${emN(prox.aptos)} pessoas aptas` : 'nenhum e-mail aprovado agendado') +
+    bloco('Aptos na sequência ligada', emN(aptosMax), 'já sem descadastrados, clientes, ganhos e quem está falando com a IA SDR') +
+    bloco('Descadastros no período', emN(d.kpis.descadastros), `${emN(d.kpis.bounces)} bounces · ${emN(d.kpis.spam)} marcaram spam`);
+  const k = d.kpis;
+  document.getElementById('em-kpis').innerHTML =
+    bloco('Enviados', emN(k.enviados), `${emN(k.falhas)} falhas`) + bloco('Entregues', emPct(k.entregues, k.enviados), `${emN(k.entregues)} de ${emN(k.enviados)}`) +
+    bloco('Abriram', emPct(k.abertos, k.entregues), `${emN(k.abertos)} pessoas (pode inflar: Apple Mail abre sozinho)`) + bloco('Clicaram', emPct(k.clicados, k.entregues), `${emN(k.clicados)} pessoas`);
+  document.getElementById('em-seqs').innerHTML = (d.sequencias || []).map(emSeqHtml).join('') || '<div class="card em-card"><p class="muted">Nenhuma sequência ainda.</p></div>';
+  // audiência
+  const a = d.audiencia;
+  document.getElementById('em-aud').innerHTML = `<div class="em-linha"><span class="q">Contatos com e-mail no CRM</span><span class="n">${emN(a.total)}</span></div>
+    <div class="em-linha"><span class="q">Descadastrados</span><span class="n">${emN(a.descadastrados)}</span></div><div class="em-linha"><span class="q">E-mails que devolveram (bounce)</span><span class="n">${emN(a.bounces)}</span></div>
+    <div class="em-linha"><span class="q">Fora por motivo de perda (inválido, duplicado, fora do ICP)</span><span class="n">${emN(a.inelegiveis)}</span></div>
+    <p class="muted" style="margin:12px 0 6px;font-size:.78rem;">Por funil do CRM (marque quais entram em cada sequência, dentro dela):</p>` +
+    (a.por_funil || []).map(f => `<div class="em-linha"><span class="q">${relEsc(f.funil)}</span><span class="n">${emN(f.total)}</span></div>`).join('');
+  document.getElementById('em-feed').innerHTML = (d.feed || []).length ? d.feed.map(f => `<div class="em-feed"><span class="h">${emQuando(f.em)}</span><span>${f.tipo === 'alerta' || f.tipo === 'bounce' || f.tipo === 'spam' ? '<b>' + relEsc(f.texto) + '</b>' : relEsc(f.texto)}</span></div>`).join('') : '<p class="muted">Sem atividade ainda.</p>';
+  emRenderConfig(c);
+}
+function emSeqHtml(q) {
+  const todosFunis = (emDados.audiencia.por_funil || []).map(f => f.funil).filter(f => f !== '(sem funil)');
+  const seg = (q.segmento && q.segmento.funis) || [];
+  const linhas = q.emails.map(e => {
+    const dep = Math.round((new Date(e.quando) - new Date(q.base_em)) / 60000);
+    return `<div class="em-mail" id="em-mail-${e.id}"><div class="em-mail-topo"><div class="t"><b>${relEsc(e.nome)}</b><span>${relEsc(e.assunto || '(sem assunto)')}</span></div>
+      <span class="em-tag">${emQuando(e.quando)}</span>${emStatusTag(e.status)}
+      <div class="em-mail-stats"><span>enviados <b>${emN(e.enviados)}</b></span><span>abriram <b>${emN(e.abertos)}</b></span><span>clicaram <b>${emN(e.clicados)}</b></span>${e.falhas ? `<span style="color:var(--critical)">falhas <b>${e.falhas}</b></span>` : ''}</div>
+      <button type="button" class="btn btn-secondary" onclick="emAbrirEd(${e.id})">Editar</button></div>
+      <div class="em-ed ${emAbertos.has(e.id) ? 'on' : ''}" id="em-ed-${e.id}">
+        <label>Nome interno (só você vê)</label><input type="text" id="em-f-nome-${e.id}" value="${relEsc(e.nome)}" maxlength="80">
+        <div class="dois"><div><label>Quando enviar</label><input type="datetime-local" id="em-f-quando-${e.id}" value="${emInputData(e.quando)}"><div class="dica">Só sai se estiver <b>aprovado</b>, dentro do horário e do teto. Nunca dispara com mais de 36 h de atraso.</div></div>
+          <div><label>Situação</label><select id="em-f-status-${e.id}"><option value="rascunho" ${e.status === 'rascunho' ? 'selected' : ''}>Rascunho (não envia)</option><option value="aprovado" ${e.status === 'aprovado' ? 'selected' : ''}>Aprovado (pode enviar)</option><option value="pausado" ${e.status === 'pausado' ? 'selected' : ''}>Pausado</option></select></div></div>
+        <label>Assunto</label><input type="text" id="em-f-assunto-${e.id}" value="${relEsc(e.assunto)}" maxlength="150">
+        <label>Texto de prévia (aparece ao lado do assunto na caixa de entrada)</label><input type="text" id="em-f-preview-${e.id}" value="${relEsc(e.preview)}" maxlength="200">
+        <label>Texto do e-mail</label><textarea id="em-f-corpo-${e.id}">${relEsc(e.corpo)}</textarea>
+        <div class="dica">Parágrafo = linha em branco. <b>**negrito**</b> · links colam sozinhos · <b>[imagem]</b> numa linha sozinha marca onde entra a imagem · <b>{nome}</b> vira o primeiro nome (sem nome, a saudação some).</div>
+        <div class="dois"><div><label>Imagem (link https, opcional)</label><input type="url" id="em-f-img-${e.id}" value="${relEsc(e.imagem_url || '')}" placeholder="https://..."></div><div><label>Legenda da imagem</label><input type="text" id="em-f-leg-${e.id}" value="${relEsc(e.imagem_legenda || '')}" maxlength="200"></div></div>
+        <div class="dois"><div><label>Botão principal: texto</label><input type="text" id="em-f-r1-${e.id}" value="${relEsc(e.cta_rotulo || '')}" maxlength="60"></div><div><label>Botão principal: link</label><input type="url" id="em-f-u1-${e.id}" value="${relEsc(e.cta_url || '')}" placeholder="https://..."></div></div>
+        <div class="dois"><div><label>Botão secundário: texto (opcional)</label><input type="text" id="em-f-r2-${e.id}" value="${relEsc(e.cta2_rotulo || '')}" maxlength="80"></div><div><label>Botão secundário: link</label><input type="url" id="em-f-u2-${e.id}" value="${relEsc(e.cta2_url || '')}" placeholder="https://..."></div></div>
+        <div class="acoes"><button type="button" class="btn" onclick="emSalvarEmail(${e.id}, ${q.id}, this)">Salvar</button>
+          <button type="button" class="btn btn-secondary" onclick="emPrevia(${e.id})">Pré-visualizar</button>
+          <button type="button" class="btn btn-secondary" onclick="emTeste(${e.id}, this)">Enviar teste pra mim</button>
+          <button type="button" class="btn btn-secondary" onclick="emExcluirEmail(${e.id})">Excluir</button></div></div></div>`;
+  }).join('');
+  return `<section class="em-seq"><div class="em-seq-topo"><div><h3>${relEsc(q.nome)}</h3>
+      <div class="em-seq-meta"><span class="em-tag ${q.ativa ? 'ok' : ''}">${q.ativa ? 'sequência ligada' : 'sequência desligada'}</span>
+        <span>${q.tipo === 'evento' ? 'Horário do evento' : 'Data-base'}:</span><input type="datetime-local" id="em-base-${q.id}" value="${emInputData(q.base_em)}">
+        <button type="button" class="btn btn-secondary" onclick="emSalvarBase(${q.id}, this)">Mudar data</button><span>· ${emN(q.aptos)} pessoas aptas</span></div></div>
+      <div class="em-seq-meta"><button type="button" class="btn ${q.ativa ? 'btn-secondary' : ''}" onclick="emSeqLigar(${q.id}, ${!q.ativa})">${q.ativa ? 'Desligar sequência' : 'Ligar sequência'}</button>
+        <button type="button" class="btn btn-secondary" onclick="emDuplicar(${q.id})">Duplicar pro próximo evento</button></div></div>
+    <details><summary style="cursor:pointer;font-size:.84rem;font-weight:700;">Quem entra nesta sequência (${seg.length} funis)</summary><div class="em-seg-funis" id="em-funis-${q.id}">
+      ${todosFunis.map(f => `<label><input type="checkbox" value="${relEsc(f)}" ${seg.includes(f) ? 'checked' : ''}> ${relEsc(f)}</label>`).join('')}</div>
+      <button type="button" class="btn btn-secondary" onclick="emSalvarFunis(${q.id}, this)">Salvar quem entra</button></details>
+    <div style="margin-top:14px;">${linhas || '<p class="muted">Sem e-mails ainda.</p>'}</div>
+    <button type="button" class="btn btn-secondary" style="margin-top:6px;" onclick="emNovoEmail(${q.id})">+ Novo e-mail nesta sequência</button></section>`;
+}
+function emAbrirEd(id) { const el = document.getElementById('em-ed-' + id); el.classList.toggle('on'); if (el.classList.contains('on')) emAbertos.add(id); else emAbertos.delete(id); }
+const emV = (id) => document.getElementById(id).value;
+async function emSalvarEmail(id, seqId, btn) {
+  const seq = emDados.sequencias.find(q => q.id === seqId);
+  const quando = new Date(emV('em-f-quando-' + id));
+  if (isNaN(quando)) { alert('Confira a data e a hora do envio.'); return; }
+  const st = emV('em-f-status-' + id);
+  if (st === 'aprovado' && !confirm('Aprovar este e-mail?\n\nSe a sequência e o envio estiverem ligados, ele sai em ' + emQuando(quando.toISOString()) + ' para todo mundo que estiver apto.')) return;
+  const campos = { nome: emV('em-f-nome-' + id), assunto: emV('em-f-assunto-' + id), preview: emV('em-f-preview-' + id), corpo: emV('em-f-corpo-' + id), imagem_url: emV('em-f-img-' + id), imagem_legenda: emV('em-f-leg-' + id),
+    cta_rotulo: emV('em-f-r1-' + id), cta_url: emV('em-f-u1-' + id), cta2_rotulo: emV('em-f-r2-' + id), cta2_url: emV('em-f-u2-' + id),
+    offset_min: Math.round((quando - new Date(seq.base_em)) / 60000), status: st };
+  if (await emRpc('em_email_set', { p_id: id, p_campos: campos }, btn)) { emAbertos.add(id); emRender(); }
+}
+async function emNovoEmail(seqId) { const r = await emRpc('em_email_novo', { p_sequencia_id: seqId }); if (r && r.id) { emAbertos.add(r.id); emRender(); } }
+async function emExcluirEmail(id) { if (!confirm('Excluir este e-mail da sequência?')) return; emAbertos.delete(id); await emRpc('em_email_excluir', { p_id: id }); }
+async function emSeqLigar(id, ligar) {
+  if (ligar && !confirm('Ligar esta sequência?\n\nOs e-mails APROVADOS dela passam a sair nos horários marcados (se o envio geral também estiver ligado).')) return;
+  await emRpc('em_sequencia_set', { p_id: id, p_campos: { ativa: ligar } });
+}
+async function emSalvarBase(id, btn) {
+  const d = new Date(emV('em-base-' + id)); if (isNaN(d)) { alert('Data inválida.'); return; }
+  if (!confirm('Mudar a data? Todos os e-mails da sequência andam junto (mantêm a distância até a data).')) return;
+  await emRpc('em_sequencia_set', { p_id: id, p_campos: { base_em: d.toISOString() } }, btn, 'Mudar data');
+}
+async function emSalvarFunis(id, btn) {
+  const funis = [...document.querySelectorAll('#em-funis-' + id + ' input:checked')].map(i => i.value);
+  await emRpc('em_sequencia_set', { p_id: id, p_campos: { segmento: { funis } } }, btn, 'Salvar quem entra');
+}
+async function emDuplicar(id) {
+  const q = emDados.sequencias.find(x => x.id === id);
+  const nome = prompt('Nome da nova sequência:', q.nome.replace(/\d{2}\/\d{2}/, 'DD/MM')); if (!nome) return;
+  const dt = prompt('Data e hora do novo evento (AAAA-MM-DD HH:MM, horário de Brasília):', ''); if (!dt) return;
+  const d = new Date(dt.replace(' ', 'T') + ':00-03:00'); if (isNaN(d)) { alert('Data inválida. Use o formato 2026-12-02 19:00'); return; }
+  await emRpc('em_sequencia_duplicar', { p_id: id, p_nome: nome, p_base_em: d.toISOString() });
+}
+async function emAlternarAtivo() {
+  const ativo = emDados.status.ativo;
+  const msg = ativo ? 'Desligar TODOS os envios de e-mail?\n\nNada mais sai até você ligar de novo. E-mails já enviados não são afetados.'
+    : 'Ligar os envios de e-mail?\n\nO motor passa a enviar os e-mails APROVADOS das sequências LIGADAS, nos horários marcados, respeitando o teto diário (' + emDados.status.teto_hoje + ' hoje), o horário de envio e 1 e-mail por dia por pessoa.';
+  if (!confirm(msg)) return;
+  await emRpc('em_config_set', { p_chave: 'ativo', p_valor: !ativo });
+}
+async function emSincronizar(btn) { btn.disabled = true; const { error } = await sb.rpc('em_sync_contatos'); btn.disabled = false; if (error) alert('Não sincronizou: ' + error.message); else await carregarEmail(true); }
+async function emTeste(id, btn) {
+  const rot = btn.textContent; btn.disabled = true; btn.textContent = 'Enviando...';
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const r = await fetch(N8N_PROXY_URL + '/email-teste', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ email_id: id }) });
+    const j = await r.json().catch(() => ({}));
+    alert(r.ok ? 'Teste enviado para ' + j.para + '. Confira a caixa de entrada (e o spam). O texto salvo é o que vai: salve antes de testar se mexeu.' : 'Não enviou: ' + (j.erro || r.status));
+  } catch (e) { alert('Não enviou: ' + e.message); }
+  btn.disabled = false; btn.textContent = rot;
+}
+// pré-visualização no próprio painel (mesmo desenho do e-mail real; o envio usa o renderizador do servidor)
+function emFecharPrevia() { document.getElementById('em-previa').classList.remove('on'); }
+function emPrevia(id) {
+  const g = x => emV('em-f-' + x + '-' + id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const corpo = g('corpo').trim().replace(/\{nome\}/g, 'Maria'), blocos = corpo.split(/\n{2,}/).map(b => b.trim()).filter(Boolean);
+  const inline = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1" style="color:#008E43;font-weight:700">$1</a>').replace(/\n/g, '<br>');
+  const img = g('img') ? `<div style="padding:4px 0 18px"><img src="${esc(g('img'))}" style="width:100%;border-radius:10px;border:1px solid #dcd9d0">${g('leg') ? `<div style="font-size:12px;color:#6b7a70;padding-top:6px">${esc(g('leg'))}</div>` : ''}</div>` : '';
+  const marca = blocos.includes('[imagem]');
+  const b1 = g('r1') && g('u1') ? `<a href="#" style="display:inline-block;background:#008E43;color:#fff;font-weight:700;padding:15px 28px;border-radius:10px;text-decoration:none;margin:6px 0 12px">${esc(g('r1'))}</a><br>` : '';
+  const b2 = g('r2') && g('u2') ? `<a href="#" style="display:inline-block;border:2px solid #008E43;color:#008E43;font-weight:700;padding:11px 22px;border-radius:10px;text-decoration:none;margin:0 0 12px">${esc(g('r2'))}</a>` : '';
+  const html = `<body style="margin:0;background:#F8F7F4;font-family:Helvetica,Arial,sans-serif"><div style="max-width:560px;margin:0 auto;padding:24px 12px"><div style="background:#fff;border-radius:16px;padding:24px 30px 28px"><div style="text-align:center"><img src="https://demandainfinita.com/logo-demanda-infinita.png" width="72" height="72"></div>
+    <div style="font-size:12px;color:#8a978e;text-align:center;margin:6px 0 14px">Assunto: ${esc(g('assunto').replace(/\{nome\}/g, 'Maria'))}</div>
+    ${blocos.map(b => b === '[imagem]' ? img : `<p style="font-size:16px;line-height:1.6;color:#0F1A14;margin:0 0 16px">${inline(b)}</p>`).join('')}${marca ? '' : img}${b1}${b2}
+    <div style="border-top:1px solid #ece9e1;padding-top:18px;margin-top:10px;font-size:15px"><b>Igor Miguel</b><br><span style="color:#6b7a70;font-size:13px">Fundador, Demanda Infinita</span></div></div>
+    <p style="text-align:center;font-size:12px;color:#8a978e;margin-top:16px">Você recebeu este e-mail porque se cadastrou em um material ou evento da Demanda Infinita.<br>Não quer mais receber? <u>Descadastrar</u>.</p></div></body>`;
+  document.getElementById('em-previa-frame').srcdoc = html; document.getElementById('em-previa').classList.add('on');
+}
+function emRenderConfig(c) {
+  const t = c.teto || { inicio: 40, passo: 20, max: 400 }, h = c.horario || { dias: [1, 2, 3, 4, 5], inicio: 8, fim: 19 }, rem = c.remetente || { nome: 'Igor Miguel', email: 'igor@mail.demandainfinita.com' };
+  const DIAS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  document.getElementById('em-config').innerHTML = `
+    <div class="em-cfg"><h4>Quantos e-mails por dia</h4><p>Domínio novo precisa de aquecimento: começa pequeno e sobe todo dia até o máximo. Mandar tudo de uma vez faz o Gmail jogar no spam.</p>
+      <div class="linha"><span>começa em</span><input type="number" id="em-cfg-ini" min="1" max="2000" value="${t.inicio}"><span>sobe</span><input type="number" id="em-cfg-passo" min="0" max="2000" value="${t.passo}"><span>por dia, até</span><input type="number" id="em-cfg-max" min="1" max="2000" value="${t.max}">
+      <button type="button" class="btn" onclick="emSalvarTeto(this)">Salvar</button></div></div>
+    <div class="em-cfg"><h4>Horário de envio</h4><p>Fora dessa janela o motor espera. Um e-mail marcado pra um horário fora dela sai assim que a janela abrir (dentro das 36 h).</p>
+      <div class="dias">${DIAS.map((n, i) => `<label class="${h.dias.includes(i) ? 'on' : ''}"><input type="checkbox" value="${i}" ${h.dias.includes(i) ? 'checked' : ''} onchange="this.parentNode.classList.toggle('on', this.checked)">${n}</label>`).join('')}</div>
+      <div class="linha"><span>das</span><input type="number" id="em-cfg-hi" min="0" max="23" value="${h.inicio}"><span>às</span><input type="number" id="em-cfg-hf" min="1" max="24" value="${h.fim}"><span>h (Brasília)</span><button type="button" class="btn" onclick="emSalvarHorario(this)">Salvar</button></div></div>
+    <div class="em-cfg"><h4>Quem assina</h4><p>O endereço precisa ser do domínio verificado (@mail.demandainfinita.com).</p>
+      <div class="linha"><input type="text" id="em-cfg-rnome" value="${relEsc(rem.nome)}" maxlength="80"><input type="text" id="em-cfg-remail" value="${relEsc(rem.email)}"><button type="button" class="btn" onclick="emSalvarRemetente(this)">Salvar</button></div></div>
+    <div class="em-cfg"><h4>Quando respondem</h4><p>As respostas dos leads caem neste e-mail.</p>
+      <div class="linha"><input type="email" id="em-cfg-reply" value="${relEsc(c.reply_to || '')}"><button type="button" class="btn" onclick="emSalvarReply(this)">Salvar</button></div></div>`;
+}
+const emNum = id => parseInt(document.getElementById(id).value, 10);
+const emSalvarTeto = btn => emRpc('em_config_set', { p_chave: 'teto', p_valor: { inicio: emNum('em-cfg-ini'), passo: emNum('em-cfg-passo'), max: emNum('em-cfg-max') } }, btn);
+const emSalvarHorario = btn => emRpc('em_config_set', { p_chave: 'horario', p_valor: { dias: [...document.querySelectorAll('#em-config .dias input:checked')].map(i => Number(i.value)), inicio: emNum('em-cfg-hi'), fim: emNum('em-cfg-hf') } }, btn);
+const emSalvarRemetente = btn => emRpc('em_config_set', { p_chave: 'remetente', p_valor: { nome: emV('em-cfg-rnome'), email: emV('em-cfg-remail').trim() } }, btn);
+const emSalvarReply = btn => emRpc('em_config_set', { p_chave: 'reply_to', p_valor: emV('em-cfg-reply').trim() }, btn);
+document.getElementById('em-seg-dias').addEventListener('click', ev => {
+  const b = ev.target.closest('button[data-d]'); if (!b) return;
+  emDias = Number(b.dataset.d); document.querySelectorAll('#em-seg-dias button').forEach(x => x.classList.toggle('on', x === b)); carregarEmail(true);
+});
+
 // ============================================================================
 // ABA "IA SDR": painel de controle da IA de WhatsApp (lê ia_painel, escreve por ia_config_set / ia_modelo_set)
 // ============================================================================
@@ -14421,6 +14667,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     if (btn.dataset.tab === 'instagram') carregarInstagram();
     if (btn.dataset.tab === 'youtube') carregarYoutube();
     if (btn.dataset.tab === 'ia') carregarIa();
+    if (btn.dataset.tab === 'email') carregarEmail();
     recarregarLadoEspelhado(btn.dataset.tab);
   });
 });
