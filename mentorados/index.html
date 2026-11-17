@@ -1406,10 +1406,15 @@ async function carregarNotifs() {
   if (S.ctx) montarNav(S.ctx);
 }
 async function notifsAdmin(out) {
-  const cls = await clientes();
+  const cls = await clientes(true);   // fresco: aluno novo chega pelo webhook sem passar pela tela
   const nome = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
   const ag = await paginado(() => sb.from('cli_posts').select('id,cliente_id,titulo,versao,enviado_em').eq('status', 'aguardando').order('enviado_em').order('id'));
   S.contAguardando = ag.length;
+  // aluno que acabou de comprar (webhook da Herospark) e ainda não tem login: lembra de criar o acesso
+  const pf = await q(sb.from('cli_perfis').select('cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), comAcesso = new Set(pf.map(p => p.cliente_id));
+  const semAcesso = cls.filter(c => c.status === 'ativo' && tipoDe(c) === 'aluno' && !comAcesso.has(c.id));
+  if (semAcesso.length) out.push({ chave: `alunos-sem-acesso-${semAcesso.map(c => c.id).join('-')}`, sec: 'Pendências', titulo: `${semAcesso.length} ${semAcesso.length === 1 ? 'aluno novo aguarda' : 'alunos novos aguardam'} o acesso`,
+    desc: semAcesso.slice(0, 3).map(c => primeiroNome(c.nome)).join(', ') + (semAcesso.length > 3 ? '…' : '') + ' · criar login na aba Alunos', quando: new Date(Math.max(...semAcesso.map(c => new Date(c.created_at)))), href: '#/admin/mentorados/aluno' });
   ag.forEach(p => out.push({ chave: `post-${p.id}-v${p.versao}-aguardando`, sec: 'Aprovações', titulo: `${nome(p.cliente_id)} enviou um post`,
     desc: `${p.titulo || 'Sem título'}${p.versao > 1 ? ` · versão ${p.versao}` : ''}`, quando: new Date(p.enviado_em), href: `#/admin/post/${p.id}` }));
   const desde = new Date(Date.now() - 7 * 864e5).toISOString();
