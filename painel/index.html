@@ -2481,6 +2481,75 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 #yt-rev .rv-bt button { border:0; border-radius:10px; padding:11px 18px; font-weight:700; cursor:pointer; font-size:.9rem; }
 #yt-rev .ok { background:#00c853; color:#000; } #yt-rev .aj { background:#f5a524; color:#000; } #yt-rev .no { background:#2a2a2a; color:#ff6b6b; } #yt-rev .fe { background:transparent; color:#aaa; margin-left:auto; }
 
+/* ---------- aba IA SDR ---------- */
+#tab-ia .ia-topo-dir { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+#tab-ia .ia-topo-dir .btn, #tab-ia .ia-cfg .btn, #tab-ia .ia-mod .btn { width:auto; padding:8px 16px; font-size:.82rem; }
+#tab-ia .ia-pill { display:inline-flex; align-items:center; gap:8px; font-size:.82rem; font-weight:700; padding:7px 13px; border-radius:999px; background:var(--field-bg); color:var(--text-primary); }
+#tab-ia .ia-pill i { width:9px; height:9px; border-radius:50%; background:var(--muted); }
+#tab-ia .ia-pill.ok { background:rgba(63,203,74,.16); } #tab-ia .ia-pill.ok i { background:var(--good); box-shadow:0 0 0 3px rgba(12,163,12,.18); }
+#tab-ia .ia-pill.off { background:rgba(250,178,25,.18); } #tab-ia .ia-pill.off i { background:var(--warning); }
+#tab-ia .ia-pill.ruim { background:rgba(208,59,59,.22); } #tab-ia .ia-pill.ruim i { background:var(--critical); }
+#tab-ia .ia-alerta { border:1px solid var(--critical); background:#fdeaea; color:#7a1f1f; border-radius:12px; padding:12px 16px; margin-bottom:14px; font-size:.88rem; line-height:1.5; }
+#tab-ia .ia-alerta.aviso { border-color:var(--warning); background:#fff7e0; color:#6b4a00; }
+#tab-ia .ia-card { margin-bottom:16px; }
+#tab-ia .ia-agora { display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:16px; }
+#tab-ia .ia-bloco { border:1px solid var(--border); border-radius:var(--card-radius); padding:14px 16px; background:var(--surface-1); }
+#tab-ia .ia-bloco .rot { font-size:.7rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+#tab-ia .ia-bloco .val { font-size:1.9rem; font-weight:800; letter-spacing:-.03em; line-height:1.1; margin-top:6px; font-variant-numeric:tabular-nums; }
+#tab-ia .ia-bloco .val small { font-size:1rem; font-weight:600; color:var(--muted); }
+#tab-ia .ia-bloco .sub { font-size:.78rem; color:var(--text-secondary); margin-top:6px; line-height:1.45; }
+#tab-ia .ia-barra { height:6px; border-radius:99px; background:var(--grid); overflow:hidden; margin-top:10px; }
+#tab-ia .ia-barra b { display:block; height:100%; background:var(--accent); border-radius:99px; }
+#tab-ia .ia-seg { display:inline-flex; gap:2px; background:var(--field-bg); border-radius:999px; padding:3px; }
+#tab-ia .ia-seg button { border:0; background:none; font:inherit; font-size:.78rem; font-weight:600; color:var(--text-secondary); padding:6px 14px; border-radius:999px; cursor:pointer; }
+#tab-ia .ia-seg button.on { background:var(--surface-1); color:var(--text-primary); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+#tab-ia .ia-kpis { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px; }
+#tab-ia .ia-mini { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:8px 18px; margin-top:16px; padding-top:14px; border-top:1px solid var(--grid); }
+#tab-ia .ia-mini div { font-size:.8rem; color:var(--text-secondary); display:flex; justify-content:space-between; gap:8px; }
+#tab-ia .ia-mini b { color:var(--text-primary); font-variant-numeric:tabular-nums; }
+#tab-ia .ia-graficos { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap:18px; margin-bottom:16px; }
+#tab-ia .ia-graf h4 { margin:0 0 6px; font-size:.82rem; font-weight:700; }
+#tab-ia .ia-graf .viz-chart-wrap { overflow:visible; }
+#tab-ia .ia-graf svg { display:block; }
+#tab-ia .ia-tabela td, #tab-ia .ia-tabela th { text-align:right; white-space:nowrap; }
+#tab-ia .ia-tabela td:first-child, #tab-ia .ia-tabela th:first-child { text-align:left; }
+#tab-ia .ia-duas { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap:16px; margin-bottom:16px; }
+#tab-ia .ia-duas .ia-card { margin-bottom:0; }
+#tab-ia .ia-linha { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--grid); font-size:.86rem; }
+#tab-ia .ia-linha:last-child { border-bottom:0; }
+#tab-ia .ia-linha .quem { font-weight:600; flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#tab-ia .ia-linha .quando { color:var(--text-secondary); white-space:nowrap; font-size:.8rem; }
+#tab-ia .ia-tag { font-size:.7rem; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--field-bg); color:var(--text-secondary); white-space:nowrap; }
+#tab-ia .ia-tag.ok { background:rgba(63,203,74,.16); color:#7ee08a; }
+#tab-ia .ia-tag.ruim { background:rgba(208,59,59,.2); color:#ff9a9a; }
+#tab-ia .ia-vazio { color:var(--muted); font-size:.86rem; padding:8px 0; }
+#tab-ia .ia-funil-barra { display:flex; gap:2px; height:10px; border-radius:99px; overflow:hidden; background:var(--grid); margin-bottom:10px; }
+#tab-ia .ia-funil-barra b { display:block; height:100%; }
+#tab-ia .ia-funil-leg { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:.78rem; color:var(--text-secondary); }
+#tab-ia .ia-funil-leg span { display:inline-flex; align-items:center; gap:6px; }
+#tab-ia .ia-funil-leg i { width:9px; height:9px; border-radius:2px; }
+#tab-ia .ia-funil-leg b { color:var(--text-primary); font-variant-numeric:tabular-nums; }
+#tab-ia .ia-feed-linha { display:grid; grid-template-columns:110px minmax(130px, 200px) 1fr; gap:10px; padding:8px 0; border-bottom:1px solid var(--grid); font-size:.82rem; align-items:baseline; }
+#tab-ia .ia-feed-linha:last-child { border-bottom:0; }
+#tab-ia .ia-feed-linha .h { color:var(--muted); font-variant-numeric:tabular-nums; }
+#tab-ia .ia-feed-linha .n { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width: 640px) { #tab-ia .ia-feed-linha { grid-template-columns:1fr; gap:2px; } }
+#tab-ia .ia-config { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap:14px; }
+#tab-ia .ia-cfg { border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
+#tab-ia .ia-cfg h4 { margin:0 0 4px; font-size:.9rem; }
+#tab-ia .ia-cfg p { margin:0 0 10px; font-size:.78rem; color:var(--text-secondary); line-height:1.45; }
+#tab-ia .ia-cfg .linha { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+#tab-ia .ia-cfg input[type=number] { width:70px; padding:7px 8px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; }
+#tab-ia .ia-cfg .dias { display:flex; gap:4px; flex-wrap:wrap; margin:8px 0; }
+#tab-ia .ia-cfg .dias label { font-size:.76rem; border:1px solid var(--border); border-radius:8px; padding:4px 9px; cursor:pointer; user-select:none; }
+#tab-ia .ia-cfg .dias input { display:none; }
+#tab-ia .ia-cfg .dias label.on { background:rgba(63,203,74,.16); border-color:var(--accent); font-weight:700; }
+#tab-ia .ia-modelos-barra { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px; }
+#tab-ia .ia-modelos-barra select { padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; }
+#tab-ia .ia-mod { border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; }
+#tab-ia .ia-mod textarea { width:100%; min-height:74px; resize:vertical; padding:9px 10px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; font-size:.86rem; line-height:1.45; }
+#tab-ia .ia-mod .linha { display:flex; align-items:center; gap:12px; margin-top:8px; flex-wrap:wrap; }
+#tab-ia .ia-mod.inativo { opacity:.65; }
 </style>
 </head>
 <body>
@@ -2519,6 +2588,7 @@ form.form-grid.form-collapse:not(.open) { display: none; }
         <button data-tab="relatorio" title="Relatório do dia" id="nav-relatorio" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="17" x2="9" y2="14"/><line x1="12" y1="17" x2="12" y2="11"/><line x1="15" y1="17" x2="15" y2="13"/></svg></button>
         <button data-tab="instagram" title="Instagram" id="nav-instagram" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></button>
         <button data-tab="youtube" title="YouTube" id="nav-youtube" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><polygon points="10,9 15,12 10,15" fill="currentColor"/></svg></button>
+        <button data-tab="ia" title="IA SDR" id="nav-ia" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1"/><circle cx="9" cy="13" r="1" fill="currentColor"/><circle cx="15" cy="13" r="1" fill="currentColor"/><path d="M9.5 16.5h5"/></svg></button>
         <button data-tab="admin" title="Admin" id="nav-admin" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M18 8l1.5 1.5L22 7"/></svg></button>
       </nav>
     </aside>
@@ -3974,6 +4044,82 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </div>
     </div>
 
+    <div class="tab-panel" id="tab-ia">
+      <div class="tl-cab">
+        <div>
+          <h2>IA SDR</h2>
+          <p class="muted" id="ia-gerado">Carregando...</p>
+        </div>
+        <div class="ia-topo-dir">
+          <span class="ia-pill" id="ia-pill"></span>
+          <button type="button" class="btn" id="ia-btn-ativo" style="display:none;" onclick="iaAlternarAtiva()"></button>
+          <button type="button" class="btn btn-secondary" onclick="carregarIa()">Atualizar</button>
+        </div>
+      </div>
+
+      <div class="ia-alerta" id="ia-alerta" style="display:none;"></div>
+
+      <div class="ia-agora" id="ia-agora"></div>
+
+      <section class="card ia-card">
+        <div class="tl-card-cab">
+          <h3>Resultado do período</h3>
+          <div class="ia-seg" id="ia-seg-dias">
+            <button type="button" data-d="7">7 dias</button>
+            <button type="button" data-d="30" class="on">30 dias</button>
+            <button type="button" data-d="90">90 dias</button>
+          </div>
+        </div>
+        <div class="ia-kpis" id="ia-kpis"></div>
+        <div class="ia-mini" id="ia-mini"></div>
+      </section>
+
+      <section class="card ia-card">
+        <div class="tl-card-cab">
+          <h3>Relatório</h3>
+          <div class="ia-seg" id="ia-seg-agrup">
+            <button type="button" data-g="semana" class="on">Semanal</button>
+            <button type="button" data-g="mes">Mensal</button>
+          </div>
+        </div>
+        <p class="muted" style="margin:0 0 12px;">Cada gráfico mostra uma medida só. A última barra é o período em andamento.</p>
+        <div class="ia-graficos" id="ia-graficos"></div>
+        <div class="tabela-wrap"><table class="tabela-leads ia-tabela" id="ia-tabela"></table></div>
+      </section>
+
+      <div class="ia-duas">
+        <section class="card ia-card">
+          <div class="tl-card-cab"><h3>Reuniões que a IA acompanha</h3><span class="muted" id="ia-agenda-n"></span></div>
+          <div id="ia-agenda"></div>
+        </section>
+        <section class="card ia-card">
+          <div class="tl-card-cab"><h3>Precisa de você</h3><span class="muted" id="ia-atencao-n"></span></div>
+          <div id="ia-atencao"></div>
+          <div class="tl-card-cab" style="margin-top:18px;"><h3>Onde estão os leads</h3></div>
+          <div id="ia-funil"></div>
+        </section>
+      </div>
+
+      <section class="card ia-card">
+        <div class="tl-card-cab"><h3>Atividade recente</h3><span class="muted">o que a IA fez, mais novo primeiro</span></div>
+        <div id="ia-feed"></div>
+      </section>
+
+      <section class="card ia-card" id="ia-config-card" style="display:none;">
+        <div class="tl-card-cab"><h3>Configurações</h3><span class="muted">só o admin altera; cada mudança fica registrada na atividade</span></div>
+        <div class="ia-config" id="ia-config"></div>
+      </section>
+
+      <section class="card ia-card" id="ia-modelos-card" style="display:none;">
+        <div class="tl-card-cab"><h3>Mensagens da IA</h3><span class="muted">a IA sorteia uma variação por envio, pra não repetir texto</span></div>
+        <div class="ia-modelos-barra">
+          <select id="ia-modelo-etapa" onchange="iaRenderModelos()"></select>
+          <span class="muted">Campos que a IA preenche: {nome} {material} {hora} {closer} {link} {quando}</span>
+        </div>
+        <div id="ia-modelos"></div>
+      </section>
+    </div>
+
     <div class="tab-panel" id="tab-admin">
       <section class="card">
         <div class="section-title">
@@ -4656,6 +4802,8 @@ async function carregarDadosBase(userId) {
   if (navIg) navIg.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
   const navYt = document.getElementById('nav-youtube');
   if (navYt) navYt.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
+  const navIa = document.getElementById('nav-ia');
+  if (navIa) navIa.style.display = (currentPerfil && ['admin', 'vendedor'].includes(currentPerfil.papel)) ? '' : 'none';
 
   const popularSelect = (id, permitirVazio) => {
     const el = document.getElementById(id);
@@ -13892,6 +14040,367 @@ async function criarWhatsappAdmin(event) {
 // todas as abas — inclusive WhatsApp, Checklist e Playbook, onde ela não diz nada. Agora só
 // acompanha as duas telas onde o número do mês é o assunto.
 const TABS_COM_INDICADORES = ['dashboard', 'crm'];
+// ============================================================================
+// ABA "IA SDR": painel de controle da IA de WhatsApp (lê ia_painel, escreve por ia_config_set / ia_modelo_set)
+// ============================================================================
+let iaDados = null, iaDias = 30, iaAgrup = 'semana', iaEtapa = null, iaTimer = null;
+const IA_ESTADOS = [
+  { k: 'fila', nome: 'Na fila', cor: '--muted' },
+  { k: 'aguardando_resposta', nome: 'Aguardando resposta', cor: '--chip-1' },
+  { k: 'em_conversa', nome: 'Em conversa', cor: '--chip-3' },
+  { k: 'agendado', nome: 'Reunião marcada', cor: '--accent' },
+  { k: 'pausado_humano', nome: 'Com humano', cor: '--warning' },
+  { k: 'encerrado', nome: 'Encerrado', cor: '--baseline' },
+  { k: 'optout', nome: 'Pediu pra parar', cor: '--critical' },
+  { k: 'fora_perfil', nome: 'Fora do perfil', cor: '--chip-6' },
+];
+const IA_ETAPAS = {
+  abertura_1: 'Abertura · saudação', abertura_2: 'Abertura · lead novo (menos de 1 dia)',
+  abertura_2_recente: 'Abertura · lead de 1 a 7 dias', abertura_2_antigo: 'Abertura · lead de 7 dias ou mais',
+  abertura_2_evento: 'Abertura · inscrito em evento', apresentacao_cal: 'Apresentação · quem marcou sozinho',
+  convite_autoridade: 'Convite pra reunião', fu_d1: 'Follow-up · dia 1', fu_d3: 'Follow-up · dia 3 (prova social)',
+  fu_d7: 'Follow-up · dia 7', fu_d10_pix: 'Follow-up · dia 10 (Pix)', confirmacao_vespera: 'Lembrete de véspera',
+  confirmacao_hoje: 'Lembrete no dia da reunião', confirmacao_1h: 'Lembrete 1h antes', no_show: 'No-show',
+};
+const iaTZ = 'America/Sao_Paulo';
+const iaN = v => v == null ? '—' : Number(v).toLocaleString('pt-BR');
+const iaPct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
+function iaSeg(s) {
+  if (s == null) return '—';
+  s = Math.round(Number(s));
+  if (s < 90) return s + ' s';
+  if (s < 5400) return Math.round(s / 60) + ' min';
+  if (s < 172800) { const h = Math.floor(s / 3600), m = Math.round((s % 3600) / 60); return h + ' h' + (m ? ' ' + m + ' min' : ''); }
+  return Math.round(s / 86400) + ' dias';
+}
+function iaAtras(iso) {
+  if (!iso) return 'nunca';
+  const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1) return 'agora'; if (m < 60) return 'há ' + m + ' min';
+  if (m < 1440) return 'há ' + Math.floor(m / 60) + ' h'; return 'há ' + Math.floor(m / 1440) + ' d';
+}
+function iaDataHora(iso) {
+  const d = new Date(iso);
+  return d.toLocaleString('pt-BR', { timeZone: iaTZ, day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+function iaQuando(iso) {
+  const d = new Date(iso);
+  const dia = x => x.toLocaleDateString('en-CA', { timeZone: iaTZ });
+  const hoje = new Date(), amanha = new Date(Date.now() + 86400000);
+  const hora = d.toLocaleTimeString('pt-BR', { timeZone: iaTZ, hour: '2-digit', minute: '2-digit' }).replace(':00', 'h').replace(':', 'h');
+  if (dia(d) === dia(hoje)) return 'hoje ' + hora;
+  if (dia(d) === dia(amanha)) return 'amanhã ' + hora;
+  return d.toLocaleDateString('pt-BR', { timeZone: iaTZ, weekday: 'short', day: '2-digit', month: '2-digit' }) + ' ' + hora;
+}
+function iaDentroDoHorario(h) {
+  if (!h) return true;
+  const partes = new Intl.DateTimeFormat('en-US', { timeZone: iaTZ, weekday: 'short', hour: 'numeric', hour12: false }).formatToParts(new Date());
+  const wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(partes.find(p => p.type === 'weekday').value);
+  const hh = Number(partes.find(p => p.type === 'hour').value) % 24;
+  return (h.dias || []).includes(wd) && hh >= h.inicio && hh < h.fim;
+}
+const IA_DIAS_NOME = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+async function carregarIa(silencioso) {
+  const el = document.getElementById('ia-gerado');
+  if (!silencioso) el.textContent = 'Carregando...';
+  const { data, error } = await sb.rpc('ia_painel', { p_dias: iaDias });
+  if (error || !data) { el.textContent = 'Não consegui carregar: ' + (error ? error.message : 'sem resposta'); return; }
+  iaDados = data;
+  iaRender();
+  clearInterval(iaTimer);
+  iaTimer = setInterval(() => {
+    if (document.getElementById('tab-ia')?.classList.contains('active')) carregarIa(true); else clearInterval(iaTimer);
+  }, 60000);
+}
+
+function iaRender() {
+  const d = iaDados, s = d.status, admin = d.papel === 'admin';
+  document.getElementById('ia-gerado').textContent = 'Atualizado às ' + new Date(d.gerado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' · atualiza sozinho a cada minuto.';
+  iaRenderStatus(d, admin);
+  iaRenderKpis(d);
+  iaRenderRelatorio();
+  iaRenderListas(d);
+  iaRenderFeed(d);
+  document.getElementById('ia-config-card').style.display = admin ? '' : 'none';
+  document.getElementById('ia-modelos-card').style.display = admin ? '' : 'none';
+  if (admin) { iaRenderConfig(d); iaRenderModelosSelect(d); iaRenderModelos(); }
+}
+
+function iaRenderStatus(d, admin) {
+  const s = d.status, cfg = d.config;
+  const conOk = !s.conexao || s.conexao.estado === 'ok';
+  const pill = document.getElementById('ia-pill');
+  let alerta = '';
+  if (!conOk) { pill.className = 'ia-pill ruim'; pill.innerHTML = '<i></i>WhatsApp desconectado'; alerta = `<b>O WhatsApp da IA está desconectado</b> (estado: ${relEsc(s.conexao.estado)}). Ela parou todos os envios sozinha. Reconecte o número na aba WhatsApp (instância ${relEsc(s.instancia)}) e ela volta a trabalhar devagar, reiniciando o aquecimento.`; }
+  else if (!s.ativo) { pill.className = 'ia-pill off'; pill.innerHTML = '<i></i>Desligada · só números de teste'; }
+  else { pill.className = 'ia-pill ok'; pill.innerHTML = '<i></i>Ativa'; }
+  if (s.ativo && conOk && /freio/.test(s.teto_motivo || '')) {
+    alerta += (alerta ? '<br>' : '') + `<b>Freio ativo:</b> ${relEsc(s.teto_motivo)}. A IA está abrindo menos conversas que o previsto pra proteger o número. Ele solta sozinho quando a taxa de resposta subir.`;
+  }
+  const al = document.getElementById('ia-alerta');
+  al.style.display = alerta ? '' : 'none';
+  al.className = 'ia-alerta' + (!conOk ? '' : ' aviso');
+  al.innerHTML = alerta;
+  const bt = document.getElementById('ia-btn-ativo');
+  bt.style.display = admin ? '' : 'none';
+  bt.textContent = s.ativo ? 'Desligar a IA' : 'Ligar a IA';
+  bt.className = 'btn' + (s.ativo ? ' btn-secondary' : '');
+
+  const ult = [s.ultimo_envio, s.ultimo_tick].filter(Boolean).sort().pop();
+  const dentro = iaDentroDoHorario(cfg.horario);
+  const h = cfg.horario || {};
+  const dias = (h.dias || []).map(x => IA_DIAS_NOME[x]).join(', ');
+  const pct = s.teto_hoje ? Math.min(100, Math.round(s.aberturas_hoje / s.teto_hoje * 100)) : 0;
+  document.getElementById('ia-agora').innerHTML = `
+    <div class="ia-bloco"><div class="rot">Conversas abertas hoje</div><div class="val">${s.aberturas_hoje} <small>/ ${s.teto_hoje}</small></div>
+      <div class="ia-barra"><b style="width:${pct}%"></b></div><div class="sub">${relEsc(s.teto_motivo)}</div></div>
+    <div class="ia-bloco"><div class="rot">Mensagens enviadas hoje</div><div class="val">${s.msgs_hoje}</div>
+      <div class="sub">${s.followups_hoje} follow-up(s) entre elas</div></div>
+    <div class="ia-bloco"><div class="rot">Na fila</div><div class="val">${s.fila}</div>
+      <div class="sub">leads esperando a vez de receber a 1ª mensagem</div></div>
+    <div class="ia-bloco"><div class="rot">Última atividade</div><div class="val" style="font-size:1.4rem;">${iaAtras(ult)}</div>
+      <div class="sub">${dentro ? 'Dentro do horário agora' : 'Fora do horário agora'} · ${relEsc(dias)}, ${h.inicio}h às ${h.fim}h</div></div>`;
+}
+
+function iaRenderKpis(d) {
+  const k = d.kpi, t = d.tempo;
+  const bloco = (rot, val, sub) => `<div class="ia-bloco"><div class="rot">${rot}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
+  document.getElementById('ia-kpis').innerHTML =
+    bloco('Leads contatados', iaN(k.contatados), `${iaN(k.aberturas)} aberturas · ${iaN(k.followups)} follow-ups`) +
+    bloco('Taxa de resposta', iaPct(k.responderam, k.contatados), `${iaN(k.responderam)} de ${iaN(k.contatados)} responderam`) +
+    bloco('Tempo de resposta da IA', iaSeg(t.resp_mediana_s), `mediana · 9 em 10 em até ${iaSeg(t.resp_p90_s)} · respondeu ${iaN(t.resp_respondidas)} de ${iaN(t.resp_total)} mensagens`) +
+    bloco('Reuniões marcadas pela IA', iaN(k.agendadas_ia), `${iaN(k.confirmaram)} confirmaram · ${iaN(k.noshow)} no-show`) +
+    bloco('Tempo na fila até a 1ª mensagem', iaSeg(t.fila_mediana_s), `mediana · 9 em 10 em até ${iaSeg(t.fila_p90_s)}`) +
+    bloco('Pediram pra parar', iaN(k.optouts), `${iaN(k.sem_whatsapp)} número(s) sem WhatsApp`);
+  const mini = [['Mensagens da IA', k.msgs_ia], ['Mensagens dos leads', k.msgs_lead], ['Mensagens do time (humano)', k.msgs_humano],
+    ['Lembretes de reunião', k.lembretes], ['Passou pra humano', k.pausas_humano], ['Erros de envio', k.erros_envio]];
+  document.getElementById('ia-mini').innerHTML = mini.map(([n, v]) => `<div><span>${n}</span><b>${iaN(v)}</b></div>`).join('');
+}
+
+// ---------- relatório semanal / mensal ----------
+function iaAgrupar(serie, modo) {
+  const campos = ['aberturas', 'followups', 'leads_falaram', 'msgs_ia', 'msgs_lead', 'agendadas', 'confirmaram', 'noshow', 'pausas'];
+  const mapa = new Map();
+  const fmtLocal = dt => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+  for (const x of serie) {
+    const dt = new Date(x.dia + 'T12:00:00');
+    let chave, rot, tit;
+    if (modo === 'semana') {
+      const seg = new Date(dt); seg.setDate(dt.getDate() - ((dt.getDay() + 6) % 7));
+      const dom = new Date(seg); dom.setDate(seg.getDate() + 6);
+      chave = fmtLocal(seg);
+      const f = z => z.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      rot = f(seg); tit = `Semana de ${f(seg)} a ${f(dom)}`;
+    } else {
+      chave = x.dia.slice(0, 7);
+      rot = dt.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' }).replace('.', '').replace(' de ', '/');
+      tit = dt.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    }
+    if (!mapa.has(chave)) mapa.set(chave, { chave, rot, tit, ...Object.fromEntries(campos.map(c => [c, 0])) });
+    const p = mapa.get(chave);
+    campos.forEach(c => { p[c] += Number(x[c] || 0); });
+  }
+  let per = [...mapa.values()].sort((a, b) => a.chave < b.chave ? -1 : 1);
+  while (per.length > 1 && !(per[0].aberturas + per[0].followups + per[0].msgs_ia + per[0].msgs_lead)) per.shift();
+  per = per.slice(-(modo === 'semana' ? 8 : 6));
+  if (per.length) per[per.length - 1].parcial = true;
+  return per;
+}
+
+function iaRenderRelatorio() {
+  const per = iaAgrupar(iaDados.serie, iaAgrup);
+  const defs = [
+    { id: 'aberturas', titulo: 'Conversas abertas', cor: '--chip-1' },
+    { id: 'leads_falaram', titulo: 'Leads que responderam', cor: '--chip-3' },
+    { id: 'agendadas', titulo: 'Reuniões marcadas pela IA', cor: '--accent' },
+  ];
+  document.getElementById('ia-graficos').innerHTML = defs.map(g => `
+    <div class="ia-graf"><h4>${g.titulo}</h4>
+      <div class="viz-chart-wrap" id="ia-wrap-${g.id}"><svg id="ia-svg-${g.id}" class="chart"></svg><div class="viz-tip" id="ia-tip-${g.id}"></div></div></div>`).join('');
+  defs.forEach(g => iaBarras(g, per));
+  const cab = ['Período', 'Conversas abertas', 'Follow-ups', 'Leads que responderam', 'Msgs da IA', 'Msgs dos leads', 'Reuniões (IA)', 'Confirmaram', 'No-show', 'Passou pra humano'];
+  const linhas = [...per].reverse().map(p => `<tr><td>${relEsc(p.tit)}${p.parcial ? ' <span class="muted">(em andamento)</span>' : ''}</td><td>${p.aberturas}</td><td>${p.followups}</td><td>${p.leads_falaram}</td><td>${p.msgs_ia}</td><td>${p.msgs_lead}</td><td>${p.agendadas}</td><td>${p.confirmaram}</td><td>${p.noshow}</td><td>${p.pausas}</td></tr>`).join('');
+  document.getElementById('ia-tabela').innerHTML = `<thead><tr>${cab.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${linhas}</tbody>`;
+}
+
+function iaBarras(g, per) {
+  const svg = document.getElementById('ia-svg-' + g.id);
+  const padEsq = 32, padDir = 8, padTopo = 20, bandaX = 24, alturaPlot = 130;
+  const h = padTopo + alturaPlot + bandaX;
+  const w = vizLarguraDisponivel('ia-wrap-' + g.id, 260);
+  const grupo = (w - padEsq - padDir) / Math.max(1, per.length);
+  const maxVal = Math.max(1, ...per.map(p => p[g.id]));
+  const { topo, ticks } = vizEscala(maxVal, 3);
+  const escalaY = v => padTopo + alturaPlot - (alturaPlot * (v / topo));
+  const barraW = Math.min(26, grupo - 10);
+  const cor = corTema(g.cor), corTexto = corTema('--text-primary'), corMuted = corTema('--muted'), corBase = corTema('--baseline');
+  let marcas = '', bandas = ''; const textos = [];
+  per.forEach((p, i) => {
+    const centro = padEsq + grupo * i + grupo / 2, val = p[g.id], y = escalaY(val), ult = i === per.length - 1;
+    marcas += `<path d="${vizBarra(centro - barraW / 2, y, barraW, padTopo + alturaPlot - y, 4)}" fill="${cor}" ${p.parcial ? 'fill-opacity=".55"' : ''}/>`;
+    if (ult && val > 0) marcas += `<text x="${centro}" y="${y - 6}" font-size="10" font-weight="700" fill="${corTexto}" text-anchor="middle">${val}</text>`;
+    marcas += `<text x="${centro}" y="${h - 7}" font-size="9.5" fill="${ult ? corTexto : corMuted}" font-weight="${ult ? 700 : 500}" text-anchor="middle">${relEsc(p.rot)}</text>`;
+    bandas += `<rect class="viz-banda" x="${padEsq + grupo * i}" y="${padTopo}" width="${grupo}" height="${alturaPlot}" fill="transparent" data-i="${i}" data-cx="${centro}" data-topo="${y}"/>`;
+    textos.push(`<div class="tip-mes">${relEsc(p.tit)}${p.parcial ? ' (em andamento)' : ''}</div><div class="tip-linha"><i style="background:${cor}"></i>${g.titulo}<b>${val}</b></div>`);
+  });
+  svg.setAttribute('width', w); svg.setAttribute('height', h);
+  svg.innerHTML = vizEixoY(ticks, escalaY, w - padDir, padEsq, v => v)
+    + `<line x1="${padEsq}" y1="${padTopo + alturaPlot}" x2="${w - padDir}" y2="${padTopo + alturaPlot}" stroke="${corBase}" stroke-width="1"/>` + marcas + bandas;
+  vizLigarTooltip('ia-wrap-' + g.id, 'ia-tip-' + g.id, textos);
+}
+
+// ---------- listas ----------
+function iaRenderListas(d) {
+  document.getElementById('ia-agenda-n').textContent = d.agenda.length ? `${d.agenda.filter(a => a.confirmado_em).length} de ${d.agenda.length} confirmadas` : '';
+  document.getElementById('ia-agenda').innerHTML = d.agenda.length ? d.agenda.map(a => `
+    <div class="ia-linha"><span class="quem">${relEsc(a.nome || 'Card ' + a.card_id)}</span>
+      <span class="quando">${iaQuando(a.reuniao_em)} · ${relEsc(a.closer || '—')}</span>
+      <span class="ia-tag ${a.confirmado_em ? 'ok' : ''}">${a.confirmado_em ? 'Confirmou' : 'Aguardando'}</span>
+      ${a.link_reuniao ? `<a href="${relEsc(a.link_reuniao)}" target="_blank" rel="noopener" class="muted">Meet</a>` : ''}</div>`).join('')
+    : '<div class="ia-vazio">Nenhuma reunião futura.</div>';
+  document.getElementById('ia-atencao-n').textContent = d.atencao.length ? d.atencao.length + ' lead(s)' : '';
+  document.getElementById('ia-atencao').innerHTML = d.atencao.length ? d.atencao.map(a => `
+    <div class="ia-linha"><span class="quem">${relEsc(a.nome || 'Card ' + a.card_id)}</span>
+      <span class="quando">${relEsc(a.motivo || 'pausada')} · ${iaAtras(a.atualizado_em)}</span></div>`).join('')
+    : '<div class="ia-vazio">Nada esperando por você. A IA está tocando tudo.</div>';
+  const total = IA_ESTADOS.reduce((s, e) => s + (d.funil[e.k] || 0), 0) || 1;
+  document.getElementById('ia-funil').innerHTML =
+    `<div class="ia-funil-barra">${IA_ESTADOS.map(e => (d.funil[e.k] ? `<b style="width:${(d.funil[e.k] / total * 100).toFixed(2)}%;background:${corTema(e.cor)}"></b>` : '')).join('')}</div>
+     <div class="ia-funil-leg">${IA_ESTADOS.filter(e => d.funil[e.k]).map(e => `<span><i style="background:${corTema(e.cor)}"></i>${e.nome} <b>${d.funil[e.k]}</b></span>`).join('')}</div>`;
+}
+
+function iaFeedTexto(f) {
+  const x = f.detalhe || {};
+  switch (f.tipo) {
+    case 'abertura': return 'Abriu a conversa';
+    case 'followup': return `Follow-up (toque ${(x.toque ?? 0) + 1} de 5)`;
+    case 'followup_pulado': return 'Pulou o follow-up' + (x.motivo ? ` (${x.motivo})` : '');
+    case 'resposta': return 'Respondeu o lead';
+    case 'agendado': return `Marcou reunião${x.closer ? ' com ' + x.closer : ''}${x.quando ? ' · ' + iaQuando(x.quando) : ''}`;
+    case 'confirmou': return 'Lead confirmou a reunião';
+    case 'lembrete_vespera': return 'Lembrete de véspera enviado';
+    case 'lembrete_1h': return 'Lembrete de 1h antes enviado';
+    case 'noshow': return 'Mensagem de no-show enviada';
+    case 'pausa_humano': return 'Passou pra humano' + (x.motivo ? `: ${x.motivo}` : '');
+    case 'optout': return 'Lead pediu pra parar';
+    case 'erro_envio': return /"exists":false/.test(x.erro || '') ? 'Número sem WhatsApp' : 'Erro de envio';
+    case 'erro_responder': return 'Erro ao responder';
+    case 'conexao_caiu': return 'WhatsApp caiu';
+    case 'anti_loop': return 'Trava anti-loop segurou o lead';
+    case 'config': return 'Alteração feita pelo painel' + (x.chave ? ` (${x.chave})` : '');
+    default: return f.tipo;
+  }
+}
+function iaRenderFeed(d) {
+  document.getElementById('ia-feed').innerHTML = d.feed.length ? d.feed.map(f => `
+    <div class="ia-feed-linha"><span class="h">${iaDataHora(f.criado_em)}</span><span class="n">${relEsc(f.nome || (f.card_id ? 'Card ' + f.card_id : 'Sistema'))}</span><span>${relEsc(iaFeedTexto(f))}</span></div>`).join('')
+    : '<div class="ia-vazio">Sem atividade registrada ainda.</div>';
+}
+
+// ---------- controles do período e do relatório ----------
+document.getElementById('ia-seg-dias').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  iaDias = Number(b.dataset.d);
+  document.querySelectorAll('#ia-seg-dias button').forEach(x => x.classList.toggle('on', x === b));
+  carregarIa(true);
+});
+document.getElementById('ia-seg-agrup').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  iaAgrup = b.dataset.g;
+  document.querySelectorAll('#ia-seg-agrup button').forEach(x => x.classList.toggle('on', x === b));
+  if (iaDados) iaRenderRelatorio();
+});
+let iaResizeT = null;
+window.addEventListener('resize', () => {
+  clearTimeout(iaResizeT);
+  iaResizeT = setTimeout(() => { if (iaDados && document.getElementById('tab-ia')?.classList.contains('active')) iaRenderRelatorio(); }, 200);
+});
+
+// ---------- escrita (só admin; o banco confere de novo) ----------
+async function iaSalvarCfg(chave, valor, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+  const { error } = await sb.rpc('ia_config_set', { p_chave: chave, p_valor: valor });
+  if (error) { alert('Não salvou: ' + error.message.replace(/^.*?:\s*/, '')); if (btn) { btn.disabled = false; btn.textContent = 'Salvar'; } return false; }
+  await carregarIa(true);
+  return true;
+}
+async function iaAlternarAtiva() {
+  const ativo = iaDados.status.ativo;
+  const msg = ativo
+    ? 'Desligar a IA?\n\nEla para de abrir conversas e de fazer follow-up em leads reais (só responde ao número de teste). Reuniões já marcadas deixam de receber lembrete.'
+    : 'Ligar a IA?\n\nElas volta a abrir conversas com os leads da fila, no ritmo do aquecimento, e a mandar lembretes das reuniões.';
+  if (!confirm(msg)) return;
+  await iaSalvarCfg('ativo', !ativo);
+}
+
+function iaRenderConfig(d) {
+  const c = d.config, h = c.horario || { inicio: 8, fim: 19, dias: [1, 2, 3, 4, 5] };
+  const cota = c.cota_agenda || {}, tipos = c.cal_event_types || {};
+  const pessoas = Object.keys(cota).map(id => ({ id, nome: (tipos[id] && tipos[id].nome) || id.slice(0, 6), v: cota[id] }));
+  const cad = c.cadencia_dias || [1, 3, 5, 7, 10];
+  document.getElementById('ia-config').innerHTML = `
+    <div class="ia-cfg"><h4>Teto de conversas novas por dia</h4>
+      <p>Máximo de aberturas por dia depois do aquecimento. O aquecimento e o freio podem reduzir esse número sozinhos pra proteger o WhatsApp.</p>
+      <div class="linha"><input type="number" id="ia-cfg-teto" min="1" max="60" value="${Number(c.teto_conversas_novas_dia || 25)}"><button class="btn" onclick="iaSalvarTeto(this)">Salvar</button></div></div>
+    <div class="ia-cfg"><h4>Horário de trabalho</h4>
+      <p>Dias e horas (horário de Brasília) em que a IA pode mandar mensagem.</p>
+      <div class="linha">das <input type="number" id="ia-cfg-hi" min="0" max="23" value="${h.inicio}">h às <input type="number" id="ia-cfg-hf" min="1" max="24" value="${h.fim}">h</div>
+      <div class="dias" id="ia-cfg-dias">${IA_DIAS_NOME.map((n, i) => `<label class="${(h.dias || []).includes(i) ? 'on' : ''}"><input type="checkbox" value="${i}" ${(h.dias || []).includes(i) ? 'checked' : ''} onchange="this.parentNode.classList.toggle('on', this.checked)">${n}</label>`).join('')}</div>
+      <button class="btn" onclick="iaSalvarHorario(this)">Salvar</button></div>
+    <div class="ia-cfg"><h4>Quem recebe as reuniões</h4>
+      <p>Divisão das reuniões marcadas pela IA entre os closers. Precisa somar 100%.</p>
+      <div class="linha">${pessoas.map(p => `<label>${relEsc(p.nome)} <input type="number" class="ia-cfg-cota" data-id="${p.id}" min="0" max="100" value="${p.v}">%</label>`).join('')}</div>
+      <div class="linha" style="margin-top:10px;"><button class="btn" onclick="iaSalvarCota(this)">Salvar</button></div></div>
+    <div class="ia-cfg"><h4>Cadência de follow-up</h4>
+      <p>Em que dia, depois do 1º contato, sai cada um dos 5 toques (sem resposta do lead).</p>
+      <div class="linha">${cad.map((v, i) => `<label>${i + 1}º <input type="number" class="ia-cfg-cad" min="1" max="30" value="${v}"></label>`).join('')}</div>
+      <div class="linha" style="margin-top:10px;"><button class="btn" onclick="iaSalvarCad(this)">Salvar</button></div></div>`;
+}
+function iaSalvarTeto(btn) { iaSalvarCfg('teto_conversas_novas_dia', Number(document.getElementById('ia-cfg-teto').value), btn); }
+function iaSalvarHorario(btn) {
+  const dias = [...document.querySelectorAll('#ia-cfg-dias input:checked')].map(i => Number(i.value));
+  iaSalvarCfg('horario', { inicio: Number(document.getElementById('ia-cfg-hi').value), fim: Number(document.getElementById('ia-cfg-hf').value), dias }, btn);
+}
+function iaSalvarCota(btn) {
+  const o = {}; document.querySelectorAll('.ia-cfg-cota').forEach(i => { o[i.dataset.id] = Number(i.value); });
+  iaSalvarCfg('cota_agenda', o, btn);
+}
+function iaSalvarCad(btn) { iaSalvarCfg('cadencia_dias', [...document.querySelectorAll('.ia-cfg-cad')].map(i => Number(i.value)), btn); }
+
+// ---------- variações de mensagem ----------
+function iaRenderModelosSelect(d) {
+  const sel = document.getElementById('ia-modelo-etapa');
+  const etapas = [...new Set(d.modelos.map(m => m.etapa))];
+  if (!iaEtapa || !etapas.includes(iaEtapa)) iaEtapa = etapas[0];
+  sel.innerHTML = etapas.map(e => `<option value="${e}" ${e === iaEtapa ? 'selected' : ''}>${relEsc(IA_ETAPAS[e] || e)} (${d.modelos.filter(m => m.etapa === e && m.ativo).length} ativas)</option>`).join('');
+}
+function iaRenderModelos() {
+  const sel = document.getElementById('ia-modelo-etapa');
+  if (sel.value) iaEtapa = sel.value;
+  const lista = iaDados.modelos.filter(m => m.etapa === iaEtapa);
+  document.getElementById('ia-modelos').innerHTML = lista.map(m => `
+    <div class="ia-mod ${m.ativo ? '' : 'inativo'}"><textarea id="ia-mod-t-${m.id}">${relEsc(m.texto)}</textarea>
+      <div class="linha"><label><input type="checkbox" id="ia-mod-a-${m.id}" ${m.ativo ? 'checked' : ''}> ativa</label>
+        <button class="btn" onclick="iaSalvarModelo(${m.id}, this)">Salvar</button></div></div>`).join('') + `
+    <div class="ia-mod"><b style="font-size:.82rem;">Nova variação</b><textarea id="ia-mod-novo" placeholder="Escreva outra forma de dizer a mesma coisa"></textarea>
+      <div class="linha"><button class="btn btn-secondary" onclick="iaNovoModelo(this)">Adicionar</button></div></div>`;
+}
+async function iaChamarModelo(id, etapa, texto, ativo, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+  const { error } = await sb.rpc('ia_modelo_set', { p_id: id, p_etapa: etapa, p_texto: texto, p_ativo: ativo });
+  if (error) { alert('Não salvou: ' + error.message.replace(/^.*?:\s*/, '')); if (btn) { btn.disabled = false; btn.textContent = 'Salvar'; } return; }
+  await carregarIa(true);
+}
+function iaSalvarModelo(id, btn) {
+  iaChamarModelo(id, null, document.getElementById('ia-mod-t-' + id).value, document.getElementById('ia-mod-a-' + id).checked, btn);
+}
+function iaNovoModelo(btn) {
+  const t = document.getElementById('ia-mod-novo').value;
+  if (!t.trim()) return;
+  iaChamarModelo(null, iaEtapa, t, true, btn);
+}
+
 function ajustarIndicadores(aba) {
   const el = document.getElementById('tiles');
   if (el) el.style.display = TABS_COM_INDICADORES.includes(aba) ? '' : 'none';
@@ -13911,6 +14420,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     if (btn.dataset.tab === 'relatorio') carregarRelatorio();
     if (btn.dataset.tab === 'instagram') carregarInstagram();
     if (btn.dataset.tab === 'youtube') carregarYoutube();
+    if (btn.dataset.tab === 'ia') carregarIa();
     recarregarLadoEspelhado(btn.dataset.tab);
   });
 });
