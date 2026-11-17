@@ -2606,6 +2606,83 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 #tab-email .em-cfg .dias { display:flex; gap:4px; flex-wrap:wrap; margin:8px 0; }
 #tab-email .em-cfg .dias label { font-size:.76rem; border:1px solid var(--border); border-radius:8px; padding:4px 9px; cursor:pointer; user-select:none; }
 #tab-email .em-cfg .dias input { display:none; } #tab-email .em-cfg .dias label.on { background:rgba(63,203,74,.16); border-color:var(--accent); font-weight:700; }
+/* ===== E-mails v2 (17/11/26): legibilidade + fluxograma ===== */
+#tab-email .tl-cab h2 { font-size:1.5rem; }
+#tab-email .em-bloco { padding:16px 18px; }
+#tab-email .em-bloco .rot { font-size:.74rem; }
+#tab-email .em-bloco .sub { font-size:.86rem; color:var(--text-secondary); }
+#tab-email .em-tag { font-size:.76rem; padding:4px 10px; }
+html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="dark"] #tab-email .em-tag.warn { color:#f3c969; }
+#tab-email .card h3, #tab-email .em-seq h3 { font-size:1.1rem; }
+#tab-email .em-linha { font-size:.9rem; padding:10px 0; } #tab-email .em-feed { font-size:.88rem; padding:9px 0; }
+#tab-email .em-cfg h4 { font-size:.98rem; } #tab-email .em-cfg p { font-size:.85rem; }
+#tab-email .em-ed label { font-size:.8rem; } #tab-email .em-ed .dica { font-size:.8rem; }
+#tab-email .em-seg-t { font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:2px 0 8px; }
+#tab-email .em-secao { margin:26px 0 10px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+#tab-email .em-secao h3 { margin:0; font-size:1.2rem; } #tab-email .em-secao span { font-size:.88rem; color:var(--text-secondary); }
+#tab-email details.em-cfg-wrap > summary { cursor:pointer; font-size:1.2rem; font-weight:700; padding:6px 0; list-style:none; }
+#tab-email details.em-cfg-wrap > summary::-webkit-details-marker { display:none; }
+#tab-email details.em-cfg-wrap > summary::before { content:'▸ '; color:var(--muted); } #tab-email details.em-cfg-wrap[open] > summary::before { content:'▾ '; }
+#tab-email .em-feed-scroll { max-height:380px; overflow:auto; }
+/* cadência = card com fluxograma */
+#tab-email .em-seq { padding:20px 22px; margin-bottom:22px; }
+#tab-email .em-seq.desl { border-style:dashed; }
+#tab-email .em-seq-topo { align-items:center; margin-bottom:6px; }
+#tab-email .em-seq-topo .acoes { display:flex; gap:8px; flex-wrap:wrap; }
+#tab-email .fx-grade { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:26px; align-items:start; margin-top:14px; }
+@media (max-width: 1000px) { #tab-email .fx-grade { grid-template-columns:1fr; } }
+#tab-email .fx { display:flex; flex-direction:column; align-items:stretch; max-width:640px; width:100%; margin:0 auto; }
+#tab-email .fx-no { position:relative; border:1px solid var(--border); border-radius:14px; background:var(--surface-1); padding:14px 16px 14px 20px; overflow:hidden; }
+#tab-email .fx-no::before { content:''; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--muted); }
+#tab-email .fx-no.aprovado::before { background:var(--good); } #tab-email .fx-no.pausado::before { background:var(--warning); } #tab-email .fx-no.rascunho::before { background:var(--muted); opacity:.55; }
+#tab-email .fx-no.rascunho { border-style:dashed; }
+#tab-email .fx-no .topo { display:flex; align-items:flex-start; gap:12px; }
+#tab-email .fx-num { flex:none; width:30px; height:30px; border-radius:50%; background:var(--field-bg); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.86rem; }
+#tab-email .fx-no .t { flex:1 1 auto; min-width:0; }
+#tab-email .fx-no .t b { display:block; font-size:1rem; line-height:1.3; }
+#tab-email .fx-no .t .ass { display:block; font-size:.9rem; color:var(--text-secondary); margin-top:3px; line-height:1.4; }
+#tab-email .fx-no .meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:10px 0 0 42px; }
+#tab-email .fx-no .quando { font-size:.84rem; font-weight:700; }
+#tab-email .fx-no .rel { font-size:.82rem; color:var(--text-secondary); }
+#tab-email .fx-no .stats { display:flex; gap:16px; margin:8px 0 0 42px; font-size:.84rem; color:var(--text-secondary); flex-wrap:wrap; }
+#tab-email .fx-no .stats b { color:var(--text-primary); font-variant-numeric:tabular-nums; }
+#tab-email .fx-no .btn { width:auto; padding:7px 14px; font-size:.82rem; flex:none; }
+#tab-email .fx-no .em-ed { margin:14px 0 0; }
+#tab-email .fx-lig { position:relative; height:48px; display:flex; align-items:center; justify-content:center; }
+#tab-email .fx-lig::before { content:''; position:absolute; left:50%; top:0; bottom:9px; width:2px; margin-left:-1px; background:var(--border); }
+#tab-email .fx-lig::after { content:''; position:absolute; left:50%; bottom:0; margin-left:-6px; border:6px solid transparent; border-top:9px solid var(--muted); border-bottom:0; }
+#tab-email .fx-lig span { position:relative; z-index:1; background:var(--surface-1); border:1px solid var(--border); border-radius:999px; padding:3px 12px; font-size:.78rem; color:var(--text-secondary); font-weight:600; }
+#tab-email .fx-marco { border:2px solid var(--accent); border-radius:14px; background:linear-gradient(180deg, rgba(63,203,74,.12), rgba(63,203,74,.04)); padding:14px 18px; text-align:center; }
+#tab-email .fx-marco .rot { font-size:.72rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+#tab-email .fx-marco .q { font-size:1.15rem; font-weight:800; margin:4px 0 10px; }
+#tab-email .fx-marco .ed { display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap; }
+#tab-email .fx-marco input[type=datetime-local] { padding:7px 9px; border:1px solid var(--border); border-radius:8px; background:var(--field-bg); font:inherit; font-size:.88rem; color:var(--text-primary); }
+#tab-email .fx-marco .btn { width:auto; padding:7px 14px; font-size:.82rem; }
+#tab-email .fx-inicio { border-radius:999px; }
+#tab-email .fx-mais { border:2px dashed var(--border); border-radius:14px; padding:12px; text-align:center; background:none; color:var(--text-secondary); font:inherit; font-weight:700; cursor:pointer; width:100%; }
+#tab-email .fx-mais:hover { border-color:var(--accent); color:var(--text-primary); }
+#tab-email .fx-fim { align-self:center; font-size:.78rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); border-radius:999px; padding:4px 14px; }
+/* regras ao lado */
+#tab-email .fx-lado { display:flex; flex-direction:column; gap:12px; position:sticky; top:14px; }
+#tab-email .fx-caixa { border:1px solid var(--border); border-radius:14px; padding:14px 16px; background:var(--surface-2, var(--field-bg)); font-size:.88rem; line-height:1.5; }
+#tab-email .fx-caixa h5 { margin:0 0 8px; font-size:.74rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+#tab-email .fx-caixa ul { margin:0; padding:0; list-style:none; } #tab-email .fx-caixa li { padding:4px 0 4px 22px; position:relative; color:var(--text-secondary); }
+#tab-email .fx-caixa li::before { content:'✕'; position:absolute; left:0; color:var(--critical); font-weight:800; font-size:.8rem; top:5px; }
+#tab-email .fx-caixa.entra li::before { content:'✓'; color:var(--good); }
+#tab-email .fx-caixa .grande { font-size:1.6rem; font-weight:800; letter-spacing:-.02em; color:var(--text-primary); display:block; }
+#tab-email .fx-caixa summary { cursor:pointer; font-weight:700; color:var(--text-primary); margin-top:8px; }
+/* IA SDR: mais legível */
+#tab-ia .tl-cab h2 { font-size:1.5rem; }
+#tab-ia .ia-bloco { padding:16px 18px; } #tab-ia .ia-bloco .rot { font-size:.74rem; } #tab-ia .ia-bloco .sub { font-size:.86rem; }
+#tab-ia .card h3 { font-size:1.1rem; }
+#tab-ia .ia-mini div { font-size:.88rem; } #tab-ia .ia-linha { font-size:.92rem; padding:11px 0; } #tab-ia .ia-linha .quando { font-size:.86rem; }
+#tab-ia .ia-tag { font-size:.76rem; padding:4px 10px; } html:not([data-tema="dark"]) #tab-ia .ia-tag.ok { color:#1b7a2a; }
+#tab-ia .ia-feed-linha { font-size:.9rem; padding:9px 0; }
+#tab-ia #ia-feed { max-height:420px; overflow:auto; padding-right:6px; }
+#tab-ia .ia-funil-leg { font-size:.86rem; }
+#tab-ia .ia-cfg h4 { font-size:.98rem; } #tab-ia .ia-cfg p { font-size:.85rem; }
+#tab-ia #ia-modelos { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(420px,100%), 1fr)); gap:12px; align-items:start; }
+#tab-ia .ia-mod { margin-bottom:0; } #tab-ia .ia-mod textarea { min-height:84px; font-size:.92rem; line-height:1.5; }
 #em-previa { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
 #em-previa.on { display:flex; } #em-previa .caixa { background:var(--surface-1); border-radius:14px; width:min(640px, 100%); height:min(90vh, 900px); display:flex; flex-direction:column; overflow:hidden; }
 #em-previa .topo { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; font-weight:700; } #em-previa iframe { flex:1; border:0; background:#F8F7F4; }
@@ -4207,9 +4284,9 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         <div class="em-kpis" id="em-kpis"></div>
       </section>
 
+      <div class="em-secao"><h3>Cadências</h3><span>Cada cadência é um fluxo: os e-mails saem de cima pra baixo, na ordem do relógio. Ligue só as que quiser rodando.</span>
+        <button type="button" class="btn btn-secondary" style="width:auto;padding:7px 14px;font-size:.82rem;margin-left:auto;" onclick="emNovaSequencia()">+ Nova cadência</button></div>
       <div id="em-seqs"></div>
-      <div style="margin:-6px 0 18px;"><button type="button" class="btn btn-secondary" onclick="emNovaSequencia()">+ Nova sequência (cadência que não é evento)</button>
-        <span class="muted" style="font-size:.8rem;margin-left:8px;">Nasce desligada, com 1 e-mail em rascunho. Ligue só as que quiser rodando na semana ou no mês.</span></div>
 
       <div class="ia-duas" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:16px;margin-bottom:16px;">
         <section class="card em-card" style="margin-bottom:0;">
@@ -4218,13 +4295,13 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         </section>
         <section class="card em-card" style="margin-bottom:0;">
           <div class="tl-card-cab"><h3>Atividade recente</h3><span class="muted">mais novo primeiro</span></div>
-          <div id="em-feed"></div>
+          <div id="em-feed" class="em-feed-scroll"></div>
         </section>
       </div>
 
       <section class="card em-card">
-        <div class="tl-card-cab"><h3>Configurações</h3><span class="muted">cada mudança fica registrada na atividade</span></div>
-        <div class="em-config" id="em-config"></div>
+        <details class="em-cfg-wrap"><summary>Configurações <span class="muted" style="font-size:.84rem;font-weight:400;margin-left:8px;">teto por dia, horário, remetente · cada mudança fica na atividade</span></summary>
+          <div class="em-config" id="em-config" style="margin-top:12px;"></div></details>
       </section>
 
       <div id="em-previa" onclick="if (event.target === this) emFecharPrevia()"><div class="caixa"><div class="topo"><span>Pré-visualização</span><button type="button" class="btn btn-secondary" style="width:auto;padding:4px 12px;" onclick="emFecharPrevia()">Fechar</button></div><iframe id="em-previa-frame" title="Pré-visualização do e-mail"></iframe></div></div>
@@ -14155,16 +14232,10 @@ function emRender() {
   document.getElementById('em-feed').innerHTML = (d.feed || []).length ? d.feed.map(f => `<div class="em-feed"><span class="h">${emQuando(f.em)}</span><span>${f.tipo === 'alerta' || f.tipo === 'bounce' || f.tipo === 'spam' ? '<b>' + relEsc(f.texto) + '</b>' : relEsc(f.texto)}</span></div>`).join('') : '<p class="muted">Sem atividade ainda.</p>';
   emRenderConfig(c);
 }
-function emSeqHtml(q) {
-  const todosFunis = (emDados.audiencia.por_funil || []).map(f => f.funil).filter(f => f !== '(sem funil)');
-  const seg = (q.segmento && q.segmento.funis) || [];
-  const linhas = q.emails.map(e => {
-    const dep = Math.round((new Date(e.quando) - new Date(q.base_em)) / 60000);
-    return `<div class="em-mail" id="em-mail-${e.id}"><div class="em-mail-topo"><div class="t"><b>${relEsc(e.nome)}</b><span>${relEsc(e.assunto || '(sem assunto)')}</span></div>
-      <span class="em-tag">${emQuando(e.quando)}</span>${emStatusTag(e.status)}
-      <div class="em-mail-stats"><span>enviados <b>${emN(e.enviados)}</b></span><span>abriram <b>${emN(e.abertos)}</b></span><span>clicaram <b>${emN(e.clicados)}</b></span>${e.falhas ? `<span style="color:var(--critical)">falhas <b>${e.falhas}</b></span>` : ''}</div>
-      <button type="button" class="btn btn-secondary" onclick="emAbrirEd(${e.id})">Editar</button></div>
-      <div class="em-ed ${emAbertos.has(e.id) ? 'on' : ''}" id="em-ed-${e.id}">
+const emDur = min => { min = Math.abs(Math.round(min)); const d = Math.floor(min / 1440), h = Math.floor((min % 1440) / 60), m = min % 60;
+  if (d) return d + (d === 1 ? ' dia' : ' dias') + (h ? ' e ' + h + ' h' : ''); if (h) return h + ' h' + (m ? ' ' + m + ' min' : ''); return m + ' min'; };
+function emEditorHtml(e, q) {
+  return `<div class="em-ed ${emAbertos.has(e.id) ? 'on' : ''}" id="em-ed-${e.id}">
         <label>Nome interno (só você vê)</label><input type="text" id="em-f-nome-${e.id}" value="${relEsc(e.nome)}" maxlength="80">
         <div class="dois"><div><label>Quando enviar</label><input type="datetime-local" id="em-f-quando-${e.id}" value="${emInputData(e.quando)}"><div class="dica">Só sai se estiver <b>aprovado</b>, dentro do horário e do teto. Nunca dispara com mais de 36 h de atraso.</div></div>
           <div><label>Situação</label><select id="em-f-status-${e.id}"><option value="rascunho" ${e.status === 'rascunho' ? 'selected' : ''}>Rascunho (não envia)</option><option value="aprovado" ${e.status === 'aprovado' ? 'selected' : ''}>Aprovado (pode enviar)</option><option value="pausado" ${e.status === 'pausado' ? 'selected' : ''}>Pausado</option></select></div></div>
@@ -14178,19 +14249,47 @@ function emSeqHtml(q) {
         <div class="acoes"><button type="button" class="btn" onclick="emSalvarEmail(${e.id}, ${q.id}, this)">Salvar</button>
           <button type="button" class="btn btn-secondary" onclick="emPrevia(${e.id})">Pré-visualizar</button>
           <button type="button" class="btn btn-secondary" onclick="emTeste(${e.id}, this)">Enviar teste pra mim</button>
-          <button type="button" class="btn btn-secondary" onclick="emExcluirEmail(${e.id})">Excluir</button></div></div></div>`;
-  }).join('');
-  return `<section class="em-seq"><div class="em-seq-topo"><div><h3>${relEsc(q.nome)}</h3>
-      <div class="em-seq-meta"><span class="em-tag ${q.ativa ? 'ok' : ''}">${q.ativa ? 'sequência ligada' : 'sequência desligada'}</span>
-        <span>${q.tipo === 'evento' ? 'Horário do evento' : 'Data-base'}:</span><input type="datetime-local" id="em-base-${q.id}" value="${emInputData(q.base_em)}">
-        <button type="button" class="btn btn-secondary" onclick="emSalvarBase(${q.id}, this)">Mudar data</button><span>· ${emN(q.aptos)} pessoas aptas</span></div></div>
-      <div class="em-seq-meta"><button type="button" class="btn ${q.ativa ? 'btn-secondary' : ''}" onclick="emSeqLigar(${q.id}, ${!q.ativa})">${q.ativa ? 'Desligar sequência' : 'Ligar sequência'}</button>
+          <button type="button" class="btn btn-secondary" onclick="emExcluirEmail(${e.id})">Excluir</button></div></div>`;
+}
+function emSeqHtml(q) {
+  const todosFunis = (emDados.audiencia.por_funil || []).map(f => f.funil).filter(f => f !== '(sem funil)');
+  const seg = (q.segmento && q.segmento.funis) || [], ev = q.tipo === 'evento', base = new Date(q.base_em);
+  // linha do tempo: e-mails + marco (evento ou início), em ordem de relógio
+  const itens = q.emails.map(e => ({ t: new Date(e.quando), e })); itens.push({ t: base, marco: true });
+  itens.sort((x, y) => (x.t - y.t) || (x.marco ? (ev ? 1 : -1) : (y.marco ? (ev ? -1 : 1) : 0)));
+  let n = 0, ant = null, fluxo = '';
+  for (const it of itens) {
+    if (ant) { const dm = (it.t - ant) / 60000; fluxo += `<div class="fx-lig"><span>${dm < 1 ? 'em seguida' : 'espera ' + emDur(dm)}</span></div>`; }
+    if (it.marco) {
+      fluxo += `<div class="fx-marco ${ev ? '' : 'fx-inicio'}"><div class="rot">${ev ? 'Evento ao vivo' : 'Início da cadência'}</div><div class="q">${emQuando(q.base_em)}</div>
+        <div class="ed"><input type="datetime-local" id="em-base-${q.id}" value="${emInputData(q.base_em)}"><button type="button" class="btn btn-secondary" onclick="emSalvarBase(${q.id}, this)">Mudar data</button></div>
+        <div class="dica" style="font-size:.8rem;color:var(--text-secondary);margin-top:8px;">${ev ? 'Mudar a data move todos os e-mails da cadência junto.' : 'Os horários dos e-mails contam a partir daqui.'}</div></div>`;
+    } else {
+      const e = it.e; n++;
+      const dep = (it.t - base) / 60000, rel = ev ? (dep < 0 ? emDur(dep) + ' antes do evento' : dep > 0 ? emDur(dep) + ' depois do evento' : 'na hora do evento') : (dep > 0 ? emDur(dep) + ' depois do início' : 'no início');
+      fluxo += `<div class="fx-no em-mail ${e.status}" id="em-mail-${e.id}"><div class="topo em-mail-topo"><div class="fx-num">${n}</div>
+          <div class="t"><b>${relEsc(e.nome)}</b><span class="ass">${relEsc(e.assunto || '(sem assunto)')}</span></div>
+          <button type="button" class="btn btn-secondary" onclick="emAbrirEd(${e.id})">Editar</button></div>
+        <div class="meta"><span class="quando">${emQuando(e.quando)}</span><span class="rel">${rel}</span>${emStatusTag(e.status)}</div>
+        <div class="stats"><span>enviados <b>${emN(e.enviados)}</b></span><span>abriram <b>${emN(e.abertos)}</b></span><span>clicaram <b>${emN(e.clicados)}</b></span>${e.falhas ? `<span style="color:var(--critical)">falhas <b>${e.falhas}</b></span>` : ''}</div>
+        ${emEditorHtml(e, q)}</div>`;
+    }
+    ant = it.t;
+  }
+  fluxo += `<div class="fx-lig"></div><button type="button" class="fx-mais" onclick="emNovoEmail(${q.id})">+ Adicionar e-mail ao fluxo</button><div class="fx-lig"></div><div class="fx-fim">Fim</div>`;
+  const lado = `<div class="fx-lado">
+      <div class="fx-caixa entra"><h5>Quem entra</h5><span class="grande">${emN(q.aptos)}</span>pessoas aptas hoje, dos funis do CRM:
+        <ul style="margin-top:6px;">${seg.length ? seg.map(f => `<li>${relEsc(f)}</li>`).join('') : '<li style="color:var(--critical)">nenhum funil marcado: ninguém recebe</li>'}</ul>
+        <details><summary>Mudar quem entra</summary><div class="em-seg-funis" id="em-funis-${q.id}">
+          ${todosFunis.map(f => `<label><input type="checkbox" value="${relEsc(f)}" ${seg.includes(f) ? 'checked' : ''}> ${relEsc(f)}</label>`).join('')}</div>
+          <button type="button" class="btn btn-secondary" onclick="emSalvarFunis(${q.id}, this)">Salvar quem entra</button></details></div>
+      <div class="fx-caixa"><h5>Sai do fluxo na hora se</h5><ul><li>virou cliente, mentorado ou aluno</li><li>ganhou no CRM</li><li>está numa conversa ativa com a IA SDR</li><li>descadastrou, devolveu ou marcou spam</li><li>recebeu outro e-mail nas últimas 20 h</li></ul></div>
+      <div class="fx-caixa"><h5>Regras de envio</h5>Só sai o que estiver <b>aprovado</b>, dentro do horário e do teto do dia. Se passar de 36 h do horário marcado, não sai atrasado.</div></div>`;
+  return `<section class="em-seq ${q.ativa ? '' : 'desl'}"><div class="em-seq-topo"><div><h3>${relEsc(q.nome)}</h3>
+      <div class="em-seq-meta" style="margin:6px 0 0;"><span class="em-tag ${q.ativa ? 'ok' : ''}">${q.ativa ? 'cadência ligada' : 'cadência desligada'}</span><span>${n} e-mail${n === 1 ? '' : 's'} · ${emN(q.aptos)} pessoas aptas</span></div></div>
+      <div class="acoes"><button type="button" class="btn ${q.ativa ? 'btn-secondary' : ''}" onclick="emSeqLigar(${q.id}, ${!q.ativa})">${q.ativa ? 'Desligar cadência' : 'Ligar cadência'}</button>
         <button type="button" class="btn btn-secondary" onclick="emDuplicar(${q.id})">Duplicar pro próximo evento</button></div></div>
-    <details><summary style="cursor:pointer;font-size:.84rem;font-weight:700;">Quem entra nesta sequência (${seg.length} funis)</summary><div class="em-seg-funis" id="em-funis-${q.id}">
-      ${todosFunis.map(f => `<label><input type="checkbox" value="${relEsc(f)}" ${seg.includes(f) ? 'checked' : ''}> ${relEsc(f)}</label>`).join('')}</div>
-      <button type="button" class="btn btn-secondary" onclick="emSalvarFunis(${q.id}, this)">Salvar quem entra</button></details>
-    <div style="margin-top:14px;">${linhas || '<p class="muted">Sem e-mails ainda.</p>'}</div>
-    <button type="button" class="btn btn-secondary" style="margin-top:6px;" onclick="emNovoEmail(${q.id})">+ Novo e-mail nesta sequência</button></section>`;
+    <div class="fx-grade"><div class="fx">${fluxo}</div>${lado}</div></section>`;
 }
 function emAbrirEd(id) { const el = document.getElementById('em-ed-' + id); el.classList.toggle('on'); if (el.classList.contains('on')) emAbertos.add(id); else emAbertos.delete(id); }
 const emV = (id) => document.getElementById(id).value;
