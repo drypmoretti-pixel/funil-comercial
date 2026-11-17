@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadência de microcompromissos (SPIN) | Método Demanda Infinita®</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:18px;line-height:1.6}
+h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;margin:0 0 12px}.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
+.cover{padding:48px 0 10px;text-align:center}.cover img{width:76px;height:76px;margin-bottom:18px}
+.kicker{font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase}
+.cover h1{font-size:42px;font-weight:800;margin-top:10px;line-height:1.15}.sub{font-size:19px;color:var(--gray);max-width:600px;margin:14px auto 0}
+.badge{display:inline-block;margin-top:18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px}
+h2.t{font-size:25px;font-weight:800;margin-top:52px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+h2.t small{display:block;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;font-size:15px}
+.flow div b{display:block;font:800 17px 'Plus Jakarta Sans',sans-serif;margin:4px 0}.flow div i{font:600 12px 'JetBrains Mono',monospace;color:var(--green);font-style:normal}
+.flow div:not(:last-child):after{content:"→";position:absolute;right:-14px;top:42%;color:var(--green);font-weight:800}
+@media(max-width:640px){.flow{grid-template-columns:1fr 1fr}.cover h1{font-size:32px}}
+.prompt{background:#111;color:#e9f5ec;border-radius:16px;margin:16px 0;overflow:hidden}
+.prompt .h{background:var(--green);color:#fff;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.4px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.prompt button{background:#fff;color:var(--green);border:0;border-radius:8px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px}
+.prompt pre{margin:0;padding:18px;white-space:pre-wrap;font:400 15px/1.55 'JetBrains Mono',monospace}
+.ex{background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;margin:16px 0;font-size:16px}
+.ex b{font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.2px;color:var(--green);display:block;margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.col{border-radius:14px;padding:16px 18px;font-size:16px}.col.no{background:#fbeeea;border:1px solid #f0c9be}.col.si{background:#e9f6ee;border:1px solid #b5e0c4}
+.col h4{margin:0 0 8px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.4px}.col.no h4{color:#b5483a}.col.si h4{color:var(--green)}
+.col ul{margin:0;padding-left:18px}.aviso{font-size:14px;color:var(--gray);margin-top:30px}
+.cta{margin-top:48px;background:#fff;border:2px solid var(--green);border-radius:18px;padding:24px;text-align:center}
+
+.tbl{width:100%;table-layout:fixed;word-break:break-word;border-collapse:collapse;margin:16px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden}
+.tbl th{background:#111;color:#fff;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1px;text-align:left;padding:10px}
+.tbl td{border-top:1px solid var(--line);padding:10px;vertical-align:top}
+.ok{color:var(--green);font-weight:700}.risco{color:#b5483a;font-weight:700}
+.spin{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}@media(max-width:640px){.spin{grid-template-columns:1fr}}
+.spin div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px}
+.spin div b{display:block;font:800 18px 'Plus Jakarta Sans',sans-serif}.spin div i{display:block;color:var(--gray);margin:4px 0 6px}
+.spin div.forte{border:2px solid var(--green)}
+.dia{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0}
+.dia .r{font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.4px;color:var(--green)}
+.dia h3{font-size:20px;margin:4px 0 8px}.dia p{margin:6px 0;font-size:16px}
+.mc{display:inline-block;background:#e9f6ee;border:1px solid #b5e0c4;border-radius:8px;padding:3px 10px;font-size:14px;font-weight:600;margin-top:6px}
+@media(max-width:640px){.tbl{font-size:13px}.tbl th,.tbl td{padding:7px 6px}.tbl th{font-size:10px}.badge{max-width:100%;white-space:normal}}
+.wrap{overflow-wrap:break-word}</style></head><body><div class="wrap">
+
+<div class="cover"><img src="logo-demanda-infinita.png" alt=""><div class="kicker">Método Demanda Infinita®</div>
+<h1>Cadência de microcompromissos</h1><p class="sub">O fluxo de 4 contatos (dia 0, 2, 5 e 8) em que cada contato termina com um sim pequeno e uma data, com as perguntas do SPIN Selling e o pedido pronto pro Claude montar a sua.</p><span class="badge">Fluxo + perguntas + planilha + pedido pro Claude</span></div>
+
+<h2 class="t"><small>A ideia</small>Cliente não some do nada</h2>
+<p>Quando o cliente “some” depois de uma reunião boa, quase sempre a reunião terminou sem <strong>próximo passo marcado</strong>. Ninguém combinou o que acontece, em que dia, com quem.</p>
+<p>A saída não é insistir mais. É ter um <strong>fluxo</strong>: você sabe qual contato faz em qual dia, por qual canal, com qual pergunta, e o que pedir no fim de cada um.</p>
+<div class="ex"><b>MICROCOMPROMISSO, EM UMA FRASE</b>Um “sim” pequeno com data. Ex.: “Terça, 10h, com o seu sócio na chamada?” Se o cliente diz sim, a venda andou um passo. Se não marca nada, você sabe que está em risco, sem esperar 30 dias pra descobrir.</div>
+<div class="two"><div class="col no"><h4>NÃO É AVANÇO</h4><ul><li>“Me manda a proposta”</li><li>“Vou pensar e te falo”</li><li>“Me liga semana que vem”</li></ul></div>
+<div class="col si"><h4>É AVANÇO</h4><ul><li>Reunião com o decisor marcada</li><li>Ele te manda um dado que você pediu</li><li>Data combinada pra dar o sim ou o não</li></ul></div></div>
+<p style="font-size:15px;color:var(--gray)">De onde vem: no livro <em>SPIN Selling</em> (Neil Rackham, 1988), uma reunião só “anda” quando o cliente topa uma ação concreta (Rackham chama de <em>avanço</em>). “Vamos nos falando” é só <em>continuação</em>: parece bom, mas a venda fica parada.</p>
+
+<h2 class="t"><small>SPIN Selling, sem complicar</small>4 tipos de pergunta</h2>
+<p>SPIN é a sigla, em inglês, dos 4 tipos de pergunta que o Rackham viu nos vendedores que mais fechavam vendas grandes. Pense num médico: primeiro ele pergunta como você está, depois onde dói, depois o que acontece se não tratar, e só então fala do remédio.</p>
+<div class="spin">
+<div><b>S · Situação</b><i>Como é hoje?</i>“Quem responde os clientes que chegam depois das 18h?”</div>
+<div><b>P · Problema</b><i>O que dá errado?</i>“O que acontece com quem manda mensagem à noite?”</div>
+<div class="forte"><b>I · Implicação</b><i>Quanto isso custa se continuar?</i>“Se isso seguir assim até março, quanto da sua meta fica pelo caminho?”</div>
+<div class="forte"><b>N · Necessidade de solução</b><i>Como fica se resolver?</i>“Se todo cliente da noite tivesse resposta em 5 minutos, o que mudaria pra você?”</div>
+</div>
+<p>As de <strong>Implicação</strong> e <strong>Necessidade</strong> são as que fazem o próprio cliente dizer por que precisa resolver. Use poucas de Situação (ele se cansa) e guarde as de Implicação e Necessidade pros contatos depois da reunião.</p>
+
+<h2 class="t"><small>O fluxo</small>4 contatos, cada um pede um sim</h2>
+<div class="dia"><div class="r">DIA 0 · FIM DA REUNIÃO + WHATSAPP</div><h3>Marque o próximo passo antes de desligar</h3>
+<p>Na própria reunião: “Faz sentido a gente se falar terça, 10h, com o [decisor] junto?”. No mesmo dia, mande um WhatsApp com 2 linhas usando as palavras dele e a data combinada.</p><span class="mc">Microcompromisso: data e hora no calendário dele</span></div>
+<div class="dia"><div class="r">DIA 2 · E-MAIL</div><h3>Uma pergunta de Implicação + algo útil</h3>
+<p>Responda a dúvida que ele levantou e faça uma pergunta de Implicação: “Você comentou que perde cliente à noite. Quantos chegam nesse horário por semana?”</p><span class="mc">Microcompromisso: ele te responde com um dado</span></div>
+<div class="dia"><div class="r">DIA 5 · LIGAÇÃO (OU ÁUDIO NO WHATSAPP)</div><h3>Uma pergunta de Necessidade + o decisor</h3>
+<p>“Se isso estivesse resolvido em janeiro, o que mudaria pra você?” e depois: “Quem mais precisa ver isso pra decidir? Coloco ele na chamada de terça?”</p><span class="mc">Microcompromisso: decisor confirmado na próxima conversa</span></div>
+<div class="dia"><div class="r">DIA 8 · WHATSAPP</div><h3>Pergunta de sim ou não, com educação</h3>
+<p>“Ainda faz sentido resolver isso antes de janeiro? Se não for prioridade agora, sem problema, eu encerro por aqui e te procuro em fevereiro.”</p><span class="mc">Microcompromisso: um sim, um não ou uma data nova</span></div>
+<p style="font-size:15px;color:var(--gray)">Os dias são um ponto de partida: ajuste ao tempo de decisão do seu cliente. O que não muda é a regra: todo contato termina pedindo um sim pequeno com data.</p>
+
+<h2 class="t"><small>O controle</small>A planilha (ou o CRM) que mostra o risco</h2>
+<p>Crie estas colunas. Em 10 segundos você sabe quem está andando e quem está esfriando.</p>
+<table class="tbl"><tr><th>CLIENTE</th><th>PRÓXIMO PASSO</th><th>DATA</th><th>CUMPRIU?</th><th>STATUS</th></tr>
+<tr><td>Carlos · Clínica</td><td>Call com o sócio</td><td>ter 10h</td><td>sim</td><td class="ok">andando</td></tr>
+<tr><td>Ana · Loja</td><td>Mandar nº de pedidos/mês</td><td>qui</td><td>não</td><td class="risco">em risco</td></tr>
+<tr><td>Bruno · Escola</td><td>(nada marcado)</td><td>—</td><td>—</td><td class="risco">em risco</td></tr></table>
+<p style="font-size:14px;color:var(--gray)">Exemplo ilustrativo, nomes fictícios.</p>
+<ul><li><strong>Sem data marcada = em risco.</strong> Sempre.</li><li><strong>2 microcompromissos não cumpridos seguidos = em risco.</strong> Hora da pergunta de sim ou não (dia 8).</li><li>O número pra olhar toda semana: <strong>de cada 10 reuniões, quantas saíram com próximo passo marcado?</strong></li></ul>
+
+<h2 class="t"><small>O pedido pronto</small>Cole no Claude depois de cada reunião</h2>
+<p>Abra o Claude, cole o pedido abaixo e, no fim, a transcrição ou as suas anotações da reunião. Ele monta os 4 contatos e a linha da planilha. Nada é enviado: você lê, ajusta e manda.</p>
+<div class="prompt"><div class="h"><span>COPIE E COLE NO CLAUDE</span><button onclick="cp(this)">Copiar</button></div><pre>Você é meu assistente de vendas e usa o método SPIN Selling (Situação, Problema, Implicação, Necessidade de solução) e microcompromissos (cada contato termina com um "sim" pequeno e uma data).
+
+Vou colar a transcrição (ou minhas anotações) de uma reunião de vendas. Faça:
+
+1) LEIA A REUNIÃO
+- A dor do cliente, com as frases exatas dele (entre aspas)
+- Quem decide a compra e se essa pessoa estava na reunião
+- O próximo passo combinado (se não houve, diga "NENHUM PRÓXIMO PASSO MARCADO")
+- Quais perguntas SPIN eu fiz e quais faltaram (principalmente Implicação e Necessidade)
+
+2) MONTE A CADÊNCIA DE 4 CONTATOS
+Dia 0 · WhatsApp: 2 linhas com as palavras dele + o próximo passo com dia e hora.
+Dia 2 · e-mail: responde a dúvida dele + 1 pergunta de Implicação ligada à dor que ele disse.
+Dia 5 · ligação: roteiro de 3 linhas com 1 pergunta de Necessidade + pedido pra incluir o decisor.
+Dia 8 · WhatsApp: pergunta de sim ou não, educada, que encerra se não for prioridade.
+Em cada contato, escreva no fim: "Microcompromisso pedido: ..."
+
+3) LINHA DA PLANILHA
+Cliente | Próximo passo | Data | Cumpriu? | Status (andando / em risco)
+
+REGRAS
+- Use só o que está na reunião. Se faltar algo, me pergunte antes.
+- Nada de "e aí, pensou?", "só passando pra lembrar" ou "espero que esteja bem".
+- Fale do problema dele, não do meu produto.
+- Mostre tudo e espere eu aprovar. Não envie nada.
+
+Reunião com [NOME], [CARGO] da [EMPRESA], em [DATA].
+Transcrição:
+[COLE AQUI]</pre></div>
+<p>Quer que o Claude também deixe o e-mail no seu rascunho e os lembretes na agenda? Veja a versão com Gmail e Agenda conectados: <a href="https://demandainfinita.com/cadencia-claude/" style="color:var(--green)">demandainfinita.com/cadencia-claude</a>.</p>
+
+<h2 class="t"><small>Sendo honesto</small>O que esse fluxo não faz</h2>
+<p>Nem toda cadência vira venda. O fluxo não convence quem não tem a dor. O que ele faz é te dar <strong>controle</strong>: você descobre em 8 dias, e não em 2 meses, se a venda está andando ou parada, e para de gastar tempo com quem já disse não sem falar.</p>
+
+<div class="cta"><b style="font-family:'Plus Jakarta Sans';font-size:20px">Quer captar clientes qualificados sem investir em tráfego pago?</b><p style="margin:8px 0 0;color:var(--gray);font-size:16px">Conheça o Método Demanda Infinita®: <a href="https://demandainfinita.com" style="color:var(--green)">demandainfinita.com</a></p></div>
+<p class="aviso">Fonte do método: Neil Rackham, <em>SPIN Selling</em> (McGraw-Hill, 1988). Os exemplos desta página são fictícios e servem só para mostrar o formato. Revise sempre as mensagens antes de enviar.</p>
+</div>
+<script>function cp(b){var t=b.closest('.prompt').querySelector('pre').innerText;navigator.clipboard.writeText(t);b.textContent='Copiado!';setTimeout(function(){b.textContent='Copiar'},1500)}</script>
+</body></html>
