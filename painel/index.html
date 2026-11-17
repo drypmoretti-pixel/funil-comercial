@@ -2693,6 +2693,47 @@ html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="
 #tab-email .fx-var textarea { min-height:78px; resize:vertical; line-height:1.5; } #tab-email .fx-var .btn { margin-top:6px; }
 @media (max-width: 640px) { #tab-email .fx-mat { grid-template-columns:1fr; } #tab-email .fx-no .meta, #tab-email .fx-no .stats, #tab-email .fx-no .desc, #tab-email .fx-no details { margin-left:0; } }
 #tab-email .em-chk { display:flex; gap:8px; align-items:flex-start; font-size:.88rem; margin-top:10px; cursor:pointer; } #tab-email .em-chk input { margin-top:3px; }
+/* ===== v3: canvas estilo Typebot + gaveta lateral ===== */
+.drw { position:fixed; top:0; right:0; bottom:0; width:min(660px,100%); background:var(--surface-1); border-left:1px solid var(--border); box-shadow:-14px 0 44px rgba(0,0,0,.38); z-index:950; display:flex; flex-direction:column; transform:translateX(106%); transition:transform .22s ease; visibility:hidden; }
+.drw.on { transform:none; visibility:visible; }
+.drw-cab { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; border-bottom:1px solid var(--border); }
+.drw-cab b { font-size:1.08rem; line-height:1.3; } .drw-cab button { width:auto; flex:none; padding:7px 13px; font-size:.84rem; }
+.drw-corpo { flex:1; overflow:auto; padding:16px 18px 48px; }
+.drw-corpo > .card, .drw-corpo > section.card { border:0; box-shadow:none; background:none; padding:0; margin:0; }
+.stash { position:fixed; left:-10000px; top:0; width:640px; visibility:hidden; pointer-events:none; }
+.cv-barra { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:2px 0 12px; }
+.cv-chip { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary); border-radius:999px; padding:8px 15px; font:inherit; font-size:.88rem; cursor:pointer; width:auto; }
+.cv-chip:hover { border-color:var(--accent); } .cv-chip b { font-variant-numeric:tabular-nums; } .cv-chip .m { color:var(--text-secondary); }
+.cv-chip.btn-l { background:var(--field-bg); font-weight:700; }
+.cv { overflow-x:auto; border:1px solid var(--border); border-radius:14px; background-color:var(--surface-2, var(--field-bg)); background-image:radial-gradient(var(--grid) 1.1px, transparent 1.1px); background-size:20px 20px; margin-top:10px; }
+.cv-trilha { position:relative; height:176px; }
+.cv-fios { position:absolute; inset:0; pointer-events:none; color:var(--muted); }
+.cv-esp { position:absolute; top:34px; width:100px; text-align:center; font-size:.76rem; font-weight:700; color:var(--text-secondary); line-height:1.25; }
+.cv-no { position:absolute; top:34px; width:210px; height:112px; box-sizing:border-box; border:1px solid var(--border); border-radius:14px; background:var(--surface-1); padding:10px 13px 10px 17px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.14); display:flex; flex-direction:column; gap:3px; overflow:hidden; text-align:left; transition:border-color .15s, box-shadow .15s; }
+.cv-no::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--muted); opacity:.6; }
+.cv-no:hover { border-color:var(--accent); } .cv-no.sel { border-color:var(--accent); box-shadow:0 0 0 3px rgba(63,203,74,.28); }
+.cv-no.aprovado::before { background:var(--good); opacity:1; } .cv-no.pausado::before { background:var(--warning); opacity:1; }
+.cv-no.rascunho { border-style:dashed; }
+.cv-no .k { font-size:.68rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.cv-no b { font-size:.92rem; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.cv-no .s { font-size:.8rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cv-no .st { margin-top:auto; font-size:.74rem; font-weight:700; color:var(--text-secondary); display:flex; align-items:center; gap:6px; }
+.cv-no .st i { width:8px; height:8px; border-radius:50%; background:var(--muted); } .cv-no.aprovado .st i { background:var(--good); } .cv-no.pausado .st i { background:var(--warning); }
+.cv-no.marco { border:2px solid var(--accent); background:linear-gradient(180deg, rgba(63,203,74,.14), rgba(63,203,74,.04)), var(--surface-1); } .cv-no.marco::before { display:none; } .cv-no.marco .k { color:var(--accent); }
+.cv-no.cond { border-style:dashed; } .cv-no.cond::before { background:var(--accent); opacity:1; }
+.cv-no.fim { width:70px; height:44px; top:68px; align-items:center; justify-content:center; border-radius:999px; cursor:default; box-shadow:none; } .cv-no.fim::before { display:none; } .cv-no.fim .k { color:var(--muted); }
+.cv-mais { position:absolute; right:-12px; top:50%; margin-top:-12px; width:24px !important; height:24px; padding:0 !important; border-radius:50%; border:1px solid var(--accent); background:var(--surface-1); color:var(--accent); font-size:1.05rem; line-height:1; cursor:pointer; z-index:3; display:flex; align-items:center; justify-content:center; }
+.cv-no:has(.cv-mais) { overflow:visible; } .cv-mais:hover { background:var(--accent); color:#fff; }
+.cv-faixa { margin:0 0 14px; } .cv-faixa .rot { font-size:.78rem; font-weight:700; color:var(--text-secondary); margin:0 0 8px; }
+.cv-flex { display:flex; gap:46px; overflow-x:auto; padding:6px 4px 12px; }
+.cv-flex .cv-no { position:relative; top:auto; flex:none; width:190px; height:84px; }
+.cv-flex.seq .cv-no:not(:last-child)::after { content:'→'; position:absolute; right:-34px; top:50%; margin-top:-14px; color:var(--muted); font-size:1.3rem; }
+.cv-flex .cv-no:not(:last-child) { overflow:visible; }
+#tab-email .em-seq-topo .acoes .btn, #tab-email .em-seq-topo .acoes .cv-chip { width:auto; }
+#tab-email .em-ed .dica, #tab-email .drw-corpo .dica { display:block; }
+#tab-ia .em-secao { margin:26px 0 10px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; } #tab-ia .em-secao h3 { margin:0; font-size:1.2rem; } #tab-ia .em-secao span { font-size:.88rem; color:var(--text-secondary); }
+.cv-flex .cv-no { height:98px; } .cv-flex .cv-no b { -webkit-line-clamp:3; }
+@media (max-width: 640px) { .drw { width:100%; } }
 #em-previa { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
 #em-previa.on { display:flex; } #em-previa .caixa { background:var(--surface-1); border-radius:14px; width:min(640px, 100%); height:min(90vh, 900px); display:flex; flex-direction:column; overflow:hidden; }
 #em-previa .topo { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; font-weight:700; } #em-previa iframe { flex:1; border:0; background:#F8F7F4; }
@@ -4208,31 +4249,13 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 
       <div class="ia-agora" id="ia-agora"></div>
 
-      <section class="card ia-card">
-        <div class="tl-card-cab">
-          <h3>Resultado do período</h3>
-          <div class="ia-seg" id="ia-seg-dias">
-            <button type="button" data-d="7">7 dias</button>
-            <button type="button" data-d="30" class="on">30 dias</button>
-            <button type="button" data-d="90">90 dias</button>
-          </div>
-        </div>
-        <div class="ia-kpis" id="ia-kpis"></div>
-        <div class="ia-mini" id="ia-mini"></div>
-      </section>
-
-      <section class="card ia-card">
-        <div class="tl-card-cab">
-          <h3>Relatório</h3>
-          <div class="ia-seg" id="ia-seg-agrup">
-            <button type="button" data-g="semana" class="on">Semanal</button>
-            <button type="button" data-g="mes">Mensal</button>
-          </div>
-        </div>
-        <p class="muted" style="margin:0 0 12px;">Cada gráfico mostra uma medida só. A última barra é o período em andamento.</p>
-        <div class="ia-graficos" id="ia-graficos"></div>
-        <div class="tabela-wrap"><table class="tabela-leads ia-tabela" id="ia-tabela"></table></div>
-      </section>
+      <div class="cv-barra" id="ia-barra">
+        <button type="button" class="cv-chip btn-l" onclick="iaAbrirPane('res')">Resultado do período</button>
+        <button type="button" class="cv-chip btn-l" onclick="iaAbrirPane('rel')">Relatório</button>
+        <button type="button" class="cv-chip btn-l" onclick="iaAbrirPane('feed')">Atividade recente</button>
+        <button type="button" class="cv-chip btn-l" id="ia-btn-cfg" style="display:none;" onclick="iaAbrirPane('cfg')">Configurações</button>
+        <button type="button" class="cv-chip btn-l" id="ia-btn-mod" style="display:none;" onclick="iaAbrirPane('mod')">Todas as mensagens</button>
+      </div>
 
       <div class="ia-duas">
         <section class="card ia-card">
@@ -4247,24 +4270,42 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         </section>
       </div>
 
-      <section class="card ia-card">
-        <div class="tl-card-cab"><h3>Atividade recente</h3><span class="muted">o que a IA fez, mais novo primeiro</span></div>
-        <div id="ia-feed"></div>
-      </section>
+      <div id="ia-fluxo-wrap" style="display:none;">
+        <div class="em-secao"><h3>Fluxo da IA</h3><span>Clique numa caixa pra ver e editar as mensagens daquela etapa.</span></div>
+        <div id="ia-fluxo"></div>
+      </div>
 
-      <section class="card ia-card" id="ia-config-card" style="display:none;">
-        <div class="tl-card-cab"><h3>Configurações</h3><span class="muted">só o admin altera; cada mudança fica registrada na atividade</span></div>
-        <div class="ia-config" id="ia-config"></div>
-      </section>
-
-      <section class="card ia-card" id="ia-modelos-card" style="display:none;">
-        <div class="tl-card-cab"><h3>Mensagens da IA</h3><span class="muted">a IA sorteia uma variação por envio, pra não repetir texto</span></div>
-        <div class="ia-modelos-barra">
-          <select id="ia-modelo-etapa" onchange="iaRenderModelos()"></select>
-          <span class="muted">Campos que a IA preenche: {nome} {material} {hora} {closer} {link} {quando}</span>
-        </div>
-        <div id="ia-modelos"></div>
-      </section>
+      <div class="drw" id="ia-drawer" aria-hidden="true"><div class="drw-cab"><b id="ia-drawer-t"></b><button type="button" class="btn btn-secondary" onclick="drFechar('ia')">Fechar ✕</button></div><div class="drw-corpo" id="ia-drawer-b"></div></div>
+      <div class="stash" id="ia-stash">
+        <section class="card ia-card" data-stash id="ia-pane-res">
+          <div class="tl-card-cab"><h3>Resultado do período</h3>
+            <div class="ia-seg" id="ia-seg-dias"><button type="button" data-d="7">7 dias</button><button type="button" data-d="30" class="on">30 dias</button><button type="button" data-d="90">90 dias</button></div></div>
+          <div class="ia-kpis" id="ia-kpis"></div><div class="ia-mini" id="ia-mini"></div>
+        </section>
+        <section class="card ia-card" data-stash id="ia-pane-rel">
+          <div class="tl-card-cab"><h3>Relatório</h3>
+            <div class="ia-seg" id="ia-seg-agrup"><button type="button" data-g="semana" class="on">Semanal</button><button type="button" data-g="mes">Mensal</button></div></div>
+          <p class="muted" style="margin:0 0 12px;">Cada gráfico mostra uma medida só. A última barra é o período em andamento.</p>
+          <div class="ia-graficos" id="ia-graficos"></div>
+          <div class="tabela-wrap"><table class="tabela-leads ia-tabela" id="ia-tabela"></table></div>
+        </section>
+        <section class="card ia-card" data-stash id="ia-pane-feed">
+          <div class="tl-card-cab"><h3>Atividade recente</h3><span class="muted">o que a IA fez, mais novo primeiro</span></div>
+          <div id="ia-feed"></div>
+        </section>
+        <section class="card ia-card" data-stash id="ia-config-card" style="display:none;">
+          <div class="tl-card-cab"><h3>Configurações</h3><span class="muted">só o admin altera; cada mudança fica registrada</span></div>
+          <div class="ia-config" id="ia-config"></div>
+        </section>
+        <section class="card ia-card" data-stash id="ia-modelos-card" style="display:none;">
+          <div class="tl-card-cab"><h3>Mensagens da IA</h3><span class="muted">a IA sorteia uma variação por envio, pra não repetir texto</span></div>
+          <div class="ia-modelos-barra">
+            <select id="ia-modelo-etapa" onchange="iaRenderModelos()"></select>
+            <span class="muted">Campos que a IA preenche: {nome} {material} {hora} {closer} {link} {quando}</span>
+          </div>
+          <div id="ia-modelos"></div>
+        </section>
+      </div>
     </div>
 
     <div class="tab-panel" id="tab-email">
@@ -4280,39 +4321,23 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
         </div>
       </div>
       <div class="em-alerta" id="em-alerta" style="display:none;"></div>
-      <div class="em-agora" id="em-agora"></div>
 
-      <section class="card em-card">
-        <div class="tl-card-cab">
-          <h3>Resultado do período</h3>
-          <div class="em-seg" id="em-seg-dias">
-            <button type="button" data-d="7">7 dias</button>
-            <button type="button" data-d="30" class="on">30 dias</button>
-            <button type="button" data-d="90">90 dias</button>
-          </div>
-        </div>
-        <div class="em-kpis" id="em-kpis"></div>
-      </section>
+      <div class="cv-barra" id="em-resumo"></div>
 
-      <div class="em-secao"><h3>Cadências</h3><span>Cada cadência é um fluxo: os e-mails saem de cima pra baixo, na ordem do relógio. Ligue só as que quiser rodando.</span>
+      <div class="em-secao"><h3>Cadências</h3><span>Clique numa caixa pra abrir. O + cria o próximo e-mail já ligado ao anterior.</span>
         <button type="button" class="btn btn-secondary" style="width:auto;padding:7px 14px;font-size:.82rem;margin-left:auto;" onclick="emNovaSequencia()">+ Nova cadência</button></div>
       <div id="em-seqs"></div>
 
-      <div class="ia-duas" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:16px;margin-bottom:16px;">
-        <section class="card em-card" style="margin-bottom:0;">
-          <div class="tl-card-cab"><h3>Quem pode receber</h3><button type="button" class="btn btn-secondary" style="width:auto;padding:6px 14px;font-size:.78rem;" onclick="emSincronizar(this)">Sincronizar com o CRM</button></div>
-          <div id="em-aud"></div>
-        </section>
-        <section class="card em-card" style="margin-bottom:0;">
-          <div class="tl-card-cab"><h3>Atividade recente</h3><span class="muted">mais novo primeiro</span></div>
-          <div id="em-feed" class="em-feed-scroll"></div>
-        </section>
+      <div class="drw" id="em-drawer" aria-hidden="true"><div class="drw-cab"><b id="em-drawer-t"></b><button type="button" class="btn btn-secondary" onclick="drFechar('em')">Fechar ✕</button></div><div class="drw-corpo" id="em-drawer-b"></div></div>
+      <div class="stash" id="em-stash">
+        <div data-stash id="em-pane-res"><div class="em-agora" id="em-agora"></div>
+          <section class="card em-card" style="margin-top:14px;"><div class="tl-card-cab"><h3>Resultado do período</h3>
+            <div class="em-seg" id="em-seg-dias"><button type="button" data-d="7">7 dias</button><button type="button" data-d="30" class="on">30 dias</button><button type="button" data-d="90">90 dias</button></div></div>
+            <div class="em-kpis" id="em-kpis"></div></section></div>
+        <div data-stash id="em-pane-aud"><div style="margin-bottom:10px;"><button type="button" class="btn btn-secondary" style="width:auto;padding:6px 14px;font-size:.8rem;" onclick="emSincronizar(this)">Sincronizar com o CRM</button> <span class="muted" style="font-size:.8rem;">já roda sozinho a cada 5 min</span></div><div id="em-aud"></div></div>
+        <div data-stash id="em-pane-feed"><div id="em-feed"></div></div>
+        <div data-stash id="em-pane-cfg"><p class="muted" style="margin:0 0 12px;font-size:.86rem;">Cada mudança fica registrada na atividade.</p><div class="em-config" id="em-config"></div></div>
       </div>
-
-      <section class="card em-card">
-        <details class="em-cfg-wrap"><summary>Configurações <span class="muted" style="font-size:.84rem;font-weight:400;margin-left:8px;">teto por dia, horário, remetente · cada mudança fica na atividade</span></summary>
-          <div class="em-config" id="em-config" style="margin-top:12px;"></div></details>
-      </section>
 
       <div id="em-previa" onclick="if (event.target === this) emFecharPrevia()"><div class="caixa"><div class="topo"><span>Pré-visualização</span><button type="button" class="btn btn-secondary" style="width:auto;padding:4px 12px;" onclick="emFecharPrevia()">Fechar</button></div><iframe id="em-previa-frame" title="Pré-visualização do e-mail"></iframe></div></div>
     </div>
@@ -14244,6 +14269,7 @@ function emRender() {
     (a.por_funil || []).map(f => `<div class="em-linha"><span class="q">${relEsc(f.funil)}</span><span class="n">${emN(f.total)}</span></div>`).join('');
   document.getElementById('em-feed').innerHTML = (d.feed || []).length ? d.feed.map(f => `<div class="em-feed"><span class="h">${emQuando(f.em)}</span><span>${f.tipo === 'alerta' || f.tipo === 'bounce' || f.tipo === 'spam' ? '<b>' + relEsc(f.texto) + '</b>' : relEsc(f.texto)}</span></div>`).join('') : '<p class="muted">Sem atividade ainda.</p>';
   emRenderConfig(c);
+  emRenderResumo(); emDrawerRender(); emMarcaSel();
 }
 const emDur = min => { min = Math.abs(Math.round(min)); const d = Math.floor(min / 1440), h = Math.floor((min % 1440) / 60), m = min % 60;
   if (d) return d + (d === 1 ? ' dia' : ' dias') + (h ? ' e ' + h + ' h' : ''); if (h) return h + ' h' + (m ? ' ' + m + ' min' : ''); return m + ' min'; };
@@ -14269,6 +14295,19 @@ function emEditorHtml(e, q) {
           <button type="button" class="btn btn-secondary" onclick="emTeste(${e.id}, this)">Enviar teste pra mim</button>
           <button type="button" class="btn btn-secondary" onclick="emExcluirEmail(${e.id})">Excluir</button></div></div>`;
 }
+async function drDevolver(tab) { const st = document.getElementById(tab + '-stash'), corpo = document.getElementById(tab + '-drawer-b'); corpo.querySelectorAll(':scope > [data-stash]').forEach(el => st.appendChild(el)); }
+function drAbrir(tab, titulo, conteudo) {
+  const dr = document.getElementById(tab + '-drawer'), corpo = document.getElementById(tab + '-drawer-b'); drDevolver(tab);
+  document.getElementById(tab + '-drawer-t').textContent = titulo;
+  if (typeof conteudo === 'string') corpo.innerHTML = conteudo; else { corpo.innerHTML = ''; conteudo.forEach(el => corpo.appendChild(el)); }
+  dr.classList.add('on'); dr.setAttribute('aria-hidden', 'false');
+}
+function drFechar(tab) {
+  drDevolver(tab); const dr = document.getElementById(tab + '-drawer'); if (!dr) return;
+  dr.classList.remove('on'); dr.setAttribute('aria-hidden', 'true'); document.getElementById(tab + '-drawer-b').innerHTML = '';
+  if (tab === 'em') { emDrawer = null; emMarcaSel(); }
+}
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') { drFechar('em'); drFechar('ia'); } });
 async function emSalvarMaterial(tagId, btn) { await emRpc('em_material_set', { p_tag_id: tagId, p_url: document.getElementById('em-mat-' + tagId).value.trim() }, btn); }
 async function emSalvarVariante(seqId, dor, idx, btn) { await emRpc('em_variante_set', { p_seq: seqId, p_dor: dor, p_texto: document.getElementById('em-var-' + seqId + '-' + idx).value }, btn); }
 async function emNovaVariante(seqId) {
@@ -14276,96 +14315,129 @@ async function emNovaVariante(seqId) {
   const texto = prompt('Texto que entra no e-mail pra quem marcou essa dor:', ''); if (!texto || !texto.trim()) return;
   await emRpc('em_variante_set', { p_seq: seqId, p_dor: dor.trim(), p_texto: texto.trim() });
 }
-function emSeqGatilhoHtml(q) {
-  const g = emGat[q.id] || { variantes: [], materiais: [], dores: [] }, seg = (q.segmento && q.segmento.funis) || [];
-  const todosFunis = (emDados.audiencia.por_funil || []).map(f => f.funil).filter(f => f !== '(sem funil)');
-  const emails = [...q.emails].sort((a, b) => a.offset_min - b.offset_min || a.id - b.id);
-  const semLink = g.materiais.filter(m => !m.url && m.leads30 > 0), ativos = g.materiais.filter(m => m.leads30 > 0 || m.url), outros = g.materiais.filter(m => !(m.leads30 > 0 || m.url));
-  const linhaMat = m => `<div class="fx-mat"><div class="n"><b>${relEsc(m.nome)}</b><span>${m.leads30} lead${m.leads30 === 1 ? '' : 's'} em 30 dias${!m.url && m.leads30 > 0 ? ' · <b style="color:var(--warning)">sem link: não recebe</b>' : ''}</span></div>
-      <input type="url" id="em-mat-${m.tag_id}" value="${relEsc(m.url || '')}" placeholder="https://link-do-material"><button type="button" class="btn btn-secondary" onclick="emSalvarMaterial(${m.tag_id}, this)">Salvar</button></div>`;
-  const dId = k => 'em-det-' + k + '-' + q.id, aberto = k => emDet.has(dId(k)) ? 'open' : '';
-  const dorNome = d => d === 'padrao' ? 'Qualquer outra dor (ou sem dor marcada)' : 'Se a dor marcada contém “' + relEsc(d) + '”';
-  const marco = `<div class="fx-marco"><div class="rot">Gatilho</div><div class="q">Lead novo baixou um material</div>
-      <div class="dica" style="font-size:.84rem;color:var(--text-secondary);">${q.ativa && q.gatilho_desde ? 'Valendo para quem baixar a partir de ' + emQuando(q.gatilho_desde) + '.' : 'Ao ligar a cadência, vale só para quem baixar dali em diante. Quem já está no CRM não recebe.'}</div></div>`;
-  const noMaterial = `<div class="fx-no cond"><div class="topo"><div class="fx-num">?</div><div class="t"><b class="fx-cond-q">Qual material ele baixou?</b></div></div>
-      <div class="desc">O botão principal do e-mail leva ao link do material que ele baixou. <b>Sem link cadastrado, o e-mail daquela isca não sai.</b>${semLink.length ? ` <span class="em-tag warn">${semLink.length} isca${semLink.length === 1 ? '' : 's'} com lead recente sem link</span>` : ''}</div>
-      <details id="${dId('mat')}" ${aberto('mat')} ontoggle="emDetToggle(this)"><summary>Links dos materiais (${ativos.length})</summary>${ativos.map(linhaMat).join('') || '<p class="muted">Nenhuma isca com lead nos últimos 30 dias.</p>'}
-        ${outros.length ? `<details id="${dId('mat2')}" ${aberto('mat2')} ontoggle="emDetToggle(this)" style="margin:10px 0 0;"><summary>Outras iscas, sem lead nos últimos 30 dias (${outros.length})</summary>${outros.map(linhaMat).join('')}</details>` : ''}</details></div>`;
-  const noDor = `<div class="fx-no cond"><div class="topo"><div class="fx-num">?</div><div class="t"><b class="fx-cond-q">Qual dor ele marcou?</b></div></div>
-      <div class="desc">O parágrafo do meio muda conforme a dor que a pessoa marcou no formulário. Sem dor, vale o texto padrão. É texto pronto, sem IA: você edita quando quiser.</div>
-      <details id="${dId('dor')}" ${aberto('dor')} ontoggle="emDetToggle(this)"><summary>Textos por dor (${g.variantes.length})</summary>
-        ${g.variantes.map((v, i) => `<div class="fx-var"><label for="em-var-${q.id}-${i}">${dorNome(v.dor)}</label><textarea id="em-var-${q.id}-${i}" maxlength="700">${relEsc(v.texto)}</textarea>
-          <button type="button" class="btn btn-secondary" onclick="emSalvarVariante(${q.id}, '${relEsc(v.dor).replace(/'/g, '')}', ${i}, this)">Salvar</button></div>`).join('')}
-        <button type="button" class="btn btn-secondary" style="margin-top:10px;" onclick="emNovaVariante(${q.id})">+ Texto pra outra dor</button>
-        ${g.dores.length ? `<div class="dica" style="font-size:.8rem;color:var(--text-secondary);margin-top:12px;"><b>Dores mais marcadas (90 dias):</b><br>${g.dores.map(d => d.n + ' · ' + relEsc(d.dor)).join('<br>')}</div>` : ''}</details></div>`;
-  let fluxo = marco + '<div class="fx-lig"><span>novo lead</span></div>' + noMaterial + '<div class="fx-lig"></div>' + noDor, ant = null, n = 0;
-  for (const e of emails) {
-    n++; const dm = ant === null ? e.offset_min : e.offset_min - ant;
-    fluxo += `<div class="fx-lig"><span>${dm < 1 ? 'em seguida' : 'espera ' + emDur(dm)}${ant === null ? ' depois do download' : ''}</span></div>`;
-    fluxo += `<div class="fx-no em-mail ${e.status}" id="em-mail-${e.id}"><div class="topo em-mail-topo"><div class="fx-num">${n}</div>
-        <div class="t"><b>${relEsc(e.nome)}</b><span class="ass">${relEsc(e.assunto || '(sem assunto)')}</span></div>
-        <button type="button" class="btn btn-secondary" onclick="emAbrirEd(${e.id})">Editar</button></div>
-      <div class="meta"><span class="quando">${e.offset_min < 1 ? 'na hora do download' : emDur(e.offset_min) + ' depois do download'}</span>${emStatusTag(e.status)}</div>
-      <div class="stats"><span>enviados <b>${emN(e.enviados)}</b></span><span>abriram <b>${emN(e.abertos)}</b></span><span>clicaram <b>${emN(e.clicados)}</b></span>${e.falhas ? `<span style="color:var(--critical)">falhas <b>${e.falhas}</b></span>` : ''}</div>
-      ${emEditorHtml(e, q)}</div>`;
-    ant = e.offset_min;
+let emDrawer = null;
+const emNomeCurto = n => String(n || '').replace(/^\s*\d+\s*[·.\-]\s*/, '').replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim() || 'E-mail';
+// monta a linha do tempo da cadência: lista de caixas na ordem em que acontecem
+function emNos(q) {
+  const gat = q.tipo === 'gatilho', ev = q.tipo === 'evento', base = new Date(q.base_em);
+  const nos = []; let n = 0;
+  const email = (e, extra) => { n++; return { k: 'email-' + e.id, cls: 'email ' + e.status, kicker: 'E-mail ' + n, titulo: emNomeCurto(e.nome), sub: extra, status: e.status, abrir: `emAbrir('email', ${q.id}, ${e.id})`, mais: e.offset_min, tempo: e.offset_min, quando: new Date(e.quando) }; };
+  if (gat) {
+    const em = [...q.emails].sort((a, b) => a.offset_min - b.offset_min || a.id - b.id);
+    nos.push({ k: 'gatilho', cls: 'marco', kicker: 'Gatilho', titulo: 'Lead novo baixou um material', sub: q.ativa ? 'ligado' : 'desligado', abrir: `emAbrir('gatilho', ${q.id}, 0)`, t: 0 });
+    nos.push({ k: 'material', cls: 'cond', kicker: 'Condição', titulo: 'Qual material ele baixou?', sub: 'link vem do cadastro', abrir: `emAbrir('material', ${q.id}, 0)`, t: 0, esp: 'novo lead' });
+    nos.push({ k: 'dor', cls: 'cond', kicker: 'Condição', titulo: 'Qual dor ele marcou?', sub: 'texto pronto por dor', abrir: `emAbrir('dor', ${q.id}, 0)`, t: 0, esp: '' });
+    em.forEach((e, i) => { const x = email(e, e.offset_min < 1 ? 'na hora do download' : emDur(e.offset_min) + ' depois'); x.esp = i === 0 ? (e.offset_min < 1 ? 'em seguida' : 'espera ' + emDur(e.offset_min)) : null; x.t = e.offset_min; nos.push(x); });
+  } else {
+    const itens = q.emails.map(e => ({ t: new Date(e.quando), e })); itens.push({ t: base, marco: true });
+    itens.sort((x, y) => (x.t - y.t) || (x.marco ? (ev ? 1 : -1) : (y.marco ? (ev ? -1 : 1) : 0)));
+    for (const it of itens) {
+      if (it.marco) nos.push({ k: 'marco', cls: 'marco', kicker: ev ? 'Evento ao vivo' : 'Início', titulo: emQuando(q.base_em), sub: ev ? 'clique pra mudar a data' : 'a cadência conta daqui', abrir: `emAbrir('marco', ${q.id}, 0)`, t: it.t });
+      else nos.push({ ...email(it.e, emQuando(it.e.quando)), t: it.t });
+    }
   }
-  fluxo += '<div class="fx-lig"></div><div class="fx-fim">Fim</div>';
-  const lado = `<div class="fx-lado">
-      <div class="fx-caixa entra"><h5>Quem entra</h5>Todo lead <b>novo</b> do CRM nos funis:
-        <ul style="margin-top:6px;">${seg.length ? seg.map(f => `<li>${relEsc(f)}</li>`).join('') : '<li style="color:var(--critical)">nenhum funil marcado: ninguém recebe</li>'}</ul>
-        <details><summary>Mudar quem entra</summary><div class="em-seg-funis" id="em-funis-${q.id}">
-          ${todosFunis.map(f => `<label><input type="checkbox" value="${relEsc(f)}" ${seg.includes(f) ? 'checked' : ''}> ${relEsc(f)}</label>`).join('')}</div>
-          <button type="button" class="btn btn-secondary" onclick="emSalvarFunis(${q.id}, this)">Salvar quem entra</button></details></div>
-      <div class="fx-caixa"><h5>Não recebe se</h5><ul><li>já é cliente, mentorado ou aluno</li><li>ganhou no CRM</li><li>já marcou reunião com a IA SDR, ou está com atendimento humano</li><li>a isca dele não tem link cadastrado</li><li>descadastrou, devolveu ou marcou spam</li><li>recebeu outro e-mail nas últimas 20 h (o dele sai assim que liberar)</li></ul></div>
-      <div class="fx-caixa"><h5>Regras de envio</h5>Só sai o que estiver <b>aprovado</b>, seg a sex dentro do horário e do teto. Passou de 72 h do download, não sai. Lead novo passa na frente do convite de evento no teto do dia.</div></div>`;
-  return `<section class="em-seq ${q.ativa ? '' : 'desl'}"><div class="em-seq-topo"><div><h3>${relEsc(q.nome)}</h3>
-      <div class="em-seq-meta" style="margin:6px 0 0;"><span class="em-tag ${q.ativa ? 'ok' : ''}">${q.ativa ? 'cadência ligada' : 'cadência desligada'}</span><span>1 e-mail por lead novo · dispara sozinha</span></div></div>
-      <div class="acoes"><button type="button" class="btn ${q.ativa ? 'btn-secondary' : ''}" onclick="emSeqLigar(${q.id}, ${!q.ativa})">${q.ativa ? 'Desligar cadência' : 'Ligar cadência'}</button></div></div>
-    <div class="fx-grade"><div class="fx">${fluxo}</div>${lado}</div></section>`;
+  // textos de espera entre caixas consecutivas
+  for (let i = 1; i < nos.length; i++) { if (nos[i].esp === undefined || nos[i].esp === null) { const dm = gat ? nos[i].t - nos[i - 1].t : (nos[i].t - nos[i - 1].t) / 60000; nos[i].esp = dm < 1 ? 'em seguida' : 'espera ' + emDur(dm); } }
+  nos.push({ k: 'fim', cls: 'fim', kicker: 'Fim', titulo: '', esp: '' });
+  return nos;
+}
+function emCanvasHtml(q) {
+  const nos = emNos(q), NW = 210, GAP = 100, X0 = 18, larg = X0 * 2 + nos.length * NW + (nos.length - 1) * GAP, gat = q.tipo === 'gatilho';
+  let fios = '', esp = '', caixas = '';
+  nos.forEach((no, i) => {
+    const x = X0 + i * (NW + GAP), w = no.cls === 'fim' ? 70 : NW;
+    if (i > 0) { const x1 = X0 + (i - 1) * (NW + GAP) + NW, x2 = x, y = 34 + (no.cls === 'fim' ? 56 : 56); fios += `<line x1="${x1 + 14}" y1="${y}" x2="${x2 - 4}" y2="${y}" stroke="currentColor" stroke-width="2"/><polygon points="${x2},${y} ${x2 - 9},${y - 5} ${x2 - 9},${y + 5}" fill="currentColor"/>`; if (no.esp) esp += `<div class="cv-esp" style="left:${x1 - 4}px;top:${y - 42}px;width:${GAP + 8}px;">${relEsc(no.esp)}</div>`; }
+    const stat = no.status ? `<span class="st"><i></i>${no.status}</span>` : '';
+    const mais = no.k.startsWith('email-') ? `<button type="button" class="cv-mais" title="Adicionar um e-mail depois deste" onclick="event.stopPropagation(); emNovoDepois(${q.id}, ${no.mais})">+</button>` : '';
+    caixas += no.cls === 'fim' ? `<div class="cv-no fim" style="left:${x}px;"><span class="k">Fim</span></div>`
+      : `<div class="cv-no ${no.cls}" data-k="${no.k}" style="left:${x}px;" role="button" tabindex="0" onclick="${no.abrir}" onkeydown="if(event.key==='Enter')${no.abrir}"><span class="k">${relEsc(no.kicker)}</span><b>${relEsc(no.titulo)}</b><span class="s">${relEsc(no.sub || '')}</span>${stat}${mais}</div>`;
+  });
+  return `<div class="cv"><div class="cv-trilha" style="width:${larg}px;"><svg class="cv-fios" width="${larg}" height="176">${fios}</svg>${esp}${caixas}</div></div>`;
 }
 function emSeqHtml(q) {
-  if (q.tipo === 'gatilho') return emSeqGatilhoHtml(q);
-  const todosFunis = (emDados.audiencia.por_funil || []).map(f => f.funil).filter(f => f !== '(sem funil)');
-  const seg = (q.segmento && q.segmento.funis) || [], ev = q.tipo === 'evento', base = new Date(q.base_em);
-  // linha do tempo: e-mails + marco (evento ou início), em ordem de relógio
-  const itens = q.emails.map(e => ({ t: new Date(e.quando), e })); itens.push({ t: base, marco: true });
-  itens.sort((x, y) => (x.t - y.t) || (x.marco ? (ev ? 1 : -1) : (y.marco ? (ev ? -1 : 1) : 0)));
-  let n = 0, ant = null, fluxo = '';
-  for (const it of itens) {
-    if (ant) { const dm = (it.t - ant) / 60000; fluxo += `<div class="fx-lig"><span>${dm < 1 ? 'em seguida' : 'espera ' + emDur(dm)}</span></div>`; }
-    if (it.marco) {
-      fluxo += `<div class="fx-marco ${ev ? '' : 'fx-inicio'}"><div class="rot">${ev ? 'Evento ao vivo' : 'Início da cadência'}</div><div class="q">${emQuando(q.base_em)}</div>
-        <div class="ed"><input type="datetime-local" id="em-base-${q.id}" value="${emInputData(q.base_em)}"><button type="button" class="btn btn-secondary" onclick="emSalvarBase(${q.id}, this)">Mudar data</button></div>
-        <div class="dica" style="font-size:.8rem;color:var(--text-secondary);margin-top:8px;">${ev ? 'Mudar a data move todos os e-mails da cadência junto.' : 'Os horários dos e-mails contam a partir daqui.'}</div></div>`;
-    } else {
-      const e = it.e; n++;
-      const dep = (it.t - base) / 60000, rel = ev ? (dep < 0 ? emDur(dep) + ' antes do evento' : dep > 0 ? emDur(dep) + ' depois do evento' : 'na hora do evento') : (dep > 0 ? emDur(dep) + ' depois do início' : 'no início');
-      fluxo += `<div class="fx-no em-mail ${e.status}" id="em-mail-${e.id}"><div class="topo em-mail-topo"><div class="fx-num">${n}</div>
-          <div class="t"><b>${relEsc(e.nome)}</b><span class="ass">${relEsc(e.assunto || '(sem assunto)')}</span></div>
-          <button type="button" class="btn btn-secondary" onclick="emAbrirEd(${e.id})">Editar</button></div>
-        <div class="meta"><span class="quando">${emQuando(e.quando)}</span><span class="rel">${rel}</span>${emStatusTag(e.status)}</div>
-        <div class="stats"><span>enviados <b>${emN(e.enviados)}</b></span><span>abriram <b>${emN(e.abertos)}</b></span><span>clicaram <b>${emN(e.clicados)}</b></span>${e.falhas ? `<span style="color:var(--critical)">falhas <b>${e.falhas}</b></span>` : ''}</div>
-        ${emEditorHtml(e, q)}</div>`;
-    }
-    ant = it.t;
-  }
-  fluxo += `<div class="fx-lig"></div><button type="button" class="fx-mais" onclick="emNovoEmail(${q.id})">+ Adicionar e-mail ao fluxo</button><div class="fx-lig"></div><div class="fx-fim">Fim</div>`;
-  const lado = `<div class="fx-lado">
-      <div class="fx-caixa entra"><h5>Quem entra</h5><span class="grande">${emN(q.aptos)}</span>pessoas aptas hoje, dos funis do CRM:
-        <ul style="margin-top:6px;">${seg.length ? seg.map(f => `<li>${relEsc(f)}</li>`).join('') : '<li style="color:var(--critical)">nenhum funil marcado: ninguém recebe</li>'}</ul>
-        <details><summary>Mudar quem entra</summary><div class="em-seg-funis" id="em-funis-${q.id}">
-          ${todosFunis.map(f => `<label><input type="checkbox" value="${relEsc(f)}" ${seg.includes(f) ? 'checked' : ''}> ${relEsc(f)}</label>`).join('')}</div>
-          <button type="button" class="btn btn-secondary" onclick="emSalvarFunis(${q.id}, this)">Salvar quem entra</button></details></div>
-      <div class="fx-caixa"><h5>Sai do fluxo na hora se</h5><ul><li>virou cliente, mentorado ou aluno</li><li>ganhou no CRM</li><li>está numa conversa ativa com a IA SDR</li><li>descadastrou, devolveu ou marcou spam</li><li>recebeu outro e-mail nas últimas 20 h</li></ul></div>
-      <div class="fx-caixa"><h5>Regras de envio</h5>Só sai o que estiver <b>aprovado</b>, dentro do horário e do teto do dia. Se passar de 36 h do horário marcado, não sai atrasado.</div></div>`;
+  const gat = q.tipo === 'gatilho', nEmails = q.emails.length;
   return `<section class="em-seq ${q.ativa ? '' : 'desl'}"><div class="em-seq-topo"><div><h3>${relEsc(q.nome)}</h3>
-      <div class="em-seq-meta" style="margin:6px 0 0;"><span class="em-tag ${q.ativa ? 'ok' : ''}">${q.ativa ? 'cadência ligada' : 'cadência desligada'}</span><span>${n} e-mail${n === 1 ? '' : 's'} · ${emN(q.aptos)} pessoas aptas</span></div></div>
-      <div class="acoes"><button type="button" class="btn ${q.ativa ? 'btn-secondary' : ''}" onclick="emSeqLigar(${q.id}, ${!q.ativa})">${q.ativa ? 'Desligar cadência' : 'Ligar cadência'}</button>
-        <button type="button" class="btn btn-secondary" onclick="emDuplicar(${q.id})">Duplicar pro próximo evento</button></div></div>
-    <div class="fx-grade"><div class="fx">${fluxo}</div>${lado}</div></section>`;
+      <div class="em-seq-meta" style="margin:6px 0 0;"><span class="em-tag ${q.ativa ? 'ok' : ''}">${q.ativa ? 'cadência ligada' : 'cadência desligada'}</span><span>${nEmails} e-mail${nEmails === 1 ? '' : 's'}${gat ? ' · dispara sozinha pra cada lead novo' : ''}</span></div></div>
+      <div class="acoes"><button type="button" class="cv-chip" onclick="emAbrir('quem', ${q.id}, 0)">Quem entra <b>${gat ? '' : emN(q.aptos)}</b> ▸</button>
+        <button type="button" class="btn ${q.ativa ? 'btn-secondary' : ''}" onclick="emSeqLigar(${q.id}, ${!q.ativa})">${q.ativa ? 'Desligar' : 'Ligar cadência'}</button>
+        ${gat ? '' : `<button type="button" class="btn btn-secondary" onclick="emDuplicar(${q.id})">Duplicar</button>`}</div></div>
+    ${emCanvasHtml(q)}</section>`;
 }
-function emAbrirEd(id) { const el = document.getElementById('em-ed-' + id); el.classList.toggle('on'); if (el.classList.contains('on')) emAbertos.add(id); else emAbertos.delete(id); }
+async function emNovoDepois(seqId, off) {
+  const r = await emRpc('em_email_novo', { p_sequencia_id: seqId }); if (!r || !r.id) return;
+  await emRpc('em_email_set', { p_id: r.id, p_campos: { offset_min: (Number(off) || 0) + 1440 } });
+  emAbrir('email', seqId, r.id);
+}
+function emAbrir(tipo, seq, id) { emDrawer = { tipo, seq, id }; if (tipo === 'email') emAbertos.add(id); emDrawerRender(); emMarcaSel(); }
+function emAbrirPane(p) { emDrawer = { tipo: 'pane', pane: p }; emDrawerRender(); emMarcaSel(); }
+function emMarcaSel() {
+  document.querySelectorAll('#em-seqs .cv-no.sel').forEach(el => el.classList.remove('sel'));
+  if (!emDrawer || emDrawer.tipo === 'pane') return;
+  const k = emDrawer.tipo === 'email' ? 'email-' + emDrawer.id : emDrawer.tipo === 'quem' ? null : emDrawer.tipo;
+  if (!k) return; const sec = [...document.querySelectorAll('#em-seqs .em-seq')];
+  document.querySelectorAll(`#em-seqs .cv-no[data-k="${k}"]`).forEach(el => { const i = [...document.querySelectorAll('#em-seqs .em-seq')].indexOf(el.closest('.em-seq')); if ((emDados.sequencias[i] || {}).id === emDrawer.seq || emDrawer.tipo === 'email') el.classList.add('sel'); });
+}
+function emLadoHtml(q) {
+  const gat = q.tipo === 'gatilho', seg = (q.segmento && q.segmento.funis) || [];
+  const todosFunis = (emDados.audiencia.por_funil || []).map(f => f.funil).filter(f => f !== '(sem funil)');
+  return `<div class="fx-lado" style="position:static;">
+      <div class="fx-caixa entra"><h5>Quem entra</h5>${gat ? 'Todo lead <b>novo</b> do CRM nos funis:' : '<span class="grande">' + emN(q.aptos) + '</span>pessoas aptas hoje, dos funis do CRM:'}
+        <ul style="margin-top:6px;">${seg.length ? seg.map(f => `<li>${relEsc(f)}</li>`).join('') : '<li style="color:var(--critical)">nenhum funil marcado: ninguém recebe</li>'}</ul>
+        <div style="margin-top:10px;font-weight:700;font-size:.86rem;">Mudar quem entra</div><div class="em-seg-funis" id="em-funis-${q.id}">
+          ${todosFunis.map(f => `<label><input type="checkbox" value="${relEsc(f)}" ${seg.includes(f) ? 'checked' : ''}> ${relEsc(f)}</label>`).join('')}</div>
+          <button type="button" class="btn btn-secondary" onclick="emSalvarFunis(${q.id}, this)">Salvar quem entra</button></div>
+      <div class="fx-caixa"><h5>${gat ? 'Não recebe se' : 'Sai do fluxo na hora se'}</h5><ul><li>já é cliente, mentorado ou aluno</li><li>ganhou no CRM</li>${gat ? '<li>já marcou reunião com a IA SDR, ou está com atendimento humano</li><li>a isca dele não tem link cadastrado</li>' : '<li>está numa conversa ativa com a IA SDR</li>'}<li>descadastrou, devolveu ou marcou spam</li><li>recebeu outro e-mail nas últimas 20 h${gat ? ' (o dele sai assim que liberar)' : ''}</li></ul></div>
+      <div class="fx-caixa"><h5>Regras de envio</h5>Só sai o que estiver <b>aprovado</b>, dentro do horário e do teto do dia.${gat ? ' Passou de 72 h do download, não sai. Lead novo passa na frente do convite de evento no teto do dia.' : ' Se passar de 36 h do horário marcado, não sai atrasado.'}</div></div>`;
+}
+function emDrawerRender() {
+  if (!emDrawer || !emDados) return; const d = emDrawer;
+  if (d.tipo === 'pane') { const m = { res: ['Resultados', 'em-pane-res'], aud: ['Quem pode receber', 'em-pane-aud'], feed: ['Atividade recente', 'em-pane-feed'], cfg: ['Configurações', 'em-pane-cfg'] }[d.pane]; drAbrir('em', m[0], [document.getElementById(m[1])]); return; }
+  const q = emDados.sequencias.find(x => x.id === d.seq); if (!q) { drFechar('em'); return; }
+  const gat = q.tipo === 'gatilho', g = emGat[q.id] || { variantes: [], materiais: [], dores: [] };
+  if (d.tipo === 'email') {
+    const e = q.emails.find(x => x.id === d.id); if (!e) { drFechar('em'); return; }
+    const no = emNos(q).find(x => x.k === 'email-' + e.id);
+    drAbrir('em', (no ? no.kicker + ' · ' : '') + emNomeCurto(e.nome), emEditorHtml(e, q)); return;
+  }
+  if (d.tipo === 'marco') {
+    const ev = q.tipo === 'evento';
+    drAbrir('em', ev ? 'Evento ao vivo' : 'Início da cadência', `<p style="margin:0 0 12px;color:var(--text-secondary);">${ev ? 'Mudar a data move todos os e-mails da cadência junto, mantendo a distância de cada um pro evento.' : 'Os horários dos e-mails contam a partir daqui.'}</p>
+      <div class="em-seq-meta" style="margin:0;"><input type="datetime-local" id="em-base-${q.id}" value="${emInputData(q.base_em)}" style="padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--field-bg);font:inherit;color:var(--text-primary);"><button type="button" class="btn" onclick="emSalvarBase(${q.id}, this)">Mudar data</button></div>`); return;
+  }
+  if (d.tipo === 'quem') { drAbrir('em', 'Quem entra · ' + q.nome, emLadoHtml(q)); return; }
+  if (d.tipo === 'gatilho') {
+    drAbrir('em', 'Gatilho: lead novo baixou um material', `<p style="line-height:1.55;">Cada <b>lead novo</b> que baixar uma isca dispara um e-mail com o link do material, a dor que ele marcou e o convite pra conversa.</p>
+      <p style="line-height:1.55;color:var(--text-secondary);">${q.ativa && q.gatilho_desde ? 'Valendo para quem baixar a partir de <b>' + emQuando(q.gatilho_desde) + '</b>.' : 'Ao ligar a cadência, vale só para quem baixar dali em diante. Quem já está no CRM não recebe.'}</p>${emLadoHtml(q)}`); return;
+  }
+  if (d.tipo === 'material') {
+    const semLink = g.materiais.filter(m => !m.url && m.leads30 > 0), ativos = g.materiais.filter(m => m.leads30 > 0 || m.url), outros = g.materiais.filter(m => !(m.leads30 > 0 || m.url));
+    const linhaMat = m => `<div class="fx-mat"><div class="n"><b>${relEsc(m.nome)}</b><span>${m.leads30} lead${m.leads30 === 1 ? '' : 's'} em 30 dias${!m.url && m.leads30 > 0 ? ' · <b style="color:var(--warning)">sem link: não recebe</b>' : ''}</span></div>
+      <input type="url" id="em-mat-${m.tag_id}" value="${relEsc(m.url || '')}" placeholder="https://link-do-material"><button type="button" class="btn btn-secondary" onclick="emSalvarMaterial(${m.tag_id}, this)">Salvar</button></div>`;
+    drAbrir('em', 'Qual material ele baixou?', `<p style="line-height:1.55;margin:0 0 6px;">O botão principal do e-mail leva ao link do material que ele baixou. <b>Sem link cadastrado, o e-mail daquela isca não sai.</b></p>
+      ${semLink.length ? `<p><span class="em-tag warn">${semLink.length} isca${semLink.length === 1 ? '' : 's'} com lead recente sem link</span></p>` : ''}
+      ${ativos.map(linhaMat).join('') || '<p class="muted">Nenhuma isca com lead nos últimos 30 dias.</p>'}
+      ${outros.length ? `<details style="margin-top:12px;"><summary style="cursor:pointer;font-weight:700;">Outras iscas, sem lead nos últimos 30 dias (${outros.length})</summary>${outros.map(linhaMat).join('')}</details>` : ''}`); return;
+  }
+  if (d.tipo === 'dor') {
+    const dorNome = x => x === 'padrao' ? 'Qualquer outra dor (ou sem dor marcada)' : 'Se a dor marcada contém “' + relEsc(x) + '”';
+    drAbrir('em', 'Qual dor ele marcou?', `<p style="line-height:1.55;margin:0 0 6px;">O parágrafo do meio muda conforme a dor que a pessoa marcou no formulário. Sem dor, vale o texto padrão. É texto pronto, sem IA: você edita quando quiser.</p>
+      ${g.variantes.map((v, i) => `<div class="fx-var"><label for="em-var-${q.id}-${i}">${dorNome(v.dor)}</label><textarea id="em-var-${q.id}-${i}" maxlength="700">${relEsc(v.texto)}</textarea>
+        <button type="button" class="btn btn-secondary" onclick="emSalvarVariante(${q.id}, '${relEsc(v.dor).replace(/'/g, '')}', ${i}, this)">Salvar</button></div>`).join('')}
+      <button type="button" class="btn btn-secondary" style="margin-top:12px;" onclick="emNovaVariante(${q.id})">+ Texto pra outra dor</button>
+      ${g.dores.length ? `<div style="font-size:.84rem;color:var(--text-secondary);margin-top:16px;line-height:1.6;"><b>Dores mais marcadas (90 dias):</b><br>${g.dores.map(x => x.n + ' · ' + relEsc(x.dor)).join('<br>')}</div>` : ''}`); return;
+  }
+}
+function emRenderResumo() {
+  const d = emDados, s = d.status, k = d.kpis;
+  const futuros = (d.sequencias || []).filter(q => q.ativa && q.tipo !== 'gatilho').flatMap(q => q.emails.filter(e => e.status === 'aprovado' && new Date(e.quando) > new Date()).map(e => ({ ...e }))).sort((a, b) => new Date(a.quando) - new Date(b.quando));
+  const prox = futuros[0];
+  document.getElementById('em-resumo').innerHTML =
+    `<button type="button" class="cv-chip" onclick="emAbrirPane('res')">Hoje <b>${emN(s.enviados_hoje)}</b><span class="m">de ${emN(s.teto_hoje)}</span></button>` +
+    `<button type="button" class="cv-chip" onclick="emAbrirPane('res')">Próximo <b>${prox ? emQuando(prox.quando) : '—'}</b></button>` +
+    `<button type="button" class="cv-chip" onclick="emAbrirPane('res')">Período <b>${emN(k.enviados)}</b><span class="m">enviados · ${emPct(k.abertos, k.entregues)} abriram · ${emPct(k.clicados, k.entregues)} clicaram</span></button>` +
+    `<span style="flex:1"></span><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('aud')">Quem pode receber</button><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('feed')">Atividade</button><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('cfg')">Configurações</button>`;
+}
+function emAbrirEd(id) { const q = (emDados.sequencias || []).find(x => x.emails.some(e => e.id === id)); if (q) emAbrir('email', q.id, id); }
 const emV = (id) => document.getElementById(id).value;
 async function emSalvarEmail(id, seqId, btn) {
   const seq = emDados.sequencias.find(q => q.id === seqId);
@@ -14498,6 +14570,21 @@ const IA_ETAPAS = {
   confirmacao_hoje: 'Lembrete no dia da reunião', confirmacao_1h: 'Lembrete 1h antes', no_show: 'No-show',
 };
 const iaTZ = 'America/Sao_Paulo';
+function iaAbrirPane(p) {
+  const m = { res: ['Resultado do período', 'ia-pane-res'], rel: ['Relatório', 'ia-pane-rel'], feed: ['Atividade recente', 'ia-pane-feed'], cfg: ['Configurações', 'ia-config-card'], mod: ['Todas as mensagens da IA', 'ia-modelos-card'] }[p];
+  drAbrir('ia', m[0], [document.getElementById(m[1])]);
+  if (p === 'rel') iaRenderRelatorio(); if (p === 'mod') { iaRenderModelosSelect(iaDados); iaRenderModelos(); }
+}
+function iaAbrirEtapa(e) { iaEtapa = e; iaRenderModelosSelect(iaDados); drAbrir('ia', IA_ETAPAS[e] || e, [document.getElementById('ia-modelos-card')]); iaRenderModelos(); }
+function iaRenderFluxo(d) {
+  const wrap = document.getElementById('ia-fluxo-wrap'); if (d.papel !== 'admin') { wrap.style.display = 'none'; return; } wrap.style.display = '';
+  const cont = e => d.modelos.filter(m => m.etapa === e && m.ativo).length;
+  const faixas = [
+    { t: 'Primeiro contato (a IA escolhe conforme o lead)', et: ['abertura_1', 'abertura_2', 'abertura_2_recente', 'abertura_2_antigo', 'abertura_2_evento', 'apresentacao_cal'], seq: false },
+    { t: 'Sem resposta: cadência de follow-up', et: ['convite_autoridade', 'fu_d1', 'fu_d3', 'fu_d7', 'fu_d10_pix'], seq: true },
+    { t: 'Reunião marcada', et: ['confirmacao_vespera', 'confirmacao_hoje', 'confirmacao_1h', 'no_show'], seq: true }];
+  document.getElementById('ia-fluxo').innerHTML = faixas.map(f => `<div class="cv-faixa"><div class="rot">${f.t}</div><div class="cv-flex ${f.seq ? 'seq' : ''}">${f.et.map(e => { const n = cont(e); return `<div class="cv-no cond ${n ? 'aprovado' : 'rascunho'}" role="button" tabindex="0" onclick="iaAbrirEtapa('${e}')" onkeydown="if(event.key==='Enter')iaAbrirEtapa('${e}')"><span class="k">Mensagem</span><b>${relEsc(IA_ETAPAS[e] || e)}</b><span class="st"><i></i>${n} variaç${n === 1 ? 'ão' : 'ões'} ativa${n === 1 ? '' : 's'}</span></div>`; }).join('')}</div></div>`).join('');
+}
 const iaN = v => v == null ? '—' : Number(v).toLocaleString('pt-BR');
 const iaPct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
 function iaSeg(s) {
@@ -14559,7 +14646,10 @@ function iaRender() {
   iaRenderFeed(d);
   document.getElementById('ia-config-card').style.display = admin ? '' : 'none';
   document.getElementById('ia-modelos-card').style.display = admin ? '' : 'none';
-  if (admin) { iaRenderConfig(d); iaRenderModelosSelect(d); iaRenderModelos(); }
+  document.getElementById('ia-btn-cfg').style.display = admin ? '' : 'none'; document.getElementById('ia-btn-mod').style.display = admin ? '' : 'none';
+  iaRenderFluxo(d);
+  const editando = document.activeElement && document.activeElement.closest && document.activeElement.closest('#ia-modelos, #ia-config');   // não apaga o que está sendo digitado
+  if (admin && !editando) { iaRenderConfig(d); iaRenderModelosSelect(d); iaRenderModelos(); }
 }
 
 function iaRenderStatus(d, admin) {
