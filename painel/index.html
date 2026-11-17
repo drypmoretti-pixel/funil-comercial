@@ -4208,6 +4208,8 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       </section>
 
       <div id="em-seqs"></div>
+      <div style="margin:-6px 0 18px;"><button type="button" class="btn btn-secondary" onclick="emNovaSequencia()">+ Nova sequência (cadência que não é evento)</button>
+        <span class="muted" style="font-size:.8rem;margin-left:8px;">Nasce desligada, com 1 e-mail em rascunho. Ligue só as que quiser rodando na semana ou no mês.</span></div>
 
       <div class="ia-duas" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:16px;margin-bottom:16px;">
         <section class="card em-card" style="margin-bottom:0;">
@@ -14224,6 +14226,13 @@ async function emDuplicar(id) {
   const dt = prompt('Data e hora do novo evento (AAAA-MM-DD HH:MM, horário de Brasília):', ''); if (!dt) return;
   const d = new Date(dt.replace(' ', 'T') + ':00-03:00'); if (isNaN(d)) { alert('Data inválida. Use o formato 2026-12-02 19:00'); return; }
   await emRpc('em_sequencia_duplicar', { p_id: id, p_nome: nome, p_base_em: d.toISOString() });
+}
+async function emNovaSequencia() {
+  const nome = prompt('Nome da nova sequência (só você vê):', ''); if (!nome || !nome.trim()) return;
+  const dt = prompt('Data e hora de início (AAAA-MM-DD HH:MM, horário de Brasília). Os e-mails são marcados a partir dela:', ''); if (!dt) return;
+  const d = new Date(dt.trim().replace(' ', 'T') + ':00-03:00'); if (isNaN(d)) { alert('Data inválida. Use o formato 2026-12-02 10:00'); return; }
+  const r = await emRpc('em_sequencia_nova', { p_nome: nome.trim(), p_tipo: 'avulso', p_base_em: d.toISOString() });
+  if (r && r.id) { const el = document.querySelector('#em-seqs .em-seq:last-of-type'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 }
 async function emAlternarAtivo() {
   const ativo = emDados.status.ativo;
