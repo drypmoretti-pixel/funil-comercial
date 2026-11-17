@@ -59,24 +59,26 @@
   <div id="sucesso" class="estado" hidden>
     <div class="kicker">Método Demanda Infinita®</div>
     <h1>Recebemos as suas respostas</h1>
-    <div class="ok"><p style="margin:0" id="suc-texto">Estamos montando o seu plano de 30 dias. Em breve ele chega até você.</p></div>
+    <div class="ok"><p style="margin:0" id="suc-texto">Nossa equipe vai preparar o seu plano de 30 dias e enviar para você por e-mail ou WhatsApp.</p></div>
   </div>
 
   <form id="form" hidden novalidate>
     <div class="kicker">Método Demanda Infinita®</div>
     <h1>Seu plano de 30 dias no LinkedIn</h1>
-    <p class="lead" id="intro">Responda com calma, leva uns 5 minutos. Com as suas respostas montamos o plano: como deixar o seu perfil, o banner e as primeiras ideias de post. Quanto mais específico você for, melhor fica.</p>
+    <p class="lead" id="intro">Responda com calma, leva uns 5 minutos. Com as suas respostas nossa equipe prepara o seu plano: como deixar o seu perfil, o banner e as primeiras ideias de post. Quanto mais específico você for, melhor fica.</p>
 
     <div class="bloco">
       <h2>Sobre você</h2>
-      <p class="sub">Só o nome é obrigatório aqui.</p>
+      <p class="sub">Nome e um contato (e-mail ou WhatsApp) são obrigatórios. O resto é opcional.</p>
       <div class="grid">
         <div class="full"><label for="nome">Seu nome</label><input type="text" id="nome" maxlength="120" autocomplete="name"></div>
+        <div><label for="email">E-mail</label><input type="text" id="email" inputmode="email" maxlength="160" autocomplete="email" placeholder="voce@empresa.com"></div>
+        <div><label for="whatsapp">WhatsApp</label><input type="text" id="whatsapp" inputmode="tel" maxlength="40" autocomplete="tel" placeholder="(11) 90000-0000"></div>
+        <div class="full"><span class="dica" style="margin:-6px 0 0">Preencha pelo menos um dos dois: é por onde enviamos o seu plano.</span><div class="err" id="e-contato">Informe um e-mail ou WhatsApp válido para receber o plano.</div></div>
         <div><label for="empresa">Empresa <span class="op">(opcional)</span></label><input type="text" id="empresa" maxlength="120" autocomplete="organization"></div>
         <div><label for="cargo">Cargo <span class="op">(opcional)</span></label><input type="text" id="cargo" maxlength="120" autocomplete="organization-title"></div>
         <div><label for="linkedin">Seu LinkedIn <span class="op">(opcional)</span></label><input type="url" id="linkedin" placeholder="linkedin.com/in/seunome" maxlength="300"></div>
         <div><label for="site">Site da empresa <span class="op">(opcional)</span></label><input type="text" id="site" placeholder="empresa.com.br" maxlength="200"></div>
-        <div><label for="contato">E-mail ou WhatsApp <span class="op">(opcional)</span></label><input type="text" id="contato" maxlength="160"></div>
         <div><label for="pais">Onde você atua</label><select id="pais"><option value="BR">Brasil</option><option value="PT">Portugal</option></select></div>
         <div class="full"><label class="check"><input type="checkbox" id="func"><span>Sou funcionário de uma empresa e quero construir a minha marca pessoal (o plano não vai usar o nome nem a marca do meu empregador)</span></label></div>
       </div>
@@ -97,20 +99,23 @@
       </div>
     </div>
 
+    <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden"><label for="confirme_site">Não preencha este campo</label><input type="text" id="confirme_site" tabindex="-1" autocomplete="off"></div>
     <div class="err" id="e-geral" style="margin-bottom:12px"></div>
     <button type="submit" class="enviar" id="btn">Gerar o meu plano</button>
-    <p class="nota">Usamos as suas respostas só para montar o seu plano e falar com você sobre ele.</p>
+    <p class="nota">Usamos as suas respostas só para preparar o seu plano e falar com você sobre ele.</p>
   </form>
 </div>
 
 <script>
 const SUPA = 'https://okolawlvmfyxzvnnpvtv.supabase.co';
 const KEY = 'sb_publishable_IsQdhzWIou3tBX9qxak1VQ_m-wEHCFZ';
-const token = (new URLSearchParams(location.search).get('t') || '').trim();
+const params = new URLSearchParams(location.search);
+const token = (params.get('t') || '').trim();      // links antigos (com token) continuam valendo até serem usados
+const REF = (params.get('c') || '').replace(/[^\p{L}\p{N} ._-]/gu, '').slice(0, 40);   // quem divulgou o link (?c=Bruno)
 const $ = id => document.getElementById(id);
-const CAMPOS = ['nome','empresa','cargo','linkedin','site','contato','pais','o_que_vende','para_quem','dor','objetivo','resultado','como_vende','tom','extra'];
+const CAMPOS = ['nome','empresa','cargo','linkedin','site','email','whatsapp','pais','o_que_vende','para_quem','dor','objetivo','resultado','como_vende','tom','extra'];
 const MIN = { o_que_vende: 15, para_quem: 10, dor: 15, objetivo: 10 };
-const RASCUNHO = 'plano30-rascunho-' + token.slice(0, 12);
+const RASCUNHO = 'plano30-rascunho-' + (token ? token.slice(0, 12) : 'fixo');
 
 async function rpc(fn, corpo) {
   const r = await fetch(SUPA + '/rest/v1/rpc/' + fn, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) });
@@ -122,6 +127,7 @@ function motivoInvalido(m) {
   const t = {
     invalido: ['Este link não é válido', 'Confira se o endereço foi copiado inteiro ou peça um novo link para quem te enviou.'],
     expirado: ['Este link expirou', 'Peça um novo link para quem te enviou este.'],
+    muitos: ['Estamos com muitos pedidos agora', 'Tente de novo daqui a algumas horas. Suas respostas ficam salvas neste aparelho.'],
     ja_enviado: ['Você já enviou as suas respostas', 'Estamos montando o seu plano. Se precisar mudar algo, fale com quem te enviou o link.'],
   }[m] || ['Não consegui abrir agora', 'Tente de novo em alguns instantes.'];
   $('inv-titulo').textContent = t[0]; $('inv-texto').textContent = t[1]; mostrar('invalido');
@@ -130,6 +136,7 @@ function guardar() { try { const o = {}; CAMPOS.forEach(c => { o[c] = $(c).value
 function restaurar() { try { const o = JSON.parse(localStorage.getItem(RASCUNHO) || 'null'); if (!o) return; CAMPOS.forEach(c => { if (o[c]) $(c).value = o[c]; }); $('func').checked = !!o.func; } catch (e) {} }
 
 (async function iniciar() {
+  if (!token) { restaurar(); document.querySelectorAll('input,textarea,select').forEach(el => el.addEventListener('input', guardar)); return mostrar('form'); }   // link fixo
   if (token.length < 20) return motivoInvalido('invalido');
   let info;
   try { info = await rpc('plano30_link_info', { p_token: token }); } catch (e) { return motivoInvalido('erro'); }
@@ -138,7 +145,7 @@ function restaurar() { try { const o = JSON.parse(localStorage.getItem(RASCUNHO)
   if (info.empresa) $('empresa').value = info.empresa;
   if (info.cargo) $('cargo').value = info.cargo;
   if (info.pais) $('pais').value = info.pais;
-  if (info.closer) $('intro').textContent = (info.nome ? info.nome.split(' ')[0] + ', ' : '') + info.closer + ' pediu que você respondesse isto. Leva uns 5 minutos. Com as suas respostas montamos o seu plano: como deixar o perfil, o banner e as primeiras ideias de post. Quanto mais específico você for, melhor fica.';
+  if (info.closer) $('intro').textContent = (info.nome ? info.nome.split(' ')[0] + ', ' : '') + info.closer + ' pediu que você respondesse isto. Leva uns 5 minutos. Com as suas respostas nossa equipe prepara o seu plano: como deixar o perfil, o banner e as primeiras ideias de post. Quanto mais específico você for, melhor fica.';
   restaurar();
   document.querySelectorAll('input,textarea,select').forEach(el => el.addEventListener('input', guardar));
   mostrar('form');
@@ -150,13 +157,19 @@ $('form').addEventListener('submit', async ev => {
   let primeiro = null;
   for (const c in MIN) { if ($(c).value.trim().length < MIN[c]) { $('e-' + c).classList.add('on'); primeiro = primeiro || $(c); } }
   if (!$('nome').value.trim()) { $('e-geral').textContent = 'Escreva o seu nome.'; $('e-geral').classList.add('on'); primeiro = primeiro || $('nome'); }
+  const em = $('email').value.trim(), wa = $('whatsapp').value.trim();
+  const emOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em), waOk = wa.replace(/\D/g, '').length >= 8;
+  if (!emOk && !waOk) { $('e-contato').classList.add('on'); primeiro = primeiro || $('email'); }
   if (primeiro) { primeiro.scrollIntoView({ behavior: 'smooth', block: 'center' }); primeiro.focus(); return; }
   const dados = {}; CAMPOS.forEach(c => { dados[c] = $(c).value.trim(); }); dados.funcionario = $('func').checked ? 'true' : 'false';
+  dados.confirme_site = $('confirme_site').value; dados.ref = REF;
+  if (token) dados.contato = [emOk ? em : '', waOk ? wa : ''].filter(Boolean).join(' · ');
   $('btn').disabled = true; $('btn').textContent = 'Enviando...';
   try {
-    const r = await rpc('plano30_link_enviar', { p_token: token, p_dados: dados });
-    if (r.ok) { try { localStorage.removeItem(RASCUNHO); } catch (e) {} $('suc-texto').textContent = 'Estamos montando o seu plano de 30 dias' + (r.closer ? '. ' + r.closer + ' vai te enviar em breve.' : '. Em breve ele chega até você.'); mostrar('sucesso'); return; }
-    if (r.motivo === 'faltam_respostas' && r.campo && $('e-' + r.campo)) { $('e-' + r.campo).classList.add('on'); $(r.campo).focus(); }
+    const r = token ? await rpc('plano30_link_enviar', { p_token: token, p_dados: dados }) : await rpc('plano30_publico_enviar', { p_dados: dados });
+    if (r.ok) { try { localStorage.removeItem(RASCUNHO); } catch (e) {} $('suc-texto').textContent = 'Nossa equipe vai preparar o seu plano de 30 dias' + (r.closer ? ' e ' + r.closer + ' vai te enviar' : ' e enviar para você') + ' por e-mail ou WhatsApp em breve.'; mostrar('sucesso'); return; }
+    if (r.motivo === 'faltam_respostas' && r.campo && $('e-' + r.campo)) { $('e-' + r.campo).classList.add('on'); ($(r.campo) || $('email')).focus(); }
+    else if (r.motivo === 'faltam_respostas' && r.campo === 'nome') { $('e-geral').textContent = 'Escreva o seu nome.'; $('e-geral').classList.add('on'); }
     else if (r.motivo) return motivoInvalido(r.motivo);
   } catch (e) { $('e-geral').textContent = 'Não consegui enviar agora. Suas respostas estão salvas neste aparelho, tente de novo em instantes.'; $('e-geral').classList.add('on'); }
   $('btn').disabled = false; $('btn').textContent = 'Gerar o meu plano';

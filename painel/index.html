@@ -2263,6 +2263,8 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 .ct-campos[hidden], #tab-plano30 [hidden] { display: none !important; }
 .p30-chip { display: inline-flex; align-items: center; gap: 7px; font-size: .72rem; font-weight: 700; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted); white-space: nowrap; }
 .p30-chip.pronto { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, transparent); background: color-mix(in srgb, var(--good) 10%, transparent); }
+.p30-chip.aprovar { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.p30-chip.aprovado { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, transparent); background: transparent; }
 .p30-chip.erro { color: var(--critical); border-color: color-mix(in srgb, var(--critical) 40%, transparent); background: color-mix(in srgb, var(--critical) 9%, transparent); }
 .p30-chip.andando::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: p30pulse 1.2s ease-in-out infinite; }
 @keyframes p30pulse { 50% { opacity: .25; } }
@@ -3640,8 +3642,20 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       <div class="ct-cab">
         <div>
           <h2>Plano de 30 dias</h2>
-          <p class="muted">Depois da call, coloque aqui o que foi dito (anotações ou a gravação). O Claude monta o plano do lead (posicionamento do perfil, banner e ideias de conteúdo) em PDF, com a logo e a identidade da Demanda Infinita, pronto pra você mandar.</p>
+          <p class="muted">Mande o link abaixo pro lead: ele preenche, o Claude monta o plano (posicionamento do perfil, banner e ideias de conteúdo) em PDF com a identidade da Demanda Infinita, e o plano fica aqui esperando a sua aprovação antes de ir pro lead.</p>
         </div>
+      </div>
+
+      <section class="card" id="p30-link-fixo" style="margin-bottom:18px;">
+        <div class="ct-modo" style="flex-direction:column;align-items:stretch;gap:8px;">
+          <div><b>Link fixo pro lead preencher</b><span>É sempre o mesmo, serve pra qualquer lead. Esse leva o seu nome, pra gente saber de quem veio.</span></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;"><input type="text" id="p30-link-url" readonly style="flex:1;min-width:220px;"><button type="button" class="btn" onclick="p30CopiarCampo()">Copiar link</button></div>
+          <small class="ct-ajuda">O lead responde sobre o negócio dele e deixa e-mail ou WhatsApp. Em poucos minutos o plano aparece na lista abaixo como “Para aprovar”. Nada vai pro lead sem você aprovar e enviar.</small>
+        </div>
+      </section>
+
+      <div class="ct-cab" style="margin-top:6px;">
+        <div><h3 style="margin:0">Ou monte a partir de uma call</h3><p class="muted" style="margin:4px 0 0">Se você já tem as anotações ou a gravação da reunião.</p></div>
       </div>
 
       <div class="ct-layout">
@@ -3685,27 +3699,15 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 
           <div class="ct-grupo">
             <div class="ct-grupo-cab"><span class="ct-num">2</span><span class="ct-tit">O que foi dito na call<small>É daqui que o plano sai</small></span></div>
-            <div class="ct-tipo tres" role="radiogroup" aria-label="Como informar a call" style="margin-bottom:14px;">
+            <div class="ct-tipo" role="radiogroup" aria-label="Como informar a call" style="margin-bottom:14px;">
               <label class="ct-tipo-op"><input type="radio" name="p30-modo" value="notas" checked onchange="p30AplicarModo()"><span><b>Colar anotações</b><small>Suas anotações ou a transcrição da reunião</small></span></label>
               <label class="ct-tipo-op"><input type="radio" name="p30-modo" value="gravacao" onchange="p30AplicarModo()"><span><b>Enviar a gravação</b><small>Vídeo ou áudio da reunião; o sistema transcreve sozinho</small></span></label>
-              <label class="ct-tipo-op"><input type="radio" name="p30-modo" value="link" onchange="p30AplicarModo()"><span><b>Link pro lead preencher</b><small>Sem informações da call? O próprio lead responde e o plano sai sozinho</small></span></label>
             </div>
             <div class="ct-campos" id="p30-bloco-notas">
               <div class="full">
                 <label>Anotações ou transcrição</label>
                 <textarea id="p30-notas" rows="12" placeholder="O que ele vende, pra quem vende, qual a dor do cliente dele, o que quer alcançar em 30 dias, números e fatos que ele citou, como ele fala..." style="min-height:240px;resize:vertical;"></textarea>
                 <small class="ct-ajuda">Pode colar a transcrição do Meet inteira. O que não foi dito na call não entra no plano: o que faltar sai marcado como “a confirmar”.</small>
-              </div>
-            </div>
-            <div class="ct-campos" id="p30-bloco-link" hidden>
-              <div class="full ct-regra">
-                <b>Como funciona o link</b>
-                <ul>
-                  <li>Você só precisa do nome do lead (e do que mais souber, que já vem preenchido pra ele).</li>
-                  <li>O sistema cria um link único e secreto, válido por 14 dias, que você copia e manda.</li>
-                  <li>O lead responde algumas perguntas sobre o negócio dele e o plano é gerado na hora.</li>
-                  <li>O PDF aparece na lista abaixo e você confere antes de mandar. Nada vai pro lead sozinho.</li>
-                </ul>
               </div>
             </div>
             <div class="ct-campos" id="p30-bloco-gravacao" hidden>
@@ -3718,20 +3720,16 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
               </div>
             </div>
           </div>
-          <div class="ct-modo" id="p30-link-pronto" hidden style="flex-direction:column;align-items:stretch;">
-            <div><b>Link criado e copiado</b><span>Mande para o lead. Vale por 14 dias e só pode ser usado uma vez.</span></div>
-            <div style="display:flex;gap:8px;margin-top:8px;"><input type="text" id="p30-link-url" readonly style="flex:1;min-width:0;"><button type="button" class="btn btn-secondary" onclick="p30CopiarCampo()">Copiar</button></div>
-          </div>
         </form>
 
         <aside class="lanc ct-resumo" aria-label="Como funciona">
           <span class="lanc-selo">Como funciona</span>
-          <div class="ct-r-cliente" style="font-size:1rem;">Você preenche, o Claude escreve, você confere e manda</div>
-          <div class="ct-r-linha"><span>1</span><b>Você envia o pedido (ou o lead preenche)</b></div>
-          <div class="ct-r-linha"><span>2</span><b>Transcrição (se for gravação)</b></div>
-          <div class="ct-r-linha"><span>3</span><b>Claude escreve o plano</b></div>
-          <div class="ct-r-linha"><span>4</span><b>PDF aparece na lista abaixo</b></div>
-          <div class="ct-prog"><small>De 3 a 15 minutos, conforme o tamanho da gravação. O trabalho roda no computador do Igor: se ele estiver desligado, o pedido espera na fila. Leia o PDF antes de mandar e confira os pontos “a confirmar”.</small></div>
+          <div class="ct-r-cliente" style="font-size:1rem;">O lead preenche, o Claude escreve, vocês aprovam e enviam</div>
+          <div class="ct-r-linha"><span>1</span><b>O lead preenche o link (ou você manda a call)</b></div>
+          <div class="ct-r-linha"><span>2</span><b>Claude escreve o plano</b></div>
+          <div class="ct-r-linha"><span>3</span><b>PDF aparece “Para aprovar”</b></div>
+          <div class="ct-r-linha"><span>4</span><b>Você aprova e envia por e-mail ou WhatsApp</b></div>
+          <div class="ct-prog"><small>De 3 a 15 minutos. O trabalho roda no computador do Igor: se ele estiver desligado, o pedido espera na fila. Leia o PDF antes de aprovar e confira os pontos “a confirmar”.</small></div>
           <div class="ct-acoes">
             <button class="btn" type="submit" form="form-plano30" id="p30-btn">Gerar plano de 30 dias</button>
           </div>
@@ -7399,10 +7397,10 @@ function importarCSV() {
 }
 
 // ---------- NOTIFICAÇÕES ----------
-const NOTIF_ROTULOS = { integracao: 'Integrações', relatorio: 'Relatório do dia', atividade: 'Atividades', whatsapp: 'WhatsApp', crm: 'CRM', reuniao: 'Reuniões de hoje', checklist: 'Checklist' };
+const NOTIF_ROTULOS = { plano30: 'Planos de 30 dias', integracao: 'Integrações', relatorio: 'Relatório do dia', atividade: 'Atividades', whatsapp: 'WhatsApp', crm: 'CRM', reuniao: 'Reuniões de hoje', checklist: 'Checklist' };
 // atividade em primeiro: é a única que representa compromisso que a pessoa assumiu com ela mesma
 // integração em primeiro: chave morta é lead parando de entrar, ganha de qualquer outro aviso
-const NOTIF_ORDEM_TIPOS = ['integracao', 'relatorio', 'atividade', 'whatsapp', 'crm', 'reuniao', 'checklist'];
+const NOTIF_ORDEM_TIPOS = ['plano30', 'integracao', 'relatorio', 'atividade', 'whatsapp', 'crm', 'reuniao', 'checklist'];
 
 async function carregarNotificacoes() {
   const notifs = [];
@@ -7423,6 +7421,17 @@ async function carregarNotificacoes() {
           : '') + (i.detalhe || ''),
       });
     });
+  } catch (e) { /* tabela ausente não pode derrubar o sino */ }
+
+  // planos de 30 dias prontos esperando aprovação ou envio: a chave leva o id, então cada plano novo avisa de novo
+  try {
+    const { data: planos } = await sb.from('com_planos30').select('id, lead_nome, concluido_em, aprovado_em, enviado_em').eq('status', 'pronto').is('enviado_em', null).order('id', { ascending: false }).limit(20);
+    (planos || []).forEach(pl => notifs.push({
+      chave: `plano30-${pl.id}-${pl.aprovado_em ? 'enviar' : 'aprovar'}`, tipo: 'plano30', pessoaId: null, createdAt: pl.aprovado_em || pl.concluido_em || new Date().toISOString(),
+      titulo: pl.aprovado_em ? `Plano de ${pl.lead_nome} aprovado: falta enviar` : `Plano de ${pl.lead_nome} pronto para aprovar`,
+      descricao: pl.aprovado_em ? 'Mande o PDF por e-mail ou WhatsApp e marque como enviado.' : 'Leia o PDF, confira os pontos “a confirmar” e aprove.',
+      acao: "planoIr('plano30')",
+    }));
   } catch (e) { /* tabela ausente não pode derrubar o sino */ }
 
   // relatório do dia: só pro admin. Antes das 19h aponta pro de ontem, depois pro de hoje — a chave
@@ -11253,13 +11262,13 @@ function verificarReunioesPendentes() {
 // tabela, nada de avisar ninguém. Se quiser soltar sem versão nova (corrigiu um texto, por
 // exemplo), não mexa no número — aí ninguém é incomodado de novo.
 const NOVIDADES = {
-  versao: '2026-11-16b',
-  titulo: 'Plano de 30 dias: agora o lead pode preencher sozinho',
+  versao: '2026-11-17',
+  titulo: 'Plano de 30 dias: um link só, e o plano passa pela sua aprovação',
   passos: [
     {
       emoji: '🚩',
-      titulo: 'Plano de 30 dias do lead, em PDF',
-      texto: 'Na aba <b>Plano de 30 dias</b> você coloca o que o lead disse na call, em anotações ou na gravação da reunião, e o Claude monta o plano dele: <b>posicionamento do perfil, banner e 12 ideias de conteúdo</b>, em PDF com a logo e a identidade da Demanda Infinita. Leva de 3 a 15 minutos, o PDF aparece na lista da própria aba e o que o lead não falou fica marcado como “a confirmar”. Leia antes de mandar. <b>Novo:</b> sem informações da call? Escolha <b>Link pro lead preencher</b>, copie o link e mande: o lead responde algumas perguntas e o plano sai sozinho.',
+      titulo: 'Link fixo pro lead e aprovação antes de enviar',
+      texto: 'Na aba <b>Plano de 30 dias</b> agora existe <b>um link fixo</b> (o mesmo pra todo lead, com o seu nome no final). Mande pro lead: ele responde sobre o negócio e deixa e-mail ou WhatsApp. O Claude monta o plano (posicionamento, banner e 12 ideias de conteúdo) e ele aparece na lista como <b>“Para aprovar”</b>, com aviso no sino. Leia o PDF, confira os pontos “a confirmar”, clique em <b>Aprovar</b> e depois mande por <b>WhatsApp ou e-mail</b> (a mensagem já vem pronta) e marque como enviado. Nada vai pro lead sem você.',
       aba: 'plano30', onde: 'Plano de 30 dias · bandeira na barra lateral',
     },
   ],
@@ -13927,8 +13936,9 @@ const P30_BUCKET = 'com-planos';
 const P30_PARTE = 45 * 1024 * 1024;
 const P30_MAX = 900 * 1024 * 1024;
 const P30_ANDANDO = ['pendente', 'transcrevendo', 'gerando'];
-const P30_LINK_BASE = 'https://demandainfinita.com/meu-plano/?t=';
-const P30_STATUS = { aguardando: 'Aguardando o lead', pendente: 'Na fila', transcrevendo: 'Transcrevendo', gerando: 'Escrevendo o plano', pronto: 'Pronto', erro: 'Erro' };
+const P30_LINK_BASE = 'https://demandainfinita.com/meu-plano/?t=';   // só pros links antigos (com token) que ainda existirem
+const P30_LINK_FIXO = 'https://demandainfinita.com/meu-plano/';
+const P30_STATUS = { aguardando: 'Aguardando o lead (link antigo)', pendente: 'Na fila', transcrevendo: 'Transcrevendo', gerando: 'Escrevendo o plano', pronto: 'Para aprovar', erro: 'Erro' };
 let p30Cache = [], p30Timer = null, p30Enviando = false;
 
 function p30Modo() { const r = document.querySelector('input[name="p30-modo"]:checked'); return r ? r.value : 'notas'; }
@@ -13936,9 +13946,11 @@ function p30AplicarModo() {
   const m = p30Modo();
   document.getElementById('p30-bloco-notas').hidden = m !== 'notas';
   document.getElementById('p30-bloco-gravacao').hidden = m !== 'gravacao';
-  document.getElementById('p30-bloco-link').hidden = m !== 'link';
-  document.getElementById('p30-btn').textContent = m === 'link' ? 'Gerar link para o lead' : 'Gerar plano de 30 dias';
-  document.getElementById('p30-link-pronto').hidden = true;
+  document.getElementById('p30-btn').textContent = 'Gerar plano de 30 dias';
+}
+function p30LinkDoTime() {
+  const n = currentPerfil && currentPerfil.nome ? String(currentPerfil.nome).trim().split(/\s+/)[0] : '';
+  return P30_LINK_FIXO + (n ? '?c=' + encodeURIComponent(n) : '');
 }
 function p30NovoToken() { const b = new Uint8Array(16); crypto.getRandomValues(b); return Array.from(b, x => x.toString(16).padStart(2, '0')).join(''); }
 function p30Copiar(texto) {
@@ -14003,16 +14015,11 @@ async function p30Enviar(ev) {
   const linha = {
     lead_nome: nome, empresa: v('p30-empresa') || null, cargo: v('p30-cargo') || null, contato: v('p30-contato') || null,
     linkedin_url: v('p30-linkedin') || null, site: v('p30-site') || null, pais: document.getElementById('p30-pais').value,
-    funcionario: document.getElementById('p30-func').checked, origem: modo === 'link' ? 'formulario' : modo, criado_por_nome: currentPerfil ? currentPerfil.nome : 'Igor',
+    funcionario: document.getElementById('p30-func').checked, origem: modo, criado_por_nome: currentPerfil ? currentPerfil.nome : 'Igor',
   };
   const enviadas = [];
   try {
-    let linkNovo = null;
-    if (modo === 'link') {
-      linha.token = p30NovoToken(); linha.status = 'aguardando';
-      linha.link_expira_em = new Date(Date.now() + 14 * 86400000).toISOString();
-      linkNovo = P30_LINK_BASE + linha.token;
-    } else if (modo === 'notas') linha.notas = notas;
+    if (modo === 'notas') linha.notas = notas;
     else {
       const sess = (await sb.auth.getSession()).data.session;
       if (!sess) throw new Error('sua sessão expirou, entre de novo');
@@ -14039,30 +14046,25 @@ async function p30Enviar(ev) {
     if (error) throw new Error(error.message);
     document.getElementById('form-plano30').reset();
     p30AplicarModo(); p30EscolheuArquivo();
-    if (linkNovo) {
-      document.getElementById('p30-link-url').value = linkNovo;
-      document.getElementById('p30-link-pronto').hidden = false;
-      p30Copiar(linkNovo);
-    }
     document.getElementById('p30-prog').hidden = true; document.getElementById('p30-prog-txt').hidden = true;
     await p30Carregar();
   } catch (err) {
     if (enviadas.length) { try { await sb.storage.from(P30_BUCKET).remove(enviadas); } catch (e) {} }
     alert('Não consegui enviar o pedido: ' + err.message);
   } finally {
-    p30Enviando = false; btn.disabled = false; btn.textContent = p30Modo() === 'link' ? 'Gerar link para o lead' : 'Gerar plano de 30 dias';
+    p30Enviando = false; btn.disabled = false; btn.textContent = 'Gerar plano de 30 dias';
   }
   return false;
 }
 
-async function p30Iniciar() { p30AplicarModo(); await p30Carregar(); }
+async function p30Iniciar() { p30AplicarModo(); const u = document.getElementById('p30-link-url'); if (u) u.value = p30LinkDoTime(); await p30Carregar(); }
 
 async function p30Carregar() {
   clearTimeout(p30Timer);
   const wrap = document.getElementById('p30-lista');
   if (!wrap) return;
   const { data, error } = await sb.from('com_planos30')
-    .select('id, created_at, lead_nome, empresa, criado_por_nome, origem, status, etapa_msg, erro, pdf_path, tentativas, token, link_expira_em, a_confirmar:conteudo->a_confirmar')
+    .select('id, created_at, lead_nome, empresa, criado_por_nome, origem, status, etapa_msg, erro, pdf_path, tentativas, token, link_expira_em, pais, email, whatsapp, contato, origem_link, aprovado_em, aprovado_por, enviado_em, enviado_via, enviado_por, a_confirmar:conteudo->a_confirmar')
     .order('id', { ascending: false }).limit(30);
   if (error) { wrap.innerHTML = '<div class="empty">Não consegui carregar a lista.</div>'; return; }
   p30Cache = data || [];
@@ -14071,21 +14073,57 @@ async function p30Carregar() {
   if (aba && aba.classList.contains('active') && p30Cache.some(p => P30_ANDANDO.includes(p.status) || p.status === 'aguardando')) p30Timer = setTimeout(p30Carregar, 6000);
 }
 
+function p30Primeiro(n) { return String(n || '').trim().split(/\s+/)[0] || ''; }
+function p30Mensagem(p) {
+  const eu = currentPerfil && currentPerfil.nome ? p30Primeiro(currentPerfil.nome) : 'Igor';
+  const ele = p30Primeiro(p.lead_nome);
+  if (p.pais === 'PT') return `Olá${ele ? ' ' + ele : ''}, tudo bem? Daqui é o ${eu}, da Demanda Infinita. Preparámos o teu plano de 30 dias para o LinkedIn: como deixar o perfil, o banner e as primeiras ideias de publicação. Segue o PDF em anexo. Vê com calma e diz-me o que achaste.`;
+  return `Oi${ele ? ' ' + ele : ''}, tudo bem? Aqui é ${eu}, da Demanda Infinita. Preparamos o seu plano de 30 dias para o LinkedIn: como deixar o perfil, o banner e as primeiras ideias de post. Estou te mandando o PDF. Dá uma olhada e me diz o que achou.`;
+}
+function p30NumeroWhats(p) {
+  let d = String(p.whatsapp || '').replace(/\D/g, '').replace(/^00/, '');
+  if (!d) return '';
+  if (p.pais === 'PT') { if (d.length === 9) d = '351' + d; }
+  else { d = d.replace(/^0+/, ''); if (d.length === 10 || d.length === 11) d = '55' + d; }
+  return d;
+}
+const p30UltimoCanal = {};
+const P30_VIA = { whatsapp: 'WhatsApp', email: 'e-mail' };
+
 function p30Desenhar() {
   const wrap = document.getElementById('p30-lista');
   const resumo = document.getElementById('p30-resumo');
-  const prontos = p30Cache.filter(p => p.status === 'pronto').length, fila = p30Cache.filter(p => P30_ANDANDO.includes(p.status)).length, esperando = p30Cache.filter(p => p.status === 'aguardando').length;
-  if (resumo) resumo.textContent = p30Cache.length ? `${prontos} pronto(s)${fila ? ` · ${fila} em andamento` : ''}${esperando ? ` · ${esperando} aguardando o lead` : ''}` : '';
-  if (!p30Cache.length) { wrap.innerHTML = '<div class="empty">Nenhum plano pedido ainda.</div>'; return; }
+  const prontos = p30Cache.filter(p => p.status === 'pronto');
+  const paraAprovar = prontos.filter(p => !p.aprovado_em).length, paraEnviar = prontos.filter(p => p.aprovado_em && !p.enviado_em).length;
+  const fila = p30Cache.filter(p => P30_ANDANDO.includes(p.status)).length;
+  if (resumo) resumo.textContent = p30Cache.length ? [paraAprovar ? `${paraAprovar} para aprovar` : '', paraEnviar ? `${paraEnviar} para enviar` : '', fila ? `${fila} em andamento` : ''].filter(Boolean).join(' · ') || 'tudo em dia' : '';
+  if (!p30Cache.length) { wrap.innerHTML = '<div class="empty">Nenhum plano ainda. Mande o link fixo pro primeiro lead.</div>'; return; }
   wrap.innerHTML = p30Cache.map(p => {
     const andando = P30_ANDANDO.includes(p.status);
     const quando = new Date(p.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-    const meta = [p.empresa, { gravacao: 'gravação', formulario: 'formulário do lead' }[p.origem] || 'anotações', p.criado_por_nome ? 'por ' + p.criado_por_nome : '', quando].filter(Boolean).join(' · ');
+    const origemTxt = p.origem === 'formulario' ? (p.origem_link ? 'formulário (link de ' + p.origem_link + ')' : 'formulário do lead') : p.origem === 'gravacao' ? 'gravação' : 'anotações';
+    const contato = [p.email, p.whatsapp].filter(Boolean).join(' · ') || p.contato;
+    const meta = [p.empresa, contato, origemTxt, p.criado_por_nome ? 'por ' + p.criado_por_nome : '', quando].filter(Boolean).join(' · ');
     const pend = Array.isArray(p.a_confirmar) ? p.a_confirmar.filter(Boolean) : [];
     const expirado = p.status === 'aguardando' && p.link_expira_em && new Date(p.link_expira_em) < new Date();
-    const rotulo = expirado ? 'Link expirado' : andando && p.etapa_msg ? p.etapa_msg : P30_STATUS[p.status] || p.status;
+    const pronto = p.status === 'pronto';
+    const aprovado = pronto && !!p.aprovado_em, enviado = pronto && !!p.enviado_em;
+    let rotulo = expirado ? 'Link expirado' : andando && p.etapa_msg ? p.etapa_msg : P30_STATUS[p.status] || p.status;
+    let classe = andando ? 'andando' : expirado ? 'erro' : p.status;
+    if (enviado) { rotulo = 'Enviado' + (p.enviado_via ? ' · ' + (P30_VIA[p.enviado_via] || p.enviado_via) : ''); classe = 'pronto'; }
+    else if (aprovado) { rotulo = 'Aprovado · falta enviar'; classe = 'aprovado'; }
+    else if (pronto) { classe = 'aprovar'; }
+    const temWhats = !!p30NumeroWhats(p), temEmail = !!p.email;
     const acoes = [
-      p.status === 'pronto' ? `<button class="add-toggle" onclick="p30Baixar(${p.id})">Baixar PDF</button>` : '',
+      pronto ? `<button class="add-toggle" onclick="p30Baixar(${p.id})">Baixar PDF</button>` : '',
+      pronto && !aprovado ? `<button class="btn" style="padding:6px 12px;font-size:.78rem;" onclick="p30Aprovar(${p.id})">Aprovar</button>` : '',
+      aprovado && temWhats ? `<button class="add-toggle" onclick="p30EnviarWhats(${p.id})">WhatsApp</button>` : '',
+      aprovado && temEmail ? `<button class="add-toggle" onclick="p30EnviarEmail(${p.id})">E-mail</button>` : '',
+      aprovado ? `<button class="add-toggle" onclick="p30CopiarMensagem(${p.id})">Copiar mensagem</button>` : '',
+      aprovado ? `<button class="add-toggle" onclick="p30CopiarLinkPdf(${p.id})">Copiar link do PDF</button>` : '',
+      aprovado && !enviado ? `<button class="add-toggle" onclick="p30MarcarEnviado(${p.id})">Marcar como enviado</button>` : '',
+      aprovado && !enviado ? `<button class="add-toggle" onclick="p30Desaprovar(${p.id})">Voltar pra revisão</button>` : '',
+      pronto && !enviado ? `<button class="add-toggle" onclick="p30Refazer(${p.id})">Refazer</button>` : '',
       p.status === 'erro' ? `<button class="add-toggle" onclick="p30Refazer(${p.id})">Tentar de novo</button>` : '',
       p.status === 'aguardando' && !expirado ? `<button class="add-toggle" onclick="p30CopiarLink(${p.id})">Copiar link</button>` : '',
       expirado ? `<button class="add-toggle" onclick="p30RenovarLink(${p.id})">Gerar novo link</button>` : '',
@@ -14095,13 +14133,58 @@ function p30Desenhar() {
       <div class="ct-hist-item">
         <div class="tl-avatar">${wzEsc(iniciaisDe(p.lead_nome))}</div>
         <div class="ct-hist-nome"><b title="${wzEsc(p.lead_nome)}">${wzEsc(p.lead_nome)}</b><span>${wzEsc(meta)}</span></div>
-        <span class="p30-chip ${andando ? 'andando' : expirado ? 'erro' : p.status}">${wzEsc(rotulo)}</span>
+        <span class="p30-chip ${classe}">${wzEsc(rotulo)}</span>
         <div class="ct-hist-acoes">${acoes}</div>
       </div>
       ${p.status === 'erro' && p.erro ? `<div class="p30-erro">${wzEsc(p.erro)}</div>` : ''}
-      ${p.status === 'pronto' && pend.length ? `<details class="p30-det"><summary>${pend.length} ponto(s) pra confirmar com o lead antes de mandar</summary><ul>${pend.map(x => `<li>${wzEsc(x)}</li>`).join('')}</ul></details>` : ''}
+      ${pronto && pend.length ? `<details class="p30-det"${aprovado ? '' : ' open'}><summary>${pend.length} ponto(s) pra confirmar com o lead antes de mandar</summary><ul>${pend.map(x => `<li>${wzEsc(x)}</li>`).join('')}</ul></details>` : ''}
     </div>`;
   }).join('');
+}
+
+async function p30Aprovar(id) {
+  const p = p30Cache.find(x => x.id === id); if (!p) return;
+  const pend = Array.isArray(p.a_confirmar) ? p.a_confirmar.filter(Boolean).length : 0;
+  if (!confirm(`Aprovar o plano de ${p.lead_nome}?` + (pend ? `\n\nAinda há ${pend} ponto(s) “a confirmar” no plano. Você leu o PDF e conferiu?` : '\n\nVocê já leu o PDF?'))) return;
+  const { error } = await sb.from('com_planos30').update({ aprovado_em: new Date().toISOString(), aprovado_por: currentPerfil ? currentPerfil.nome : 'Igor' }).eq('id', id).eq('status', 'pronto');
+  if (error) { alert('Não consegui aprovar: ' + error.message); return; }
+  await p30Carregar(); carregarNotificacoes();
+}
+async function p30Desaprovar(id) {
+  const { error } = await sb.from('com_planos30').update({ aprovado_em: null, aprovado_por: null }).eq('id', id).is('enviado_em', null);
+  if (error) { alert('Não consegui voltar: ' + error.message); return; }
+  await p30Carregar(); carregarNotificacoes();
+}
+function p30EnviarWhats(id) {
+  const p = p30Cache.find(x => x.id === id); if (!p) return;
+  p30UltimoCanal[id] = 'whatsapp';
+  window.open('https://wa.me/' + p30NumeroWhats(p) + '?text=' + encodeURIComponent(p30Mensagem(p)), '_blank', 'noopener');
+  alert('O WhatsApp abriu com a mensagem pronta. Falta anexar o PDF: clique em “Baixar PDF” e arraste o arquivo pra conversa. Depois volte aqui e clique em “Marcar como enviado”.');
+}
+function p30EnviarEmail(id) {
+  const p = p30Cache.find(x => x.id === id); if (!p) return;
+  p30UltimoCanal[id] = 'email';
+  const assunto = p.pais === 'PT' ? 'O teu plano de 30 dias no LinkedIn' : 'Seu plano de 30 dias no LinkedIn';
+  window.location.href = 'mailto:' + encodeURIComponent(p.email).replace('%40', '@') + '?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(p30Mensagem(p));
+  setTimeout(() => alert('O e-mail abriu com a mensagem pronta. Falta anexar o PDF: clique em “Baixar PDF” e anexe o arquivo. Depois volte aqui e clique em “Marcar como enviado”.'), 400);
+}
+async function p30CopiarMensagem(id) {
+  const p = p30Cache.find(x => x.id === id); if (!p) return;
+  if (await p30Copiar(p30Mensagem(p))) alert('Mensagem copiada.'); else prompt('Copie a mensagem:', p30Mensagem(p));
+}
+async function p30CopiarLinkPdf(id) {
+  const p = p30Cache.find(x => x.id === id); if (!p || !p.pdf_path) return;
+  const { data, error } = await sb.storage.from(P30_BUCKET).createSignedUrl(p.pdf_path, 7 * 86400);
+  if (error || !data) { alert('Não consegui criar o link: ' + (error ? error.message : 'sem link')); return; }
+  if (await p30Copiar(data.signedUrl)) alert('Link do PDF copiado. Vale por 7 dias e quem tiver o link abre o PDF.'); else prompt('Copie o link do PDF (vale 7 dias):', data.signedUrl);
+}
+async function p30MarcarEnviado(id) {
+  const p = p30Cache.find(x => x.id === id); if (!p) return;
+  let via = p30UltimoCanal[id];
+  if (!via) via = p30NumeroWhats(p) && !p.email ? 'whatsapp' : p.email && !p30NumeroWhats(p) ? 'email' : (confirm('Você enviou por WhatsApp?\n\nOK = WhatsApp   ·   Cancelar = e-mail') ? 'whatsapp' : 'email');
+  const { error } = await sb.from('com_planos30').update({ enviado_em: new Date().toISOString(), enviado_via: via, enviado_por: currentPerfil ? currentPerfil.nome : 'Igor' }).eq('id', id).not('aprovado_em', 'is', null);
+  if (error) { alert('Não consegui marcar: ' + error.message); return; }
+  await p30Carregar();
 }
 
 async function p30Baixar(id) {
@@ -14124,7 +14207,10 @@ async function p30RenovarLink(id) {
   await p30Carregar(); p30CopiarLink(id);
 }
 async function p30Refazer(id) {
-  const { error } = await sb.from('com_planos30').update({ status: 'pendente', tentativas: 0, erro: null, atualizado_em: new Date().toISOString() }).eq('id', id);
+  const p = p30Cache.find(x => x.id === id); if (!p) return;
+  if (p.status === 'pronto' && !confirm(`Gerar o plano de ${p.lead_nome} de novo? O PDF atual é descartado.`)) return;
+  if (p.pdf_path) { try { await sb.storage.from(P30_BUCKET).remove([p.pdf_path]); } catch (e) {} }
+  const { error } = await sb.from('com_planos30').update({ status: 'pendente', tentativas: 0, erro: null, pdf_path: null, aprovado_em: null, aprovado_por: null, enviado_em: null, enviado_via: null, enviado_por: null, atualizado_em: new Date().toISOString() }).eq('id', id);
   if (error) { alert('Não consegui reenviar: ' + error.message); return; }
   p30Carregar();
 }
