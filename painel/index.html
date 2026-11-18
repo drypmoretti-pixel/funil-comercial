@@ -1215,6 +1215,10 @@ form.form-grid button { grid-column: 1 / -1; }
 .main-content .wrap:has(#tab-whatsapp.active) { max-width: 1800px; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
+.an-nav { display:flex; gap:4px; flex-wrap:wrap; margin:0 0 18px; padding:5px; background:var(--field-bg); border-radius:999px; width:fit-content; max-width:100%; }
+.an-nav button { border:0; background:none; font:inherit; font-weight:700; font-size:.92rem; color:var(--text-secondary); padding:9px 22px; border-radius:999px; cursor:pointer; }
+.an-nav button:hover { color:var(--text-primary); } .an-nav button.on { background:var(--surface-1); color:var(--text-primary); box-shadow:0 1px 4px rgba(0,0,0,.2); }
+.an-sub { display:none; } .an-sub.on { display:block; }
 @media (max-width: 780px) {
   .app-shell { flex-direction: column; }
   .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 8px; overflow-x: auto; }
@@ -2286,9 +2290,9 @@ form.form-grid.form-collapse:not(.open) { display: none; }
 /* ==========================================================================
    Polimento visual, rodada 3 (10/2026): Dicas, Checklist e Relatório do dia.
    ========================================================================== */
-#tab-dicas > section.card, #tab-checklist > section.card, #tab-relatorio > section.card { padding: 22px 24px; }
-#tab-dicas > section.card > h2, #tab-dicas > section.card .section-title h2 { font-size: 1.12rem; font-weight: 800; letter-spacing: -.015em; }
-#tab-dicas > section.card .section-title + .muted, #tab-dicas > section.card > h2 + .muted { margin-top: 3px; }
+#tab-analise .an-sub > section.card { padding: 22px 24px; }
+#tab-analise .an-sub > section.card > h2, #tab-analise .an-sub > section.card .section-title h2 { font-size: 1.12rem; font-weight: 800; letter-spacing: -.015em; }
+#tab-analise .an-sub > section.card .section-title + .muted, #tab-analise .an-sub > section.card > h2 + .muted { margin-top: 3px; }
 .sel-pill { padding: 9px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); font-weight: 700; font-size: .84rem; box-shadow: var(--sombra-1); cursor: pointer; }
 .sel-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -2792,13 +2796,10 @@ html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="
         <button data-tab="formulario" title="Formulário"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></button>
         <button data-tab="contrato" title="Contrato"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
         <button data-tab="plano30" title="Plano de 30 dias"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></button>
-        <button data-tab="dicas" title="Dicas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
-        <button data-tab="historico" title="Histórico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></button>
-        <button data-tab="checklist" title="Checklist de análise comercial"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 11l2 2 4-4"/><line x1="8" y1="17" x2="16" y2="17"/></svg></button>
+        <button data-tab="analise" title="Análise"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg></button>
         <button data-tab="social" title="Playbook de Mensagens"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
         <button data-tab="arquivos" title="Arquivos"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg></button>
         <button data-tab="whatsapp" title="WhatsApp" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 11.9a8.6 8.6 0 0 1-12.8 7.5l-4.4 1.2 1.2-4.3A8.6 8.6 0 1 1 20.6 11.9Z"/><g transform="translate(7.1 6.8) scale(.425)" stroke-width="4.24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g></svg><span id="whats-badge" style="display:none; position:absolute; top:6px; right:10px; width:8px; height:8px; border-radius:50%; background:var(--critical);"></span></button>
-        <button data-tab="relatorio" title="Relatório do dia" id="nav-relatorio" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="17" x2="9" y2="14"/><line x1="12" y1="17" x2="12" y2="11"/><line x1="15" y1="17" x2="15" y2="13"/></svg></button>
         <button data-tab="instagram" title="Instagram" id="nav-instagram" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></button>
         <button data-tab="youtube" title="YouTube" id="nav-youtube" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><polygon points="10,9 15,12 10,15" fill="currentColor"/></svg></button>
         <button data-tab="ia" title="IA SDR" id="nav-ia" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1"/><circle cx="9" cy="13" r="1" fill="currentColor"/><circle cx="15" cy="13" r="1" fill="currentColor"/><path d="M9.5 16.5h5"/></svg></button>
@@ -3040,113 +3041,48 @@ html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="
       </div>
     </div>
 
-    <div class="tab-panel" id="tab-dicas">
+    <div class="tab-panel" id="tab-analise">
       <div class="tl-cab">
         <div>
-          <h2>Dicas e análises</h2>
-          <p class="muted">Fechamento do mês, funil, plano de ação e o que os números estão dizendo.</p>
+          <h2>Análise</h2>
+          <p class="muted">O dia, o checklist, o fechamento do mês e o funil num lugar só.</p>
+        </div>
+      </div>
+      <div class="an-nav" id="an-nav">
+        <button type="button" data-sub="hoje" id="nav-relatorio" style="display:none;" onclick="anSub('hoje')">Hoje</button>
+        <button type="button" data-sub="checklist" onclick="anSub('checklist')">Checklist</button>
+        <button type="button" data-sub="mes" onclick="anSub('mes')">Mês</button>
+        <button type="button" data-sub="funil" onclick="anSub('funil')">Funil</button>
+      </div>
+
+      <div class="an-sub" id="an-hoje">
+      <div class="tl-cab">
+        <div>
+          <h2>Relatório do dia</h2>
+          <p class="muted" id="rel-gerado"></p>
+        </div>
+        <div class="rel-nav">
+          <button type="button" class="btn btn-secondary" onclick="relMudaDia(-1)" aria-label="Dia anterior">‹</button>
+          <span id="rel-dia-label"></span>
+          <button type="button" class="btn btn-secondary" id="rel-btn-prox" onclick="relMudaDia(1)" aria-label="Próximo dia">›</button>
         </div>
       </div>
 
-      <section class="card">
-        <div class="fech-wrap" id="fechamento-wrap">
-          <div class="fech-head">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 15h3M8 18h6"/></svg>
-            <h3 id="fechamento-titulo">Fechamento do mês</h3>
-          </div>
-          <p class="fech-sub" id="fechamento-sub"></p>
-          <div id="fechamento-corpo"></div>
-        </div>
-      </section>
+      <div class="lanc tl-painel rel-painel"><div class="tl-kpis" id="rel-time"></div></div>
 
-      <section class="lanc fc-painel">
-        <div class="fn-topo">
-          <span class="lanc-selo">Funil atual × funil ideal</span>
-          <span class="fn-mes" id="funil-comp-mes"></span>
-        </div>
-        <p class="fv-sub">Segue o mês selecionado no topo — troque o mês pra ver como foi o funil daquele período. "Leads alto potencial" = cards na coluna MQL do funil de Lead Magnet. A área verde mostra quanto do alvo de cada etapa já foi atingido.</p>
-        <div class="funil-shape-wrap">
-          <div class="funil-shape-col" id="funil-shape-col"></div>
-          <div class="funil-shape-labels" id="funil-shape-labels"></div>
-        </div>
-        <div class="funil-comp-faturamento" id="funil-comp-faturamento"></div>
+      <section class="card">
+        <div class="tl-card-cab"><h3>Por pessoa</h3><span class="muted">atividade, resultado e checklist de cada um</span></div>
+        <div class="tabela-wrap"><table class="tabela-leads rel-tabela" id="rel-pessoas"></table></div>
+        <p class="muted" id="rel-aviso-whats" style="display:none; margin-top:10px;"></p>
       </section>
 
       <section class="card">
-        <div class="section-title">
-          <h2>Plano de ação do mês</h2>
-          <select id="plano-papel" onchange="renderPlano()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600; font-size:.8rem;">
-            <option value="sdr">Plano do SDR</option>
-            <option value="closer">Plano do Closer</option>
-          </select>
-        </div>
-        <p class="muted">O que ainda dá pra fazer para bater os R$30.000 deste mês, com os números reais do seu funil. A conta anda de trás pra frente: quanto falta → quantas vendas → quantas reuniões → quantos agendamentos.</p>
-        <div class="plano-resumo" id="plano-resumo"></div>
-        <div id="plano-acoes"></div>
-      </section>
-
-      <section class="card">
-        <div class="section-title">
-          <h2>Isca × o que ela gera</h2>
-          <span class="muted" style="font-size:.74rem;">todo o histórico</span>
-        </div>
-        <p class="muted">Qual material atrai lead que anda no funil e qual só enche a lista. <b>Oportunidade</b> = o lead chegou no funil do Closer, foi marcado como ganho, ou tem reunião ligada ao card. Volume alto com taxa baixa é isca que gasta audiência sem trazer cliente.</p>
-        <div class="isca-wrap"><table class="isca-tabela" id="isca-tabela"></table></div>
-        <p class="isca-resumo" id="isca-resumo"></p>
-      </section>
-
-      <section class="card">
-        <div class="section-title">
-          <h2>Por que a gente perde</h2>
-          <select id="mp-periodo" onchange="carregarMotivosPerda()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600; font-size:.8rem;">
-            <option value="mes">Este mês</option>
-            <option value="3m">Últimos 3 meses</option>
-            <option value="ano">Este ano</option>
-            <option value="tudo">Todo o histórico</option>
-          </select>
-        </div>
-        <p class="muted">A distribuição dos motivos de perda. Muito "fora do ICP" é problema de isca e de formulário; muito "achou caro" é problema de oferta; muito "sumiu" é problema de cadência.</p>
-        <div class="mp-topo" id="mp-topo"></div>
-        <div class="mp-lista" id="mp-lista"></div>
-        <p class="mp-nota" id="mp-nota"></p>
-      </section>
-
-      <section class="card">
-        <h2>Dicas do funil</h2>
-        <div id="dicas"></div>
+        <div class="tl-card-cab"><h3>Reuniões e vendas do dia</h3><span class="muted" id="rel-reunioes-n"></span></div>
+        <div id="rel-reunioes"></div>
       </section>
     </div>
 
-    <div class="tab-panel" id="tab-historico">
-      <section class="card">
-        <h2>Reuniões por mês</h2>
-        <p class="muted">O funil mês a mês: agendada → realizada → venda. A cor escurece conforme a etapa avança. Passe o mouse no mês pra ver os três números.</p>
-        <div class="viz-cabecalho" id="viz-reunioes-cabecalho"></div>
-        <div class="historico-bloco">
-          <div class="viz-chart-wrap" id="viz-reunioes-wrap" style="flex:1; min-width:280px;">
-            <svg id="chart-reunioes" class="chart"></svg>
-            <div class="viz-tip" id="tip-reunioes"></div>
-          </div>
-          <div class="tabela-wrap historico-tabela"><table class="tabela-leads" id="tabela-reunioes"></table></div>
-        </div>
-        <div class="viz-legenda" id="legenda-reunioes"></div>
-      </section>
-
-      <section class="card">
-        <h2>Faturamento por mês</h2>
-        <p class="muted">Barras = faturado no mês. A linha marca a meta de R$30.000. O ✓ verde aparece no mês que passou dela.</p>
-        <div class="viz-cabecalho" id="viz-faturamento-cabecalho"></div>
-        <div class="historico-bloco">
-          <div class="viz-chart-wrap" id="viz-faturamento-wrap" style="flex:1; min-width:280px;">
-            <svg id="chart-faturamento" class="chart"></svg>
-            <div class="viz-tip" id="tip-faturamento"></div>
-          </div>
-          <div class="tabela-wrap historico-tabela"><table class="tabela-leads" id="tabela-faturamento"></table></div>
-        </div>
-      </section>
-    </div>
-
-    <div class="tab-panel" id="tab-checklist">
+      <div class="an-sub" id="an-checklist">
       <div class="tl-cab">
         <div>
           <h2>Checklist de análise comercial</h2>
@@ -3186,6 +3122,106 @@ html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="
         <div class="tl-card-cab"><h3>O que mais puxa resultado</h3></div>
         <div id="checklist-insight"></div>
       </section>
+    </div>
+
+      <div class="an-sub" id="an-mes">
+      <section class="card">
+        <div class="fech-wrap" id="fechamento-wrap">
+          <div class="fech-head">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 15h3M8 18h6"/></svg>
+            <h3 id="fechamento-titulo">Fechamento do mês</h3>
+          </div>
+          <p class="fech-sub" id="fechamento-sub"></p>
+          <div id="fechamento-corpo"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Reuniões por mês</h2>
+        <p class="muted">O funil mês a mês: agendada → realizada → venda. A cor escurece conforme a etapa avança. Passe o mouse no mês pra ver os três números.</p>
+        <div class="viz-cabecalho" id="viz-reunioes-cabecalho"></div>
+        <div class="historico-bloco">
+          <div class="viz-chart-wrap" id="viz-reunioes-wrap" style="flex:1; min-width:280px;">
+            <svg id="chart-reunioes" class="chart"></svg>
+            <div class="viz-tip" id="tip-reunioes"></div>
+          </div>
+          <div class="tabela-wrap historico-tabela"><table class="tabela-leads" id="tabela-reunioes"></table></div>
+        </div>
+        <div class="viz-legenda" id="legenda-reunioes"></div>
+      </section>
+
+      <section class="card">
+        <h2>Faturamento por mês</h2>
+        <p class="muted">Barras = faturado no mês. A linha marca a meta de R$30.000. O ✓ verde aparece no mês que passou dela.</p>
+        <div class="viz-cabecalho" id="viz-faturamento-cabecalho"></div>
+        <div class="historico-bloco">
+          <div class="viz-chart-wrap" id="viz-faturamento-wrap" style="flex:1; min-width:280px;">
+            <svg id="chart-faturamento" class="chart"></svg>
+            <div class="viz-tip" id="tip-faturamento"></div>
+          </div>
+          <div class="tabela-wrap historico-tabela"><table class="tabela-leads" id="tabela-faturamento"></table></div>
+        </div>
+      </section>
+
+      <section class="lanc fc-painel">
+        <div class="fn-topo">
+          <span class="lanc-selo">Funil atual × funil ideal</span>
+          <span class="fn-mes" id="funil-comp-mes"></span>
+        </div>
+        <p class="fv-sub">Segue o mês selecionado no topo — troque o mês pra ver como foi o funil daquele período. "Leads alto potencial" = cards na coluna MQL do funil de Lead Magnet. A área verde mostra quanto do alvo de cada etapa já foi atingido.</p>
+        <div class="funil-shape-wrap">
+          <div class="funil-shape-col" id="funil-shape-col"></div>
+          <div class="funil-shape-labels" id="funil-shape-labels"></div>
+        </div>
+        <div class="funil-comp-faturamento" id="funil-comp-faturamento"></div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <h2>Plano de ação do mês</h2>
+          <select id="plano-papel" onchange="renderPlano()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600; font-size:.8rem;">
+            <option value="sdr">Plano do SDR</option>
+            <option value="closer">Plano do Closer</option>
+          </select>
+        </div>
+        <p class="muted">O que ainda dá pra fazer para bater os R$30.000 deste mês, com os números reais do seu funil. A conta anda de trás pra frente: quanto falta → quantas vendas → quantas reuniões → quantos agendamentos.</p>
+        <div class="plano-resumo" id="plano-resumo"></div>
+        <div id="plano-acoes"></div>
+      </section>
+      </div>
+
+      <div class="an-sub" id="an-funil">
+      <section class="card">
+        <div class="section-title">
+          <h2>Isca × o que ela gera</h2>
+          <span class="muted" style="font-size:.74rem;">todo o histórico</span>
+        </div>
+        <p class="muted">Qual material atrai lead que anda no funil e qual só enche a lista. <b>Oportunidade</b> = o lead chegou no funil do Closer, foi marcado como ganho, ou tem reunião ligada ao card. Volume alto com taxa baixa é isca que gasta audiência sem trazer cliente.</p>
+        <div class="isca-wrap"><table class="isca-tabela" id="isca-tabela"></table></div>
+        <p class="isca-resumo" id="isca-resumo"></p>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <h2>Por que a gente perde</h2>
+          <select id="mp-periodo" onchange="carregarMotivosPerda()" style="padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--field-bg); color:var(--text-primary); font-weight:600; font-size:.8rem;">
+            <option value="mes">Este mês</option>
+            <option value="3m">Últimos 3 meses</option>
+            <option value="ano">Este ano</option>
+            <option value="tudo">Todo o histórico</option>
+          </select>
+        </div>
+        <p class="muted">A distribuição dos motivos de perda. Muito "fora do ICP" é problema de isca e de formulário; muito "achou caro" é problema de oferta; muito "sumiu" é problema de cadência.</p>
+        <div class="mp-topo" id="mp-topo"></div>
+        <div class="mp-lista" id="mp-lista"></div>
+        <p class="mp-nota" id="mp-nota"></p>
+      </section>
+
+      <section class="card">
+        <h2>Dicas do funil</h2>
+        <div id="dicas"></div>
+      </section>
+      </div>
     </div>
 
     <div class="tab-panel" id="tab-social">
@@ -4025,33 +4061,6 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <span class="muted" id="p30-resumo"></span>
         </div>
         <div id="p30-lista"><div class="empty">Carregando...</div></div>
-      </section>
-    </div>
-
-    <div class="tab-panel" id="tab-relatorio">
-      <div class="tl-cab">
-        <div>
-          <h2>Relatório do dia</h2>
-          <p class="muted" id="rel-gerado"></p>
-        </div>
-        <div class="rel-nav">
-          <button type="button" class="btn btn-secondary" onclick="relMudaDia(-1)" aria-label="Dia anterior">‹</button>
-          <span id="rel-dia-label"></span>
-          <button type="button" class="btn btn-secondary" id="rel-btn-prox" onclick="relMudaDia(1)" aria-label="Próximo dia">›</button>
-        </div>
-      </div>
-
-      <div class="lanc tl-painel rel-painel"><div class="tl-kpis" id="rel-time"></div></div>
-
-      <section class="card">
-        <div class="tl-card-cab"><h3>Por pessoa</h3><span class="muted">atividade, resultado e checklist de cada um</span></div>
-        <div class="tabela-wrap"><table class="tabela-leads rel-tabela" id="rel-pessoas"></table></div>
-        <p class="muted" id="rel-aviso-whats" style="display:none; margin-top:10px;"></p>
-      </section>
-
-      <section class="card">
-        <div class="tl-card-cab"><h3>Reuniões e vendas do dia</h3><span class="muted" id="rel-reunioes-n"></span></div>
-        <div id="rel-reunioes"></div>
       </section>
     </div>
 
@@ -6621,8 +6630,7 @@ function planoMetricas() {
 }
 
 function planoIr(aba) {
-  const btn = document.querySelector(`.sidebar nav button[data-tab="${aba}"]`);
-  if (btn) btn.click();
+  irParaAba(aba);
 }
 
 function planoDeAcao(papel) {
@@ -7960,8 +7968,7 @@ function relMudaDia(delta) {
 }
 
 function abrirRelatorio(dia) {
-  const btn = document.querySelector('.sidebar nav button[data-tab="relatorio"]');
-  if (btn) btn.click();
+  irParaAba('relatorio');
   carregarRelatorio(dia);
   const painel = document.getElementById('notif-panel');
   if (painel) painel.classList.remove('aberto');
@@ -11660,13 +11667,12 @@ function renderTourPasso() {
 function tourPiscar(aba) {
   document.querySelectorAll('.sidebar nav button').forEach(b => b.classList.remove('tour-piscando'));
   if (!aba) return;
-  const btn = document.querySelector(`.sidebar nav button[data-tab="${aba}"]`);
+  const btn = document.querySelector(`.sidebar nav button[data-tab="${AN_MAP[aba] ? 'analise' : aba}"]`);
   if (btn) btn.classList.add('tour-piscando');
 }
 
 function tourIrPara(aba) {
-  const btn = document.querySelector(`.sidebar nav button[data-tab="${aba}"]`);
-  if (btn) btn.click();
+  irParaAba(aba);
 }
 
 function tourProximo() {
@@ -11811,7 +11817,7 @@ async function fecharLembreteChecklist(irParaChecklist) {
   lembreteChecklistMomentoAtual = null;
   lembreteChecklistDataAtual = null;
   // o Ok leva direto pra aba do checklist
-  if (irParaChecklist) document.querySelector('.sidebar nav button[data-tab="checklist"]')?.click();
+  if (irParaChecklist) irParaAba('checklist');
   if (!currentPerfil || !momento) return;
   lembreteChecklistGuardarLocal(lembreteChecklistChave(data, momento));
   await sb.from('com_checklist_lembretes_vistos').upsert(
@@ -12803,8 +12809,7 @@ function wzPainelConfig(tel, m) {
 
 // ------------------------------------------------------------------ ações
 function wzIrParaAba(nome) {
-  const btn = document.querySelector(`.sidebar nav button[data-tab="${nome}"]`);
-  if (btn) btn.click();
+  irParaAba(nome);
 }
 
 async function wzAbrirCard(cardId) {
@@ -14154,7 +14159,7 @@ async function ctrSalvarEdicao() {
 // A faixa de indicadores mora FORA dos painéis (logo abaixo do cabeçalho), então aparecia em
 // todas as abas — inclusive WhatsApp, Checklist e Playbook, onde ela não diz nada. Agora só
 // acompanha as duas telas onde o número do mês é o assunto.
-const TABS_COM_INDICADORES = ['dashboard', 'crm'];
+const TABS_COM_INDICADORES = ['dashboard', 'crm'];   // 'analise' mostra a faixa só na sub-aba Mês (ver anSub)
 // ============================================================================
 // ABA "E-mails": máquina de nutrição e eventos por e-mail (lê em_painel; escreve por em_config_set / em_sequencia_set / em_email_set).
 // Envio real = Edge Function email-motor (a cada 5 min) via Resend. Aqui só se controla: ligar/desligar, aprovar, editar, agendar.
@@ -14250,7 +14255,7 @@ function emEditorHtml(e, q) {
           <button type="button" class="btn btn-secondary" onclick="emTeste(${e.id}, this)">Enviar teste pra mim</button>
           <button type="button" class="btn btn-secondary" onclick="emExcluirEmail(${e.id})">Excluir</button></div></div>`;
 }
-async function drDevolver(tab) { const st = document.getElementById(tab + '-stash'), corpo = document.getElementById(tab + '-drawer-b'); corpo.querySelectorAll(':scope > [data-stash]').forEach(el => st.appendChild(el)); }
+function drDevolver(tab) { const st = document.getElementById(tab + '-stash'), corpo = document.getElementById(tab + '-drawer-b'); corpo.querySelectorAll(':scope > [data-stash]').forEach(el => st.appendChild(el)); }
 function drAbrir(tab, titulo, conteudo) {
   const dr = document.getElementById(tab + '-drawer'), corpo = document.getElementById(tab + '-drawer-b'); drDevolver(tab);
   document.getElementById(tab + '-drawer-t').textContent = titulo;
@@ -14924,6 +14929,30 @@ function ajustarIndicadores(aba) {
   if (el) el.style.display = TABS_COM_INDICADORES.includes(aba) ? '' : 'none';
 }
 
+// ---------- ANÁLISE: 4 telas antigas (Dicas, Histórico, Checklist, Relatório do dia) numa aba só, com sub-abas ----------
+const AN_MAP = { dicas: 'mes', historico: 'mes', checklist: 'checklist', relatorio: 'hoje' };   // nome antigo -> sub-aba
+let anSubAtual = null;
+function anSubPadrao() {
+  let salvo = null; try { salvo = localStorage.getItem('anSub'); } catch (e) {}
+  if (salvo && ['hoje', 'checklist', 'mes', 'funil'].includes(salvo)) return salvo;
+  return currentPerfil && ['sdr', 'vendedor'].includes(currentPerfil.papel) ? 'checklist' : 'mes';
+}
+function anSub(sub) {
+  if (sub === 'hoje' && !(currentPerfil && currentPerfil.papel === 'admin')) sub = 'mes';   // Relatório do dia é só admin
+  anSubAtual = sub; try { localStorage.setItem('anSub', sub); } catch (e) {}
+  document.querySelectorAll('#an-nav button').forEach(b => b.classList.toggle('on', b.dataset.sub === sub));
+  document.querySelectorAll('#tab-analise .an-sub').forEach(d => d.classList.toggle('on', d.id === 'an-' + sub));
+  if (sub === 'hoje') carregarRelatorio();
+  const faixa = document.getElementById('tiles'); if (faixa) faixa.style.display = sub === 'mes' ? '' : 'none';   // números do mês acompanham a leitura do fechamento
+  window.dispatchEvent(new Event('resize'));   // os gráficos medem a largura quando ficam visíveis
+}
+// leva pra qualquer aba pelo nome (aceita os nomes antigos: dicas, historico, checklist, relatorio)
+function irParaAba(nome) {
+  const alvo = AN_MAP[nome] ? 'analise' : nome;
+  const btn = document.querySelector(`.sidebar nav button[data-tab="${alvo}"]`);
+  if (btn) btn.click();
+  if (AN_MAP[nome]) anSub(AN_MAP[nome]);
+}
 document.querySelectorAll('.sidebar nav button').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.sidebar nav button').forEach(b => b.classList.remove('active'));
@@ -14935,7 +14964,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     if (btn.dataset.tab === 'arquivos') carregarArquivos();
     if (btn.dataset.tab === 'plano30') p30Iniciar();
     if (btn.dataset.tab === 'social') ssSupIniciar();
-    if (btn.dataset.tab === 'relatorio') carregarRelatorio();
+    if (btn.dataset.tab === 'analise') anSub(anSubAtual || anSubPadrao());
     if (btn.dataset.tab === 'instagram') carregarInstagram();
     if (btn.dataset.tab === 'youtube') carregarYoutube();
     if (btn.dataset.tab === 'ia') carregarIa();
@@ -14948,7 +14977,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
 // valor, nome e responsável andam juntos nos dois sentidos (triggers em com_negocios/com_cards).
 // Quem editou de um lado só vê o resultado do outro se a tela for recarregada ao chegar nela.
 // A trava de 2,5s evita carga dupla quando o próprio painel troca de aba por código.
-const ABAS_DO_PAINEL_CENTRAL = ['dashboard', 'calendario', 'historico', 'dicas'];
+const ABAS_DO_PAINEL_CENTRAL = ['dashboard', 'calendario', 'analise'];
 let ultimaCargaEspelhada = 0;
 function recarregarLadoEspelhado(aba) {
   if (Date.now() - ultimaCargaEspelhada < 2500) return;
