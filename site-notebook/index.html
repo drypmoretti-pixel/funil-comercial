@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gemini Notebook: arquivos viram site | Demanda Infinita</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:18px;line-height:1.6}
+h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;margin:0 0 12px}.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
+.cover{padding:48px 0 10px;text-align:center}.cover img{width:76px;height:76px;margin-bottom:18px}
+.kicker{font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase}
+.cover h1{font-size:42px;font-weight:800;margin-top:10px;line-height:1.15}.sub{font-size:19px;color:var(--gray);max-width:600px;margin:14px auto 0}
+.badge{display:inline-block;margin-top:18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px}
+h2.t{font-size:25px;font-weight:800;margin-top:52px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+h2.t small{display:block;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;font-size:15px}
+.flow div b{display:block;font:800 17px 'Plus Jakarta Sans',sans-serif;margin:4px 0}.flow div i{font:600 12px 'JetBrains Mono',monospace;color:var(--green);font-style:normal}
+.flow div:not(:last-child):after{content:"→";position:absolute;right:-14px;top:42%;color:var(--green);font-weight:800}
+@media(max-width:640px){.flow{grid-template-columns:1fr 1fr}.cover h1{font-size:32px}}
+.prompt{background:#111;color:#e9f5ec;border-radius:16px;margin:16px 0;overflow:hidden}
+.prompt .h{background:var(--green);color:#fff;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.4px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.prompt button{background:#fff;color:var(--green);border:0;border-radius:8px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px}
+.prompt pre{margin:0;padding:18px;white-space:pre-wrap;font:400 15px/1.55 'JetBrains Mono',monospace}
+.ex{background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;margin:16px 0;font-size:16px}
+.ex b{font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.2px;color:var(--green);display:block;margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.col{border-radius:14px;padding:16px 18px;font-size:16px}.col.no{background:#fbeeea;border:1px solid #f0c9be}.col.si{background:#e9f6ee;border:1px solid #b5e0c4}
+.col h4{margin:0 0 8px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.4px}.col.no h4{color:#b5483a}.col.si h4{color:var(--green)}
+.col ul{margin:0;padding-left:18px}.aviso{font-size:14px;color:var(--gray);margin-top:30px}
+.cta{margin-top:48px;background:#fff;border:2px solid var(--green);border-radius:18px;padding:24px;text-align:center}
+</style>
+</head><body>
+<div class="wrap">
+<div class="cover"><img src="logo-demanda-infinita.png" alt=""><div class="kicker">Método Demanda Infinita®</div>
+<h1>Seus arquivos viram um site com uma frase</h1>
+<p class="sub">O passo a passo pra transformar as planilhas e documentos do seu projeto num painel que o time abre pelo link, com o Gemini Notebook do Google.</p></div>
+
+<h2 class="t">O que é</h2>
+<p>Desde 16/11/2026, o Gemini Notebook (o caderno de inteligência artificial do Google, que antes se chamava NotebookLM) monta um site interativo a partir dos arquivos que você coloca nele. Você escreve o que quer no chat e ele devolve uma página pronta: um painel de projeto, um painel de vendas ou um material de treinamento.</p>
+
+<h2 class="t">Passo a passo (10 minutos)</h2>
+<ol>
+<li>Entre em notebook.google.com no computador, com a sua conta Google (é pra maiores de 18; o app de celular ainda não tem).</li>
+<li>Crie um caderno novo e coloque os arquivos do projeto: a planilha de tarefas, a ata da última reunião, o documento com os prazos.</li>
+<li>No chat do caderno, cole o pedido abaixo.</li>
+<li>Quando o site aparecer, abra numa aba nova e confira cada número com a planilha.</li>
+<li>Compartilhe o link com o time no lugar de mandar a planilha no grupo.</li>
+</ol>
+<div class="prompt"><div class="h"><span>PEDIDO PRONTO</span><button onclick="cp(this)">Copiar</button></div><pre>Me faz um site pra acompanhar este projeto. Quero ver no topo quanto já foi feito (em porcentagem), o que está atrasado ou em risco, e embaixo a lista de tarefas com o responsável e o prazo de cada uma. Use só as informações dos arquivos deste caderno. Escreva em português.</pre></div>
+
+<h2 class="t">Outros 3 pedidos prontos</h2>
+<div class="prompt"><div class="h"><span>PEDIDO PRONTO</span><button onclick="cp(this)">Copiar</button></div><pre>Me faz um site com o resumo de vendas do trimestre: total vendido, meta, quanto falta e os 5 maiores negócios abertos. Use só a planilha deste caderno.</pre></div>
+<div class="prompt"><div class="h"><span>PEDIDO PRONTO</span><button onclick="cp(this)">Copiar</button></div><pre>Me faz um site de treinamento pra vendedor novo, com as perguntas que o cliente mais faz e a resposta de cada uma, a partir destes documentos. No fim, um teste rápido de 5 perguntas.</pre></div>
+<div class="prompt"><div class="h"><span>PEDIDO PRONTO</span><button onclick="cp(this)">Copiar</button></div><pre>Me faz um site pra apresentar esta proposta ao cliente: o problema dele, o que vamos entregar, as etapas com datas e o investimento. Use só os documentos deste caderno.</pre></div>
+
+<h2 class="t">O cuidado que ninguém comenta</h2>
+<ul>
+<li>A própria tela avisa: ele pode errar. Confira os números antes de mandar o link.</li>
+<li>Antes de colocar arquivos com dados de cliente, veja se a sua empresa permite usar essa ferramenta.</li>
+<li>Se o arquivo de origem está desatualizado, o site também vai estar.</li>
+</ul>
+
+<div class="aviso">
+<p><b>Fontes</b></p>
+<ul>
+<li>Google, blog oficial (16/11/2026): <a href="https://blog.google/innovation-and-ai/products/gemini-notebook/interactive-sites/">https://blog.google/innovation-and-ai/products/gemini-notebook/interactive-sites/</a></li>
+<li>PPC Land (16/11/2026): <a href="https://ppc.land/googles-gemini-notebook-turns-notes-and-files-into-sites/">https://ppc.land/googles-gemini-notebook-turns-notes-and-files-into-sites/</a></li>
+</ul>
+<p>Material da Demanda Infinita · @igorr_miguel</p>
+</div>
+</div>
+<script>function cp(b){navigator.clipboard.writeText(b.closest('.prompt').querySelector('pre').innerText).then(()=>{b.textContent='Copiado!';setTimeout(()=>b.textContent='Copiar',1500)})}</script>
+</body></html>
