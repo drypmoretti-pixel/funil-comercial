@@ -1394,12 +1394,14 @@ form.form-grid button { grid-column: 1 / -1; }
 /* ===== reconstrucao da aba WhatsApp (01/09/2026): estas regras sao as ultimas
    do arquivo de proposito, para vencer as definicoes antigas de .whats-chat-shell ===== */
 /* ---------- WhatsApp: 3 colunas (conversas / thread / painel do contato) ---------- */
-.whats-chat-shell { display: grid; grid-template-columns: 340px minmax(0,1fr) 380px; gap: 12px;
+.whats-chat-shell { display: grid; grid-template-columns: clamp(250px, 21vw, 340px) minmax(0,1fr) clamp(290px, 23vw, 380px); gap: 10px;
   height: calc(100vh - 150px); min-height: 560px; background: transparent; }
-.whats-chat-shell.sem-painel { grid-template-columns: 340px minmax(0,1fr); }
+.whats-chat-shell.sem-painel { grid-template-columns: clamp(250px, 21vw, 340px) minmax(0,1fr); }
 .whats-conversas, .whats-thread, .wz-painel {
   background: var(--surface-1); border: 1px solid var(--border);
   border-radius: var(--card-radius); display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+/* o .whats-conversas antigo (linha ~1094) tinha width:280px: dentro da coluna maior sobravam ~60px vazios */
+.whats-conversas { width: auto; }
 
 .wz-col-head { display: flex; align-items: center; justify-content: space-between;
   padding: 13px 14px 10px; gap: 8px; }
@@ -1446,24 +1448,26 @@ form.form-grid button { grid-column: 1 / -1; }
 .wz-espera { color: var(--warning); font-weight: 700; }
 
 /* ----- coluna do meio ----- */
-.whats-thread-header { display: block; padding: 13px 16px 10px; border-bottom: 1px solid var(--border); }
-.wz-th-top { display: flex; align-items: flex-start; gap: 11px; }
-.wz-th-nome { font-size: 1.02rem; font-weight: 700; display: flex; align-items: center;
-  gap: 8px; flex-wrap: wrap; letter-spacing: -.01em; }
-.wz-canal { background: var(--accent-wash); color: var(--accent); border-radius: 999px;
-  padding: 2px 10px; font-size: .7rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
-.wz-th-sub { font-size: .76rem; color: var(--text-secondary); margin-top: 2px;
-  font-variant-numeric: tabular-nums; }
+.whats-thread-header { display: block; padding: 8px 14px; border-bottom: 1px solid var(--border); }
+.wz-th-top { display: flex; align-items: center; gap: 10px; }
+.wz-th-info { min-width: 0; flex: 1; }
+.wz-th-nome { font-size: .98rem; font-weight: 700; display: flex; align-items: center;
+  gap: 8px; flex-wrap: nowrap; letter-spacing: -.01em; white-space: nowrap; }
+.wz-th-nome .wz-nome-txt { overflow: hidden; text-overflow: ellipsis; }
+.wz-canal { background: var(--accent-wash); color: var(--accent); border-radius: 999px; flex-shrink: 0;
+  padding: 1px 9px; font-size: .68rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+.wz-th-sub { font-size: .74rem; color: var(--text-secondary); margin-top: 1px;
+  font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .wz-th-inst { color: var(--good); font-weight: 600; }
-.wz-dono { margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; }
+.wz-dono { margin: 0 0 0 auto; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; }
 .wz-dono select { border: 1px solid var(--border); background: var(--field-bg); border-radius: 8px;
   padding: 3px 8px; font-size: .76rem; color: var(--text-primary); font-weight: 600; }
 
-.wz-toolbar { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px;
+.wz-toolbar { display: flex; flex-wrap: wrap; gap: 5px; padding: 6px 14px;
   border-bottom: 1px solid var(--border); align-items: center; }
 .wz-tb { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary);
-  border-radius: 9px; padding: 6px 11px; font-size: .77rem; font-weight: 600; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px; }
+  border-radius: 8px; padding: 5px 9px; font-size: .74rem; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px; }
 .wz-tb:hover { border-color: var(--accent); color: var(--accent); }
 .wz-tb:disabled { opacity: .45; cursor: not-allowed; }
 .wz-tb.forte { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -1471,17 +1475,22 @@ form.form-grid button { grid-column: 1 / -1; }
 .wz-tb svg { flex-shrink: 0; }
 .wz-tb-sep { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
 
-.wz-busca-conversa { padding: 9px 14px; border-bottom: 1px solid var(--border); }
-.wz-busca-conversa input { width: 100%; padding: 8px 11px; border-radius: 9px;
-  border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); font-size: .8rem; }
-.whats-thread-mensagens { flex: 1; overflow-y: auto; padding: 16px; display: flex;
+.wz-busca-conversa { margin-left: auto; width: min(220px, 40%); }
+.wz-busca-conversa input { width: 100%; padding: 4px 10px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--field-bg); color: var(--text-primary); font-size: .74rem; }
+.whats-thread-tags { padding: 5px 14px; }
+.whats-thread-mensagens { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex;
   flex-direction: column; gap: 8px; }
 .wz-marca { background: #ffe58a; color: #4a3a00; border-radius: 3px; padding: 0 1px; }
 
-.wz-anexos { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px 0; }
+.wz-compositor { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px;
+  padding: 8px 12px; border-top: 1px solid var(--border); }
+.wz-compositor .whats-thread-input { flex: 1 1 220px; padding: 0; border: 0; min-width: 0; }
+.wz-anexos { display: flex; flex-wrap: wrap; gap: 4px; padding: 0; }
 .wz-anexo { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
-  border-radius: 9px; padding: 6px 11px; font-size: .76rem; font-weight: 600; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px; }
+  border-radius: 8px; width: 32px; height: 32px; padding: 0; font-size: .74rem; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.wz-anexo.gravando { width: auto; padding: 0 10px; }
 .wz-anexo:hover { border-color: var(--accent); color: var(--accent); }
 .wz-anexo.gravando { border-color: var(--critical); color: var(--critical); }
 
@@ -1515,7 +1524,50 @@ form.form-grid button { grid-column: 1 / -1; }
   .whats-chat-shell, .whats-chat-shell.sem-painel { grid-template-columns: 1fr; height: auto; }
   .whats-conversas { max-height: 320px; }
   .whats-thread { min-height: 460px; }
+  /* cabeçalho da conversa no celular: sem a pílula e sem o rótulo, pra caber numa linha */
+  .wz-canal, .wz-dono > .muted { display: none; }
+  .wz-th-top { gap: 8px; }
 }
+
+
+/* ===== WhatsApp: chat maior (18/11/2026) =====
+   Na aba WhatsApp a página vira uma tela só (sem rolar): o topo fica enxuto e o chat ocupa o resto.
+   Seletores com :has() de propósito: só mexem no layout enquanto essa aba está aberta. */
+@media (min-width: 781px) {
+  .main-content .wrap:has(#tab-whatsapp.active) {
+    height: 100vh; min-height: 520px; box-sizing: border-box; padding: 8px 16px 12px;
+    display: flex; flex-direction: column;
+  }
+  .main-content .wrap:has(#tab-whatsapp.active) > header.topbar { flex: none; margin-bottom: 8px; padding-bottom: 8px; gap: 6px 12px; }
+  .main-content .wrap:has(#tab-whatsapp.active) > header.topbar .marca > div { display: flex; align-items: baseline; gap: 10px; }
+  .main-content .wrap:has(#tab-whatsapp.active) > header.topbar h1 { font-size: 1.12rem; margin: 0; }
+  .main-content .wrap:has(#tab-whatsapp.active) > header.topbar .month-nav button { width: 28px; height: 28px; }
+  .main-content .wrap:has(#tab-whatsapp.active) > #tiles { display: none; }
+  .main-content .wrap:has(#tab-whatsapp.active) > #tab-whatsapp.active { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  #tab-whatsapp > .card { flex: 1; min-height: 0; margin: 0; display: flex; flex-direction: column; }
+  #tab-whatsapp .whats-chat-shell { flex: 1; height: auto; min-height: 0; }
+}
+
+/* menu de apagar mensagem (apagar para mim / para todos) */
+.whats-bolha { position: relative; }
+.wz-bolha-menu { position: absolute; top: 50%; transform: translateY(-50%); width: 30px; height: 30px;
+  border: 0; background: none; padding: 0; cursor: pointer; color: var(--text-secondary);
+  display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 120ms; }
+.whats-bolha.enviada .wz-bolha-menu { left: -30px; }
+.whats-bolha.recebida .wz-bolha-menu { right: -30px; }
+.wz-bolha-menu span { width: 22px; height: 22px; border-radius: 50%; background: var(--field-bg);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+.whats-bolha:hover .wz-bolha-menu, .wz-bolha-menu:focus-visible { opacity: 1; }
+.wz-bolha-menu:hover span { color: var(--accent); border-color: var(--accent); }
+@media (hover: none) { .wz-bolha-menu { opacity: .8; } }
+.wz-apagada { display: inline-flex; align-items: center; gap: 6px; font-style: italic; color: var(--text-secondary); }
+.wz-menu-msg { position: fixed; z-index: 200; min-width: 196px; background: var(--surface-1);
+  border: 1px solid var(--border); border-radius: 10px; padding: 4px; box-shadow: var(--sombra-3); }
+.wz-menu-msg button { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; border: 0;
+  background: none; padding: 8px 10px; border-radius: 7px; font-size: .82rem; font-weight: 600;
+  color: var(--text-primary); cursor: pointer; font-family: inherit; }
+.wz-menu-msg button:hover { background: var(--field-bg); }
+.wz-menu-msg button.perigo { color: var(--critical); }
 
 
 /* ---- reuniões esperando resposta (no-show obrigatório) ---- */
@@ -3575,9 +3627,6 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <div class="whats-thread">
             <div id="whats-thread-header" class="whats-thread-header"><span class="muted">Selecione uma conversa</span></div>
             <div class="wz-toolbar" id="wz-toolbar" style="display:none;"></div>
-            <div class="wz-busca-conversa" id="wz-busca-conversa" style="display:none;">
-              <input type="text" id="wz-busca-msg" placeholder="Buscar nesta conversa..." autocomplete="off" oninput="renderThreadWhats()">
-            </div>
 
             <div id="whats-thread-tags" class="whats-thread-tags" style="display:none;">
               <div id="whats-tags-atuais" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;"></div>
@@ -3585,17 +3634,22 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
                 <button type="button" class="add-toggle" style="padding:2px 9px; font-size:.7rem;" onclick="toggleTagsPopoverWhats(event)">+ tag</button>
                 <div id="whats-tags-popover" class="whats-tags-popover" style="display:none;"></div>
               </div>
+              <div class="wz-busca-conversa" id="wz-busca-conversa" style="display:none;">
+                <input type="text" id="wz-busca-msg" placeholder="Buscar nesta conversa..." autocomplete="off" oninput="renderThreadWhats()">
+              </div>
             </div>
 
             <div id="whats-thread-mensagens" class="whats-thread-mensagens"></div>
 
-            <div class="wz-anexos" id="wz-anexos" style="display:none;"></div>
-            <input type="file" id="wz-arquivo" style="display:none;" onchange="wzEnviarArquivo(event)">
+            <div class="wz-compositor">
+              <div class="wz-anexos" id="wz-anexos" style="display:none;"></div>
+              <input type="file" id="wz-arquivo" style="display:none;" onchange="wzEnviarArquivo(event)">
 
-            <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
-              <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
-              <button class="btn" type="submit" style="width:auto; padding:9px 18px;">Enviar</button>
-            </form>
+              <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
+                <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
+                <button class="btn" type="submit" style="width:auto; padding:9px 18px;">Enviar</button>
+              </form>
+            </div>
             <div id="whats-gravando-aviso" class="muted" style="display:none; padding:0 14px 8px; font-size:.78rem; color:var(--critical);"><span class="ico-rec"></span>Gravando... clique em Áudio de novo pra parar e enviar.</div>
           </div>
 
@@ -9046,6 +9100,7 @@ const WHATS_PREVIA_MIDIA = {
   audio: { ico: 'voz', rotulo: 'Mensagem de voz' },
 };
 function previaMensagemWhats(m) {
+  if (m.status === 'apagada') return 'Mensagem apagada';
   const midia = WHATS_PREVIA_MIDIA[m.midia_tipo];
   if (!midia) return (m.mensagem || '').slice(0, 40);
   // se a pessoa mandou legenda junto, a legenda é mais útil que o rótulo genérico
@@ -12568,6 +12623,78 @@ async function wzMarcarTodasLidas() {
   wzRenderChips(); renderListaConversas();
 }
 
+// ------------------------------------------------------------ apagar mensagem
+// "Apagar para mim": tira a mensagem do painel (a base é compartilhada, então some pro time todo);
+//   no WhatsApp ela continua. Vale pra qualquer mensagem, inclusive as que falharam no envio.
+// "Apagar para todos": manda a Evolution apagar no WhatsApp também (só mensagem ENVIADA, que tenha
+//   o id do WhatsApp) e deixa no painel o aviso "Você apagou esta mensagem".
+function wzFecharMenuMsg() { const m = document.getElementById('wz-menu-msg'); if (m) m.remove(); }
+document.addEventListener('click', wzFecharMenuMsg);
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') wzFecharMenuMsg(); });
+document.addEventListener('scroll', wzFecharMenuMsg, true);
+
+function wzAbrirMenuMsg(ev, id) {
+  ev.stopPropagation();
+  const aberto = document.getElementById('wz-menu-msg');
+  const mesmo = aberto && aberto.dataset.id === String(id);
+  wzFecharMenuMsg();
+  if (mesmo) return;
+  const m = whatsMensagens.find(x => x.id === id);
+  if (!m) return;
+  const podeTodos = m.direcao === 'enviada' && !!m.mensagem_id && m.status !== 'erro' && m.status !== 'apagada';
+  const lixo = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>';
+  const menu = document.createElement('div');
+  menu.id = 'wz-menu-msg'; menu.className = 'wz-menu-msg'; menu.dataset.id = id;
+  menu.innerHTML = `<button type="button" onclick="wzApagarParaMim(${id})">${lixo}Apagar para mim</button>`
+    + (podeTodos ? `<button type="button" class="perigo" onclick="wzApagarParaTodos(${id})">${lixo}Apagar para todos</button>` : '');
+  document.body.appendChild(menu);
+  const b = ev.currentTarget.getBoundingClientRect(), w = menu.offsetWidth, h = menu.offsetHeight;
+  let left = m.direcao === 'enviada' ? b.right - w : b.left;
+  left = Math.max(8, Math.min(left, window.innerWidth - w - 8));
+  let top = b.bottom + 4;
+  if (top + h > window.innerHeight - 8) top = Math.max(8, b.top - h - 4);
+  menu.style.left = left + 'px'; menu.style.top = top + 'px';
+}
+
+async function wzApagarParaMim(id) {
+  const m = whatsMensagens.find(x => x.id === id);
+  if (!m || wzOcupado['apagar' + id]) return;
+  if (!confirm('Apagar só para mim?\n\nA mensagem some deste painel (para todo o time), mas continua no WhatsApp.')) return;
+  wzOcupado['apagar' + id] = true;
+  try {
+    // .select() devolve as linhas apagadas: com RLS, um delete bloqueado volta "sem erro" e sem linhas
+    const { data, error } = await sb.from('com_whatsapp_mensagens').delete().eq('id', id).select();
+    if (error || !data || !data.length) { alert('Não consegui apagar a mensagem' + (error ? ': ' + error.message : '.')); return; }
+    whatsMensagens = whatsMensagens.filter(x => x.id !== id);
+    renderThreadWhats(); renderListaConversas();
+  } catch (e) { alert('Não consegui apagar a mensagem: ' + e.message); }
+  finally { delete wzOcupado['apagar' + id]; }
+}
+
+async function wzApagarParaTodos(id) {
+  const m = whatsMensagens.find(x => x.id === id);
+  if (!m || !m.mensagem_id || wzOcupado['apagar' + id]) return;
+  const c = conversasAgrupadasWhats().find(x => x.telefone === m.telefone);
+  const nome = (c && c.nome) || m.telefone;
+  if (!confirm(`Apagar para todos?\n\nA mensagem some também do WhatsApp de ${nome}. Não dá pra desfazer.`)) return;
+  wzOcupado['apagar' + id] = true;
+  try {
+    const resp = await chamarEvolution('DELETE', `/chat/deleteMessageForEveryone/${EVOLUTION_INSTANCE}`,
+      { id: m.mensagem_id, remoteJid: `${m.telefone}@s.whatsapp.net`, fromMe: true });
+    const dados = await resp.json().catch(() => null);
+    const item = Array.isArray(dados) ? dados[0] : dados;
+    if (!resp.ok || respostaFalhou(item)) {
+      alert('O WhatsApp não deixou apagar para todos' + (erroDaEvolution(item) ? ': ' + erroDaEvolution(item) : ' (o prazo do WhatsApp pode ter passado).') + '\n\nVocê ainda pode usar "Apagar para mim".');
+      return;
+    }
+    const { error } = await sb.from('com_whatsapp_mensagens').update({ status: 'apagada' }).eq('id', id);
+    m.status = 'apagada';   // no WhatsApp já foi: a tela reflete isso mesmo se o registro no painel falhar
+    if (error) alert('Apaguei no WhatsApp, mas não consegui atualizar o painel: ' + error.message);
+    renderThreadWhats(); renderListaConversas();
+  } catch (e) { alert('Não consegui apagar para todos: ' + e.message); }
+  finally { delete wzOcupado['apagar' + id]; }
+}
+
 // ------------------------------------------------------------------ thread
 function renderThreadWhats() {
   const tel = whatsConversaAtual;
@@ -12592,21 +12719,21 @@ function renderThreadWhats() {
   head.innerHTML = `
     <div class="wz-th-top">
       <div class="whats-avatar grande" data-foto-telefone="${tel}" style="background-color:${corAvatar(tel)}">${wzEsc(nome).charAt(0).toUpperCase()}</div>
-      <div style="min-width:0; flex:1;">
-        <div class="wz-th-nome">${wzEsc(nome)}
+      <div class="wz-th-info">
+        <div class="wz-th-nome"><span class="wz-nome-txt">${wzEsc(nome)}</span>
           <span class="wz-canal"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-4.6A8.4 8.4 0 1 1 21 11.5Z"/></svg>Atendimento WhatsApp</span>
         </div>
-        <div class="wz-th-sub">${wzEsc(tel)}</div>
-        <div class="wz-th-sub wz-th-inst">Instância ${wzEsc(EVOLUTION_INSTANCE)}${m.total_msgs ? ` · ${m.total_msgs} mensagens` : ''}</div>
-        <div class="wz-dono">
-          <span class="muted">Responsável</span>
-          <select onchange="wzAtribuir('${tel}', this.value)">
-            <option value="">— sem dono —</option>
-            ${perfis.filter(p => !String(p.nome).toLowerCase().includes('n8n'))
-              .map(p => `<option value="${p.id}" ${m.responsavel_id === p.id ? 'selected' : ''}>${wzEsc(p.nome)}</option>`).join('')}
-          </select>
-        </div>
+        <div class="wz-th-sub">${wzEsc(tel)} · <span class="wz-th-inst">Instância ${wzEsc(EVOLUTION_INSTANCE)}${m.total_msgs ? ` · ${m.total_msgs} mensagens` : ''}</span></div>
       </div>
+      <div class="wz-dono">
+        <span class="muted">Responsável</span>
+        <select onchange="wzAtribuir('${tel}', this.value)">
+          <option value="">— sem dono —</option>
+          ${perfis.filter(p => !String(p.nome).toLowerCase().includes('n8n'))
+            .map(p => `<option value="${p.id}" ${m.responsavel_id === p.id ? 'selected' : ''}>${wzEsc(p.nome)}</option>`).join('')}
+        </select>
+      </div>
+      <button type="button" class="wz-ico-btn ${wzPainelAberto ? 'on' : ''}" onclick="wzTogglePainel()" title="Mostrar/esconder a ficha do contato" aria-label="Mostrar ou esconder a ficha do contato"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
     </div>`;
   aplicarFotosNaTela([tel]);
 
@@ -12618,21 +12745,26 @@ function renderThreadWhats() {
   const campoBusca = document.getElementById('wz-busca-msg');
   const termo = ((campoBusca && campoBusca.value) || '').trim().toLowerCase();
   let msgs = c ? c.mensagens : [];
-  if (termo) msgs = msgs.filter(x => String(x.mensagem || '').toLowerCase().includes(termo));
+  if (termo) msgs = msgs.filter(x => x.status !== 'apagada' && String(x.mensagem || '').toLowerCase().includes(termo));
 
   const el = document.getElementById('whats-thread-mensagens');
   el.innerHTML = msgs.length ? msgs.map(x => {
-    let corpo = corpoBolhaWhats(x);
-    if (termo && x.mensagem) {
+    const apagada = x.status === 'apagada';
+    let corpo = apagada
+      ? `<span class="wz-apagada"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>${x.direcao === 'enviada' ? 'Você apagou esta mensagem' : 'Mensagem apagada'}</span>`
+      : corpoBolhaWhats(x);
+    if (termo && x.mensagem && !apagada) {
       const re = new RegExp('(' + termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
       corpo = corpo.replace(/>([^<]+)</g, (t, txt) => '>' + txt.replace(re, '<mark class="wz-marca">$1</mark>') + '<');
     }
-    return `<div class="whats-bolha ${x.direcao}">${corpo}
+    return `<div class="whats-bolha ${x.direcao}" data-msg-id="${x.id}">
+      <button type="button" class="wz-bolha-menu" onclick="wzAbrirMenuMsg(event, ${x.id})" title="Apagar mensagem" aria-label="Opções da mensagem"><span><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
+      ${corpo}
       <div class="whats-bolha-hora">${new Date(x.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
     </div>`;
   }).join('') : `<div class="empty">${termo ? 'Nenhuma mensagem com esse termo.' : 'Nenhuma mensagem ainda — manda a primeira!'}</div>`;
   if (!termo) el.scrollTop = el.scrollHeight;
-  msgs.filter(x => x.midia_tipo === 'audio').forEach(x => carregarMidiaBolhaWhats(x.id, 'audio'));
+  msgs.filter(x => x.midia_tipo === 'audio' && x.status !== 'apagada').forEach(x => carregarMidiaBolhaWhats(x.id, 'audio'));
 }
 
 function wzToolbarHtml(tel, m) {
@@ -12643,31 +12775,33 @@ function wzToolbarHtml(tel, m) {
       ${ico('<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4M9 14h.01M15 14h.01"/>')} Piloto ${m.piloto ? 'ON' : 'OFF'}
     </button>
     <button type="button" class="wz-tb" onclick="wzIA('${tel}','triagem')">${estrela} Triagem</button>
-    <button type="button" class="wz-tb" onclick="wzIA('${tel}','resumir')">${estrela} Resumir (IA)</button>
+    <button type="button" class="wz-tb" onclick="wzIA('${tel}','resumir')" title="Resumir a conversa com IA">${estrela} Resumir IA</button>
     <div class="wz-tb-sep"></div>
     ${m.card_id
       ? `<button type="button" class="wz-tb" onclick="wzAbrirCard(${m.card_id})">${ico('<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>')} ${wzEsc(m.card_titulo || 'Ver negócio')}</button>`
       : `<button type="button" class="wz-tb" onclick="wzCriarNegocio('${tel}')">${ico('<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 11v6M9 14h6"/>')} Criar negócio</button>`}
-    <button type="button" class="wz-tb" onclick="wzAbrirContato('${tel}')">${ico('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>')} Abrir contato</button>
+    <button type="button" class="wz-tb" onclick="wzAbrirContato('${tel}')" title="Abrir contato">${ico('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>')} Contato</button>
     <div class="wz-tb-sep"></div>
     <button type="button" class="wz-tb" onclick="wzNota('${tel}')">${ico('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>')} Nota</button>
-    <button type="button" class="wz-tb" onclick="toggleTagsPopoverWhats(event)">${ico('<path d="M20.6 13.4 12 22l-9-9V3h10z"/><circle cx="7.5" cy="7.5" r="1.2"/>')} Tags</button>
-    <button type="button" class="wz-tb ${wzPainelAberto ? 'forte' : ''}" onclick="wzTogglePainel()" title="Mostrar/esconder a ficha do contato">
-      ${ico('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>')}
-    </button>`;
+    `;
 }
 
 function wzAnexosHtml() {
-  const ico = (d) => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  const ico = (d) => `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
   const gravando = !!(typeof whatsMediaRecorder !== 'undefined' && whatsMediaRecorder && whatsMediaRecorder.state === 'recording');
-  return `
-    <button type="button" class="wz-anexo" onclick="document.getElementById('wz-arquivo').click()">${ico('<path d="M21.4 11.05 12.25 20.2a5 5 0 0 1-7.07-7.07l9.19-9.19a3.33 3.33 0 0 1 4.71 4.71l-9.2 9.19a1.67 1.67 0 0 1-2.35-2.36l8.49-8.48"/>')} Anexar</button>
-    <button type="button" class="wz-anexo ${gravando ? 'gravando' : ''}" onclick="alternarGravacaoAudio()">${ico('<path d="M12 2.5a2.7 2.7 0 0 0-2.7 2.7v6a2.7 2.7 0 0 0 5.4 0v-6A2.7 2.7 0 0 0 12 2.5z"/><path d="M18.5 11v.5a6.5 6.5 0 0 1-13 0V11"/><path d="M12 18v3.5"/>')} ${gravando ? 'Parar e enviar' : 'Áudio'}</button>
-    <button type="button" class="wz-anexo" onclick="wzEnviarLocalizacao()">${ico('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>')} Localização</button>
-    <button type="button" class="wz-anexo" onclick="wzEnviarContato()">${ico('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2.4"/><path d="M5.5 17a3.8 3.8 0 0 1 7 0M15 9h4M15 13h4"/>')} Contato</button>
-    <button type="button" class="wz-anexo" onclick="wzAgendar()">${ico('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/>')} Agendar</button>
-    <button type="button" class="wz-anexo" onclick="wzIA(whatsConversaAtual,'sugerir')">${ico('<path d="M12 3l1.9 4.7L19 9.2l-3.7 3.3.9 5-4.2-2.5L7.8 17.5l.9-5L5 9.2l5.1-1.5z"/>')} Sugerir (IA)</button>
-    <button type="button" class="wz-anexo" onclick="wzRespostasRapidas()">${ico('<path d="M4 5h16M4 10h16M4 15h10"/>')} Respostas Rápidas</button>`;
+  // só ícones, com dica ao passar o mouse: ficam na mesma linha do campo de texto e sobra altura pro chat
+  const bt = (rot, onclick, d, extra) => `<button type="button" class="wz-anexo ${extra || ''}" onclick="${onclick}" title="${rot}" aria-label="${rot}">${ico(d)}</button>`;
+  return [
+    bt('Anexar arquivo', "document.getElementById('wz-arquivo').click()", '<path d="M21.4 11.05 12.25 20.2a5 5 0 0 1-7.07-7.07l9.19-9.19a3.33 3.33 0 0 1 4.71 4.71l-9.2 9.19a1.67 1.67 0 0 1-2.35-2.36l8.49-8.48"/>'),
+    gravando
+      ? `<button type="button" class="wz-anexo gravando" onclick="alternarGravacaoAudio()" title="Parar e enviar o áudio">${ico('<path d="M12 2.5a2.7 2.7 0 0 0-2.7 2.7v6a2.7 2.7 0 0 0 5.4 0v-6A2.7 2.7 0 0 0 12 2.5z"/><path d="M18.5 11v.5a6.5 6.5 0 0 1-13 0V11"/><path d="M12 18v3.5"/>')} Parar e enviar</button>`
+      : bt('Gravar áudio', 'alternarGravacaoAudio()', '<path d="M12 2.5a2.7 2.7 0 0 0-2.7 2.7v6a2.7 2.7 0 0 0 5.4 0v-6A2.7 2.7 0 0 0 12 2.5z"/><path d="M18.5 11v.5a6.5 6.5 0 0 1-13 0V11"/><path d="M12 18v3.5"/>'),
+    bt('Enviar localização', 'wzEnviarLocalizacao()', '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>'),
+    bt('Enviar contato', 'wzEnviarContato()', '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2.4"/><path d="M5.5 17a3.8 3.8 0 0 1 7 0M15 9h4M15 13h4"/>'),
+    bt('Agendar mensagem', 'wzAgendar()', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/>'),
+    bt('Sugerir resposta (IA)', "wzIA(whatsConversaAtual,'sugerir')", '<path d="M12 3l1.9 4.7L19 9.2l-3.7 3.3.9 5-4.2-2.5L7.8 17.5l.9-5L5 9.2l5.1-1.5z"/>'),
+    bt('Respostas rápidas', 'wzRespostasRapidas()', '<path d="M4 5h16M4 10h16M4 15h10"/>'),
+  ].join('');
 }
 
 // ------------------------------------------------------- painel da direita
@@ -12880,7 +13014,7 @@ async function wzIA(telefone, tarefa) {
       body: JSON.stringify({
         tarefa,
         contato: { nome: m.nome, telefone, cargo: cv.cargo, dor: cv.dor, lead_score: m.lead_score },
-        historico: (c ? c.mensagens : []).map(x => ({ direcao: x.direcao, mensagem: x.mensagem, midia_tipo: x.midia_tipo })),
+        historico: (c ? c.mensagens : []).filter(x => x.status !== 'apagada').map(x => ({ direcao: x.direcao, mensagem: x.mensagem, midia_tipo: x.midia_tipo })),
       }),
     });
     const r = await resp.json();
