@@ -2734,6 +2734,32 @@ html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="
 #tab-ia .em-secao { margin:26px 0 10px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; } #tab-ia .em-secao h3 { margin:0; font-size:1.2rem; } #tab-ia .em-secao span { font-size:.88rem; color:var(--text-secondary); }
 .cv-flex .cv-no { height:98px; } .cv-flex .cv-no b { -webkit-line-clamp:3; }
 @media (max-width: 640px) { .drw { width:100%; } }
+/* ===== v4: dashboard visível + simulação ===== */
+#tab-email .em-dash { margin:0 0 20px; }
+#tab-email .dash-grade { display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:12px; }
+#tab-email .dash-duas { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; margin-top:14px; }
+@media (max-width: 900px) { #tab-email .dash-duas { grid-template-columns:1fr; } }
+#tab-email .dash-caixa { border:1px solid var(--border); border-radius:12px; padding:14px 16px; background:var(--surface-1); }
+#tab-email .dash-caixa h4 { margin:0 0 10px; font-size:.74rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+#tab-email .funil-l { display:grid; grid-template-columns:92px 1fr 84px; gap:10px; align-items:center; font-size:.88rem; padding:6px 0; }
+#tab-email .funil-l .bar { height:14px; border-radius:7px; background:var(--grid); overflow:hidden; } #tab-email .funil-l .bar i { display:block; height:100%; background:var(--accent); border-radius:7px; min-width:2px; }
+#tab-email .funil-l b { text-align:right; font-variant-numeric:tabular-nums; }
+#tab-email table.dash-tab { width:100%; border-collapse:collapse; font-size:.86rem; }
+#tab-email table.dash-tab th { font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); text-align:right; font-weight:800; padding:6px 8px; border-bottom:1px solid var(--border); }
+#tab-email table.dash-tab td { padding:8px; border-bottom:1px solid var(--grid); text-align:right; font-variant-numeric:tabular-nums; }
+#tab-email table.dash-tab th:first-child, #tab-email table.dash-tab td:first-child { text-align:left; }
+#tab-email .dash-prox { padding:7px 0; border-bottom:1px solid var(--grid); font-size:.88rem; } #tab-email .dash-prox:last-child { border:0; } #tab-email .dash-prox span { color:var(--text-secondary); display:block; font-size:.8rem; }
+.sim-lista { display:flex; gap:20px; overflow-x:auto; padding:16px 18px 18px; }
+.sim-card { flex:none; width:300px; cursor:pointer; } .sim-card:hover .sim-tela { border-color:var(--accent); }
+.sim-cap { font-size:.82rem; color:var(--text-secondary); margin:0 0 8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; } .sim-cap b { color:var(--text-primary); }
+.sim-inbox { display:flex; align-items:center; gap:10px; background:#fff; color:#202124; border:1px solid #e3e3e0; border-radius:10px; padding:9px 11px; margin-bottom:8px; font-family:Helvetica,Arial,sans-serif; }
+.sim-inbox .av { flex:none; width:32px; height:32px; border-radius:50%; background:#008E43; color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:.9rem; }
+.sim-inbox .tx { flex:1; min-width:0; display:flex; flex-direction:column; } .sim-inbox .tx b { font-size:.84rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .sim-inbox .tx .sb { font-size:.8rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .sim-inbox .tx .pv { font-size:.76rem; color:#6b6e73; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sim-inbox .hr { flex:none; font-size:.7rem; color:#6b6e73; align-self:flex-start; }
+.sim-tela { position:relative; width:300px; height:440px; overflow:hidden; border-radius:12px; border:1px solid var(--border); background:#F8F7F4; }
+.sim-tela iframe { width:600px; height:880px; transform:scale(.5); transform-origin:0 0; border:0; pointer-events:none; } .sim-cobre { position:absolute; inset:0; }
+.ver-topo { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 12px; } .ver-topo .btn { width:auto; padding:8px 15px; font-size:.84rem; } .ver-topo span { font-size:.84rem; color:var(--text-secondary); }
+.ver-frame { width:100%; height:calc(100vh - 250px); min-height:420px; border:1px solid var(--border); border-radius:12px; background:#F8F7F4; }
 #em-previa { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
 #em-previa.on { display:flex; } #em-previa .caixa { background:var(--surface-1); border-radius:14px; width:min(640px, 100%); height:min(90vh, 900px); display:flex; flex-direction:column; overflow:hidden; }
 #em-previa .topo { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; font-weight:700; } #em-previa iframe { flex:1; border:0; background:#F8F7F4; }
@@ -4324,6 +4350,12 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
 
       <div class="cv-barra" id="em-resumo"></div>
 
+      <section class="card em-card em-dash" id="em-dash">
+        <div class="tl-card-cab"><h3>Painel de e-mails</h3>
+          <div class="em-seg" id="em-seg-dias"><button type="button" data-d="7">7 dias</button><button type="button" data-d="30" class="on">30 dias</button><button type="button" data-d="90">90 dias</button></div></div>
+        <div id="em-dash-corpo"></div>
+      </section>
+
       <div class="em-secao"><h3>Cadências</h3><span>Clique numa caixa pra abrir. O + cria o próximo e-mail já ligado ao anterior.</span>
         <button type="button" class="btn btn-secondary" style="width:auto;padding:7px 14px;font-size:.82rem;margin-left:auto;" onclick="emNovaSequencia()">+ Nova cadência</button></div>
       <div id="em-seqs"></div>
@@ -4331,9 +4363,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       <div class="drw" id="em-drawer" aria-hidden="true"><div class="drw-cab"><b id="em-drawer-t"></b><button type="button" class="btn btn-secondary" onclick="drFechar('em')">Fechar ✕</button></div><div class="drw-corpo" id="em-drawer-b"></div></div>
       <div class="stash" id="em-stash">
         <div data-stash id="em-pane-res"><div class="em-agora" id="em-agora"></div>
-          <section class="card em-card" style="margin-top:14px;"><div class="tl-card-cab"><h3>Resultado do período</h3>
-            <div class="em-seg" id="em-seg-dias"><button type="button" data-d="7">7 dias</button><button type="button" data-d="30" class="on">30 dias</button><button type="button" data-d="90">90 dias</button></div></div>
-            <div class="em-kpis" id="em-kpis"></div></section></div>
+          <div class="em-kpis" id="em-kpis"></div></div>
         <div data-stash id="em-pane-aud"><div style="margin-bottom:10px;"><button type="button" class="btn btn-secondary" style="width:auto;padding:6px 14px;font-size:.8rem;" onclick="emSincronizar(this)">Sincronizar com o CRM</button> <span class="muted" style="font-size:.8rem;">já roda sozinho a cada 5 min</span></div><div id="em-aud"></div></div>
         <div data-stash id="em-pane-feed"><div id="em-feed"></div></div>
         <div data-stash id="em-pane-cfg"><p class="muted" style="margin:0 0 12px;font-size:.86rem;">Cada mudança fica registrada na atividade.</p><div class="em-config" id="em-config"></div></div>
@@ -14358,17 +14388,39 @@ function emSeqHtml(q) {
   const gat = q.tipo === 'gatilho', nEmails = q.emails.length;
   return `<section class="em-seq ${q.ativa ? '' : 'desl'}"><div class="em-seq-topo"><div><h3>${relEsc(q.nome)}</h3>
       <div class="em-seq-meta" style="margin:6px 0 0;"><span class="em-tag ${q.ativa ? 'ok' : ''}">${q.ativa ? 'cadência ligada' : 'cadência desligada'}</span><span>${nEmails} e-mail${nEmails === 1 ? '' : 's'}${gat ? ' · dispara sozinha pra cada lead novo' : ''}</span></div></div>
-      <div class="acoes"><button type="button" class="cv-chip" onclick="emAbrir('quem', ${q.id}, 0)">Quem entra <b>${gat ? '' : emN(q.aptos)}</b> ▸</button>
+      <div class="acoes"><span class="em-seg"><button type="button" class="${(emVista[q.id] || 'fluxo') === 'fluxo' ? 'on' : ''}" onclick="emVer(${q.id}, 'fluxo')">Fluxo</button><button type="button" class="${emVista[q.id] === 'sim' ? 'on' : ''}" onclick="emVer(${q.id}, 'sim')">Simulação</button></span>
+        <button type="button" class="cv-chip" onclick="emAbrir('quem', ${q.id}, 0)">Quem entra <b>${gat ? '' : emN(q.aptos)}</b> ▸</button>
         <button type="button" class="btn ${q.ativa ? 'btn-secondary' : ''}" onclick="emSeqLigar(${q.id}, ${!q.ativa})">${q.ativa ? 'Desligar' : 'Ligar cadência'}</button>
         ${gat ? '' : `<button type="button" class="btn btn-secondary" onclick="emDuplicar(${q.id})">Duplicar</button>`}</div></div>
-    ${emCanvasHtml(q)}</section>`;
+    ${(emVista[q.id] || 'fluxo') === 'sim' ? emSimHtml(q) : emCanvasHtml(q)}</section>`;
 }
 async function emNovoDepois(seqId, off) {
   const r = await emRpc('em_email_novo', { p_sequencia_id: seqId }); if (!r || !r.id) return;
   await emRpc('em_email_set', { p_id: r.id, p_campos: { offset_min: (Number(off) || 0) + 1440 } });
   emAbrir('email', seqId, r.id);
 }
-function emAbrir(tipo, seq, id) { emDrawer = { tipo, seq, id }; if (tipo === 'email') emAbertos.add(id); emDrawerRender(); emMarcaSel(); }
+const emVista = {};
+function emVer(seqId, v) { emVista[seqId] = v; emRender(); }
+function emAba(a) { if (emDrawer) { emDrawer.aba = a; emDrawerRender(); } }
+const emAttr = h => String(h).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+function emQuandoDe(e, q) { return q.tipo === 'gatilho' ? (e.offset_min < 1 ? 'na hora do download' : emDur(e.offset_min) + ' depois do download') : emQuando(e.quando); }
+function emInboxHtml(e, q) {
+  const nome = x => String(x || '').replace(/\{nome\}/g, 'Maria').replace(/\{material\}/g, 'Kit Claude');
+  return `<div class="sim-inbox"><div class="av">I</div><div class="tx"><b>Igor Miguel</b><span class="sb">${relEsc(nome(e.assunto) || '(sem assunto)')}</span><span class="pv">${relEsc(nome(e.preview) || '')}</span></div><span class="hr">${relEsc(q.tipo === 'gatilho' ? '+' + (e.offset_min || 0) + ' min' : emQuando(e.quando).split(' ').slice(-1)[0])}</span></div>`;
+}
+function emSimHtml(q) {
+  const es = emNos(q).filter(x => x.k.startsWith('email-')).map(no => ({ no, e: q.emails.find(e => 'email-' + e.id === no.k) }));
+  if (!es.length) return '<div class="cv"><p class="muted" style="padding:18px;">Sem e-mails ainda. Volte pro fluxo e clique no + pra criar o primeiro.</p></div>';
+  return `<div class="cv"><div class="sim-lista">${es.map(({ no, e }) => `<div class="sim-card" onclick="emAbrir('email', ${q.id}, ${e.id})">
+      <div class="sim-cap"><b>${relEsc(no.kicker)}</b> · ${relEsc(emQuandoDe(e, q))} ${emStatusTag(e.status)}</div>${emInboxHtml(e, q)}
+      <div class="sim-tela"><iframe tabindex="-1" srcdoc="${emAttr(emPreviaHtml(e, q))}"></iframe><div class="sim-cobre"></div></div></div>`).join('')}</div></div>`;
+}
+function emVerHtml(e, q) {
+  return `<div class="ver-topo"><button type="button" class="btn" onclick="emAba('editar')">Editar</button><button type="button" class="btn btn-secondary" onclick="emTeste(${e.id}, this)">Enviar teste pra mim</button>${emStatusTag(e.status)}<span>${relEsc(emQuandoDe(e, q))}</span></div>
+    ${emInboxHtml(e, q)}<iframe class="ver-frame" srcdoc="${emAttr(emPreviaHtml(e, q))}"></iframe>
+    <p class="muted" style="font-size:.8rem;margin:8px 0 0;">Simulação com um lead de exemplo (Maria${q.tipo === 'gatilho' ? ', material Kit Claude' : ''}). O envio real troca pelo nome de cada pessoa.</p>`;
+}
+function emAbrir(tipo, seq, id) { emDrawer = { tipo, seq, id, aba: 'ver' }; if (tipo === 'email') emAbertos.add(id); emDrawerRender(); emMarcaSel(); }
 function emAbrirPane(p) { emDrawer = { tipo: 'pane', pane: p }; emDrawerRender(); emMarcaSel(); }
 function emMarcaSel() {
   document.querySelectorAll('#em-seqs .cv-no.sel').forEach(el => el.classList.remove('sel'));
@@ -14397,7 +14449,10 @@ function emDrawerRender() {
   if (d.tipo === 'email') {
     const e = q.emails.find(x => x.id === d.id); if (!e) { drFechar('em'); return; }
     const no = emNos(q).find(x => x.k === 'email-' + e.id);
-    drAbrir('em', (no ? no.kicker + ' · ' : '') + emNomeCurto(e.nome), emEditorHtml(e, q)); return;
+    const tit = (no ? no.kicker + ' · ' : '') + emNomeCurto(e.nome);
+    if (d.aba === 'editar') drAbrir('em', tit + ' · editar', `<div class="ver-topo"><button type="button" class="btn btn-secondary" onclick="emAba('ver')">← Ver como o lead recebe</button></div>` + emEditorHtml(e, q));
+    else drAbrir('em', tit, emVerHtml(e, q));
+    return;
   }
   if (d.tipo === 'marco') {
     const ev = q.tipo === 'evento';
@@ -14428,16 +14483,24 @@ function emDrawerRender() {
   }
 }
 function emRenderResumo() {
-  const d = emDados, s = d.status, k = d.kpis;
-  const futuros = (d.sequencias || []).filter(q => q.ativa && q.tipo !== 'gatilho').flatMap(q => q.emails.filter(e => e.status === 'aprovado' && new Date(e.quando) > new Date()).map(e => ({ ...e }))).sort((a, b) => new Date(a.quando) - new Date(b.quando));
-  const prox = futuros[0];
-  document.getElementById('em-resumo').innerHTML =
-    `<button type="button" class="cv-chip" onclick="emAbrirPane('res')">Hoje <b>${emN(s.enviados_hoje)}</b><span class="m">de ${emN(s.teto_hoje)}</span></button>` +
-    `<button type="button" class="cv-chip" onclick="emAbrirPane('res')">Próximo <b>${prox ? emQuando(prox.quando) : '—'}</b></button>` +
-    `<button type="button" class="cv-chip" onclick="emAbrirPane('res')">Período <b>${emN(k.enviados)}</b><span class="m">enviados · ${emPct(k.abertos, k.entregues)} abriram · ${emPct(k.clicados, k.entregues)} clicaram</span></button>` +
-    `<span style="flex:1"></span><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('aud')">Quem pode receber</button><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('feed')">Atividade</button><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('cfg')">Configurações</button>`;
+  document.getElementById('em-resumo').innerHTML = `<span style="flex:1"></span><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('aud')">Quem pode receber</button><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('feed')">Atividade</button><button type="button" class="cv-chip btn-l" onclick="emAbrirPane('cfg')">Configurações</button>`;
+  emRenderDash();
 }
-function emAbrirEd(id) { const q = (emDados.sequencias || []).find(x => x.emails.some(e => e.id === id)); if (q) emAbrir('email', q.id, id); }
+function emRenderDash() {
+  const d = emDados, s2 = d.status, k = d.kpis, bl = (rot, val, sub) => `<div class="em-bloco"><div class="rot">${rot}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
+  const grade = bl('Enviados', emN(k.enviados), `${emN(k.falhas)} falhas`) + bl('Entregues', emPct(k.entregues, k.enviados), `${emN(k.entregues)} de ${emN(k.enviados)}`) + bl('Abriram', emPct(k.abertos, k.entregues), `${emN(k.abertos)} pessoas · Apple Mail pode inflar`) + bl('Clicaram', emPct(k.clicados, k.entregues), `${emN(k.clicados)} pessoas`)
+    + bl('Descadastros', emN(k.descadastros), `${emN(k.bounces)} bounces · ${emN(k.spam)} marcaram spam`) + bl('Hoje', `${emN(s2.enviados_hoje)}<small> de ${emN(s2.teto_hoje)}</small>`, 'o teto sobe todo dia (aquecimento)');
+  const base = k.enviados || 0, linhaF = (rot, v) => `<div class="funil-l"><span>${rot}</span><div class="bar"><i style="width:${base ? Math.max(0, Math.min(100, v / base * 100)) : 0}%"></i></div><b>${emN(v)}${base ? ' · ' + Math.round(v / base * 100) + '%' : ''}</b></div>`;
+  const funil = linhaF('Enviados', k.enviados) + linhaF('Entregues', k.entregues) + linhaF('Abriram', k.abertos) + linhaF('Clicaram', k.clicados);
+  const lotes = d.proximos || [], futuros = (d.sequencias || []).filter(q => q.ativa && q.tipo !== 'gatilho').flatMap(q => q.emails.filter(e => e.status === 'aprovado' && new Date(e.quando) > new Date()).map(e => ({ ...e, seq: q.nome, aptos: q.aptos }))).sort((a, b) => new Date(a.quando) - new Date(b.quando));
+  const prox = lotes.length ? lotes.map(l => `<div class="dash-prox"><b>${emN(l.n)} pessoas</b> · ${relEsc(l.nome)}<span>${relEsc(l.sequencia)}${l.amostra && l.amostra.length ? ' · ex.: ' + l.amostra.map(relEsc).join(', ') : ''}</span></div>`).join('')
+    : (futuros.length ? futuros.slice(0, 4).map(e => `<div class="dash-prox"><b>${relEsc(emQuando(e.quando))}</b> · ${relEsc(emNomeCurto(e.nome))}<span>${emN(e.aptos)} pessoas aptas · ${relEsc(e.seq)}</span></div>`).join('') : '<p class="muted" style="margin:0;">Nada na fila. Aprove e-mails e ligue a cadência e o envio pra eles aparecerem aqui.</p>');
+  const linhas = (d.sequencias || []).flatMap(q => q.emails.map(e => ({ q, e }))).map(({ q, e }) => `<tr><td>${relEsc(emNomeCurto(e.nome))}<span class="muted" style="display:block;font-size:.76rem;">${relEsc(q.tipo === 'gatilho' ? 'entrega do material' : q.nome.split('·')[0].trim())} · ${relEsc(emQuandoDe(e, q))}</span></td><td>${emStatusTag(e.status)}</td><td>${emN(e.enviados)}</td><td>${emPct(e.abertos, e.entregues)}</td><td>${emPct(e.clicados, e.entregues)}</td></tr>`).join('');
+  document.getElementById('em-dash-corpo').innerHTML = `<div class="dash-grade">${grade}</div>
+    <div class="dash-duas"><div class="dash-caixa"><h4>Funil do período</h4>${funil}</div><div class="dash-caixa"><h4>${lotes.length ? 'Sairia agora' : 'Próximos disparos'}</h4>${prox}</div></div>
+    <div class="dash-caixa" style="margin-top:14px;overflow-x:auto;"><h4>Por e-mail (total)</h4><table class="dash-tab"><thead><tr><th>E-mail</th><th>Situação</th><th>Enviados</th><th>Abriram</th><th>Clicaram</th></tr></thead><tbody>${linhas}</tbody></table></div>`;
+}
+function emAbrirEd(id) { const q = (emDados.sequencias || []).find(x => x.emails.some(e => e.id === id)); if (q) { emAbrir('email', q.id, id); emDrawer.aba = 'editar'; emDrawerRender(); } }
 const emV = (id) => document.getElementById(id).value;
 async function emSalvarEmail(id, seqId, btn) {
   const seq = emDados.sequencias.find(q => q.id === seqId);
@@ -14503,12 +14566,12 @@ async function emTeste(id, btn) {
 }
 // pré-visualização no próprio painel (mesmo desenho do e-mail real; o envio usa o renderizador do servidor)
 function emFecharPrevia() { document.getElementById('em-previa').classList.remove('on'); }
-function emPrevia(id) {
-  const g = x => emV('em-f-' + x + '-' + id);
+function emPreviaHtml(c, seqDe) {
+  const g = x => ({ assunto: c.assunto, corpo: c.corpo, preview: c.preview, img: c.imagem_url || '', leg: c.imagem_legenda || '', r1: c.cta_rotulo || '', u1: c.cta_url || '', r2: c.cta2_rotulo || '', u2: c.cta2_url || '' })[x] || '';
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const seqDe = (emDados.sequencias || []).find(q => q.emails.some(e => e.id === id)), gat = seqDe && seqDe.tipo === 'gatilho', gv = (gat && emGat[seqDe.id]) ? emGat[seqDe.id].variantes : [];
+  const gat = seqDe && seqDe.tipo === 'gatilho', gv = (gat && emGat[seqDe.id]) ? emGat[seqDe.id].variantes : [];
   const dorEx = (gv.find(v => v.dor !== 'padrao') || gv[0] || {}).texto || '';
-  const usaMat = gat && document.getElementById('em-f-mat-' + id) && document.getElementById('em-f-mat-' + id).checked;
+  const usaMat = !!(gat && c.cta_usa_material);
   const corpo = g('corpo').trim().replace(/\{nome\}/g, 'Maria').replace(/\{material\}/g, 'Kit Claude').replace(/\{dor_texto\}/g, dorEx), blocos = corpo.split(/\n{2,}/).map(b => b.trim()).filter(Boolean);
   const inline = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1" style="color:#008E43;font-weight:700">$1</a>').replace(/\n/g, '<br>');
   const img = g('img') ? `<div style="padding:4px 0 18px"><img src="${esc(g('img'))}" style="width:100%;border-radius:10px;border:1px solid #dcd9d0">${g('leg') ? `<div style="font-size:12px;color:#6b7a70;padding-top:6px">${esc(g('leg'))}</div>` : ''}</div>` : '';
@@ -14520,6 +14583,11 @@ function emPrevia(id) {
     ${blocos.map(b => b === '[imagem]' ? img : `<p style="font-size:16px;line-height:1.6;color:#0F1A14;margin:0 0 16px">${inline(b)}</p>`).join('')}${marca ? '' : img}${b1}${b2}
     <div style="border-top:1px solid #ece9e1;padding-top:18px;margin-top:10px;font-size:15px"><b>Igor Miguel</b><br><span style="color:#6b7a70;font-size:13px">Fundador, Demanda Infinita</span></div></div>
     <p style="text-align:center;font-size:12px;color:#8a978e;margin-top:16px">Você recebeu este e-mail porque se cadastrou em um material ou evento da Demanda Infinita.<br>Não quer mais receber? <u>Descadastrar</u>.</p></div></body>`;
+  return html;
+}
+function emPrevia(id) {
+  const g = x => emV('em-f-' + x + '-' + id), seqDe = (emDados.sequencias || []).find(q => q.emails.some(e => e.id === id)), mat = document.getElementById('em-f-mat-' + id);
+  const html = emPreviaHtml({ assunto: g('assunto'), preview: g('preview'), corpo: g('corpo'), imagem_url: g('img'), imagem_legenda: g('leg'), cta_rotulo: g('r1'), cta_url: g('u1'), cta2_rotulo: g('r2'), cta2_url: g('u2'), cta_usa_material: !!(mat && mat.checked) }, seqDe);
   document.getElementById('em-previa-frame').srcdoc = html; document.getElementById('em-previa').classList.add('on');
 }
 function emRenderConfig(c) {
