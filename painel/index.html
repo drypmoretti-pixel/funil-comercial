@@ -2803,7 +2803,6 @@ html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="
         <button data-tab="youtube" title="YouTube" id="nav-youtube" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><polygon points="10,9 15,12 10,15" fill="currentColor"/></svg></button>
         <button data-tab="ia" title="IA SDR" id="nav-ia" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1"/><circle cx="9" cy="13" r="1" fill="currentColor"/><circle cx="15" cy="13" r="1" fill="currentColor"/><path d="M9.5 16.5h5"/></svg></button>
         <button data-tab="email" title="E-mails" id="nav-email" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></button>
-        <button data-tab="admin" title="Admin" id="nav-admin" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M18 8l1.5 1.5L22 7"/></svg></button>
       </nav>
     </aside>
     <div class="main-content">
@@ -4372,41 +4371,6 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
       <div id="em-previa" onclick="if (event.target === this) emFecharPrevia()"><div class="caixa"><div class="topo"><span>Pré-visualização</span><button type="button" class="btn btn-secondary" style="width:auto;padding:4px 12px;" onclick="emFecharPrevia()">Fechar</button></div><iframe id="em-previa-frame" title="Pré-visualização do e-mail"></iframe></div></div>
     </div>
 
-    <div class="tab-panel" id="tab-admin">
-      <section class="card">
-        <div class="section-title">
-          <h2>Novo número de WhatsApp</h2>
-        </div>
-        <p class="muted">Conecta um número já pareado na Evolution API — configura o webhook e já aparece como botão na aba WhatsApp.</p>
-        <form class="form-grid" id="form-admin-whatsapp" onsubmit="return criarWhatsappAdmin(event)">
-          <div>
-            <label>Nome da instância (Evolution)</label>
-            <input type="text" id="adm-wz-instancia" required>
-          </div>
-          <div>
-            <label>API key da instância</label>
-            <input type="text" id="adm-wz-apikey" required>
-          </div>
-          <div>
-            <label>Rótulo (aparece no botão)</label>
-            <input type="text" id="adm-wz-rotulo" required>
-          </div>
-          <div>
-            <label>Número (só pra exibir, opcional)</label>
-            <input type="text" id="adm-wz-numero" placeholder="+55 19 99999-9999">
-          </div>
-          <div>
-            <label>Dono (quem vai poder reconectar sozinho)</label>
-            <select id="adm-wz-dono"></select>
-          </div>
-          <div class="full">
-            <button class="btn" type="submit" id="adm-btn-whatsapp">Conectar número</button>
-          </div>
-        </form>
-        <p class="muted" style="margin-top:10px;">Isso aqui só é preciso uma vez, pra número totalmente novo. Depois de cadastrado, o dono reconecta sozinho (sem precisar de instância/chave) na aba WhatsApp, em "Meu WhatsApp".</p>
-      </section>
-    </div>
-
     </div>
     </div>
   </div>
@@ -5014,8 +4978,6 @@ async function carregarDadosBase(userId) {
   const { data: p } = await sb.from('com_perfis').select('*').order('nome');
   perfis = p || [];
   currentPerfil = perfis.find(x => x.id === userId) || null;
-  const navAdmin = document.getElementById('nav-admin');
-  if (navAdmin) navAdmin.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
   const navRel = document.getElementById('nav-relatorio');
   if (navRel) navRel.style.display = (currentPerfil && currentPerfil.papel === 'admin') ? '' : 'none';
   const navIg = document.getElementById('nav-instagram');
@@ -5035,7 +4997,6 @@ async function carregarDadosBase(userId) {
   popularSelect('neg-sdr', false);
   popularSelect('edit-sdr', true);
   popularSelect('edit-vendedor', true);
-  popularSelect('adm-wz-dono', true);
 
   if (currentPerfil && currentPerfil.papel === 'sdr') {
     document.getElementById('neg-sdr').value = currentPerfil.id;
@@ -14187,42 +14148,6 @@ async function ctrSalvarEdicao() {
     btn.disabled = false;
     btn.textContent = textoOriginal;
   }
-}
-
-// ---------- ADMIN (criar número de WhatsApp, via proxy; o cadastro de SDR/vendedor saiu daqui em 17/11/2026) ----------
-// As chaves que essas duas ações precisam (Supabase service_role, Evolution API) nunca ficam
-// aqui no HTML público — moram só no n8n. O painel só manda o pedido e mostra o resultado.
-async function criarWhatsappAdmin(event) {
-  event.preventDefault();
-  const btn = document.getElementById('adm-btn-whatsapp');
-  const textoOriginal = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Conectando...';
-  try {
-    const resp = await fetch(`${N8N_PROXY_URL}/admin-proxy`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        acao: 'criar_whatsapp',
-        instancia: document.getElementById('adm-wz-instancia').value.trim(),
-        apikey_evolution: document.getElementById('adm-wz-apikey').value.trim(),
-        rotulo: document.getElementById('adm-wz-rotulo').value.trim(),
-        numero: document.getElementById('adm-wz-numero').value.trim(),
-        perfil_id: document.getElementById('adm-wz-dono').value || null,
-      }),
-    });
-    const resultado = await resp.json();
-    if (!resultado.ok) { alert('Não consegui conectar: ' + (resultado.erro || 'erro desconhecido')); return; }
-    alert('Número "' + resultado.rotulo + '" conectado! Já aparece como botão na aba WhatsApp.');
-    document.getElementById('form-admin-whatsapp').reset();
-    await carregarInstanciasWhats();
-  } catch (e) {
-    alert('Não consegui conectar: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = textoOriginal;
-  }
-  return false;
 }
 
 // ---------- TABS ----------
