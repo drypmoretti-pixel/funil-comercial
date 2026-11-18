@@ -1486,6 +1486,12 @@ form.form-grid button { grid-column: 1 / -1; }
 .wz-compositor { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px;
   padding: 8px 12px; border-top: 1px solid var(--border); }
 .wz-compositor .whats-thread-input { flex: 1 1 220px; padding: 0; border: 0; min-width: 0; }
+.wz-compositor .whats-thread-input { align-items: flex-end; }
+.whats-thread-input textarea { flex: 1; min-width: 0; resize: none; box-sizing: border-box; min-height: 36px; max-height: 176px;
+  overflow-y: auto; padding: 8px 14px; border-radius: 18px; border: 1px solid var(--border);
+  background: var(--field-bg); color: var(--text-primary); font-family: inherit; font-size: .88rem; line-height: 1.35; }
+/* texto da bolha respeita as quebras de linha (contrato, listas, parágrafos) */
+.wz-corpo { white-space: pre-wrap; overflow-wrap: anywhere; }
 .wz-anexos { display: flex; flex-wrap: wrap; gap: 4px; padding: 0; }
 .wz-anexo { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
   border-radius: 8px; width: 32px; height: 32px; padding: 0; font-size: .74rem; font-weight: 600; cursor: pointer;
@@ -3646,7 +3652,7 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
               <input type="file" id="wz-arquivo" style="display:none;" onchange="wzEnviarArquivo(event)">
 
               <form class="whats-thread-input" onsubmit="return enviarMensagemThread(event)">
-                <input type="text" id="whats-thread-texto" placeholder="Digite uma mensagem..." autocomplete="off">
+                <textarea id="whats-thread-texto" rows="1" placeholder="Digite uma mensagem..." title="Enter envia · Shift+Enter pula linha" autocomplete="off" oninput="wzAutoAltura(this)" onkeydown="wzTeclaCompositor(event)"></textarea>
                 <button class="btn" type="submit" style="width:auto; padding:9px 18px;">Enviar</button>
               </form>
             </div>
@@ -9153,7 +9159,7 @@ function corpoBolhaWhats(m) {
   if (m.midia_tipo === 'document') {
     return `<div id="midia-wrap-${m.id}"><button type="button" class="add-toggle ico-btn" onclick="carregarMidiaBolhaWhats(${m.id}, 'document')">${ico('documento')}${m.midia_nome || 'Documento'} — baixar</button></div>`;
   }
-  return m.mensagem;
+  return wzEsc(m.mensagem);
 }
 
 async function buscarMidiaWhats(mensagem) {
@@ -9253,12 +9259,26 @@ async function toggleTagConversaWhats(tagId) {
   renderListaConversas();
 }
 
+// caixa de mensagem: cresce até ~8 linhas; Enter envia, Shift+Enter pula linha (como no WhatsApp Web)
+function wzAutoAltura(el) {
+  if (!el) return;
+  if (!el.value) { el.style.height = ''; return; }   // vazia: volta ao tamanho base do CSS
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight + 2, 176) + 'px';
+}
+function wzTeclaCompositor(ev) {
+  if (ev.key !== 'Enter' || ev.shiftKey || ev.isComposing) return;
+  ev.preventDefault();
+  const f = ev.target.closest('form');
+  if (f) f.requestSubmit();
+}
+
 function enviarMensagemThread(ev) {
   ev.preventDefault();
   const input = document.getElementById('whats-thread-texto');
-  const texto = input.value.trim();
+  const texto = input.value.replace(/\r\n?/g, '\n').trim();   // tira só as pontas; as quebras do meio ficam
   if (!texto || !whatsConversaAtual) return false;
-  input.value = '';
+  input.value = ''; wzAutoAltura(input);
   (async () => {
     const alvo = whatsConversaAtual;
     const c = conversasAgrupadasWhats().find(x => x.telefone === alvo);
@@ -9267,7 +9287,7 @@ function enviarMensagemThread(ev) {
     renderListaConversas();
     wzCarregarMeta().then(renderListaConversas);
     if (!r.ok) {
-      input.value = texto;   // devolve o texto pra pessoa não perder o que escreveu
+      input.value = texto; wzAutoAltura(input);   // devolve o texto pra pessoa não perder o que escreveu
       alert('A mensagem NÃO saiu: ' + (r.erro || 'motivo desconhecido') +
             '\n\nO texto voltou pra caixa. Confira a conexão da instância no topo da lista.');
     }
@@ -12759,7 +12779,7 @@ function renderThreadWhats() {
     }
     return `<div class="whats-bolha ${x.direcao}" data-msg-id="${x.id}">
       <button type="button" class="wz-bolha-menu" onclick="wzAbrirMenuMsg(event, ${x.id})" title="Apagar mensagem" aria-label="Opções da mensagem"><span><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button>
-      ${corpo}
+      <div class="wz-corpo">${corpo}</div>
       <div class="whats-bolha-hora">${new Date(x.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
     </div>`;
   }).join('') : `<div class="empty">${termo ? 'Nenhuma mensagem com esse termo.' : 'Nenhuma mensagem ainda — manda a primeira!'}</div>`;
@@ -13042,6 +13062,7 @@ function wzUsarSugestao(texto) {
   const campo = document.getElementById('whats-thread-texto');
   if (!campo) return;
   campo.value = texto;
+  wzAutoAltura(campo);
   campo.focus();
 }
 
