@@ -135,6 +135,26 @@ ol.num2{margin:10px 0 0 22px}ol.num2 li{margin-bottom:10px;font-size:17px}
 .dado span{font-size:14px}
 @media(max-width:640px){.hub,.dados{grid-template-columns:1fr}.hero{padding:96px 22px 56px !important}}
 @media print{.fecho{page-break-inside:avoid;break-inside:avoid}.hero{padding:42px !important;min-height:240mm}.hub,.dados{grid-template-columns:repeat(3,1fr)}}
+
+/* tela cheia, tudo branco (só na tela; a impressão mantém as regras de A4) */
+@media screen{
+  body{background:#fff}
+  .wrap{padding:0}
+  .sec{max-width:none;margin:0;border:0;border-radius:0;box-shadow:none;background:#fff;padding:80px max(24px,calc((100vw - 1180px)/2))}
+  .sec+.sec{border-top:1px solid var(--linha)}
+  .sec.capa.hero{background:linear-gradient(135deg,var(--marinho) 0%,#14305c 60%,#1A5FBF 150%)}
+  .sec.fecho{border-top:0;background:linear-gradient(135deg,var(--marinho),#14305c)}
+  .sec.ata-sec,.sec.resultado-sec{background:#fff}
+  .sec p,.lista li,.chk{font-size:18px}
+  h2{font-size:clamp(30px,4.2vw,52px)}
+  .passo{grid-template-columns:64px 1fr}.num{width:64px;height:64px;font-size:30px}
+  .calc,.ata{background:#fff}
+  .hub{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+  .card{padding:32px}.card b{font-size:26px}
+  .rodape{max-width:none;background:#fff;padding:28px 24px 40px;border-top:1px solid var(--linha)}
+  .previa{position:fixed}
+}
+@media screen and (max-width:640px){.sec{padding:48px 22px}.hub{grid-template-columns:1fr}}
 </style></head><body>
 <div class="previa">PRÉVIA PARA VALIDAÇÃO · versão 0.1 · o link do Cal.com entra no botão final</div>
 <section class="sec capa hero">
