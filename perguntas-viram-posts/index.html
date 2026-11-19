@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>As perguntas dos seus clientes viram posts</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:18px;line-height:1.6}
+h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;margin:0 0 12px}.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
+.cover{padding:48px 0 10px;text-align:center}.cover img{width:76px;height:76px;margin-bottom:18px}
+.kicker{font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase}
+.cover h1{font-size:42px;font-weight:800;margin-top:10px;line-height:1.15}.sub{font-size:19px;color:var(--gray);max-width:600px;margin:14px auto 0}
+.badge{display:inline-block;margin-top:18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px}
+h2.t{font-size:25px;font-weight:800;margin-top:52px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+h2.t small{display:block;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;font-size:15px}
+.flow div b{display:block;font:800 17px 'Plus Jakarta Sans',sans-serif;margin:4px 0}.flow div i{font:600 12px 'JetBrains Mono',monospace;color:var(--green);font-style:normal}
+.flow div:not(:last-child):after{content:"→";position:absolute;right:-14px;top:42%;color:var(--green);font-weight:800}
+@media(max-width:640px){.flow{grid-template-columns:1fr 1fr}.cover h1{font-size:32px}}
+.prompt{background:#111;color:#e9f5ec;border-radius:16px;margin:16px 0;overflow:hidden}
+.prompt .h{background:var(--green);color:#fff;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.4px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.prompt button{background:#fff;color:var(--green);border:0;border-radius:8px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px}
+.prompt pre{margin:0;padding:18px;white-space:pre-wrap;font:400 15px/1.55 'JetBrains Mono',monospace}
+.ex{background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;margin:16px 0;font-size:16px}
+.ex b{font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.2px;color:var(--green);display:block;margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.col{border-radius:14px;padding:16px 18px;font-size:16px}.col.no{background:#fbeeea;border:1px solid #f0c9be}.col.si{background:#e9f6ee;border:1px solid #b5e0c4}
+.col h4{margin:0 0 8px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.4px}.col.no h4{color:#b5483a}.col.si h4{color:var(--green)}
+.col ul{margin:0;padding-left:18px}.aviso{font-size:14px;color:var(--gray);margin-top:30px}
+.cta{margin-top:48px;background:#fff;border:2px solid var(--green);border-radius:18px;padding:24px;text-align:center}
+</style>
+
+</head><body>
+<div class="wrap">
+<div class="cover"><img src="/ia-na-rotina/logo-demanda-infinita.png" alt=""><div class="kicker">Método Demanda Infinita®</div>
+<h1>As perguntas dos seus clientes viram posts</h1>
+<p class="sub">3 pedidos prontos pra copiar no Claude ou no ChatGPT. A arte vem por último.</p></div>
+
+<h2 class="t">Por que isso funciona</h2>
+<p>Uma pesquisa do Sebrae (Pulso dos Pequenos Negócios, 09/11/2026) mostrou que, entre os pequenos negócios que usam IA no marketing, 74% usam pra fazer imagem e vídeo, e só 27% usam pra melhorar os anúncios. A IA está mais no enfeite do que na venda.</p>
+<p>Cliente chama quando sente que você entende a dúvida dele. As melhores ideias de post já estão no seu WhatsApp: são as perguntas que os clientes te mandam toda semana.</p>
+
+<h2 class="t">Antes de começar</h2>
+<p>Abra o WhatsApp, o direct ou o e-mail e copie as últimas 20 perguntas que clientes te mandaram. Apague nome, telefone e qualquer dado pessoal antes de colar na IA.</p>
+
+<h2 class="t">Pedido 1 · Achar as dúvidas que mais se repetem</h2>
+<div class="prompt"><div class="h"><span>PEDIDO 1</span><button onclick="cp(this)">Copiar</button></div><pre>Vou colar abaixo perguntas reais que clientes mandaram para o meu negócio, que é [o que você vende e pra quem]. Agrupe essas perguntas nas 5 dúvidas que mais se repetem. Para cada dúvida, me diga: quantas perguntas caíram nela, como o cliente costuma escrever (com as palavras dele) e o que ele provavelmente sente quando pergunta (medo, pressa, dúvida de preço etc.).
+
+Perguntas:
+[cole aqui]</pre></div>
+
+<h2 class="t">Pedido 2 · Um post que responde cada dúvida</h2>
+<div class="prompt"><div class="h"><span>PEDIDO 2</span><button onclick="cp(this)">Copiar</button></div><pre>Agora, para cada uma das 5 dúvidas, escreva um post curto para Instagram (até 120 palavras) que responde a dúvida de forma clara e honesta. Use as palavras que o cliente usa, comece pela dúvida em forma de pergunta e inclua um exemplo simples do meu negócio: [um exemplo real de atendimento, produto ou serviço]. Nada de promessa exagerada, nada de emoji em excesso, tom de conversa.</pre></div>
+
+<h2 class="t">Pedido 3 · Um convite pra pessoa te chamar</h2>
+<div class="prompt"><div class="h"><span>PEDIDO 3</span><button onclick="cp(this)">Copiar</button></div><pre>Termine cada um dos 5 posts com uma frase curta que convide a pessoa a me chamar no WhatsApp para tirar a dúvida dela, sem parecer anúncio. Me dê 2 opções de final para cada post e diga qual você usaria.</pre></div>
+
+<h2 class="t">Exemplo do antes e depois (ilustrativo)</h2>
+<div class="two">
+<div class="col no"><h4>ANTES</h4>Arte bonita com o logo e a frase 'Qualidade que você merece'. Ninguém pergunta nada.</div>
+<div class="col si"><h4>DEPOIS</h4>'Quanto tempo dura uma limpeza de pele e dá pra voltar ao trabalho no mesmo dia? Essa é a pergunta que mais recebo. Dura cerca de 1 hora e, na maioria dos casos, sim, você volta no mesmo dia, só com a pele um pouco mais sensível. Quer saber se no seu caso é igual? Me chama no WhatsApp e me conta.'</div>
+</div>
+<p class="aviso">Exemplo criado para mostrar o formato. Troque pelos dados reais do seu negócio.</p>
+
+<h2 class="t">Regra de ouro</h2>
+<p>A IA rascunha. Você confere se a resposta está certa pro seu negócio antes de postar.</p>
+
+<div class="cta"><b style="font-family:'Plus Jakarta Sans';font-size:20px">Quer captar clientes qualificados sem investir em tráfego pago?</b><p style="margin:8px 0 0;color:var(--gray);font-size:16px">Conheça o Método Demanda Infinita®: <a href="https://demandainfinita.com" style="color:var(--green)">demandainfinita.com</a></p></div>
+</div>
+<script>function cp(b){navigator.clipboard.writeText(b.closest('.prompt').querySelector('pre').innerText).then(()=>{b.textContent='Copiado!';setTimeout(()=>b.textContent='Copiar',1500)})}</script>
+</body></html>
