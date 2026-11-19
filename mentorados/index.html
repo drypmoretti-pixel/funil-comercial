@@ -1414,7 +1414,9 @@ async function carregarNotifs() {
 async function notifsAdmin(out) {
   const cls = await clientes(true);   // fresco: aluno novo chega pelo webhook sem passar pela tela
   const nome = id => (cls.find(c => c.id === id) || {}).nome || 'Mentorado';
-  const ag = await paginado(() => sb.from('cli_posts').select('id,cliente_id,titulo,versao,enviado_em').eq('status', 'aguardando').order('enviado_em').order('id'));
+  const agT = await paginado(() => sb.from('cli_posts').select('id,cliente_id,titulo,versao,enviado_em').eq('status', 'aguardando').order('enviado_em').order('id'));
+  const eqSet = new Set(cls.filter(c => c.posts_modo === 'equipe').map(c => c.id));   // modo equipe: quem decide é o cliente, não entra na fila do admin
+  const ag = agT.filter(p => !eqSet.has(p.cliente_id));
   S.contAguardando = ag.length;
   // aluno que acabou de comprar (webhook da Herospark) e ainda não tem login: lembra de criar o acesso
   const pf = await q(sb.from('cli_perfis').select('cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), comAcesso = new Set(pf.map(p => p.cliente_id));
@@ -1424,12 +1426,12 @@ async function notifsAdmin(out) {
   ag.forEach(p => out.push({ chave: `post-${p.id}-v${p.versao}-aguardando`, sec: 'Aprovações', titulo: `${nome(p.cliente_id)} enviou um post`,
     desc: `${p.titulo || 'Sem título'}${p.versao > 1 ? ` · versão ${p.versao}` : ''}`, quando: new Date(p.enviado_em), href: `#/admin/post/${p.id}` }));
   const desde = new Date(Date.now() - 7 * 864e5).toISOString();
-  const ev = await q(sb.from('cli_post_eventos').select('id,post_id,tipo,texto,criado_em').eq('autor_papel', 'cliente').in('tipo', ['comentario', 'publicacao']).gte('criado_em', desde).order('criado_em', { ascending: false }).limit(30));
+  const ev = await q(sb.from('cli_post_eventos').select('id,post_id,tipo,texto,criado_em').eq('autor_papel', 'cliente').in('tipo', ['comentario', 'publicacao', 'aprovacao', 'ajuste', 'reprovacao']).gte('criado_em', desde).order('criado_em', { ascending: false }).limit(30));
   if (ev.length) {
     const posts = await q(sb.from('cli_posts').select('id,cliente_id,titulo').in('id', [...new Set(ev.map(e => e.post_id))]));
     ev.forEach(e => {
       const p = posts.find(x => x.id === e.post_id); if (!p) return;
-      out.push({ chave: `evento-${e.id}`, sec: 'Posts', titulo: e.tipo === 'publicacao' ? `${nome(p.cliente_id)} publicou um post` : `${nome(p.cliente_id)} respondeu num post`,
+      out.push({ chave: `evento-${e.id}`, sec: 'Posts', titulo: ({ publicacao: `${nome(p.cliente_id)} publicou um post`, aprovacao: `${nome(p.cliente_id)} aprovou um post`, ajuste: `${nome(p.cliente_id)} pediu ajustes num post`, reprovacao: `${nome(p.cliente_id)} não aprovou um post` })[e.tipo] || `${nome(p.cliente_id)} respondeu num post`,
         desc: p.titulo || 'Sem título', quando: new Date(e.criado_em), href: `#/admin/post/${p.id}` });
     });
   }
@@ -1450,8 +1452,10 @@ async function notifsCliente(out, clienteId) {
   const p_novosArq = q(sb.from('cli_arquivos').select('id,nome,pasta,created_at,enviado_por').eq('cliente_id', clienteId).is('post_id', null).gte('created_at', new Date(Date.now() - 14 * 864e5).toISOString()).order('created_at', { ascending: false }).limit(30)); p_novosArq.catch(() => {});
   const p_planos = q(sb.from('cli_planos').select('id').eq('cliente_id', clienteId).eq('status', 'ativo')); p_planos.catch(() => {});
   const p_pend = q(sb.from('cli_materiais_pendentes').select('id,item,pedido_em').eq('cliente_id', clienteId).eq('status', 'pendente')); p_pend.catch(() => {});
-  const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,status').eq('cliente_id', clienteId).order('id'));
-  S.contPosts = posts.filter(p => p.status === 'aprovado' || p.status === 'ajustes').length;
+  const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,status,versao,enviado_em').eq('cliente_id', clienteId).order('id'));
+  const clE = await getCliente(clienteId), eq = !!clE && clE.posts_modo === 'equipe';   // modo equipe: a equipe envia, o cliente aprova
+  S.contPosts = posts.filter(p => eq ? (p.status === 'aguardando' || p.status === 'aprovado') : (p.status === 'aprovado' || p.status === 'ajustes')).length;
+  if (eq) posts.filter(p => p.status === 'aguardando').forEach(p => out.push({ chave: `post-${p.id}-v${p.versao}-aprovar`, sec: 'Posts', titulo: 'Você tem um post para aprovar', desc: p.titulo || 'Sem título', quando: new Date(p.enviado_em), href: `#/posts/${p.id}` }));
   if (posts.length) {
     const desde = new Date(Date.now() - 14 * 864e5).toISOString();
     const ev = await q(sb.from('cli_post_eventos').select('id,post_id,tipo,texto,criado_em').in('post_id', posts.map(p => p.id)).eq('autor_papel', 'admin').gte('criado_em', desde).order('criado_em', { ascending: false }).limit(30));
@@ -1722,10 +1726,11 @@ async function vInicio(ctx) {
 
   // 4) posts
   const cont = s => posts.filter(p => p.status === s).length;
-  const postsCard = `<div class="card"><div class="row-between"><h2>Seus posts</h2>${ro ? '' : `<a class="btn btn-primary btn-sm" href="${lnk(ctx, 'posts/novo')}">Novo post</a>`}</div>
-    <div class="row" style="margin:12px 0 4px">${['aguardando', 'aprovado', 'ajustes', 'publicado'].map(s => `<span class="chip ${s}">${cont(s)} ${ST[s].toLowerCase()}</span>`).join('')}</div>
-    ${posts.slice(0, 3).map(p => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="${lnkPost(ctx, p.id)}"><div class="txt">${esc(postTitulo(p))}</div>${chipSt(p.status)}</a>`).join('')
-      || '<div class="vazio">Você ainda não enviou nenhum post. Escreva o primeiro e mande pra aprovação.</div>'}
+  const eqI = !!(S.clientes || []).find(c => c.id === ctx.clienteId && c.posts_modo === 'equipe');   // modo equipe: o cliente só aprova
+  const postsCard = `<div class="card"><div class="row-between"><h2>Seus posts</h2>${ro || eqI ? '' : `<a class="btn btn-primary btn-sm" href="${lnk(ctx, 'posts/novo')}">Novo post</a>`}</div>
+    <div class="row" style="margin:12px 0 4px">${['aguardando', 'aprovado', 'ajustes', 'publicado'].map(s => `<span class="chip ${s}">${cont(s)} ${(eqI && s === 'aguardando' ? 'aguardando você' : ST[s].toLowerCase())}</span>`).join('')}</div>
+    ${posts.slice(0, 3).map(p => `<a class="item-lista clicavel" style="text-decoration:none;color:inherit" href="${lnkPost(ctx, p.id)}"><div class="txt">${esc(postTitulo(p))}</div>${chipSt(p.status, eqI, false)}</a>`).join('')
+      || (eqI ? '<div class="vazio">Quando a equipe enviar um post, ele aparece aqui e você recebe o aviso.</div>' : '<div class="vazio">Você ainda não enviou nenhum post. Escreva o primeiro e mande pra aprovação.</div>')}
     ${posts.length > 3 ? `<div style="margin-top:8px"><a class="btn-link" href="${lnk(ctx, 'posts')}">ver todos os posts</a></div>` : ''}</div>`;
 
   // 5) rotina diária: como cumprir cada um dos três (método Demanda Infinita)
@@ -1805,7 +1810,8 @@ async function vCalendario(ctx) {
    Máquina de estados mora nas RPCs (cli_post_*), nunca só aqui.
    ===================================================================== */
 const ST = { rascunho: 'Rascunho', aguardando: 'Aguardando aprovação', ajustes: 'Ajustes pedidos', aprovado: 'Aprovado', reprovado: 'Não aprovado', publicado: 'Publicado' };
-const chipSt = s => `<span class="chip ${s}">${esc(ST[s] || s)}</span>`;
+const STEQ = { cliente: { aguardando: 'Aguardando você' }, admin: { aguardando: 'Aguardando o cliente', ajustes: 'Cliente pediu ajustes' } };
+const chipSt = (s, eq, admin) => `<span class="chip ${s}">${esc((eq && STEQ[admin ? 'admin' : 'cliente'][s]) || ST[s] || s)}</span>`;
 const LIMITE_POST = 3000, GANCHO = 210;
 const postTitulo = p => p.titulo || (p.texto || '').split('\n').find(l => l.trim())?.slice(0, 70) || 'Sem título';
 async function rpc(fn, args) { const { data, error } = await sb.rpc(fn, args); if (error) throw error; return data; }
@@ -1840,27 +1846,28 @@ function listaPostsHtml(ctx, posts, opt = {}) {
   const chips = [['andamento', 'Em andamento'], ['publicados', 'Publicados'], ['todos', 'Todos']]
     .map(([id, n]) => `<button class="chip-btn ${f === id ? 'ativo' : ''}" data-act="posts-filtro" data-f="${id}">${n}</button>`).join('');
   return `<div class="chips-filtro">${chips}</div>` + (vis.length ? vis.map(p => `<a class="post-card" style="text-decoration:none;color:inherit" href="${lnkPost(ctx, p.id)}">
-      <div class="row-between"><div class="tt">${esc(postTitulo(p))}</div>${chipSt(p.status)}</div>
+      <div class="row-between"><div class="tt">${esc(postTitulo(p))}</div>${chipSt(p.status, opt.eq, ctx.modo === 'admin')}</div>
       <div class="pv">${esc(p.texto || '')}</div>
       <div class="rod">${p.data_prevista ? `<span>Previsto para ${esc(fmtData(p.data_prevista))}</span>` : ''}${p.versao > 1 ? `<span>versão ${p.versao}</span>` : ''}
       ${p.status === 'aguardando' && p.enviado_em ? `<span>enviado ${esc(tempoAtras(p.enviado_em))}</span>` : ''}</div></a>`).join('')
-    : `<div class="vazio">${f === 'publicados' ? 'Nenhum post publicado ainda.' : opt.ro ? 'Nenhum post.' : '<b>Nenhum post por aqui.</b><br>Escreva o primeiro e mande pra aprovação.'}</div>`);
+    : `<div class="vazio">${f === 'publicados' ? 'Nenhum post publicado ainda.' : opt.ro ? 'Nenhum post.' : opt.eq ? (ctx.modo === 'admin' ? '<b>Nenhum post ainda.</b><br>Use “Novo post para o cliente”.' : '<b>Nenhum post por aqui ainda.</b><br>Quando a equipe enviar um post, ele aparece aqui e você recebe o aviso.') : '<b>Nenhum post por aqui.</b><br>Escreva o primeiro e mande pra aprovação.'}</div>`);
 }
 
 async function vPosts(ctx) {
   const a0 = ctx.args[0];
-  if (a0 === 'novo' && ctx.modo === 'cliente') return editorPost(ctx, null);
+  const cli0 = await getCliente(ctx.clienteId), eq = !!cli0 && cli0.posts_modo === 'equipe';   // modo equipe: a equipe escreve e envia, o cliente aprova
+  if (a0 === 'novo' && ctx.modo === 'cliente') { if (eq) throw new Error('Neste acesso, a equipe prepara os posts e envia aqui para você aprovar.'); return editorPost(ctx, null); }
   if (a0 && a0 !== 'novo') {
     const p = await carregarPost(a0);
     if (!p) throw new Error('Post não encontrado.');
-    if (ctx.modo === 'cliente' && (p.status === 'rascunho' || p.status === 'ajustes')) return editorPost(ctx, p);
+    if (ctx.modo === 'cliente' && !eq && (p.status === 'rascunho' || p.status === 'ajustes')) return editorPost(ctx, p);
     return detalhePost(ctx, p);
   }
   const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,texto,status,versao,data_prevista,enviado_em').eq('cliente_id', ctx.clienteId).order('id', { ascending: false }));
   const ro = ctx.modo === 'preview';
   return { kicker: 'Aprovação', titulo: 'Posts',
-    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">Escreva, mande pra aprovação e acompanhe aqui. Aprovado, você publica e cola o link.</p>
-      ${ro ? '' : `<a class="btn btn-primary" href="${lnk(ctx, 'posts/novo')}">${svg('mais', 16)} Novo post</a>`}</div>${listaPostsHtml(ctx, posts, { ro })}` };
+    html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">${eq ? 'A equipe prepara os posts e envia aqui. Você lê, aprova ou pede ajustes. Aprovado, você publica e cola o link.' : 'Escreva, mande pra aprovação e acompanhe aqui. Aprovado, você publica e cola o link.'}</p>
+      ${ro || eq ? '' : `<a class="btn btn-primary" href="${lnk(ctx, 'posts/novo')}">${svg('mais', 16)} Novo post</a>`}</div>${listaPostsHtml(ctx, posts, { ro, eq })}` };
 }
 
 /* ---------- editor (rascunho / ajustes) ---------- */
@@ -1893,9 +1900,11 @@ async function refazerAnexos() {
 const lerEditor = () => ({ id: Number($('#p-id').value) || null, titulo: $('#p-titulo').value.trim(), texto: $('#p-texto').value, data: $('#p-data').value || null });
 async function gravarRascunho() {
   const v = lerEditor();
-  const id = await rpc('cli_post_salvar', { p_id: v.id, p_titulo: v.titulo, p_texto: v.texto, p_data_prevista: v.data });
+  const adm = S.ctx && S.ctx.modo === 'admin';   // equipe preparando o post de um cliente do modo equipe
+  const id = adm ? await rpc('cli_post_equipe_salvar', { p_cliente: S.ctx.clienteId, p_id: v.id, p_titulo: v.titulo, p_texto: v.texto, p_data_prevista: v.data })
+    : await rpc('cli_post_salvar', { p_id: v.id, p_titulo: v.titulo, p_texto: v.texto, p_data_prevista: v.data });
   $('#p-id').value = id;
-  if (!v.id) history.replaceState(null, '', `#/posts/${id}`);
+  if (!v.id) history.replaceState(null, '', adm ? `#/admin/post-editar/${id}` : `#/posts/${id}`);
   return id;
 }
 function atualizarContador() {
@@ -1905,12 +1914,12 @@ function atualizarContador() {
 CHG['post-texto'] = atualizarContador;
 document.addEventListener('input', ev => { if (ev.target.id === 'p-texto') atualizarContador(); });
 
-function threadHtml(eventos, p, ctx, nomeCli) {
+function threadHtml(eventos, p, ctx, nomeCli, eq) {
   const souAdmin = ctx.modo === 'admin';
   if (!eventos.length) return '<div class="vazio">Sem mensagens ainda.</div>';
   return `<div class="thread">${eventos.map(e => {
     const quando = esc(new Date(e.criado_em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }));
-    const quem = e.autor_papel === 'admin' ? (souAdmin ? 'Você' : 'Igor') : (souAdmin ? esc(primeiroNome(nomeCli)) : 'Você');
+    const quem = e.autor_papel === 'admin' ? (souAdmin ? 'Você' : (eq ? 'Equipe' : 'Igor')) : (souAdmin ? esc(primeiroNome(nomeCli)) : 'Você');
     if (e.tipo === 'envio') return `<div class="msg sistema">Enviado para aprovação · versão ${e.versao} · ${quando}
       ${e.versao < p.versao || p.status !== 'aguardando' ? `<details style="text-align:left;margin-top:6px"><summary style="cursor:pointer;font-weight:700">ver o texto desta versão</summary><div class="msg" style="margin-top:6px;font-size:.84rem">${esc(e.texto || '')}</div></details>` : ''}</div>`;
     if (e.tipo === 'publicacao') return `<div class="msg sistema">Publicado em ${quando}${urlSegura(e.texto) ? ` · <a href="${esc(urlSegura(e.texto))}" target="_blank" rel="noopener noreferrer">ver no LinkedIn</a>` : ''}</div>`;
@@ -1921,14 +1930,15 @@ function threadHtml(eventos, p, ctx, nomeCli) {
 }
 
 async function editorPost(ctx, p) {
+  const ADM = ctx.modo === 'admin', cliE = await getCliente(ctx.clienteId), nomeCli = cliE ? cliE.nome : 'cliente';
   const eventos = p ? await q(sb.from('cli_post_eventos').select('*').eq('post_id', p.id).order('id')) : [];
   const anexos = p ? await q(sb.from('cli_arquivos').select('*').eq('post_id', p.id).order('id')) : [];
   await prepararPrevia(ctx, anexos, p ? p.texto : '');
-  const ult = [...eventos].reverse().find(e => e.autor_papel === 'admin' && ['ajuste', 'reprovacao', 'comentario'].includes(e.tipo));
-  const faixa = p && p.status === 'ajustes' ? `<div class="faixa-status ajustes"><div><b>O Igor pediu ajustes</b>${ult && ult.texto ? esc(ult.texto) : 'Veja os comentários ao lado, ajuste o texto e envie de novo.'}</div></div>` : '';
+  const ult = [...eventos].reverse().find(e => e.autor_papel === (ADM ? 'cliente' : 'admin') && ['ajuste', 'reprovacao', 'comentario'].includes(e.tipo));
+  const faixa = p && p.status === 'ajustes' ? `<div class="faixa-status ajustes"><div><b>${ADM ? 'O cliente pediu ajustes' : 'O Igor pediu ajustes'}</b>${ult && ult.texto ? esc(ult.texto) : 'Veja os comentários ao lado, ajuste o texto e envie de novo.'}</div></div>` : '';
   return {
-    kicker: p ? `Versão ${p.versao}${p.status === 'ajustes' ? ' · ajustes pedidos' : ' · rascunho'}` : 'Novo post', titulo: p ? postTitulo(p) : 'Novo post', refrescavel: false,
-    html: `<div style="margin-bottom:12px"><a class="btn-link" href="${lnk(ctx, 'posts')}">← voltar para os posts</a></div>${faixa}
+    kicker: p ? `Versão ${p.versao}${p.status === 'ajustes' ? ' · ajustes pedidos' : ' · rascunho'}` : (ADM ? 'Post da equipe' : 'Novo post'), titulo: p ? postTitulo(p) : (ADM ? 'Novo post para ' + primeiroNome(nomeCli) : 'Novo post'), refrescavel: false,
+    html: `<div style="margin-bottom:12px"><a class="btn-link" href="${ADM ? '#/admin/mentorado/' + ctx.clienteId + '/posts' : lnk(ctx, 'posts')}">← voltar para os posts</a></div>${faixa}
       <div class="post-layout"><div class="card" style="margin:0"><input type="hidden" id="p-id" value="${p ? p.id : ''}">
         <div class="campo"><label class="lbl" for="p-titulo">Título (só pra você se achar; opcional)</label><input type="text" id="p-titulo" maxlength="120" value="${esc(p ? p.titulo || '' : '')}"></div>
         <div class="campo"><label class="lbl" for="p-texto">Texto do post</label><textarea id="p-texto" rows="14" placeholder="Escreva o post aqui…">${esc(p ? p.texto : '')}</textarea><div class="contador" id="p-contador"></div></div>
@@ -1937,28 +1947,29 @@ async function editorPost(ctx, p) {
           <label class="btn btn-sm" style="cursor:pointer">${svg('clip', 16)} Adicionar arquivo<input type="file" id="p-arquivos" multiple hidden data-chg="post-anexar" accept="image/*,application/pdf,video/*"></label>
           <span class="hint" id="p-envio" style="margin-left:8px"></span><div id="p-anexos">${anexosHtml(anexos, true)}</div></div>
         <div class="row" style="margin-top:6px"><button class="btn" data-act="post-rascunho">Salvar rascunho</button>
-          <button class="btn btn-primary" data-act="post-enviar">Enviar para aprovação</button>
+          <button class="btn btn-primary" data-act="post-enviar">${ADM ? 'Enviar para o cliente aprovar' : 'Enviar para aprovação'}</button>
           ${p && p.status === 'rascunho' ? '<button class="btn btn-danger btn-sm" data-act="post-excluir" style="margin-left:auto">Excluir rascunho</button>' : ''}</div></div>
-      <div class="stack">${previaShell()}${eventos.length ? `<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx)}</div>` : ''}
+      <div class="stack">${previaShell()}${eventos.length ? `<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx, nomeCli, false)}</div>` : ''}
         <div class="card" style="margin:0"><h2>Antes de enviar</h2><ul style="margin:8px 0 0;padding-left:18px;color:var(--text-secondary);font-size:.86rem;line-height:1.6">
-          <li>Você manda o <b>texto e a imagem</b> (ou o carrossel em PDF, ou o vídeo). O link do post só existe depois de publicar: ele entra no último passo.</li><li>As 3 primeiras linhas decidem se alguém clica em “ver mais”. A prévia mostra o corte.</li><li>Depois de enviar você só edita se o Igor pedir ajustes.</li></ul></div></div></div>`,
+          ${ADM ? '<li>O cliente recebe o <b>texto e a imagem</b> (ou o carrossel em PDF, ou o vídeo) e o aviso no sino. Ele aprova, pede ajustes ou não aprova.</li>' : '<li>Você manda o <b>texto e a imagem</b> (ou o carrossel em PDF, ou o vídeo). O link do post só existe depois de publicar: ele entra no último passo.</li>'}<li>As 3 primeiras linhas decidem se alguém clica em “ver mais”. A prévia mostra o corte.</li>${ADM ? '<li>Depois de enviar você só edita se o cliente pedir ajustes.</li>' : '<li>Depois de enviar você só edita se o Igor pedir ajustes.</li>'}</ul></div></div></div>`,
     depois: () => { atualizarContador(); carregarThumbs(); atualizarPrevia(); },
   };
 }
 ACT['post-rascunho'] = async el => { await ocupado(el, gravarRascunho); toast('Rascunho salvo.'); };
 ACT['post-enviar'] = async el => {
+  const adm = S.ctx && S.ctx.modo === 'admin';
   if (!$('#p-texto').value.trim()) { toast('Escreva o texto do post antes de enviar.', true); $('#p-texto').focus(); return; }
   if ($('#p-texto').value.length > LIMITE_POST && !confirm('O texto passa de 3.000 caracteres, que é o limite do LinkedIn. Enviar mesmo assim?')) return;
-  if (!confirm('Enviar pra aprovação? Depois de enviar você só edita se o Igor pedir ajustes.')) return;
-  await ocupado(el, async () => { const id = await gravarRascunho(); await rpc('cli_post_enviar', { p_id: id }); ir(`posts/${id}`); });
-  toast('Enviado! O Igor foi avisado.'); carregarNotifs();
+  if (!confirm(adm ? 'Enviar para o cliente aprovar? Depois de enviar você só edita se ele pedir ajustes.' : 'Enviar pra aprovação? Depois de enviar você só edita se o Igor pedir ajustes.')) return;
+  await ocupado(el, async () => { const id = await gravarRascunho(); await rpc(adm ? 'cli_post_equipe_enviar' : 'cli_post_enviar', { p_id: id }); ir(adm ? `admin/post/${id}` : `posts/${id}`); });
+  toast(adm ? 'Enviado! O cliente foi avisado.' : 'Enviado! O Igor foi avisado.'); carregarNotifs();
 };
 ACT['post-excluir'] = async el => {
   if (!confirm('Excluir este rascunho?')) return;
   const ax = await q(sb.from('cli_arquivos').select('path').eq('post_id', Number($('#p-id').value)));
   if (ax.length) await sb.storage.from(BUCKET).remove(ax.map(a => a.path));
   await rpc('cli_post_excluir', { p_id: Number($('#p-id').value) });
-  toast('Rascunho excluído.'); ir('posts');
+  toast('Rascunho excluído.'); ir(S.ctx && S.ctx.modo === 'admin' ? `admin/mentorado/${S.ctx.clienteId}/posts` : 'posts');
 };
 CHG['post-anexar'] = async el => {
   const files = [...el.files]; el.value = ''; if (!files.length) return;
@@ -1981,17 +1992,25 @@ async function detalhePost(ctx, p) {
     q(sb.from('cli_post_eventos').select('*').eq('post_id', p.id).order('id')),
     q(sb.from('cli_arquivos').select('*').eq('post_id', p.id).order('id')),
     getCliente(p.cliente_id)]);
-  const ult = [...eventos].reverse().find(e => e.autor_papel === 'admin' && ['ajuste', 'reprovacao', 'aprovacao'].includes(e.tipo));
+  const ult = [...eventos].reverse().find(e => e.autor_papel === (cli && cli.posts_modo === 'equipe' ? 'cliente' : 'admin') && ['ajuste', 'reprovacao', 'aprovacao'].includes(e.tipo));
   const nome = cli ? cli.nome : 'Mentorado';
+  const eq = !!cli && cli.posts_modo === 'equipe';   // equipe escreve, cliente decide
   await prepararPrevia({ ...ctx, clienteId: p.cliente_id }, anexos, p.texto);
-  const F = {
-    aguardando: admin ? ['Aguardando sua decisão', `Enviado ${tempoAtras(p.enviado_em)} · versão ${p.versao}`] : ['Aguardando aprovação', 'O Igor vai olhar e responder. Você recebe o aviso aqui no portal.'],
+  const F = (eq ? {
+    aguardando: admin ? ['Aguardando a aprovação do cliente', `Enviado ${tempoAtras(p.enviado_em)} · versão ${p.versao}`] : ['Aguardando a sua aprovação', 'A equipe preparou este post. Leia, aprove ou peça ajustes abaixo.'],
+    ajustes: admin ? ['O cliente pediu ajustes', ult && ult.texto || ''] : ['Você pediu ajustes', 'A equipe vai ajustar e reenviar. Você recebe o aviso aqui no portal.'],
+    aprovado: admin ? ['Aprovado pelo cliente', 'Aguardando a publicação.'] : ['Aprovado: pode publicar', 'Publique no LinkedIn e cole o link abaixo pra fechar o checklist do dia.'],
+    reprovado: admin ? ['O cliente não aprovou', ult && ult.texto || ''] : ['Você não aprovou', 'A equipe vai preparar outra versão.'],
+    publicado: ['Publicado', p.post_link ? '' : 'Sem link registrado.'],
+    rascunho: ['Rascunho da equipe', ''],
+  } : {
+    aguardando: admin ? ['Aguardando sua decisão', `Enviado ${tempoAtras(p.enviado_em)} · versão ${p.versao}`] : ['Aguardando aprovação', 'O Igor vai olhar e responde. Você recebe o aviso aqui no portal.'],
     ajustes: admin ? ['Aguardando o mentorado ajustar', ult && ult.texto || ''] : ['Ajustes pedidos', ult && ult.texto || ''],
     aprovado: admin ? ['Aprovado', 'Aguardando o mentorado publicar.'] : ['Aprovado: pode publicar', 'Publique no LinkedIn e cole o link abaixo pra fechar o checklist do dia.'],
     reprovado: ['Não foi aprovado', ult && ult.texto || ''],
     publicado: ['Publicado', p.post_link ? '' : 'Sem link registrado.'],
     rascunho: ['Rascunho', ''],
-  }[p.status];
+  })[p.status];
   const faixa = `<div class="faixa-status ${p.status}"><div><b>${esc(F[0])}</b>${esc(F[1])}${p.status === 'publicado' && urlSegura(p.post_link) ? `<a href="${esc(urlSegura(p.post_link))}" target="_blank" rel="noopener noreferrer">${esc(p.post_link)}</a>` : ''}</div></div>`;
 
   const publicar = !admin && p.status === 'aprovado' ? `<div class="card destaque"><h2>Hora de publicar</h2><p class="desc">O LinkedIn é o último passo: copie o texto, baixe a imagem, publique e volte aqui colar o link.</p>
@@ -2001,15 +2020,26 @@ async function detalhePost(ctx, p) {
     <form data-sub="post-publicar"><input type="hidden" name="id" value="${p.id}"><div class="row"><input type="url" name="link" placeholder="https://www.linkedin.com/posts/…" style="flex:1;min-width:220px" ${ro ? 'disabled' : ''}>
     <button class="btn btn-primary" type="submit" ${ro ? 'disabled' : ''}>Marcar como publicado</button></div></form></div>` : '';
 
-  const decidir = admin && p.status === 'aguardando' ? `<div class="decisao"><h2>Sua decisão</h2>
+  const decidir = admin && !eq && p.status === 'aguardando' ? `<div class="decisao"><h2>Sua decisão</h2>
     <label class="lbl" for="dec-texto" style="margin-top:8px">Comentário pro mentorado (obrigatório se pedir ajustes ou não aprovar)</label>
     <textarea id="dec-texto" rows="4" placeholder="O que está bom, o que precisa mudar…"></textarea>
     <div class="botoes"><button class="btn btn-primary" data-act="post-decidir" data-id="${p.id}" data-dec="aprovado">Aprovar</button>
     <button class="btn btn-warn" data-act="post-decidir" data-id="${p.id}" data-dec="ajustes">Pedir ajustes</button>
     <button class="btn btn-danger" data-act="post-decidir" data-id="${p.id}" data-dec="reprovado">Não aprovar</button></div></div>` : '';
 
+  const decidirCliente = !admin && !ro && eq && p.status === 'aguardando' ? `<div class="decisao"><h2>Sua decisão</h2>
+    <label class="lbl" for="dec-texto" style="margin-top:8px">Comentário para a equipe (obrigatório se pedir ajustes ou não aprovar)</label>
+    <textarea id="dec-texto" rows="4" placeholder="O que está bom, o que precisa mudar…"></textarea>
+    <div class="botoes"><button class="btn btn-primary" data-act="post-decidir" data-id="${p.id}" data-dec="aprovado">Aprovar</button>
+    <button class="btn btn-warn" data-act="post-decidir" data-id="${p.id}" data-dec="ajustes">Pedir ajustes</button>
+    <button class="btn btn-danger" data-act="post-decidir" data-id="${p.id}" data-dec="reprovado">Não aprovar</button></div></div>` : '';
+  const editarAdmin = admin && eq && ['rascunho', 'ajustes'].includes(p.status) ? `<div class="decisao"><h2>${p.status === 'ajustes' ? 'O cliente pediu ajustes' : 'Rascunho da equipe'}</h2>
+    <p class="desc">Edite o texto e reenvie para ele aprovar.</p><div class="botoes"><a class="btn btn-primary" href="#/admin/post-editar/${p.id}">Editar e reenviar</a></div></div>` : '';
+  const publicarAdmin = admin && eq && p.status === 'aprovado' ? `<div class="card destaque"><h2>A equipe publicou por ele?</h2><p class="desc">Se a equipe publicou no perfil dele, cole o link para fechar o ciclo. Se ele mesmo publica, é só esperar o aviso.</p>
+    <form data-sub="post-publicar"><input type="hidden" name="id" value="${p.id}"><div class="row"><input type="url" name="link" placeholder="https://www.linkedin.com/posts/…" style="flex:1;min-width:220px">
+    <button class="btn btn-primary" type="submit">Marcar como publicado</button></div></form></div>` : '';
   const comentar = !ro ? `<form data-sub="post-comentar" style="margin-top:12px"><input type="hidden" name="id" value="${p.id}">
-    <label class="lbl" for="cm-texto">${admin ? 'Mandar uma mensagem' : 'Escrever pro Igor'}</label><textarea id="cm-texto" name="texto" rows="2" placeholder="Escreva aqui…"></textarea>
+    <label class="lbl" for="cm-texto">${admin ? 'Mandar uma mensagem' : (eq ? 'Escrever para a equipe' : 'Escrever pro Igor')}</label><textarea id="cm-texto" name="texto" rows="2" placeholder="Escreva aqui…"></textarea>
     <button class="btn btn-sm" type="submit" style="margin-top:8px">Enviar mensagem</button></form>` : '';
 
   return {
@@ -2020,7 +2050,7 @@ async function detalhePost(ctx, p) {
         ${previaShell()}
         <div class="row" style="font-size:.8rem;color:var(--muted)"><span>${p.texto.length.toLocaleString('pt-BR')} caracteres</span>${p.data_prevista ? `<span>· previsto para ${esc(fmtData(p.data_prevista))}</span>` : ''}</div>
         ${anexos.length ? `<div><h3 style="margin-bottom:6px">Arquivos do post</h3>${anexosHtml(anexos, false)}</div>` : ''}${publicar}</div>
-      <div class="stack">${decidir}<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx, nome)}${comentar}</div></div></div>`,
+      <div class="stack">${decidir}${decidirCliente}${editarAdmin}${publicarAdmin}<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx, nome, eq)}${comentar}</div></div></div>`,
     depois: () => { carregarThumbs(); atualizarPrevia(); },
   };
 }
@@ -2028,7 +2058,7 @@ SUB['post-publicar'] = async f => {
   const id = Number(f.id.value), link = f.link.value.trim();
   if (link && !/^https?:\/\//i.test(link)) { toast('O link precisa começar com https://', true); return; }
   await ocupado(f.querySelector('button[type=submit]'), () => rpc('cli_post_publicar', { p_id: id, p_link: link }));
-  toast('Publicado! Seu checklist de hoje foi atualizado.'); await carregarNotifs(); await render();
+  toast(S.admin ? 'Marcado como publicado.' : 'Publicado! Seu checklist de hoje foi atualizado.'); await carregarNotifs(); await render();
 };
 SUB['post-comentar'] = async f => {
   const id = Number(f.id.value), texto = f.texto.value.trim(); if (!texto) return;
@@ -2037,16 +2067,24 @@ SUB['post-comentar'] = async f => {
 };
 ACT['post-decidir'] = async el => {
   const id = Number(el.dataset.id), dec = el.dataset.dec, txt = $('#dec-texto').value.trim();
-  if (dec !== 'aprovado' && !txt) { toast('Explique o motivo pro mentorado.', true); $('#dec-texto').focus(); return; }
-  if (dec === 'reprovado' && !confirm('Marcar como não aprovado? O mentorado vai precisar escrever outro post.')) return;
+  if (dec !== 'aprovado' && !txt) { toast(S.admin ? 'Explique o motivo pro mentorado.' : 'Explique o motivo para a equipe.', true); $('#dec-texto').focus(); return; }
+  if (dec === 'reprovado' && !confirm(S.admin ? 'Marcar como não aprovado? O mentorado vai precisar escrever outro post.' : 'Marcar como não aprovado? A equipe vai preparar outro post.')) return;
   await ocupado(el, () => rpc('cli_post_decidir', { p_id: id, p_decisao: dec, p_comentario: txt }));
+  if (!S.admin) {   // modo equipe: quem decidiu foi o cliente
+    toast({ aprovado: 'Post aprovado. A equipe foi avisada.', ajustes: 'Pedido de ajustes enviado para a equipe.', reprovado: 'Post marcado como não aprovado.' }[dec]);
+    await carregarNotifs(); ir('posts'); return;
+  }
   toast({ aprovado: 'Post aprovado. O mentorado foi avisado.', ajustes: 'Pedido de ajustes enviado.', reprovado: 'Post marcado como não aprovado.' }[dec]);
   await carregarNotifs();
-  const prox = await q(sb.from('cli_posts').select('id').eq('status', 'aguardando').order('enviado_em').limit(1));
-  ir(prox[0] ? `admin/post/${prox[0].id}` : 'admin/aprovacoes');
+  const prox = await q(sb.from('cli_posts').select('id,cliente_id').eq('status', 'aguardando').order('enviado_em'));
+  const eqIds = new Set((await clientes()).filter(c => c.posts_modo === 'equipe').map(c => c.id));
+  const prox1 = prox.find(x => !eqIds.has(x.cliente_id));
+  ir(prox1 ? `admin/post/${prox1.id}` : 'admin/aprovacoes');
 };
 
 /* ---------- admin: Aprovações (fila global) e post em revisão ---------- */
+async function vPostNovoAdmin(ctx) { ctx.clienteId = Number(ctx.args[0]); const cli = await getCliente(ctx.clienteId); if (!cli || cli.posts_modo !== 'equipe') throw new Error('Este cliente escreve os próprios posts.'); return editorPost(ctx, null); }
+async function vPostEditarAdmin(ctx) { const p = await carregarPost(ctx.args[0]); if (!p) throw new Error('Post não encontrado.'); ctx.clienteId = p.cliente_id; return editorPost(ctx, p); }
 async function vPostAdmin(ctx) {
   const p = await carregarPost(ctx.args[0]); if (!p) throw new Error('Post não encontrado.');
   return detalhePost({ ...ctx, clienteId: p.cliente_id }, p);
@@ -2060,9 +2098,12 @@ async function vAprovacoes() {
   const [posts, cls] = await Promise.all([
     paginado(() => sb.from('cli_posts').select('id,cliente_id,titulo,texto,status,versao,data_prevista,enviado_em,decidido_em,publicado_em').neq('status', 'rascunho').order('id', { ascending: false })), clientes()]);
   const cliDe = id => cls.find(c => c.id === id) || { nome: 'Mentorado' };
-  const ag = posts.filter(p => p.status === 'aguardando').sort((a, b) => new Date(a.enviado_em) - new Date(b.enviado_em));
+  const eqId = new Set(cls.filter(c => c.posts_modo === 'equipe').map(c => c.id));   // clientes em que a equipe escreve e o cliente aprova
+  const agEq = posts.filter(p => p.status === 'aguardando' && eqId.has(p.cliente_id)).sort((a, b) => new Date(a.enviado_em) - new Date(b.enviado_em));
+  const ajEq = posts.filter(p => p.status === 'ajustes' && eqId.has(p.cliente_id)).sort((a, b) => new Date(b.decidido_em) - new Date(a.decidido_em));
+  const ag = posts.filter(p => p.status === 'aguardando' && !eqId.has(p.cliente_id)).sort((a, b) => new Date(a.enviado_em) - new Date(b.enviado_em));
   const ap = posts.filter(p => p.status === 'aprovado').sort((a, b) => new Date(a.decidido_em) - new Date(b.decidido_em));
-  const aj = posts.filter(p => p.status === 'ajustes').sort((a, b) => new Date(b.decidido_em) - new Date(a.decidido_em));
+  const aj = posts.filter(p => p.status === 'ajustes' && !eqId.has(p.cliente_id)).sort((a, b) => new Date(b.decidido_em) - new Date(a.decidido_em));
   const desde30 = Date.now() - 30 * 864e5;
   const pub30 = posts.filter(p => p.status === 'publicado' && p.publicado_em && new Date(p.publicado_em) >= desde30);
   const pub = posts.filter(p => p.status === 'publicado').sort((a, b) => new Date(b.publicado_em) - new Date(a.publicado_em)).slice(0, 8);
@@ -2117,7 +2158,10 @@ async function vAprovacoes() {
     ${coluna('aprovado', 'Aprovados, falta publicar', 'Aprovado há mais de 3 dias fica em destaque: vale um toque no mentorado.', ap, p => { const h = horasDesde(p.decidido_em); return mini(p, 'aprovado há ' + fmtDuracao(h), h >= 72 ? '<span class="chip critico sem-dot">parado</span>' : ''); })}
     ${coluna('ajustes', 'Com o mentorado ajustando', 'Volta pra fila quando ele reenviar.', aj, p => mini(p, 'ajuste pedido há ' + fmtDuracao(horasDesde(p.decidido_em)), p.versao > 1 ? `<span class="chip neutro sem-dot">v${p.versao}</span>` : ''))}
     ${coluna('publicado', 'Publicados recentemente', 'Os últimos que foram ao ar.', pub, p => mini(p, 'publicado há ' + fmtDuracao(horasDesde(p.publicado_em)), ''))}</div>`;
-  return { kicker: 'Fila de aprovação', titulo: 'Aprovações', html: hero + fila + pipeline };
+  const equipe = (agEq.length || ajEq.length) ? `<div class="apv-sec-cab"><h2>Posts da equipe com os clientes</h2><span class="muted">a equipe escreve, o cliente decide</span></div><div class="apv-pipe">
+    ${coluna('ajustes', 'Cliente pediu ajustes', 'Edite e reenvie.', ajEq, p => mini(p, 'ajuste pedido há ' + fmtDuracao(horasDesde(p.decidido_em)), p.versao > 1 ? `<span class="chip neutro sem-dot">v${p.versao}</span>` : ''))}
+    ${coluna('aguardando', 'Aguardando o cliente decidir', 'Enviados para a aprovação dele.', agEq, p => mini(p, 'enviado há ' + fmtDuracao(horasDesde(p.enviado_em)), ''))}</div>` : '';
+  return { kicker: 'Fila de aprovação', titulo: 'Aprovações', html: hero + fila + equipe + pipeline };
 }
 
 /* =====================================================================
@@ -2730,7 +2774,7 @@ const etapaAtualDe = (cid, prog) => { const ok = new Set(prog.filter(p => p.clie
 /* ---------- dashboard ---------- */
 async function vDashboard() {
   const hoje = hojeISO(), ini7 = addDias(hoje, -6);
-  const [cls, prog, ativHoje, ativ7, perfis, aguard, planos, acs] = await Promise.all([
+  const [cls, prog, ativHoje, ativ7, perfis, aguardT, planos, acs] = await Promise.all([
     clientes(true), q(sb.from('cli_progresso').select('*')),
     paginado(() => sb.from('cli_atividades_diarias').select('*').eq('data', hoje).order('id')),
     paginado(() => sb.from('cli_atividades_diarias').select('*').gte('data', ini7).lte('data', hoje).order('id')),
@@ -2738,6 +2782,7 @@ async function vDashboard() {
     q(sb.from('cli_posts').select('id,cliente_id,titulo,versao,enviado_em').eq('status', 'aguardando').order('enviado_em').order('id')),
     q(sb.from('cli_planos').select('id,cliente_id').eq('status', 'ativo').not('cliente_id', 'is', null)),
     acessos()]);
+  const aguard = aguardT.filter(p => { const c = cls.find(x => x.id === p.cliente_id); return !(c && c.posts_modo === 'equipe'); });   // no modo equipe quem decide é o cliente
   const [perfisV, videos] = await Promise.all([q(sb.from('cli_perfis').select('id,cliente_id').eq('role', 'cliente').not('cliente_id', 'is', null)), q(sb.from('cli_novidades_vistas').select('perfil_id,vista_em').eq('versao', VIDEO_VISTO))]);
   const viuVideo = new Set(perfisV.filter(p => videos.some(v => v.perfil_id === p.id)).map(p => p.cliente_id));
   const itensAtras = planos.length ? await paginado(() => sb.from('cli_plano_itens').select('id,plano_id').in('plano_id', planos.map(p => p.id)).eq('concluido', false).lt('prazo', hoje).order('id')) : [];
@@ -2815,7 +2860,7 @@ async function vMentorados(ctx) {
     const badge = !comLogin.has(c.id) ? ['neutro', 'sem login'] : st === 'completo' ? ['ok', 'em dia'] : st === 'parcial' ? ['alerta', 'parcial hoje'] : ['critico', 'parado hoje'];
     const ac = acs ? acs.find(a => a.cliente_id === c.id) : null, pl = planos.find(p => p.cliente_id === c.id);
     const its = pl ? itens.filter(i => i.plano_id === pl.id) : [], pct = its.length ? Math.round(its.filter(i => i.concluido).length / its.length * 100) : null;
-    const ag = aguard.filter(p => p.cliente_id === c.id).length, pe = pend.filter(p => p.cliente_id === c.id).length;
+    const ag = c.posts_modo === 'equipe' ? 0 : aguard.filter(p => p.cliente_id === c.id).length, pe = pend.filter(p => p.cliente_id === c.id).length;
     const a0 = ativHoje.find(a => a.cliente_id === c.id);
     return `<a class="mrow" style="text-decoration:none;color:inherit" href="#/admin/mentorado/${c.id}"><div class="row-between"><div><div class="nome">${esc(c.nome)}</div>
       <div class="meta">${esc([c.empresa, c.nivel].filter(Boolean).join(' · ') || 'sem empresa/nível')} · ${esc(c.status)}</div></div>
@@ -2863,7 +2908,7 @@ async function vMentorado(ctx) {
   if (!abas.some(a => a[0] === aba)) { ir(`admin/mentorado/${id}`); return { kicker: '', titulo: '', html: '' }; }
   let corpo = '';
   if (aba === 'plano') corpo = await planoConteudo(ctx);
-  else if (aba === 'posts') { const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,texto,status,versao,data_prevista,enviado_em').eq('cliente_id', id).order('id', { ascending: false })); corpo = listaPostsHtml(ctx, posts); }
+  else if (aba === 'posts') { const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,texto,status,versao,data_prevista,enviado_em').eq('cliente_id', id).order('id', { ascending: false })); const eqA = cli.posts_modo === 'equipe'; corpo = (eqA ? `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">Este cliente aprova os posts que a equipe prepara. Crie o post, envie e ele recebe o aviso no portal.</p><a class="btn btn-primary" href="#/admin/post-novo/${id}">${svg('mais', 16)} Novo post para o cliente</a></div>` : '') + listaPostsHtml(ctx, posts, { eq: eqA }); }
   else if (aba === 'calendario') corpo = `<div class="card">${await calendarioHtml(ctx)}</div>`;
   else if (aba === 'drive') corpo = await driveConteudo(ctx);
   else if (aba === 'acesso') corpo = await acessoConteudo(cli);
@@ -2929,7 +2974,16 @@ function mensagemBoasVindas(nome, email, senha, clienteId) {
   if (tipoDe(c) === 'aluno') return `Oi, ${primeiroNome(nome)}! Seu acesso ao curso Demanda Infinita está pronto.\n\nLink: ${PORTAL_URL}\nE-mail: ${email}\nSenha: ${senha}\n\nLá estão as aulas do curso e a agenda dos encontros ao vivo. Quando entrar, pode trocar a senha pelo menu no canto superior direito.`;
   return `Oi, ${primeiroNome(nome)}! Seu acesso ao portal da mentoria Demanda Infinita está pronto.\n\nLink: ${PORTAL_URL}\nE-mail: ${email}\nSenha: ${senha}\n\nLá você acompanha seu plano de ação, manda seus posts pra aprovação e guarda seus arquivos. Quando entrar, pode trocar a senha pelo menu no canto superior direito.`;
 }
-async function acessoConteudo(cli) {
+const modoPostsCard = cli => `<div class="card"><h2>Quem escreve os posts</h2><p class="desc">No modo <b>equipe</b>, a equipe escreve e envia o post, e o cliente aprova e publica. No modo <b>mentorado</b>, ele escreve e você aprova.</p>
+  <div class="row"><select id="modo-posts"><option value="cliente" ${cli.posts_modo !== 'equipe' ? 'selected' : ''}>O mentorado escreve e eu aprovo</option><option value="equipe" ${cli.posts_modo === 'equipe' ? 'selected' : ''}>A equipe escreve e o cliente aprova</option></select>
+  <button class="btn" data-act="modo-posts-salvar" data-id="${cli.id}">Salvar</button></div></div>`;
+ACT['modo-posts-salvar'] = async el => {
+  const v = $('#modo-posts').value;
+  await ocupado(el, async () => { const { error } = await sb.from('cli_clientes').update({ posts_modo: v }).eq('id', Number(el.dataset.id)); if (error) throw error; await clientes(true); });
+  toast('Modo dos posts atualizado.'); await render();
+};
+async function acessoConteudo(cli) { return (await acessoConteudoBase(cli)) + modoPostsCard(cli); }
+async function acessoConteudoBase(cli) {
   const [perfis, acs] = await Promise.all([q(sb.from('cli_perfis').select('id,created_at').eq('cliente_id', cli.id).eq('role', 'cliente')), acessos()]);
   const ac = acs ? acs.find(a => a.cliente_id === cli.id) : null;
   if (!perfis.length) return `<div class="card"><h2>Este mentorado ainda não tem login</h2><p class="desc">Você escolhe o e-mail de login e o sistema gera a senha, que aparece uma única vez com a mensagem pronta pra copiar. Também dá pra fazer isso em <a href="#/admin/config">Configurações</a>.</p>
@@ -3486,8 +3540,17 @@ async function esperarRenderTour(antes) {
 const achaAlvo = a => { for (const s of [].concat(a || [])) { const e = $(s); if (e && e.getClientRects().length) return e; } return null; };
 function fechaPopsTour() { $('#notif-panel').classList.remove('aberto'); $('#user-menu').classList.remove('aberto'); }
 
+let TOUR_EQUIPE = false;
+function tourAjustarModo() {   // cliente do modo equipe não escreve: tira o passo do editor e troca o texto do vai e volta
+  const cl = (S.clientes || []).find(c => c.id === (S.perfil && S.perfil.cliente_id));
+  if (TOUR_EQUIPE || !cl || cl.posts_modo !== 'equipe') return;
+  TOUR_EQUIPE = true;
+  const k = TOUR_PASSOS.findIndex(p => p.rota === 'posts/novo'); if (k >= 0) TOUR_PASSOS.splice(k, 1);
+  const v = TOUR_PASSOS.find(p => p.rota === 'posts' && p.centro);
+  if (v) { v.titulo = 'O vai e volta da aprovação'; v.texto = '**1.** A equipe prepara o post e envia aqui.\n**2.** Você lê, aprova ou pede ajuste, com comentário.\n**3.** Aprovado, o portal te dá o atalho: copiar o texto, baixar a imagem, abrir o LinkedIn.\n**4.** Só **depois de publicar** você cola o link aqui.'; }
+}
 async function tour2Abrir(i = 0) {
-  fechaPopsTour(); const t = $('#tour2'); t.hidden = false; TOUR.on = true; document.body.classList.add('tour2-on');
+  tourAjustarModo(); fechaPopsTour(); const t = $('#tour2'); t.hidden = false; TOUR.on = true; document.body.classList.add('tour2-on');
   await tour2Passo(i);
 }
 async function tour2Passo(i) {
@@ -4334,7 +4397,7 @@ async function notifsIndicacaoCliente(out, clienteId) {
    REGISTRO DE TELAS + partida (sempre o último arquivo)
    ===================================================================== */
 const VIEWS_CLIENTE = { inicio: vInicio, plano: vPlano, posts: vPosts, calendario: vCalendario, drive: vDrive, tutorial: vTutorial, aulas: vAulas, eventos: vEventos, indicacoes: vIndicacoes };
-const VIEWS_ADMIN = { dashboard: vDashboard, aprovacoes: vAprovacoes, post: vPostAdmin, mentorados: vMentorados, mentorado: vMentorado, modelos: vModelos, modelo: vModelo, lancamento: vLancamento, config: vConfig, aulas: vAdminAulas, eventos: vAdminEventos, indicacoes: vAdminIndicacoes };
+const VIEWS_ADMIN = { dashboard: vDashboard, aprovacoes: vAprovacoes, post: vPostAdmin, 'post-novo': vPostNovoAdmin, 'post-editar': vPostEditarAdmin, mentorados: vMentorados, mentorado: vMentorado, modelos: vModelos, modelo: vModelo, lancamento: vLancamento, config: vConfig, aulas: vAdminAulas, eventos: vAdminEventos, indicacoes: vAdminIndicacoes };
 boot();
 
 </script>
