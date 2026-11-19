@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompts para advogado usar no Claude | Método Demanda Infinita®</title>
+<meta name="description" content="4 pedidos prontos para o advogado usar no Claude: prazos, petições, resposta ao cliente e pesquisa. Copie, preencha os colchetes e revise.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Se eu fosse advogado</div>
+<h1>4 pedidos prontos para o advogado usar no Claude</h1>
+<p class="lead">Copie, troque o que está entre colchetes e cole no Claude. O Claude rascunha. Você revisa e decide.</p>
+<section class="p"><div class="k">01 / Prazos</div><h2>Nenhum prazo esquecido</h2><p class="s">Cole a movimentação do processo e receba tudo em ordem de urgência.</p>
+<pre id="p0">Aqui está a movimentação do meu processo: [cole o texto].
+
+1. Liste cada prazo com a data final e o que preciso entregar.
+2. Ordene do mais urgente ao menos urgente.
+3. Escreva um lembrete curto para cada prazo.
+4. Se alguma data parecer ambígua, marque com [CONFIRMAR] em vez de adivinhar.</pre><button onclick="copiar('p0',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">02 / Petições</div><h2>A primeira versão em minutos</h2><p class="s">Você revisa. Não escreve do zero.</p>
+<pre id="p1">Sou advogado na área [sua área]. Com estes fatos: [cole os fatos].
+
+Escreva a primeira versão de uma petição inicial com: fatos, fundamentos e pedidos.
+Marque com [CONFIRMAR] tudo que eu preciso conferir (datas, valores, artigos, jurisprudência).
+Não invente número de processo, nome de parte nem citação de decisão.</pre><button onclick="copiar('p1',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">03 / Clientes</div><h2>Cliente respondido sem perder a tarde</h2><p class="s">Linguagem simples, sem juridiquês.</p>
+<pre id="p2">Meu cliente perguntou: [cole a mensagem].
+
+Responda em até 5 linhas, sem juridiquês, dizendo: em que fase está o caso e qual é o próximo passo.
+Tom: cuidadoso e direto. Não prometa resultado.</pre><button onclick="copiar('p2',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">04 / Pesquisa</div><h2>Pesquisa que não vira madrugada</h2><p class="s">O resumo do que importa e do que conferir.</p>
+<pre id="p3">Resuma esta decisão em 5 pontos: [cole o texto].
+
+Depois: diga em que ela pode ajudar o meu caso [descreva em 1 frase] e liste o que preciso conferir na fonte original antes de citar.
+Se algo no texto não estiver claro, diga em vez de supor.</pre><button onclick="copiar('p3',this)">Copiar prompt</button></section>
+<div class="aviso"><strong>Regra de ouro.</strong> Toda peça, todo prazo e toda citação passam pela sua revisão antes de sair. Confira sempre a lei e a fonte original. Antes de colar dados de clientes, avalie o sigilo profissional e a LGPD, e troque nomes e números por [cliente] quando puder.</div>
+<p class="rod">Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
