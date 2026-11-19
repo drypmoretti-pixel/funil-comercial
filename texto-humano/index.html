@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Texto de IA com cara de gente · Demanda Infinita</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--green:#008E43;--green-light:#12B85E;--bg:#F8F7F4;--card:#ECEAE5;--text:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-size:18px;line-height:1.6}
+h1,h2,h3{font-family:'Plus Jakarta Sans',sans-serif;margin:0 0 12px}.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
+.cover{padding:48px 0 10px;text-align:center}.cover img{width:76px;height:76px;margin-bottom:18px}
+.kicker{font-size:14px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-transform:uppercase}
+.cover h1{font-size:42px;font-weight:800;margin-top:10px;line-height:1.15}.sub{font-size:19px;color:var(--gray);max-width:600px;margin:14px auto 0}
+.badge{display:inline-block;margin-top:18px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:#fff;border:1px solid var(--green);border-radius:999px;padding:6px 16px}
+h2.t{font-size:25px;font-weight:800;margin-top:52px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+h2.t small{display:block;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;font-size:15px}
+.flow div b{display:block;font:800 17px 'Plus Jakarta Sans',sans-serif;margin:4px 0}.flow div i{font:600 12px 'JetBrains Mono',monospace;color:var(--green);font-style:normal}
+.flow div:not(:last-child):after{content:"→";position:absolute;right:-14px;top:42%;color:var(--green);font-weight:800}
+@media(max-width:640px){.flow{grid-template-columns:1fr}.flow div:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-20px}.cover h1{font-size:32px}}
+.prompt{background:#111;color:#e9f5ec;border-radius:16px;margin:16px 0;overflow:hidden}
+.prompt .h{background:var(--green);color:#fff;font:600 12px 'JetBrains Mono',monospace;letter-spacing:1.4px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.prompt button{background:#fff;color:var(--green);border:0;border-radius:8px;padding:5px 12px;font-weight:700;cursor:pointer;font-size:12px}
+.prompt pre{margin:0;padding:18px;white-space:pre-wrap;font:400 15px/1.55 'JetBrains Mono',monospace}
+.ex{background:#fff;border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;margin:16px 0;font-size:16px}
+.ex b{font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.2px;color:var(--green);display:block;margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+.col{border-radius:14px;padding:16px 18px;font-size:16px}.col.no{background:#fbeeea;border:1px solid #f0c9be}.col.si{background:#e9f6ee;border:1px solid #b5e0c4}
+.col h4{margin:0 0 8px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:1.4px}.col.no h4{color:#b5483a}.col.si h4{color:var(--green)}
+.col ul{margin:0;padding-left:18px}.aviso{font-size:14px;color:var(--gray);margin-top:30px}
+.cta{margin-top:48px;background:#fff;border:2px solid var(--green);border-radius:18px;padding:24px;text-align:center}
+</style>
+<style>ul,ol{padding-left:22px}li{margin:6px 0}</style></head><body><div class="wrap">
+<div class="cover"><img src="logo-demanda-infinita.png" alt=""><div class="kicker">Método Demanda Infinita®</div>
+<h1>Texto de IA com cara de gente (e não de propaganda)</h1><p class="sub">Quando você pede um post pra IA sem mostrar como você fala, ela escreve no tom de propaganda: "sem dor de cabeça", foguetinho, lista com ✅. A saída é simples: mostrar um exemplo seu.</p></div>
+<h2 class="t">O antes e depois (respostas reais do Claude, 18/11/2026)</h2>
+<p><strong>Pedido 1:</strong> "Escreve um post pro Instagram da minha empresa. Eu tenho uma contabilidade pra pequenas empresas e quero divulgar que a gente abre CNPJ."</p>
+<div class="ex">"Quer abrir seu CNPJ sem dor de cabeça?" · "Abrir um CNPJ não precisa ser complicado. 🚀" · "✅ Escolha do enquadramento ideal pro seu negócio ✅ Toda a parte burocrática e documental ✅ Orientação clara, sem 'contabilês'"</div>
+<p><strong>Pedido 2:</strong> o mesmo pedido + "Escreve do jeito que eu falo. Exemplo de mensagem que eu mandei pra um cliente ontem: 'Oi, Carla! Seu CNPJ saiu hoje cedo. Já pode emitir nota. Qualquer coisa me chama aqui.'"</p>
+<div class="ex">"A gente abre pra você. Você me manda os dados, a gente cuida da papelada e te avisa quando sair. Aí já pode emitir nota e atender como empresa. [...] E se tiver qualquer dúvida no caminho, me chama aqui."</div>
+<p>(A mensagem da "Carla" é um exemplo criado pra este teste.)</p>
+<h2 class="t">Por que funciona</h2>
+<p>O guia oficial da Anthropic (empresa que faz o Claude) diz: "Exemplos são um dos jeitos mais confiáveis de guiar o formato, o tom e a estrutura da resposta." Sem exemplo, a IA chuta um tom médio. Com exemplo, ela copia o seu.</p>
+<h2 class="t">O pedido pronto (copie e troque o que está entre colchetes)</h2>
+<div class="prompt"><div class="h"><span>PEDIDO PRONTO</span><button onclick="cp(this)">Copiar pedido</button></div><pre>Escreve [um post pro Instagram / uma mensagem de WhatsApp / um e-mail] pra minha empresa. Minha empresa: [o que faz e pra quem]. O assunto: [o que quer divulgar].
+Escreve do jeito que eu falo. Aqui vão 2 mensagens que eu mandei de verdade pra clientes:
+1) "[cole aqui uma mensagem sua]"
+2) "[cole aqui outra]"
+Use frases curtas e palavras do dia a dia, como nas mensagens. Termine com uma pergunta simples pro cliente.</pre></div>
+<h2 class="t">3 passos</h2>
+<ol><li>Abra o seu WhatsApp ou e-mail e copie 2 mensagens que você mandou pra clientes e que soaram bem.</li><li>Cole no pedido acima, no Claude, no ChatGPT ou no Gemini.</li><li>Revise antes de postar: no teste, a IA ainda colocou hashtag e emoji. Tire o que não é seu e confira preço e prazo.</li></ol>
+<h2 class="t">Fonte</h2>
+<ul><li>Anthropic, "Prompting best practices" › "Use examples effectively": "Examples are one of the most reliable ways to steer Claude's output format, tone, and structure." <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" target="_blank" rel="noopener" style="color:var(--green);word-break:break-all">https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices</a></li></ul>
+<div class="cta"><b style="font-family:'Plus Jakarta Sans';font-size:20px">Quer captar clientes qualificados sem investir em tráfego pago?</b><p style="margin:8px 0 0;color:var(--gray);font-size:16px">Conheça o Método Demanda Infinita®: <a href="https://demandainfinita.com" style="color:var(--green)">demandainfinita.com</a></p></div>
+</div>
+<script>function cp(b){var t=b.closest('.prompt').querySelector('pre').innerText;function ok(){b.textContent='Copiado!';setTimeout(function(){b.textContent='Copiar'},1500)}if(navigator.clipboard){navigator.clipboard.writeText(t).then(ok,function(){fb(t);ok()})}else{fb(t);ok()}}function fb(t){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}</script>
+</body></html>
