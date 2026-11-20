@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompts para nutricionista usar no Claude | Método Demanda Infinita®</title>
+<meta name="description" content="4 pedidos prontos para o nutricionista usar no Claude: lista de compras, resumo da consulta, mensagem ao paciente e material simples. Copie, preencha os colchetes e revise.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Se eu fosse nutricionista</div>
+<h1>4 pedidos prontos para o nutricionista usar no Claude</h1>
+<p class="lead">Copie, troque o que está entre colchetes e cole no Claude. O Claude organiza e rascunha. Você revisa e decide.</p>
+<section class="p"><div class="k">01 / Lista de compras</div><h2>O plano que você montou vira lista de mercado</h2><p class="s">Você define o plano. O Claude só organiza a compra.</p>
+<pre id="p0">Este é o plano alimentar que eu montei para um paciente: [cole o plano, sem nome].
+
+1. Transforme em uma lista de compras para 7 dias.
+2. Separe por seção do mercado (hortifrúti, açougue, mercearia, laticínios).
+3. Some as quantidades iguais.
+4. Não troque, tire nem acrescente nenhum alimento. Se algo estiver ambíguo, marque com [CONFIRMAR].</pre><button onclick="copiar('p0',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">02 / Resumo da consulta</div><h2>Suas anotações viram um resumo organizado</h2><p class="s">Sem perder a noite passando a limpo.</p>
+<pre id="p1">Estas são as minhas anotações da consulta de hoje: [cole as anotações, sem nome nem documento do paciente].
+
+Organize em um resumo curto com 3 partes:
+1. O que o paciente contou.
+2. O que combinamos.
+3. Próximos passos até o retorno.
+Use só o que está nas anotações. Não acrescente avaliação, diagnóstico nem conduta.</pre><button onclick="copiar('p1',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">03 / Mensagem ao paciente</div><h2>O lembrete do retorno, curto e gentil</h2><p class="s">Pronta pra você revisar e mandar no WhatsApp.</p>
+<pre id="p2">Escreva uma mensagem de WhatsApp para [primeiro nome do paciente] lembrando o retorno em [data e horário].
+
+Inclua as 2 metas que combinamos: [meta 1] e [meta 2].
+Até 5 linhas, tom acolhedor, sem bronca e sem prometer resultado.</pre><button onclick="copiar('p2',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">04 / Material simples</div><h2>Um assunto difícil em 5 frases</h2><p class="s">Pro paciente entender e lembrar.</p>
+<pre id="p3">Explique [assunto, ex.: o que são fibras] para um paciente que não é da área.
+
+Use no máximo 5 frases curtas e 1 exemplo do dia a dia.
+Sem números de dose, sem promessa de resultado e sem termo técnico sem explicar.
+No fim, escreva: "Qualquer dúvida, fale comigo na próxima consulta."</pre><button onclick="copiar('p3',this)">Copiar prompt</button></section>
+<div class="aviso"><strong>Regra de ouro.</strong> O Claude organiza e rascunha. Quem avalia, prescreve e decide é o nutricionista. Revise tudo antes de enviar ao paciente. Por sigilo profissional e pela LGPD, nunca cole nome completo, documento, exames ou qualquer dado de saúde que identifique o paciente: troque por [paciente].</div>
+<p class="rod">Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
