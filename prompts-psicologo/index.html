@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompts para psicólogo usar no Claude | Método Demanda Infinita®</title>
+<meta name="description" content="4 pedidos prontos para o psicólogo usar no Claude: confirmação da sessão, contrato terapêutico, post explicando um tema e declaração de comparecimento. Copie, preencha os colchetes e revise.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Se eu fosse psicólogo</div>
+<h1>4 pedidos prontos para o psicólogo usar no Claude</h1>
+<p class="lead">Copie, troque o que está entre colchetes e cole no Claude. O Claude cuida da parte de escritório. Você revisa e decide. Nenhum pedido usa o que o paciente conta na sessão.</p>
+<section class="p"><div class="k">01 / Confirmação da sessão</div><h2>A mensagem da véspera, curta e gentil</h2><p class="s">Pra parar de escrever a mesma mensagem toda noite.</p>
+<pre id="p0">Escreva uma mensagem de WhatsApp para [primeiro nome] confirmando a sessão de [dia] às [horário], [online ou presencial].
+
+Lembre, com gentileza, a minha regra de remarcação: [ex.: avisar com 24 horas de antecedência].
+Até 4 linhas, tom acolhedor, sem emoji e sem cobrança.
+Me dê 2 versões: uma pra primeira sessão e uma pra quem já é paciente.</pre><button onclick="copiar('p0',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">02 / Contrato terapêutico</div><h2>As regras do atendimento em linguagem simples</h2><p class="s">Horário, faltas e pagamento, sem juridiquês.</p>
+<pre id="p1">Me ajude a escrever o rascunho do meu contrato terapêutico, em linguagem simples.
+
+Minhas regras:
+- Duração e frequência: [ex.: 50 minutos, 1 vez por semana]
+- Valor e forma de pagamento: [valor, quando paga, Pix ou recibo]
+- Faltas e remarcação: [sua regra]
+- Férias e feriados: [sua regra]
+- Contato fora da sessão: [ex.: WhatsApp só pra remarcar]
+
+Organize em tópicos curtos. Inclua um parágrafo sobre sigilo, sem inventar artigo de lei.
+Marque com [CONFIRMAR] tudo o que eu não informei.</pre><button onclick="copiar('p1',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">03 / Post para o Instagram</div><h2>Um tema difícil em 5 frases simples</h2><p class="s">Conteúdo que educa, sem prometer resultado.</p>
+<pre id="p2">Escreva um post curto para o Instagram explicando [tema, ex.: a diferença entre tristeza e cansaço] para quem não é da área.
+
+No máximo 5 frases curtas e 1 exemplo do dia a dia.
+Sem diagnóstico, sem promessa de resultado, sem antes e depois e sem "cura".
+Feche convidando a pessoa a procurar ajuda profissional se precisar.</pre><button onclick="copiar('p2',this)">Copiar prompt</button></section>
+<section class="p"><div class="k">04 / Declaração de comparecimento</div><h2>O modelo pronto, com os campos em branco</h2><p class="s">Você preenche e assina.</p>
+<pre id="p3">Monte um modelo de declaração de comparecimento para psicólogo, com os campos em colchetes:
+[nome do paciente], [data], [horário de início e fim], [cidade], [meu nome e CRP].
+
+Só a informação de comparecimento: nada sobre motivo, conteúdo ou diagnóstico.
+Linguagem formal e curta, pronta para eu revisar conforme as normas do meu Conselho.</pre><button onclick="copiar('p3',this)">Copiar prompt</button></section>
+<div class="aviso"><strong>Regra de ouro.</strong> O Claude rascunha a parte de escritório. Quem avalia, conduz e decide é o psicólogo. Revise tudo antes de usar e confira os documentos com as normas do seu Conselho. Por sigilo profissional e pela LGPD, nunca cole no Claude o que o paciente conta na sessão, nome completo, documento ou qualquer dado que identifique alguém: troque por [paciente].</div>
+<p class="rod">Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
