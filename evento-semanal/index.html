@@ -316,6 +316,32 @@ const PLANO = [
   { k:'a-concluir',  d:1,   t:'11:00', tipo:'acao', tit:'Concluir este evento e criar o próximo', guia:'concluir' },
 ];
 
+/* O plano se adapta à antecedência da edição (dias entre criar a edição e o evento).
+   11+ dias = plano completo. Menos: as mensagens de aquecimento que não cabem saem,
+   as boas-vindas abrem o ciclo no 1º dia e o fecho é sempre pergunta → números → funil completo. */
+function planoDe(ev) {
+  const N = Math.max(1, Math.min(11, ev.antecedencia || 11));
+  const W = Math.min(N, 10);                 // dia das boas-vindas
+  let i = 0;
+  const out = [];
+  PLANO.forEach(it => {
+    if (it.tipo === 'acao') {
+      if (it.d < -N) { out.push({ ...it, d: -N, t: hm(8 * 60 + 5 * i++) }); }   // ação atrasada vai pro 1º dia, na mesma ordem
+      else out.push(it);
+      return;
+    }
+    if (it.d >= 0) { out.push(it); return; }
+    if (it.k === 'm-10') { out.push({ ...it, d: -W, t: W <= 2 ? '09:00' : '10:00' }); return; }
+    if (it.k === 'm-2') { out.push(W >= 2 ? { ...it, d: -2, t: '10:00' } : { ...it, d: -1, t: '10:00' }); return; }
+    if (it.k === 'm-1n') { out.push(W === 1 ? { ...it, t: '13:00' } : it); return; }
+    if (it.k === 'm-1') { out.push(it); return; }
+    if (it.d > -W) out.push(it);             // m-9…m-3 só se couberem depois das boas-vindas
+  });
+  return out;
+}
+function hm(min) { return `${pad(Math.floor(min / 60))}:${pad(min % 60)}`; }
+function diasAte(dataISO) { const h = new Date(); h.setHours(0, 0, 0, 0); return Math.round((dataLocal(dataISO) - h) / 864e5); }
+
 function fase(d) {
   if (d <= -11) return ['f-prep', 'Preparação'];
   if (d <= -8) return ['f-margem', 'Margem'];
@@ -845,8 +871,9 @@ async function carregarEventos() {
 
 function cardEvento(ev) {
   const ini = inicioEvento(ev);
-  const feitos = Math.min(window._contagem[ev.id] || 0, PLANO.length);
-  const pct = Math.round(feitos / PLANO.length * 100);
+  const total = planoDe(ev).length;
+  const feitos = Math.min(window._contagem[ev.id] || 0, total);
+  const pct = Math.round(feitos / total * 100);
   const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
   const dias = Math.round((dataLocal(ev.data) - hoje) / 864e5);
   const quando = ev.status === 'concluido' ? 'Concluído' : dias === 0 ? 'É hoje' : dias === 1 ? 'Amanhã' : dias > 1 ? `Faltam ${dias} dias` : `Foi há ${-dias} dia${dias === -1 ? '' : 's'}, falta concluir`;
@@ -854,7 +881,7 @@ function cardEvento(ev) {
     <div class="date"><b>${pad(ini.getDate())}</b><span>${MESES[ini.getMonth()]}</span></div>
     <div class="info">
       <div class="t">${ev.edicao ? ev.edicao + 'ª edição · ' : ''}${DIAS[ini.getDay()]}, ${ddmm(ini)} às ${fmtHora(ini)}</div>
-      <div class="s">${quando} · ${feitos} de ${PLANO.length} etapas</div>
+      <div class="s">${quando} · ${feitos} de ${total} etapas</div>
       <div class="bar"><i style="width:${pct}%"></i></div>
     </div></button>`;
 }
@@ -890,16 +917,22 @@ function novoEvento(base) {
       <div class="field"><label>Data do evento</label><input type="date" id="n-data" value="${sugestao}" required></div>
       <div class="field"><label>Horário (Brasília)</label><input type="time" id="n-hora" value="${hora}" required></div>
     </div>
+    <div class="autoinfo" id="n-ant"></div>
     <div class="field"><label>Número da edição (opcional)</label><input type="number" min="1" id="n-edicao" value="${edicao}" placeholder="ex: 3"></div>
     <div class="field"><label>Link da sala (opcional, dá para pôr depois)</label><input type="url" id="n-sala" value="${esc(sala)}" placeholder="https://meet.google.com/..."></div>
     <div class="err" id="n-err"></div>
     <div class="acts"><button type="button" class="btn ghost" onclick="fecharModal()">Cancelar</button><button class="btn green" type="submit">Criar evento</button></div>
   </form></div>`;
+  const dicaAnt = () => {
+    const d = diasAte($('n-data').value);
+    $('n-ant').innerHTML = d < 0 ? 'Essa data já passou.' : d >= 11 ? `Faltam <b>${d} dias</b>: plano completo (11 dias).` : `Faltam <b>${d} dia${d === 1 ? '' : 's'}</b>: o plano e as mensagens são montados para ${d} dia${d === 1 ? '' : 's'}.`;
+  };
+  $('n-data').oninput = dicaAnt; dicaAnt();
   $('f-novo').onsubmit = async e => {
     e.preventDefault();
     const data = $('n-data').value;
     if (eventos.some(x => x.data === data && x.status === 'ativo')) { $('n-err').textContent = 'Já existe um evento ativo nessa data.'; return; }
-    const linha = { data, hora: $('n-hora').value, edicao: $('n-edicao').value ? Number($('n-edicao').value) : null, link_sala: $('n-sala').value.trim() || null, criado_por: eu.id };
+    const linha = { data, hora: $('n-hora').value, edicao: $('n-edicao').value ? Number($('n-edicao').value) : null, link_sala: $('n-sala').value.trim() || null, antecedencia: Math.max(1, Math.min(11, diasAte(data))), criado_por: eu.id };
     const { data: novo, error } = await sb.from('evs_eventos').insert(linha).select().single();
     if (error) { $('n-err').textContent = 'Não consegui criar: ' + error.message; return; }
     fecharModal();
@@ -926,7 +959,7 @@ async function abrirEvento(id, semHistorico) {
 }
 
 function itensDoEvento(ev) {
-  return PLANO.map(it => ({ ...it, quando: quandoItem(ev, it) })).sort((a, b) => a.quando - b.quando);
+  return planoDe(ev).map(it => ({ ...it, quando: quandoItem(ev, it) })).sort((a, b) => a.quando - b.quando);
 }
 
 function renderEvento(rolarParaHoje, manterFicha) {
@@ -988,6 +1021,7 @@ function renderEvento(rolarParaHoje, manterFicha) {
       ${campos.map(([k, l, ph]) => `<div class="field full"><label>${l}</label><input type="url" value="${esc(ev[k] || '')}" placeholder="${ph}" onchange="salvarCampo('${k}', this.value)"></div>`).join('')}
       <div class="field full" id="auto-wrap">${blocoAuto()}</div>
       <div class="field"><label>Edição</label><input type="number" min="1" value="${ev.edicao || ''}" onchange="salvarCampo('edicao', this.value)"></div>
+      <div class="field"><label>Dias de plano (1 a 11)</label><input type="number" min="1" max="11" value="${ev.antecedencia || 11}" onchange="salvarCampo('antecedencia', this.value)"></div>
       <div class="field" style="display:flex;align-items:flex-end;justify-content:flex-end"><button class="btn danger small" onclick="excluirEvento()">Excluir evento</button></div>
       <div class="saved full" id="ficha-msg"></div>
     </div></details>`;
@@ -1108,12 +1142,13 @@ async function pularPassadas() {
 async function salvarCampo(campo, valor) {
   let v = typeof valor === 'string' ? valor.trim() : valor;
   if (campo === 'edicao') v = v ? Number(v) : null;
+  else if (campo === 'antecedencia') { v = Math.max(1, Math.min(11, Number(v) || 11)); }
   else if (campo !== 'data' && campo !== 'hora') v = v || null;
   if ((campo === 'data' || campo === 'hora') && !v) return;
   const { error } = await sb.from('evs_eventos').update({ [campo]: v }).eq('id', atual.id);
   if (error) { $('ficha-msg').textContent = 'Não salvou: ' + error.message; return; }
   atual[campo] = campo === 'hora' ? v + ':00' : v;
-  renderEvento(false, true);
+  renderEvento(false, campo !== 'antecedencia');
   $('ficha-msg').textContent = 'Salvo. As mensagens já foram atualizadas.';
   agendarSync();
 }
@@ -1140,7 +1175,9 @@ async function sincronizarFila() {
   await carregarEnvios();
   const c = ctx(e), agora = new Date(), travadas = ['enviado', 'enviando', 'falhou'];
   const ops = [];
-  for (const it of itensDoEvento(e)) {
+  const itensAtuais = itensDoEvento(e);
+  Object.values(envios).forEach(r => { if (!itensAtuais.some(i => i.k === r.chave) && ['aguardando', 'aprovado'].includes(r.status)) ops.push(sb.from('evs_envios').update({ status: 'cancelado', atualizado_em: new Date().toISOString() }).eq('id', r.id).in('status', ['aguardando', 'aprovado'])); });
+  for (const it of itensAtuais) {
     if (it.tipo !== 'msg') continue;
     const r = envios[it.k];
     if (checks[it.k]) { if (r && ['aguardando', 'aprovado'].includes(r.status)) ops.push(sb.from('evs_envios').update({ status: 'cancelado', atualizado_em: new Date().toISOString() }).eq('id', r.id).in('status', ['aguardando', 'aprovado'])); continue; }
