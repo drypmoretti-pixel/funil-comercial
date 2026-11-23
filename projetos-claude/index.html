@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projetos do Claude: instruções prontas | Método Demanda Infinita®</title>
+<meta name="description" content="Como criar um Projeto no Claude e não explicar tudo de novo a cada conversa: onde clicar, instruções prontas para colar, que arquivos subir e como organizar.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Dicas do Claude · Projetos</div>
+<h1>Explique uma vez. O Claude lembra em toda conversa.</h1>
+<p class="lead">Um Projeto é uma pasta dentro do Claude. Tudo o que você coloca nela (quem você é, suas regras e seus arquivos) vale para todas as conversas daquele projeto. Funciona até no plano grátis, com até 5 projetos.</p>
+<section class="p"><div class="k">01 / Criar o projeto</div><h2>Onde clicar</h2><p class="s">No computador, em claude.ai.</p>
+<pre id="p0">1. No menu da esquerda, clique em Projetos (ou abra claude.ai/projects).
+2. Clique em Novo projeto, no canto de cima.
+3. Dê um nome simples. Exemplo: Vendas.
+4. Pronto: toda conversa que você abrir dentro dele já começa sabendo o que você colocou lá.</pre></section>
+<section class="p"><div class="k">02 / Instruções do projeto</div><h2>Cole isto nas instruções</h2><p class="s">Troque o que está entre [colchetes] pelo seu caso.</p>
+<pre id="p1">Eu sou [o que você faz, em 1 frase].
+Meu cliente é [quem compra de você: profissão, porte, cidade].
+O que eu vendo: [produto ou serviço, com o preço se for fixo].
+
+Como escrever:
+- Frases curtas, linguagem simples, sem emoji.
+- Tom: [próximo e direto / formal].
+- Nunca invente preço, prazo ou número. Se faltar informação, me pergunte antes.
+- Quando eu pedir mensagem para cliente, entregue no máximo 5 linhas.</pre><button onclick="copiar('p1',this)">Copiar instruções</button></section>
+<section class="p"><div class="k">03 / Arquivos</div><h2>Suba o que você manda toda semana</h2><p class="s">Na parte de arquivos do projeto, clique no +.</p>
+<pre id="p2">Bons arquivos para começar:
+- Tabela de preços
+- Perguntas que o cliente sempre faz (com as suas respostas)
+- Apresentação da empresa
+- 2 ou 3 mensagens suas que deram certo (para o Claude copiar o seu jeito)
+
+Depois é só pedir, por exemplo:
+"Usando a tabela de preços do projeto, responda este cliente em 4 linhas: [cole a mensagem dele]."</pre><button onclick="copiar('p2',this)">Copiar exemplo</button></section>
+<section class="p"><div class="k">04 / Um projeto por assunto</div><h2>Não misture tudo numa pasta só</h2><p class="s">Cada projeto tem a própria memória.</p>
+<pre id="p3">Exemplo de organização:
+- Projeto Vendas: preços, propostas, respostas a cliente.
+- Projeto Posts: seu jeito de escrever, temas, posts que funcionaram.
+- Projeto Cliente [nome]: o que foi combinado com aquele cliente.
+
+No plano grátis são até 5 projetos. Comece com 1, o da tarefa que você mais repete.</pre></section>
+<div class="aviso"><strong>Antes de subir arquivo.</strong> Não coloque documento com dado pessoal de cliente (CPF, contrato assinado, dado de saúde). Troque nomes por [cliente] quando puder. Teste o projeto por uma semana com uma tarefa simples e só depois aumente.</div>
+<p class="rod">Fonte: central de ajuda oficial do Claude (support.claude.com), conferida em 22/11/2026. O nome dos botões pode mudar um pouco conforme o idioma da sua conta.<br>Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conferência da conta de IA da empresa | Método Demanda Infinita®</title>
+<meta name="description" content="As 3 perguntas para fazer em cada assinatura de IA da empresa, um modelo para preencher e um pedido pronto para o Claude organizar a sua fatura.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Conferência da conta de IA</div>
+<h1>Toda IA que a empresa paga precisa ter tarefa e dono.</h1>
+<p class="lead">Faça isto na próxima fatura do cartão. Leva uns 15 minutos e mostra o que fica e o que sai.</p>
+<section class="p"><div class="k">01 / Liste</div><h2>Tudo o que a empresa paga de IA</h2><p class="s">Abra a fatura do cartão (e os cartões do time) e procure: OpenAI/ChatGPT, Anthropic/Claude, Google, Microsoft Copilot, Canva, ferramentas de vídeo, de transcrição, de site.</p>
+<pre id="p0">Ferramenta | Valor por mês | Quem assinou | Desde quando
+[nome]     | R$ [valor]    | [pessoa]     | [mês]
+[nome]     | R$ [valor]    | [pessoa]     | [mês]</pre><button onclick="copiar('p0',this)">Copiar modelo</button></section>
+<section class="p"><div class="k">02 / As 3 perguntas</div><h2>Pra cada assinatura, responda</h2><p class="s">Se não souber responder as 3, é sinal de corte.</p>
+<pre id="p1">1. Que tarefa ela fez ESSA semana? (ex.: respondeu 12 orçamentos, escreveu 3 posts)
+2. Quem usa? (o nome da pessoa, não "o time")
+3. Se eu cancelar hoje, o que para?
+
+Respondeu as 3 → fica.
+Respondeu 1 ou 2 → dá 30 dias com uma tarefa e um dono definidos.
+Não respondeu nenhuma → cancela hoje.</pre><button onclick="copiar('p1',this)">Copiar perguntas</button></section>
+<section class="p"><div class="k">03 / Duas fazendo a mesma coisa?</div><h2>Fique com uma</h2><p class="s">É comum pagar ChatGPT e Claude para o mesmo uso. Escolha a que o time mais usa e coloque nela as regras e os arquivos da empresa.</p></section>
+<section class="p"><div class="k">04 / Pedido pronto</div><h2>Deixe o Claude organizar pra você</h2><p class="s">Cole a lista de assinaturas (sem número de cartão) e use este pedido.</p>
+<pre id="p2">Aqui estão as assinaturas de IA da minha empresa: [cole a lista com ferramenta, valor e quem usa].
+
+1. Monte uma tabela com: ferramenta, valor por mês, tarefa que ela faz, quem usa.
+2. Marque as que fazem a mesma coisa que outra.
+3. Para cada uma, escreva as 3 perguntas: que tarefa fez essa semana, quem usa, o que para se cancelar.
+4. Some o total por mês e por ano.
+Não invente tarefa: onde eu não informei, escreva [PERGUNTAR].</pre><button onclick="copiar('p2',this)">Copiar pedido</button></section>
+<div class="aviso"><strong>De onde vem isso.</strong> Um levantamento da Pluggy com dados bancários de 225 mil empresas (jan. a ago. de 2026) mostrou que, entre as que pagaram IA todo mês, o valor do meio da conta mensal foi de R$ 113 para R$ 312, e 6 em cada 10 passaram a gastar mais (TI Inside, 11/11/2026; Corporis Brasil, 22/11/2026). Os dados mostram a base da Pluggy, não o país inteiro. O problema não é pagar IA: é pagar IA sem tarefa.</div>
+<p class="rod">Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
