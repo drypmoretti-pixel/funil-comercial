@@ -231,6 +231,9 @@ const TEMA = 'Como gerar 30 reuniões qualificadas por mês usando o LinkedIn, d
 const NOME_EVENTO = 'Como gerar 30 reuniões por mês com o LinkedIn';
 const CAL = 'cal.com/igor-miguel/demanda-infinita';
 const DIAS = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+const DIAS_FEIRA = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+// Números que aparecem nas mensagens de convite. ATUALIZAR no começo de cada mês, antes de criar a edição.
+const NUM = { mes:'novembro', reunioes:62, ia:35, meta:'160%', auto:'90%' };
 const DIAS_CURTO = ['dom','seg','ter','qua','qui','sex','sáb'];
 const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
@@ -282,12 +285,13 @@ const PLANO = [
   { k:'m-5',  d:-5,  t:'10:00', tipo:'msg', tit:'Para quem é' },
   { k:'m-4',  d:-4,  t:'10:00', tipo:'msg', tit:'Traga alguém' },
   { k:'m-3',  d:-3,  t:'10:00', tipo:'msg', tit:'Prepare-se' },
-  { k:'m-2',  d:-2,  t:'10:00', tipo:'msg', tit:'Contagem' },
+  { k:'m-2',  d:-2,  t:'10:00', tipo:'msg', tit:'Quantas reuniões você está perdendo' },
   { k:'a-sala',      d:-1,  t:'10:00', tipo:'acao', tit:'Testar o link da sala numa aba anônima',
     desc:'Abra o link da sala numa janela anônima e confirme que entra sem pedir nada estranho. Se o link mudou, atualize na ficha.' },
   { k:'a-alarmes',   d:-1,  t:'10:05', tipo:'acao', tit:'Pôr alarme no celular para os 9 avisos de amanhã',
     desc:'Amanhã são 9 mensagens: 4h, 2h, 1h, 30 min, 15 min, 10 min e 5 min antes (com o link), na hora (ao vivo) e 10 min depois (atrasados). Um alarme para cada.' },
-  { k:'m-1',  d:-1,  rel:0,    tipo:'msg', tit:'É amanhã' },
+  { k:'m-1n', d:-1,  t:'10:00', tipo:'msg', tit:'Os números do mês' },
+  { k:'m-1',  d:-1,  rel:0,    tipo:'msg', tit:'É amanhã · vou abrir o funil' },
   { k:'m-240', d:0,  rel:-240, tipo:'msg', tit:'É hoje · faltam 4 horas' },
   { k:'m-120', d:0,  rel:-120, tipo:'msg', tit:'Faltam 2 horas' },
   { k:'m-60',  d:0,  rel:-60,  tipo:'msg', tit:'Falta 1 hora' },
@@ -329,7 +333,8 @@ function ctx(ev) {
   const seg = proximaData(ev);
   const prox = seg ? inicioEvento(seg) : somaDias(ini, 7);
   return {
-    dia: DIAS[ini.getDay()], data: ddmm(ini), hora: fmtHora(ini), h,
+    dia: DIAS[ini.getDay()], diaF: DIAS_FEIRA[ini.getDay()], DiaF: DIAS_FEIRA[ini.getDay()].replace(/^./, x => x.toUpperCase()),
+    data: ddmm(ini), hora: fmtHora(ini), h,
     sala: ev.link_sala || '[LINK DA SALA]',
     evento: ev.link_evento || '[LINK DO EVENTO]',
     grupo: ev.link_grupo || '[LINK DO GRUPO]',
@@ -416,62 +421,142 @@ ${c.evento}
 E um pedido: fica até o final. Tem uma coisa que só quem estiver ao vivo vai receber.
 
 📅 ${c.dia}, ${c.data} · ${c.hora}`,
-  'm-2': c => `Depois de amanhã 🔥
+  'm-2': c => `🚨 Uma pergunta: quantas reuniões comerciais sua empresa está perdendo por depender exclusivamente de indicação?
 
-*${c.dia}, ${c.data}, às ${c.hora}*
+Existe uma maneira de transformar o LinkedIn em um canal previsível de geração de oportunidades.
 
-Ao vivo é diferente: você tira a sua dúvida na hora, com o seu caso, com o seu mercado.
+Sem tráfego pago. Sem listas compradas. Sem depender de DM fria.
 
-Já está na agenda?`,
-  'm-1': c => `Daqui a exatamente *24 horas* a gente está ao vivo.
+${c.DiaF}, às ${c.hora}, vou abrir o funil completo que utilizo na Demanda Infinita®.
 
-*Amanhã, ${c.dia}, às ${c.hora}*
-${TEMA}.
+E mostrar como uma IA participou de mais de ${NUM.ia} das ${NUM.reunioes} reuniões marcadas em ${NUM.mes}.
 
-Deixa reservado:
-💻 Computador (dá para ver no celular, mas no computador é melhor)
-🎧 Fone
-📝 Onde anotar
+É gratuito. Nos vemos lá! 🔥`,
+  'm-1n': c => `📊 Os números de ${NUM.mes} até agora:
 
-O link da sala chega aqui amanhã, *5 minutos antes* de começar.`,
-  'm-240': c => `*É HOJE* 🚀
+✅ ${NUM.reunioes} reuniões qualificadas marcadas.
+✅ Mais de ${NUM.ia} reuniões originadas pela IA.
+✅ ${NUM.meta} da meta.
+✅ Funil com aproximadamente ${NUM.auto} de automação.
 
-Às *${c.hora}* o Igor abre a sala ao vivo.
+Mas o mais importante não é a quantidade de reuniões.
 
-${TEMA}.
+É entender como construímos uma estrutura que transforma atenção no LinkedIn em oportunidades comerciais.
 
-Fecha a agenda da noite. O link chega aqui *5 minutos antes*.`,
-  'm-120': c => `Faltam *2 horas* ⏰
+Amanhã vou abrir tudo gratuitamente, enviaremos o link aqui, 5 minutos antes!
 
-Às ${c.hora} a gente começa. Pontualmente.
+${c.data}, às ${c.hora}.
 
-Já deixa o computador por perto e a pergunta que você quer fazer anotada.`,
+Não perca!`,
+  'm-1': c => `🔥 AMANHÃ VOU ABRIR O FUNIL COMPLETO.
+
+Não será uma palestra genérica sobre LinkedIn ou inteligência artificial.
+
+Vou mostrar:
+
+→ Como construímos os conteúdos de captura.
+→ Quais iscas atraem decisores.
+→ Como funciona a captura dos interessados.
+→ Como a IA qualifica e agenda reuniões.
+→ Como o closer recebe o contexto antes da call.
+
+Inclusive, vou mostrar a operação funcionando na prática.
+
+📅 Amanhã, ${c.diaF}.
+⏰ ${c.hora}.
+🎯 Evento 100% gratuito.
+
+Comente DEMANDA para participar!`,
+  'm-240': c => `🚨 É HOJE!
+
+Daqui a 4 horas vou abrir o funil da Demanda Infinita®.
+
+Vou mostrar como geramos reuniões qualificadas pelo LinkedIn e como a inteligência artificial participa de todo o processo.
+
+Se você vende serviços B2B e quer parar de depender exclusivamente de indicações, essa aula é para você.
+
+⏰ Hoje, às ${c.hora}.
+
+Prepare-se!`,
+  'm-120': c => `FALTAM 2 HORAS! 🔥
+
+Hoje você vai entender como transformar o LinkedIn em uma máquina e gerar 30 reuniões qualificadas por mês usando apenas 1h da semana
+
+Sem tráfego pago.
+Sem cold DM.
+Sem depender de indicação.
+
+Vou abrir os bastidores, mostrar a IA e apresentar o funil completo.
+
+⏰ ${c.hora}. Te espero!`,
   'm-60': c => `Falta *1 hora* ⏳
 
 Às ${c.hora} a gente está ao vivo.
 
 Aguarde aqui no grupo: o link da sala chega *5 minutos antes* de começar, às ${c.h(-5)}.`,
-  'm-30': c => `Faltam *30 minutos*.
+  'm-30': c => `⏰ FALTAM 30 MINUTOS!
 
-Pega uma água, fecha as outras abas e deixa o fone por perto.
+Estamos preparando tudo por aqui.
 
-O link chega aqui às *${c.h(-5)}*.`,
+Hoje vou mostrar:
+✅ Estratégia de conteúdo.
+✅ Captura de leads.
+✅ Qualificação com IA.
+✅ Agendamento automático.
+✅ Processo comercial.
+
+O funil da demanda infinita ponta a ponta
+
+Às ${c.hora} começamos!
+
+Já chama seu amigo que precisa acelerar as vendas para 2027!`,
   'm-15': c => `Faltam *15 minutos* 🔥
 
 Fica de olho no grupo: às ${c.h(-5)} eu mando o link da sala.`,
-  'm-10m': c => `Faltam *10 minutos*.
+  'm-10m': c => `🚨 FALTAM 10 MINUTOS!
 
-Mais 5 minutinhos e o link chega aqui. Já deixa o computador ligado.`,
-  'm-5m': c => `🔗 *A sala está aberta. Entra agora:*
+A transmissão começa às ${c.hora}.
 
-${c.sala}
+Como gerar 30 reuniões qualificadas no linkedin usando 1h por semana
 
-Começamos às *${c.hora}*. Entra já para testar o áudio.`,
-  'm-0': c => `🔴 *ESTAMOS AO VIVO*
+Prepare suas perguntas e venha acompanhar os bastidores da Demanda Infinita®.
 
-O Igor já começou. Entra:
+Hoje é dia de sair da teoria e entender como isso funciona na prática.
+
+Nos vemos ao vivo! 🔥`,
+  'm-5m': c => `🔥 FALTAM 5 MINUTOS!
+
+Estamos entrando ao vivo!
+
+Pode preparar: hoje vou abrir o funil, mostrar a IA funcionando e compartilhar os números reais da operação.
+
+É agora!
+
+Até já!
+
 ${c.sala}`,
-  'm-atr': c => `Você que ainda não entrou: *ainda dá tempo*. A parte principal está só começando.
+  'm-0': c => `🔴 ESTAMOS AO VIVO!
+
+O evento da Demanda Infinita® começou!
+
+Entre agora para acompanhar a apresentação e ver o funil funcionando na prática.
+
+Não deixe para assistir depois.
+
+Te espero na transmissão! 👇
+
+${c.sala}`,
+  'm-atr': c => `🚨 JÁ COMEÇAMOS!
+
+Se você ainda não entrou, ainda dá tempo.
+
+Estamos mostrando os bastidores da operação, a estrutura de captura e a IA responsável por qualificar e agendar reuniões.
+
+Você não precisa acompanhar desde o primeiro minuto.
+
+Entre agora e aproveite o conteúdo!
+
+🔴 A transmissão já está acontecendo!
 
 ${c.sala}`,
   'm+1': c => `Obrigado a todo mundo que esteve com a gente ontem 🙏
@@ -494,17 +579,18 @@ const WHY = {
   'm-5': 'Quem se reconhece na lista vai.',
   'm-4': 'Cada participante vira divulgador.',
   'm-3': 'Quem se prepara já se comprometeu. O "fica até o final" segura a audiência.',
-  'm-2': 'Curta de propósito: só data, hora e o motivo de ir ao vivo.',
-  'm-1': 'Enviada no mesmo horário do evento, para a pessoa sentir o horário.',
-  'm-240': 'Abre o dia e protege o horário da noite.',
-  'm-120': '"Pontualmente" faz a pessoa chegar no horário.',
+  'm-2': 'Abre a ideia de que indicação não é canal previsível e já planta a prova (reuniões de IA no mês).',
+  'm-1': 'Lista o que a pessoa vai ver. Fecha com "Comente DEMANDA", então a automação da palavra-chave tem que estar apontando pra esta edição.',
+  'm-1n': 'Prova social do mês (muda todo mês na constante NUM) e a promessa de que o link chega 5 minutos antes.',
+  'm-240': 'Abre o dia e diz pra quem é: quem vende B2B e quer parar de depender de indicação.',
+  'm-120': 'Traz a promessa do evento e os três "sem".',
   'm-60': 'Avisa que o link vem 5 minutos antes, para ninguém sair do grupo procurando.',
-  'm-30': 'Tira as distrações antes de começar.',
+  'm-30': 'Lista os cinco blocos do evento e pede pra chamar um amigo.',
   'm-15': 'Mantém a atenção no grupo.',
-  'm-10m': 'Último aviso antes do link.',
-  'm-5m': 'A mensagem mais importante: o link vai sozinho, sem texto longo em volta.',
-  'm-0': 'Quem estava em dúvida decide agora.',
-  'm-atr': 'Resgata quem se atrasou e ia desistir por vergonha de entrar no meio.',
+  'm-10m': 'Último aviso antes do link. Pede as perguntas.',
+  'm-5m': 'O link da sala sai aqui, como prometido nos avisos de véspera.',
+  'm-0': 'Chama quem ainda não entrou.',
+  'm-atr': 'Resgata quem se atrasou: dá pra entrar no meio.',
   'm+1': 'Fecha o ciclo e já empurra a próxima edição. Sem link de gravação, essa parte some sozinha.',
 };
 
@@ -513,13 +599,13 @@ let imagens = {};         // chave -> { url, path }
 let textos = {};          // chave -> texto salvo (com {variáveis})
 let editando = new Set();
 const VARS = [
-  ['{dia}', 'dia da semana'], ['{data}', 'data (dd/mm)'], ['{hora}', 'horário do evento'],
+  ['{dia}', 'dia da semana'], ['{diaF}', 'dia com -feira (quarta-feira)'], ['{DiaF}', 'dia com -feira, maiúscula'], ['{data}', 'data (dd/mm)'], ['{hora}', 'horário do evento'],
   ['{hora-5}', 'horário 5 min antes'], ['{evento}', 'link do evento'], ['{sala}', 'link da sala'],
   ['{grupo}', 'link do grupo'], ['{gravacao}', 'link da gravação'],
   ['{proxDia}', 'dia da próxima'], ['{proxData}', 'data da próxima'], ['{proxHora}', 'hora da próxima'],
 ];
 function ctxModelo() {
-  return { dia:'{dia}', data:'{data}', hora:'{hora}', h: m => `{hora${m < 0 ? m : '+' + m}}`,
+  return { dia:'{dia}', diaF:'{diaF}', DiaF:'{DiaF}', data:'{data}', hora:'{hora}', h: m => `{hora${m < 0 ? m : '+' + m}}`,
     sala:'{sala}', evento:'{evento}', grupo:'{grupo}', grav:'{gravacao}',
     proxDia:'{proxDia}', proxData:'{proxData}', proxHora:'{proxHora}' };
 }
@@ -528,7 +614,7 @@ function aplicarModelo(tpl, c) {
   let t = tpl;
   if (!c.grav) t = t.split('\n\n').filter(p => !p.includes('{gravacao}')).join('\n\n');
   return t.replace(/\{hora([+-]\d+)\}/g, (_, m) => c.h(Number(m)))
-    .replace(/\{(dia|data|hora|evento|sala|grupo|proxDia|proxData|proxHora)\}/g, (_, n) => c[n])
+    .replace(/\{(dia|diaF|DiaF|data|hora|evento|sala|grupo|proxDia|proxData|proxHora)\}/g, (_, n) => c[n])
     .replace(/\{gravacao\}/g, c.grav);
 }
 function msgTexto(k, c) { return k in textos ? aplicarModelo(textos[k], c) : MSG[k](c); }
