@@ -275,6 +275,25 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .num-ctl input{width:64px;text-align:center;font-weight:800;font-size:1.1rem;padding:6px}
 
 /* ---------- posts ---------- */
+.pc-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 12px}.pc-nav b{display:block;font-size:1.05rem}.pc-nav b::first-letter{text-transform:uppercase}
+.pc-grade{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.pc-sem{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center;padding:2px 0}
+.pc-dia{min-height:92px;background:var(--surface-1);border:1px solid var(--line);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.pc-dia.vazio{background:transparent;border-color:transparent}
+.pc-dia .n{font-size:.76rem;font-weight:700;color:var(--muted)}
+.pc-dia.hoje{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.pc-chip{display:block;font-size:.72rem;font-weight:800;line-height:1.25;padding:5px 7px;border-radius:7px;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--st-rascunho-bg);color:var(--st-rascunho-tx)}
+.pc-chip.aguardando{background:var(--st-aguardando-bg);color:var(--st-aguardando-tx)}.pc-chip.ajustes{background:var(--st-ajustes-bg);color:var(--st-ajustes-tx)}.pc-chip.aprovado{background:var(--st-aprovado-bg);color:var(--st-aprovado-tx)}.pc-chip.reprovado{background:var(--st-reprovado-bg);color:var(--st-reprovado-tx)}.pc-chip.publicado{background:var(--st-publicado-bg);color:var(--st-publicado-tx)}
+.pc-card{background:var(--surface-1);border:1px solid var(--line);border-radius:14px;margin:0 0 14px;overflow:hidden;box-shadow:var(--sombra-1)}
+.pc-card .pc-cab{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px 0}
+.pc-card .pc-data{font-weight:800;font-size:.78rem;color:var(--accent-deep);text-transform:uppercase;letter-spacing:.05em}
+.pc-card .tt{font-weight:800;font-size:1rem;padding:6px 16px 0}
+.pc-card .pc-txt{padding:8px 16px 10px;color:var(--text-secondary);font-size:.88rem}.pc-card .pc-txt>div{white-space:pre-line;display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical;overflow:hidden}
+.pc-card .pc-img{margin:4px 16px 6px;min-height:60px}
+.pc-card .pc-img img{display:block;width:100%;max-width:420px;height:auto;border-radius:10px;border:1px solid var(--line)}
+.pc-card .pc-mat{margin:8px 16px;padding:10px 12px;border:1px dashed var(--accent);background:var(--destaque-bg);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.86rem}
+.pc-card .pc-acoes{padding:0 16px 14px;display:flex;gap:8px}
+@media(max-width:720px){.pc-dia{min-height:62px;padding:4px}.pc-chip{font-size:.6rem;padding:3px 4px}}
 .post-card{display:block;width:100%;text-align:left;background:var(--surface-1);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sombra-1)}
 .post-card:hover{box-shadow:var(--sombra-2);border-color:rgba(0,142,67,.45)}
 .post-card .tt{font-weight:800;font-size:.94rem;margin-bottom:3px}
@@ -1681,7 +1700,7 @@ async function vInicio(ctx) {
   const [prog, ativ, posts, planos, pend] = await Promise.all([
     q(sb.from('cli_progresso').select('*').eq('cliente_id', cli.id)),
     q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).gte('data', addDias(hoje, -60)).order('data')),
-    q(sb.from('cli_posts').select('id,titulo,status,versao,data_prevista,enviado_em,texto').eq('cliente_id', cli.id).order('id', { ascending: false }).limit(60)),
+    q(semRasc(sb.from('cli_posts').select('id,titulo,status,versao,data_prevista,enviado_em,texto').eq('cliente_id', cli.id), ctx, cli).order('id', { ascending: false }).limit(60)),
     q(sb.from('cli_planos').select('*').eq('cliente_id', cli.id).eq('status', 'ativo')),
     q(sb.from('cli_materiais_pendentes').select('*').eq('cliente_id', cli.id).eq('status', 'pendente').order('pedido_em')),
   ]);
@@ -1767,7 +1786,7 @@ async function calendarioHtml(ctx) {
   const ini = isoLocal(new Date(CAL.ano, CAL.mes, 1)), fim = isoLocal(new Date(CAL.ano, CAL.mes + 1, 0));
   const [ativ, posts] = await Promise.all([
     q(sb.from('cli_atividades_diarias').select('*').eq('cliente_id', cli.id).gte('data', ini).lte('data', fim)),
-    paginado(() => sb.from('cli_posts').select('id,titulo,status,data_prevista,publicado_em').eq('cliente_id', cli.id).order('id')),
+    paginado(() => semRasc(sb.from('cli_posts').select('id,titulo,status,data_prevista,publicado_em').eq('cliente_id', cli.id), ctx, cli).order('id')),
   ]);
   const mapa = {}; ativ.forEach(a => { mapa[a.data] = a; });
   const postsDia = {};
@@ -1837,6 +1856,54 @@ async function uploadXHR(path, file, onProg) {
 async function urlAssinada(path, seg = 300, baixarComo) { const { data, error } = await sb.storage.from(BUCKET).createSignedUrl(path, seg, baixarComo ? { download: baixarComo } : undefined); if (error) throw error; return data.signedUrl; }
 const ehImagem = a => /^image\//.test(a.mime || '');
 
+/* ---------- rascunho nunca aparece pro cliente do modo equipe (no "ver como" o RLS libera tudo, então filtra aqui) ---------- */
+const esconderRascunho = (ctx, cli) => ctx.modo !== 'admin' && !!cli && cli.posts_modo === 'equipe';
+const semRasc = (qb, ctx, cli) => esconderRascunho(ctx, cli) ? qb.neq('status', 'rascunho') : qb;
+
+/* ---------- posts em calendário (modo equipe): mês + texto, imagem e link do material de cada post ---------- */
+let POSTS_VISAO = 'calendario', POSTS_MES = null;
+ACT['posts-visao'] = el => { POSTS_VISAO = el.dataset.v; render(); };
+ACT['posts-mes'] = el => {
+  let m = POSTS_MES.mes + Number(el.dataset.d), a = POSTS_MES.ano;
+  if (m < 0) { m = 11; a--; } if (m > 11) { m = 0; a++; }
+  POSTS_MES = { ano: a, mes: m }; render();
+};
+const PC_DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+const diaSemCurto = iso => ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][new Date(Number(iso.slice(0, 4)), Number(iso.slice(5, 7)) - 1, Number(iso.slice(8, 10))).getDay()];
+const chipCurto = p => { const t = postTitulo(p).replace(/^[A-Z]\d+\s·\s/, ''), k = t.match(/\b[A-Z]{4,}\b/); return k ? k[0] : (t.length > 26 ? t.slice(0, 25) + '…' : t); };   // a palavra-chave da isca (AUDITOR, DOMINIO…) cabe no dia do calendário
+function calendarioPostsHtml(ctx, posts, imgs, opt) {
+  const hoje = hojeISO(), datados = posts.filter(p => p.data_prevista).map(p => p.data_prevista).sort();
+  if (!POSTS_MES) { const alvo = datados.find(d => d >= hoje) || datados[datados.length - 1] || hoje; POSTS_MES = { ano: Number(alvo.slice(0, 4)), mes: Number(alvo.slice(5, 7)) - 1 }; }
+  const { ano, mes } = POSTS_MES, ult = new Date(ano, mes + 1, 0).getDate(), ini = (new Date(ano, mes, 1).getDay() + 6) % 7;
+  const pref = `${ano}-${String(mes + 1).padStart(2, '0')}-`;
+  const porDia = {}; posts.forEach(p => { if (p.data_prevista && p.data_prevista.startsWith(pref)) (porDia[Number(p.data_prevista.slice(8, 10))] ||= []).push(p); });
+  let cel = ''; for (let i = 0; i < ini; i++) cel += '<div class="pc-dia vazio"></div>';
+  for (let d = 1; d <= ult; d++) {
+    const iso = pref + String(d).padStart(2, '0'), ps = porDia[d] || [];
+    cel += `<div class="pc-dia ${iso === hoje ? 'hoje' : ''}"><span class="n">${d}</span>${ps.map(p => `<a class="pc-chip ${p.status}" href="${lnkPost(ctx, p.id)}" title="${esc(postTitulo(p))} · ${esc(ST[p.status] || p.status)}">${esc(chipCurto(p))}</a>`).join('')}</div>`;
+  }
+  const doMes = posts.filter(p => p.data_prevista && p.data_prevista.startsWith(pref)).sort((a, b) => a.data_prevista.localeCompare(b.data_prevista) || a.id - b.id);
+  const semData = posts.filter(p => !p.data_prevista);
+  const card = p => {
+    const im = imgs[p.id], mat = urlSegura(p.material_url);
+    return `<div class="pc-card"><div class="pc-cab"><span class="pc-data">${p.data_prevista ? `${diaSemCurto(p.data_prevista)}, ${esc(fmtData(p.data_prevista).slice(0, 5))}` : 'Sem data prevista'}</span>${chipSt(p.status, true, ctx.modo === 'admin')}</div>
+      <div class="tt">${esc(postTitulo(p))}</div>
+      <div class="pc-txt"><div>${esc(p.texto || '')}</div></div>
+      ${im ? `<div class="pc-img" data-pcimg="${esc(im.path)}"></div>` : ''}
+      <div class="pc-mat"><span><b>Material da isca</b>${mat ? '' : ' · ainda sem link'}</span>${mat ? `<a class="btn btn-sm" href="${esc(mat)}" target="_blank" rel="noopener noreferrer">${svg('link', 14)} Abrir o material</a>` : ''}</div>
+      <div class="pc-acoes"><a class="btn btn-primary btn-sm" href="${lnkPost(ctx, p.id)}">${p.status === 'aguardando' && !opt.ro && ctx.modo !== 'admin' ? 'Ler e decidir' : 'Abrir o post'}</a></div></div>`;
+  };
+  return `<div class="pc-nav"><button class="btn btn-sm" data-act="posts-mes" data-d="-1" aria-label="Mês anterior">←</button><b>${MESES[mes]} de ${ano}</b><button class="btn btn-sm" data-act="posts-mes" data-d="1" aria-label="Próximo mês">→</button></div>
+    <div class="pc-grade">${PC_DIAS.map(n => `<div class="pc-sem">${n}</div>`).join('')}${cel}</div>
+    <h2 style="margin:22px 0 10px">Posts de ${MESES[mes]}</h2>${doMes.length ? doMes.map(card).join('') : '<div class="vazio">Nenhum post previsto para este mês.</div>'}
+    ${semData.length ? `<h2 style="margin:22px 0 10px">Sem data prevista</h2>${semData.map(card).join('')}` : ''}`;
+}
+async function carregarImgsAgenda() {
+  const els = $$('[data-pcimg]'); if (!els.length) return;
+  const { data } = await sb.storage.from(BUCKET).createSignedUrls(els.map(e => e.dataset.pcimg), 900);
+  (data || []).forEach(r => { els.filter(e => e.dataset.pcimg === r.path).forEach(el => { if (r.signedUrl) el.innerHTML = `<img src="${esc(r.signedUrl)}" alt="Imagem do post" loading="lazy">`; }); });
+}
+
 /* ---------- lista (mentorado e aba do admin) ---------- */
 let POSTS_FILTRO = 'andamento';
 ACT['posts-filtro'] = el => { POSTS_FILTRO = el.dataset.f; render(); };
@@ -1863,11 +1930,16 @@ async function vPosts(ctx) {
     if (ctx.modo === 'cliente' && !eq && (p.status === 'rascunho' || p.status === 'ajustes')) return editorPost(ctx, p);
     return detalhePost(ctx, p);
   }
-  const posts = await paginado(() => sb.from('cli_posts').select('id,titulo,texto,status,versao,data_prevista,enviado_em').eq('cliente_id', ctx.clienteId).order('id', { ascending: false }));
+  const posts = await paginado(() => semRasc(sb.from('cli_posts').select('id,titulo,texto,status,versao,data_prevista,enviado_em,material_url').eq('cliente_id', ctx.clienteId), ctx, cli0).order('id', { ascending: false }));
   const ro = ctx.modo === 'preview';
+  const cal = eq && POSTS_VISAO === 'calendario';
+  const imgs = {};
+  if (cal && posts.length) (await q(sb.from('cli_arquivos').select('post_id,path,nome,mime').in('post_id', posts.map(p => p.id)).order('id'))).forEach(a => { if (tipoMidia(a) === 'img' && !imgs[a.post_id]) imgs[a.post_id] = a; });
   return { kicker: 'Aprovação', titulo: 'Posts',
     html: `<div class="row-between" style="margin-bottom:14px"><p class="sec" style="max-width:560px">${eq ? 'A equipe prepara os posts e envia aqui. Você lê, aprova ou pede ajustes. Aprovado, você publica e cola o link.' : 'Escreva, mande pra aprovação e acompanhe aqui. Aprovado, você publica e cola o link.'}</p>
-      ${ro || eq ? '' : `<a class="btn btn-primary" href="${lnk(ctx, 'posts/novo')}">${svg('mais', 16)} Novo post</a>`}</div>${listaPostsHtml(ctx, posts, { ro, eq })}` };
+      ${ro || eq ? '' : `<a class="btn btn-primary" href="${lnk(ctx, 'posts/novo')}">${svg('mais', 16)} Novo post</a>`}</div>
+      ${eq ? `<div class="chips-filtro"><button class="chip-btn ${cal ? 'ativo' : ''}" data-act="posts-visao" data-v="calendario">Calendário</button><button class="chip-btn ${cal ? '' : 'ativo'}" data-act="posts-visao" data-v="lista">Lista</button></div>` : ''}
+      ${cal ? calendarioPostsHtml(ctx, posts, imgs, { ro }) : listaPostsHtml(ctx, posts, { ro, eq })}`, depois: cal ? carregarImgsAgenda : undefined };
 }
 
 /* ---------- editor (rascunho / ajustes) ---------- */
@@ -2050,8 +2122,8 @@ async function detalhePost(ctx, p) {
       <div class="post-layout"><div class="stack">
         ${previaShell()}
         <div class="row" style="font-size:.8rem;color:var(--muted)"><span>${p.texto.length.toLocaleString('pt-BR')} caracteres</span>${p.data_prevista ? `<span>· previsto para ${esc(fmtData(p.data_prevista))}</span>` : ''}</div>
-        ${urlSegura(p.material_url) ? `<div class="card destaque" style="margin:0"><h3 style="margin-bottom:4px">Material desta isca</h3><p class="desc" style="margin-bottom:10px">É o que a pessoa recebe depois de comentar a palavra-chave do post. Abra e confira antes de aprovar.</p><a class="btn btn-primary btn-sm" href="${esc(urlSegura(p.material_url))}" target="_blank" rel="noopener noreferrer">${svg('link', 14)} Abrir o material</a></div>` : ''}
-        ${anexos.length ? `<div><h3 style="margin-bottom:6px">Arquivos do post</h3>${anexosHtml(anexos, false)}</div>` : ''}${publicar}</div>
+        ${anexos.length ? `<div><h3 style="margin-bottom:6px">Arquivos do post</h3>${anexosHtml(anexos, false)}</div>` : ''}
+        ${urlSegura(p.material_url) ? `<div class="card destaque" style="margin:0"><h3 style="margin-bottom:4px">Material desta isca</h3><p class="desc" style="margin-bottom:10px">É o que a pessoa recebe depois de comentar a palavra-chave do post. Abra e confira antes de aprovar.</p><a class="btn btn-primary btn-sm" href="${esc(urlSegura(p.material_url))}" target="_blank" rel="noopener noreferrer">${svg('link', 14)} Abrir o material</a></div>` : ''}${publicar}</div>
       <div class="stack">${decidir}${decidirCliente}${editarAdmin}${publicarAdmin}<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx, nome, eq)}${comentar}</div></div></div>`,
     depois: () => { carregarThumbs(); atualizarPrevia(); },
   };
