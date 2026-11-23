@@ -2862,6 +2862,7 @@ html[data-tema="dark"] #tab-email .em-tag.ok { color:#7ee08a; } html[data-tema="
         <button data-tab="youtube" title="YouTube" id="nav-youtube" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><polygon points="10,9 15,12 10,15" fill="currentColor"/></svg></button>
         <button data-tab="ia" title="IA SDR" id="nav-ia" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1"/><circle cx="9" cy="13" r="1" fill="currentColor"/><circle cx="15" cy="13" r="1" fill="currentColor"/><path d="M9.5 16.5h5"/></svg></button>
         <button data-tab="email" title="E-mails" id="nav-email" style="display:none;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></button>
+        <button data-tab="eventos" title="Eventos"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a9 9 0 0 1 0 12"/></svg></button>
       </nav>
     </aside>
     <div class="main-content">
@@ -4400,6 +4401,10 @@ Mas hoje é só pra dizer oi mesmo. Eu vi que você <span class="ss-var">[observ
           <div id="ia-modelos"></div>
         </section>
       </div>
+    </div>
+
+    <div class="tab-panel" id="tab-eventos">
+      <iframe id="ev-frame" title="Eventos" style="width:100%;height:calc(100vh - 24px);min-height:640px;border:0;border-radius:12px;background:#F8F7F4;display:block;"></iframe>
     </div>
 
     <div class="tab-panel" id="tab-email">
@@ -15124,6 +15129,7 @@ document.querySelectorAll('.sidebar nav button').forEach(btn => {
     if (btn.dataset.tab === 'youtube') carregarYoutube();
     if (btn.dataset.tab === 'ia') carregarIa();
     if (btn.dataset.tab === 'email') carregarEmail();
+    if (btn.dataset.tab === 'eventos') { const f = document.getElementById('ev-frame'); if (!f.getAttribute('src')) f.src = '/evento-semanal/'; }
     recarregarLadoEspelhado(btn.dataset.tab);
   });
 });

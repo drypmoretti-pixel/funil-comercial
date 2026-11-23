@@ -36,6 +36,15 @@
   .btn.small{padding:6px 11px;font-size:12.5px;border-radius:8px;}
   .btn.danger{background:transparent;color:var(--warn);border:1px solid #F0C8B4;}
   .btn:disabled{opacity:.5;cursor:default;}
+  .st.auto{background:#E6F4EC;color:#008E43;}
+  .st.autow{background:#FFF1B8;color:#6B4E00;}
+  .st.autob{background:#FDEEE6;color:#C2410C;}
+  .autobox{border:1px solid var(--line);border-radius:12px;background:var(--white);padding:12px;display:flex;flex-direction:column;gap:10px;}
+  .chip{display:inline-block;background:var(--green-soft);color:#006B33;border-radius:99px;padding:3px 10px;font-size:12.5px;font-weight:600;margin:0 6px 6px 0;}
+  .glist{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:10px;margin:10px 0;}
+  .glist label{display:flex;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13.5px;}
+  .glist label:last-child{border-bottom:0;}
+  .autoinfo{font-size:12.5px;margin:8px 0;padding:8px 10px;border-radius:8px;background:#F4F3EF;}
   .link{background:none;border:0;padding:0;color:var(--green);font-weight:600;text-decoration:underline;}
 
   /* login */
@@ -645,7 +654,7 @@ async function subirImagem(k, f) {
   if (error) { toast('Não salvou: ' + error.message); return; }
   if (imagens[k]) sb.storage.from('evento-imagens').remove([imagens[k].path]);
   imagens[k] = { url, path };
-  renderEvento(false, true); toast('Imagem salva para todas as edições');
+  renderEvento(false, true); toast('Imagem salva para todas as edições'); agendarSync();
 }
 async function removerImagem(k) {
   if (!confirm('Remover a imagem desta mensagem?')) return;
@@ -655,7 +664,7 @@ async function removerImagem(k) {
   if (error) { toast('Não removeu: ' + error.message); return; }
   sb.storage.from('evento-imagens').remove([antigo.path]);
   delete imagens[k];
-  renderEvento(false, true);
+  renderEvento(false, true); agendarSync();
 }
 async function copiarImagem(k) {
   try {
@@ -692,7 +701,7 @@ async function salvarTexto(k) {
   const { error } = await sb.from('evs_textos').upsert(linha);
   if (error) { toast('Não salvou: ' + error.message); return; }
   textos[k] = v; editando.delete(k);
-  renderEvento(false, true); toast('Texto salvo para todas as edições');
+  renderEvento(false, true); toast('Texto salvo para todas as edições'); agendarSync();
 }
 async function restaurarTexto(k, silencioso) {
   if (!silencioso && !confirm('Voltar para o texto original desta mensagem?')) return;
@@ -703,7 +712,7 @@ async function restaurarTexto(k, silencioso) {
     delete textos[k];
   }
   editando.delete(k);
-  renderEvento(false, true); toast('Texto original restaurado');
+  renderEvento(false, true); toast('Texto original restaurado'); agendarSync();
 }
 function editorMsg(k) {
   return `<div class="editor"><div class="lb">Editando o texto desta mensagem</div>
@@ -909,8 +918,11 @@ async function abrirEvento(id, semHistorico) {
   checks = {};
   (data || []).forEach(c => { checks[c.chave] = c; });
   abertos = new Set();
+  envios = {};
+  await carregarEnvios();
   renderEvento(true);
   mostrar('evento');
+  agendarSync();
 }
 
 function itensDoEvento(ev) {
@@ -974,6 +986,7 @@ function renderEvento(rolarParaHoje, manterFicha) {
       <div class="field"><label>Data</label><input type="date" value="${ev.data}" onchange="salvarCampo('data', this.value)"></div>
       <div class="field"><label>Horário (Brasília)</label><input type="time" value="${ev.hora.slice(0, 5)}" onchange="salvarCampo('hora', this.value)"></div>
       ${campos.map(([k, l, ph]) => `<div class="field full"><label>${l}</label><input type="url" value="${esc(ev[k] || '')}" placeholder="${ph}" onchange="salvarCampo('${k}', this.value)"></div>`).join('')}
+      <div class="field full" id="auto-wrap">${blocoAuto()}</div>
       <div class="field"><label>Edição</label><input type="number" min="1" value="${ev.edicao || ''}" onchange="salvarCampo('edicao', this.value)"></div>
       <div class="field" style="display:flex;align-items:flex-end;justify-content:flex-end"><button class="btn danger small" onclick="excluirEvento()">Excluir evento</button></div>
       <div class="saved full" id="ficha-msg"></div>
@@ -1003,6 +1016,7 @@ function renderEvento(rolarParaHoje, manterFicha) {
   if (manterFicha && $('ev-ficha')) {
     $('ev-top').innerHTML = topo;
     $('ficha-resumo').innerHTML = resumoFicha;
+    if ($('auto-wrap')) $('auto-wrap').innerHTML = blocoAuto();
     $('ev-plano').innerHTML = h;
   } else {
     $('ev').innerHTML = `<div id="ev-top">${topo}</div><div id="ev-ficha">${ficha}</div><div id="ev-plano">${h}</div>`;
@@ -1032,7 +1046,7 @@ function renderItem(it, c, proximo, agora) {
     const custom = it.k in textos;
     corpo = (editando.has(it.k) ? editorMsg(it.k) : blocoCopia('Mensagem para o grupo' + (custom ? ' · personalizada' : ''), texto)
       + `<div class="row" style="margin-top:6px"><button class="btn ghost small" onclick="abrirEdicao('${it.k}')">Editar texto</button></div>`)
-      + blocoImagem(it.k) + `<div class="why">${esc(WHY[it.k] || '')}</div>`;
+      + blocoImagem(it.k) + infoAuto(it) + `<div class="why">${esc(WHY[it.k] || '')}</div>`;
   } else {
     corpo = (it.desc ? `<div class="desc">${esc(it.desc)}</div>` : '') + guia(atual, it, c);
   }
@@ -1045,7 +1059,7 @@ function renderItem(it, c, proximo, agora) {
       <button class="ck" title="${ck ? 'Desmarcar' : 'Marcar como feito'}" onclick="${ck ? `desmarcar('${it.k}')` : `marcar('${it.k}')`}"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></button>
       <span class="hr">${hhmm(it.quando)}</span>
       <div class="tt" onclick="alternar('${it.k}')" style="cursor:pointer"><span class="k ${it.tipo}">${it.tipo === 'msg' ? 'Mensagem' : 'Ação'}</span><b>${esc(it.tit)}</b></div>
-      ${st}
+      ${st}${badgeAuto(it)}
       <button class="tog" onclick="alternar('${it.k}')" aria-label="Abrir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
     </div>
     <div class="ib">${corpo}</div></div>`;
@@ -1072,13 +1086,13 @@ async function marcar(k, pular) {
   if (error) { toast('Não salvou: ' + error.message); return; }
   checks[k] = { ...linha, feito_em: new Date().toISOString() };
   abertos.delete(k);
-  renderEvento(false, true);
+  renderEvento(false, true); agendarSync();
 }
 async function desmarcar(k) {
   const { error } = await sb.from('evs_checks').delete().eq('evento_id', atual.id).eq('chave', k);
   if (error) { toast('Não salvou: ' + error.message); return; }
   delete checks[k];
-  renderEvento(false, true);
+  renderEvento(false, true); agendarSync();
 }
 async function pularPassadas() {
   const agora = new Date();
@@ -1088,7 +1102,7 @@ async function pularPassadas() {
   const { error } = await sb.from('evs_checks').upsert(linhas);
   if (error) { toast('Não salvou: ' + error.message); return; }
   linhas.forEach(l => { checks[l.chave] = l; });
-  renderEvento(true);
+  renderEvento(true); agendarSync();
 }
 
 async function salvarCampo(campo, valor) {
@@ -1101,7 +1115,129 @@ async function salvarCampo(campo, valor) {
   atual[campo] = campo === 'hora' ? v + ':00' : v;
   renderEvento(false, true);
   $('ficha-msg').textContent = 'Salvo. As mensagens já foram atualizadas.';
+  agendarSync();
 }
+
+
+/* ---------- envio automático (fila + aprovação no Discord) ---------- */
+const FN_ENVIOS = SUPA_URL + '/functions/v1/evento-envios';
+let envios = {};          // chave -> linha de evs_envios do evento aberto
+let syncTimer = null;
+const ROT_ENVIO = { aguardando:'aguardando aprovação', aprovado:'aprovada · sai na hora', recusado:'recusada', cancelado:'cancelada (feita à mão)', enviando:'enviando…', enviado:'enviada', falhou:'falhou', expirado:'expirada', bloqueado:'bloqueada · falta link' };
+const COR_ENVIO = { aprovado:'auto', enviado:'auto', enviando:'auto', aguardando:'autow', recusado:'autob', falhou:'autob', expirado:'autob', bloqueado:'autob', cancelado:'skip' };
+
+async function carregarEnvios() {
+  if (!atual) return;
+  const { data } = await sb.from('evs_envios').select('*').eq('evento_id', atual.id);
+  envios = {}; (data || []).forEach(r => { envios[r.chave] = r; });
+}
+function agendarSync() { clearTimeout(syncTimer); syncTimer = setTimeout(sincronizarFila, 700); }
+
+// Mantém a fila igual ao plano: texto, imagem e horário atuais. Nunca mexe no que já foi enviado.
+async function sincronizarFila() {
+  const e = atual;
+  if (!e || !e.envio_auto) return;
+  await carregarEnvios();
+  const c = ctx(e), agora = new Date(), travadas = ['enviado', 'enviando', 'falhou'];
+  const ops = [];
+  for (const it of itensDoEvento(e)) {
+    if (it.tipo !== 'msg') continue;
+    const r = envios[it.k];
+    if (checks[it.k]) { if (r && ['aguardando', 'aprovado'].includes(r.status)) ops.push(sb.from('evs_envios').update({ status: 'cancelado', atualizado_em: new Date().toISOString() }).eq('id', r.id).in('status', ['aguardando', 'aprovado'])); continue; }
+    const conteudo = { titulo: it.tit, quando: it.quando.toISOString(), texto: msgTexto(it.k, c), imagem_url: imagens[it.k] ? imagens[it.k].url : null };
+    const zera = { ...conteudo, status: 'aguardando', pedido_em: null, lembrete_em: null, decidido_em: null, erro: null, atualizado_em: new Date().toISOString() };
+    if (!r) { if (it.quando > agora) ops.push(sb.from('evs_envios').upsert({ evento_id: e.id, chave: it.k, ...zera }, { onConflict: 'evento_id,chave' })); continue; }
+    if (travadas.includes(r.status) || it.quando <= agora) continue;
+    const mudou = r.texto !== conteudo.texto || (r.imagem_url || null) !== conteudo.imagem_url || Math.abs(new Date(r.quando) - it.quando) > 60000;
+    if (r.status === 'cancelado' || mudou) ops.push(sb.from('evs_envios').update(zera).eq('id', r.id).not('status', 'in', '(enviado,enviando,falhou)'));
+  }
+  if (ops.length) await Promise.all(ops);
+  await carregarEnvios();
+  if (atual === e && !editando.size) renderEvento(false, true);
+}
+
+function resumoEnvios() {
+  const n = {}; Object.values(envios).forEach(r => { n[r.status] = (n[r.status] || 0) + 1; });
+  const ordem = ['aguardando', 'aprovado', 'enviado', 'recusado', 'bloqueado', 'falhou', 'expirado'];
+  const t = ordem.filter(k => n[k]).map(k => `${n[k]} ${ROT_ENVIO[k].split(' ·')[0]}`);
+  return t.length ? t.join(' · ') : 'Fila vazia.';
+}
+function blocoAuto() {
+  const ev = atual, gs = ev.grupos || [];
+  return `<label>Envio automático no WhatsApp · você aprova cada mensagem no Discord</label><div class="autobox">
+    <div>${gs.length ? gs.map(g => `<span class="chip">${esc(g.nome || g.id)}</span>`).join('') : '<span class="muted">Nenhum grupo escolhido.</span>'}</div>
+    <div class="row"><button class="btn ghost small" onclick="escolherGrupos()">${gs.length ? 'Trocar grupos' : 'Escolher grupos'}</button>
+      <button class="btn small ${ev.envio_auto ? 'danger' : 'green'}" onclick="alternarAuto()">${ev.envio_auto ? 'Desligar envio automático' : 'Ligar envio automático'}</button></div>
+    <div class="muted" style="font-size:12.5px">${ev.envio_auto ? 'LIGADO. ' + resumoEnvios() + ' Nada sai sem a sua aprovação.' : 'Desligado. Ligado, eu peço aprovação de cada mensagem no Discord 2 horas antes e só envio o que você aprovar.'}</div>
+  </div>`;
+}
+function infoAuto(it) {
+  if (!atual.envio_auto || it.tipo !== 'msg') return '';
+  const r = envios[it.k];
+  if (!r) return it.quando > new Date() ? '<div class="autoinfo">Envio automático: entrando na fila…</div>' : '';
+  let t = ROT_ENVIO[r.status] || r.status;
+  if (r.status === 'aguardando') t += r.pedido_em ? ' · pedido já está no Discord' : ' · o pedido vai pro Discord 2h antes';
+  if (r.erro) t += ' · ' + r.erro;
+  return `<div class="autoinfo"><b>Envio automático:</b> ${esc(t)}${r.status === 'aguardando' && r.pedido_em ? ` · <a href="aprovar.html?t=${r.token}" target="_blank">abrir aprovação</a>` : ''}</div>`;
+}
+function badgeAuto(it) {
+  if (!atual.envio_auto || it.tipo !== 'msg') return '';
+  const r = envios[it.k];
+  return r ? `<span class="st ${COR_ENVIO[r.status] || 'skip'}">${esc(ROT_ENVIO[r.status].split(' ·')[0])}</span>` : '';
+}
+
+async function escolherGrupos() {
+  $('modal-root').innerHTML = `<div class="ov" onclick="if(event.target===this)fecharModal()"><div class="modal">
+    <h2>Grupos da edição</h2><p>Marque os grupos de WhatsApp que recebem as mensagens desta edição.</p>
+    <input type="search" id="g-busca" placeholder="Filtrar pelo nome (ex: 25/11)" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px">
+    <div class="glist" id="g-lista"><div class="muted" style="padding:14px">Carregando grupos do WhatsApp…</div></div>
+    <div class="err" id="g-err"></div>
+    <div class="acts"><button class="btn ghost" onclick="fecharModal()">Cancelar</button><button class="btn green" id="g-ok">Salvar grupos</button></div></div></div>`;
+  const { data: { session } } = await sb.auth.getSession();
+  let lista = [];
+  try {
+    const r = await fetch(FN_ENVIOS + '?acao=grupos', { method: 'POST', headers: { Authorization: 'Bearer ' + session.access_token } });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.erro || r.status);
+    lista = j.grupos;
+  } catch (err) { $('g-lista').innerHTML = ''; $('g-err').textContent = 'Não consegui listar os grupos: ' + err.message; return; }
+  const sel = new Set((atual.grupos || []).map(g => g.id));
+  const nomes = {}; lista.forEach(g => { nomes[g.id] = g.nome; });
+  const desenha = () => {
+    const q = $('g-busca').value.trim().toLowerCase();
+    const vis = lista.filter(g => !q || String(g.nome).toLowerCase().includes(q) || sel.has(g.id)).slice(0, 80);
+    $('g-lista').innerHTML = vis.map(g => `<label><input type="checkbox" data-id="${esc(g.id)}" ${sel.has(g.id) ? 'checked' : ''}><span style="flex:1">${esc(g.nome)}</span><span class="muted">${g.tamanho || ''}</span></label>`).join('') || '<div class="muted" style="padding:14px">Nenhum grupo com esse nome.</div>';
+    $('g-lista').querySelectorAll('input').forEach(i => i.onchange = () => { i.checked ? sel.add(i.dataset.id) : sel.delete(i.dataset.id); });
+  };
+  $('g-busca').oninput = desenha;
+  $('g-busca').value = atual.grupos && atual.grupos.length ? '' : ddmm(inicioEvento(atual));
+  desenha();
+  $('g-ok').onclick = async () => {
+    const grupos = [...sel].map(id => ({ id, nome: nomes[id] || (atual.grupos || []).find(g => g.id === id)?.nome || id }));
+    const { error } = await sb.from('evs_eventos').update({ grupos }).eq('id', atual.id);
+    if (error) { $('g-err').textContent = 'Não salvou: ' + error.message; return; }
+    atual.grupos = grupos; fecharModal(); renderEvento(false, true); toast('Grupos salvos');
+  };
+}
+
+async function alternarAuto() {
+  const ev = atual;
+  if (!ev.envio_auto) {
+    if (!(ev.grupos || []).length) { toast('Escolha os grupos primeiro'); return; }
+    if (!confirm(`Ligar o envio automático?\n\nGrupos: ${ev.grupos.map(g => g.nome).join(' · ')}\n\nPara cada mensagem eu peço sua aprovação no Discord 2 horas antes. Só sai o que você aprovar.`)) return;
+    const { error } = await sb.from('evs_eventos').update({ envio_auto: true }).eq('id', ev.id);
+    if (error) { toast('Não salvou: ' + error.message); return; }
+    ev.envio_auto = true; await sincronizarFila(); renderEvento(false, true); toast('Envio automático ligado');
+  } else {
+    if (!confirm('Desligar o envio automático desta edição? As mensagens na fila deixam de sair.')) return;
+    await sb.from('evs_envios').update({ status: 'cancelado', atualizado_em: new Date().toISOString() }).eq('evento_id', ev.id).in('status', ['aguardando', 'aprovado']);
+    const { error } = await sb.from('evs_eventos').update({ envio_auto: false }).eq('id', ev.id);
+    if (error) { toast('Não salvou: ' + error.message); return; }
+    ev.envio_auto = false; await carregarEnvios(); renderEvento(false, true); toast('Envio automático desligado');
+  }
+}
+// atualiza o status da fila enquanto a tela está aberta (aprovou no Discord → aparece aqui)
+setInterval(async () => { if (atual && atual.envio_auto && !editando.size && !document.hidden && !document.querySelector('#modal-root .ov')) { await carregarEnvios(); renderEvento(false, true); } }, 60000);
 
 async function concluir() {
   if (!confirm('Concluir este evento? Ele vai para a lista de concluídos.')) return;
