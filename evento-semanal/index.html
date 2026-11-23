@@ -1206,6 +1206,7 @@ function blocoAuto() {
   return `<label>Envio automático no WhatsApp · você aprova cada mensagem no Discord</label><div class="autobox">
     <div>${gs.length ? gs.map(g => `<span class="chip">${esc(g.nome || g.id)}</span>`).join('') : '<span class="muted">Nenhum grupo escolhido.</span>'}</div>
     <div class="row"><button class="btn ghost small" onclick="escolherGrupos()">${gs.length ? 'Trocar grupos' : 'Escolher grupos'}</button>
+      ${ev.envio_auto && Object.values(envios).some(r => r.status === 'aguardando' && new Date(r.quando) > new Date()) ? `<button class="btn green small" onclick="aprovarTodasProximas()">✅ Aprovar todas as próximas</button>` : ''}
       <button class="btn small ${ev.envio_auto ? 'danger' : 'green'}" onclick="alternarAuto()">${ev.envio_auto ? 'Desligar envio automático' : 'Ligar envio automático'}</button></div>
     <div class="muted" style="font-size:12.5px">${ev.envio_auto ? 'LIGADO. ' + resumoEnvios() + ' Nada sai sem a sua aprovação.' : 'Desligado. Ligado, eu peço aprovação de cada mensagem no Discord 2 horas antes e só envio o que você aprovar.'}</div>
   </div>`;
@@ -1217,7 +1218,11 @@ function infoAuto(it) {
   let t = ROT_ENVIO[r.status] || r.status;
   if (r.status === 'aguardando') t += r.pedido_em ? ' · pedido já está no Discord' : ' · o pedido vai pro Discord 2h antes';
   if (r.erro) t += ' · ' + r.erro;
-  return `<div class="autoinfo"><b>Envio automático:</b> ${esc(t)}${r.status === 'aguardando' && r.pedido_em ? ` · <a href="aprovar.html?t=${r.token}" target="_blank">abrir aprovação</a>` : ''}</div>`;
+  const futura = new Date(r.quando) > new Date();
+  const btns = futura && r.status === 'aguardando' ? `<div class="row" style="margin-top:8px"><button class="btn green small" onclick="decidirEnvio('${it.k}','aprovar')">✅ Aprovar envio</button><button class="btn danger small" onclick="decidirEnvio('${it.k}','recusar')">❌ Recusar</button></div>`
+    : futura && r.status === 'aprovado' ? `<div class="row" style="margin-top:8px"><button class="btn ghost small" onclick="decidirEnvio('${it.k}','desfazer')">Voltar para aguardando</button></div>`
+    : futura && ['recusado', 'cancelado'].includes(r.status) ? `<div class="row" style="margin-top:8px"><button class="btn ghost small" onclick="decidirEnvio('${it.k}','desfazer')">Reabrir para aprovação</button></div>` : '';
+  return `<div class="autoinfo"><b>Envio automático:</b> ${esc(t)}${btns}</div>`;
 }
 function badgeAuto(it) {
   if (!atual.envio_auto || it.tipo !== 'msg') return '';
@@ -1259,6 +1264,35 @@ async function escolherGrupos() {
   };
 }
 
+// Aprovação dentro do sistema (vale igual à do Discord: mesma fila, mesmo status)
+async function decidirEnvio(k, acao) {
+  const r = envios[k];
+  if (!r) return;
+  if (!atual.envio_auto || !(atual.grupos || []).length) { toast('Escolha os grupos e ligue o envio automático'); return; }
+  if (new Date(r.quando) <= new Date()) { toast('Esse horário já passou'); return; }
+  const agora = new Date().toISOString();
+  const novo = acao === 'aprovar' ? { status: 'aprovado', decidido_em: agora }
+             : acao === 'recusar' ? { status: 'recusado', decidido_em: agora }
+             : { status: 'aguardando', decidido_em: null };
+  const de = acao === 'desfazer' ? ['aprovado', 'recusado', 'cancelado'] : ['aguardando'];
+  const { data, error } = await sb.from('evs_envios').update({ ...novo, atualizado_em: agora }).eq('id', r.id).in('status', de).select('id');
+  await carregarEnvios();
+  renderEvento(false, true);
+  if (error) { toast('Não salvou: ' + error.message); return; }
+  if (!data || !data.length) { toast('Esta mensagem já mudou de status (talvez aprovada no Discord)'); return; }
+  toast(acao === 'aprovar' ? 'Aprovada. Sai sozinha na hora marcada.' : acao === 'recusar' ? 'Recusada. Não será enviada.' : 'Voltou para aguardando');
+}
+async function aprovarTodasProximas() {
+  const ev = atual;
+  if (!(ev.grupos || []).length) { toast('Escolha os grupos primeiro'); return; }
+  const agora = new Date();
+  const alvo = Object.values(envios).filter(r => r.status === 'aguardando' && new Date(r.quando) > agora);
+  if (!alvo.length) { toast('Nada aguardando aprovação'); return; }
+  if (!confirm(`Aprovar ${alvo.length} mensagem${alvo.length > 1 ? 's' : ''} para os grupos:\n${ev.grupos.map(g => g.nome).join('\n')}\n\nCada uma sai sozinha no horário dela.`)) return;
+  const { error } = await sb.from('evs_envios').update({ status: 'aprovado', decidido_em: agora.toISOString(), atualizado_em: agora.toISOString() }).in('id', alvo.map(r => r.id)).eq('status', 'aguardando');
+  await carregarEnvios(); renderEvento(false, true);
+  toast(error ? 'Não salvou: ' + error.message : `${alvo.length} aprovadas`);
+}
 async function alternarAuto() {
   const ev = atual;
   if (!ev.envio_auto) {
