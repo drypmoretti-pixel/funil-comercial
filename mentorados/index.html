@@ -1897,11 +1897,11 @@ async function refazerAnexos() {
   $('#p-anexos').innerHTML = anexosHtml(ax, true); carregarThumbs();
   PREV.anexos = ax; await assinarMidias(); atualizarPrevia();
 }
-const lerEditor = () => ({ id: Number($('#p-id').value) || null, titulo: $('#p-titulo').value.trim(), texto: $('#p-texto').value, data: $('#p-data').value || null });
+const lerEditor = () => ({ id: Number($('#p-id').value) || null, titulo: $('#p-titulo').value.trim(), texto: $('#p-texto').value, data: $('#p-data').value || null, material: $('#p-material') ? $('#p-material').value.trim() : undefined });
 async function gravarRascunho() {
   const v = lerEditor();
   const adm = S.ctx && S.ctx.modo === 'admin';   // equipe preparando o post de um cliente do modo equipe
-  const id = adm ? await rpc('cli_post_equipe_salvar', { p_cliente: S.ctx.clienteId, p_id: v.id, p_titulo: v.titulo, p_texto: v.texto, p_data_prevista: v.data })
+  const id = adm ? await rpc('cli_post_equipe_salvar', { p_cliente: S.ctx.clienteId, p_id: v.id, p_titulo: v.titulo, p_texto: v.texto, p_data_prevista: v.data, p_material: v.material === undefined ? null : v.material })
     : await rpc('cli_post_salvar', { p_id: v.id, p_titulo: v.titulo, p_texto: v.texto, p_data_prevista: v.data });
   $('#p-id').value = id;
   if (!v.id) history.replaceState(null, '', adm ? `#/admin/post-editar/${id}` : `#/posts/${id}`);
@@ -1943,6 +1943,7 @@ async function editorPost(ctx, p) {
         <div class="campo"><label class="lbl" for="p-titulo">Título (só pra você se achar; opcional)</label><input type="text" id="p-titulo" maxlength="120" value="${esc(p ? p.titulo || '' : '')}"></div>
         <div class="campo"><label class="lbl" for="p-texto">Texto do post</label><textarea id="p-texto" rows="14" placeholder="Escreva o post aqui…">${esc(p ? p.texto : '')}</textarea><div class="contador" id="p-contador"></div></div>
         <div class="campo"><label class="lbl" for="p-data">Quando quer publicar? (opcional)</label><input type="date" id="p-data" value="${esc(p ? p.data_prevista || '' : '')}" style="max-width:220px"></div>
+        ${ADM ? `<div class="campo"><label class="lbl" for="p-material">Material da isca (link, opcional)</label><input type="url" id="p-material" maxlength="500" placeholder="https://…" value="${esc(p ? p.material_url || '' : '')}"><div class="hint">O cliente vê o botão “Abrir o material” na tela de aprovação, junto com o texto e a imagem.</div></div>` : ''}
         <div class="campo"><label class="lbl">Anexos</label>
           <label class="btn btn-sm" style="cursor:pointer">${svg('clip', 16)} Adicionar arquivo<input type="file" id="p-arquivos" multiple hidden data-chg="post-anexar" accept="image/*,application/pdf,video/*"></label>
           <span class="hint" id="p-envio" style="margin-left:8px"></span><div id="p-anexos">${anexosHtml(anexos, true)}</div></div>
@@ -2049,6 +2050,7 @@ async function detalhePost(ctx, p) {
       <div class="post-layout"><div class="stack">
         ${previaShell()}
         <div class="row" style="font-size:.8rem;color:var(--muted)"><span>${p.texto.length.toLocaleString('pt-BR')} caracteres</span>${p.data_prevista ? `<span>· previsto para ${esc(fmtData(p.data_prevista))}</span>` : ''}</div>
+        ${urlSegura(p.material_url) ? `<div class="card destaque" style="margin:0"><h3 style="margin-bottom:4px">Material desta isca</h3><p class="desc" style="margin-bottom:10px">É o que a pessoa recebe depois de comentar a palavra-chave do post. Abra e confira antes de aprovar.</p><a class="btn btn-primary btn-sm" href="${esc(urlSegura(p.material_url))}" target="_blank" rel="noopener noreferrer">${svg('link', 14)} Abrir o material</a></div>` : ''}
         ${anexos.length ? `<div><h3 style="margin-bottom:6px">Arquivos do post</h3>${anexosHtml(anexos, false)}</div>` : ''}${publicar}</div>
       <div class="stack">${decidir}${decidirCliente}${editarAdmin}${publicarAdmin}<div class="card" style="margin:0"><h2 style="margin-bottom:10px">Conversa</h2>${threadHtml(eventos, p, ctx, nome, eq)}${comentar}</div></div></div>`,
     depois: () => { carregarThumbs(); atualizarPrevia(); },
