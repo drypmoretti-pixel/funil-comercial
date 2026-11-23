@@ -238,6 +238,8 @@ const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 const TEMA = 'Como gerar 30 reuniões qualificadas por mês usando o LinkedIn, dedicando apenas 1 hora por semana';
 const NOME_EVENTO = 'Como gerar 30 reuniões por mês com o LinkedIn';
+// Sala fixa de todas as edições (Igor, 23/11/2026). Toda edição nova já nasce com este link.
+const SALA_PADRAO = 'https://meet.google.com/zdd-iwub-iww';
 const CAL = 'cal.com/igor-miguel/demanda-infinita';
 const DIAS = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
 const DIAS_FEIRA = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
@@ -909,7 +911,7 @@ function novoEvento(base) {
   const sugestao = ref ? isoDe(somaDias(dataLocal(ref.data), 7)) : isoDe(somaDias(new Date(), 10));
   const hora = ref ? ref.hora.slice(0, 5) : '19:00';
   const edicao = ref && ref.edicao ? ref.edicao + 1 : '';
-  const sala = ref && ref.link_sala ? ref.link_sala : '';
+  const sala = ref && ref.link_sala ? ref.link_sala : SALA_PADRAO;
   $('modal-root').innerHTML = `<div class="ov" onclick="if(event.target===this)fecharModal()"><form class="modal" id="f-novo">
     <h2>${base ? 'Criar a próxima edição' : 'Novo evento'}</h2>
     <p>O plano completo de 10 dias (ações + mensagens) já nasce com as datas certas.</p>
@@ -932,7 +934,7 @@ function novoEvento(base) {
     e.preventDefault();
     const data = $('n-data').value;
     if (eventos.some(x => x.data === data && x.status === 'ativo')) { $('n-err').textContent = 'Já existe um evento ativo nessa data.'; return; }
-    const linha = { data, hora: $('n-hora').value, edicao: $('n-edicao').value ? Number($('n-edicao').value) : null, link_sala: $('n-sala').value.trim() || null, antecedencia: Math.max(1, Math.min(11, diasAte(data))), criado_por: eu.id };
+    const linha = { data, hora: $('n-hora').value, edicao: $('n-edicao').value ? Number($('n-edicao').value) : null, link_sala: $('n-sala').value.trim() || SALA_PADRAO, antecedencia: Math.max(1, Math.min(11, diasAte(data))), criado_por: eu.id };
     const { data: novo, error } = await sb.from('evs_eventos').insert(linha).select().single();
     if (error) { $('n-err').textContent = 'Não consegui criar: ' + error.message; return; }
     fecharModal();
