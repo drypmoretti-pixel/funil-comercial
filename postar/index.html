@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Posts do dia · Igor Miguel</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f4f4f2;color:#141414}
+header{padding:22px 18px 8px;max-width:640px;margin:auto}
+h1{font-size:22px;margin:0 0 4px}
+header p{margin:0;color:#666;font-size:14px}
+main{max-width:640px;margin:auto;padding:0 12px 60px}
+.post{background:#fff;border-radius:16px;padding:16px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.08);scroll-margin-top:12px}
+.post h2{font-size:19px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
+.tag{font-size:12px;font-weight:600;padding:4px 9px;border-radius:99px;background:#e6f5ec;color:#0A6B40}
+.tag.esp{background:#fff3d6;color:#8a5a00}
+.aviso{background:#fff3d6;color:#6b4600;border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:10px}
+.musica{background:#f1f1ef;border-radius:10px;padding:10px 12px;font-size:15px;margin-bottom:12px}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:600;cursor:pointer;margin:8px 0}
+.verde{background:#10A060;color:#fff}
+.cinza{background:#e9e9e6;color:#141414}
+.imgs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.imgs.um{grid-template-columns:1fr}
+.imgs figure{margin:0;position:relative}
+.imgs img{width:100%;display:block;border-radius:8px;background:#ddd}
+.imgs figcaption{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:2px 7px;border-radius:99px}
+pre{white-space:pre-wrap;font-family:inherit;font-size:15px;line-height:1.45;background:#fafaf8;border:1px solid #eee;border-radius:10px;padding:12px;margin:8px 0 0}
+.vazio{text-align:center;color:#666;padding:40px 0}
+small{color:#777}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="tit">Posts do dia</h1>
+  <p>Salve as imagens, copie a legenda e poste no horário com a música.</p>
+</header>
+<main id="lista"><p class="vazio">Carregando…</p></main>
+<script>
+const SUPA_URL = 'https://okolawlvmfyxzvnnpvtv.supabase.co';
+const KEY = 'sb_publishable_IsQdhzWIou3tBX9qxak1VQ_m-wEHCFZ';
+const NOMES = {ia:'Carrossel', visual:'Carrossel', noticia:'Carrossel de notícia', imagem_unica:'Imagem única'};
+const hoje = new Date(Date.now() - 3*3600e3).toISOString().slice(0,10);
+const d = new URLSearchParams(location.search).get('d') || hoje;
+const esc = s => (s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+document.getElementById('tit').textContent = 'Posts de ' + d.split('-').reverse().slice(0,2).join('/');
+
+async function carregar(){
+  const r = await fetch(SUPA_URL + '/rest/v1/rpc/ig_pacote', {method:'POST',
+    headers:{apikey:KEY, Authorization:'Bearer '+KEY, 'Content-Type':'application/json'}, body: JSON.stringify({d})});
+  const posts = r.ok ? await r.json() : [];
+  const L = document.getElementById('lista');
+  if (!posts.length) { L.innerHTML = '<p class="vazio">Nenhum post para este dia.</p>'; return; }
+  L.innerHTML = posts.map((p,i) => `
+  <section class="post" id="${esc(p.hora)}">
+    <h2>${esc(p.hora)} · ${esc(NOMES[p.formato] || p.tipo)}
+      <span class="tag ${p.status==='aguardando'?'esp':''}">${p.status==='aguardando'?'aguardando Igor':esc(p.status)}</span></h2>
+    ${p.status==='aguardando' ? '<div class="aviso">Ainda não aprovado pelo Igor. Espere a aprovação antes de postar.</div>' : ''}
+    <div class="musica">🎵 <b>Música:</b> ${esc(p.musica)}</div>
+    <button class="btn verde" onclick="salvar(${i})">Salvar ${p.cards.length>1?'as '+p.cards.length+' imagens':'a imagem'} no celular</button>
+    <div class="imgs ${p.cards.length===1?'um':''}">${p.cards.map((u,k)=>`<figure><img src="${esc(u)}" loading="lazy" alt="imagem ${k+1}"><figcaption>${k+1}</figcaption></figure>`).join('')}</div>
+    <small>Se o botão não funcionar, segure o dedo em cada imagem e toque em "Salvar".</small>
+    <button class="btn cinza" onclick="copiar(${i},this)">Copiar legenda</button>
+    <pre>${esc(p.legenda)}</pre>
+  </section>`).join('');
+  window.POSTS = posts;
+  if (location.hash) document.querySelector(location.hash)?.scrollIntoView();
+}
+
+async function salvar(i){
+  const p = POSTS[i];
+  try {
+    const files = await Promise.all(p.cards.map(async (u,k) => {
+      const b = await (await fetch(u)).blob();
+      return new File([b], `${d}_${p.hora}_${String(k+1).padStart(2,'0')}.jpg`, {type: b.type || 'image/jpeg'});
+    }));
+    if (navigator.canShare && navigator.canShare({files})) { await navigator.share({files}); return; }
+    files.forEach(f => { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); });
+  } catch(e) { if (e.name !== 'AbortError') alert('Não deu pra salvar todas de uma vez. Segure o dedo em cada imagem e toque em Salvar.'); }
+}
+
+async function copiar(i, btn){
+  try { await navigator.clipboard.writeText(POSTS[i].legenda || ''); btn.textContent = 'Legenda copiada ✓'; }
+  catch(e) { btn.textContent = 'Selecione o texto abaixo e copie'; }
+}
+carregar();
+</script>
+</body>
+</html>
