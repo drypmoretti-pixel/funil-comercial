@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conectores do Claude: Gmail, Agenda e Drive | Método Demanda Infinita®</title>
+<meta name="description" content="Como ligar o Gmail, a Google Agenda e o Google Drive no Claude: onde clicar, pedidos prontos para copiar e os cuidados antes de começar.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Dicas do Claude · Conectores</div>
+<h1>Pare de copiar e colar. Deixe o Claude buscar.</h1>
+<p class="lead">Conector é uma ligação entre o Claude e um aplicativo seu. Com o Gmail, a Google Agenda e o Google Drive ligados, você só pergunta e ele vai buscar a resposta lá. Funciona em todos os planos, inclusive o grátis.</p>
+<section class="p"><div class="k">01 / Ligar o Google</div><h2>Onde clicar</h2><p class="s">Em claude.ai ou no aplicativo do Claude no computador.</p>
+<pre id="p0">1. Abra uma conversa e clique no + (canto de baixo, à esquerda).
+2. Passe o mouse em Conectores e clique em Gerenciar conectores.
+3. Escolha o Gmail (depois a Google Agenda e o Google Drive).
+4. Clique em Conectar e entre com a sua conta do Google.
+5. Volte pro chat e pergunte.
+
+Usa o Claude pela empresa (plano Team ou Enterprise)? O dono da conta precisa liberar os conectores antes.</pre></section>
+<section class="p"><div class="k">02 / Gmail</div><h2>O e-mail que ficou sem resposta</h2><p class="s">Ele procura na sua caixa e escreve o rascunho. Antes de enviar, ele pede a sua aprovação.</p>
+<pre id="p1">Veja os e-mails de clientes desta semana que eu ainda não respondi.
+Para cada um, me diga em 1 linha o que a pessoa quer
+e faça um rascunho de resposta curto (até 5 linhas), no meu tom: simples e direto.
+Não envie nada. Só me mostre os rascunhos.</pre><button onclick="copiar('p1',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">03 / Agenda</div><h2>Onde cabe a reunião</h2><p class="s">Ele lê a sua agenda e acha o horário livre.</p>
+<pre id="p2">O que eu tenho amanhã? Me mostre em lista, com horário.
+Depois, me diga onde eu tenho 1 hora livre nesta semana,
+entre 9h e 18h, pra uma reunião com [nome do cliente].</pre><button onclick="copiar('p2',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">04 / Drive</div><h2>O arquivo sem abrir pasta por pasta</h2><p class="s">Ele procura no seu Drive e resume pra você.</p>
+<pre id="p3">Ache no meu Google Drive a proposta do cliente [nome].
+Me diga: o valor, o prazo e o que ficou combinado de entrega.
+Se tiver mais de uma versão, use a mais recente e me diga a data dela.</pre><button onclick="copiar('p3',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">05 / Só quando precisa</div><h2>Ligue por conversa</h2><p class="s">Você não precisa deixar tudo ligado o tempo todo.</p>
+<pre id="p4">No + do chat → Conectores, ligue só o que aquela tarefa pede.
+Conversa sobre agenda: só a Agenda.
+Conversa sobre e-mail: só o Gmail.
+Menos coisa ligada = resposta mais certeira e menos dado seu na conversa.</pre></section>
+<div class="aviso"><strong>Antes de começar.</strong> Comece pela Agenda, que é a mais simples de testar. Leia todo rascunho antes de aprovar um envio. O Claude só vê o que a sua conta do Google já vê, e os dados que ele busca ficam guardados naquela conversa: apagou a conversa, apagou o que ele buscou.</div>
+<p class="rod">Fonte: central de ajuda oficial do Claude (support.claude.com, artigos "Use Google Workspace connectors" e "Use connectors"), conferida em 23/11/2026. O nome dos botões pode mudar um pouco conforme o idioma da sua conta.<br>Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
