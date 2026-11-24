@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10 tarefas da semana do dono pra passar pra IA | Método Demanda Infinita®</title>
+<meta name="description" content="10 tarefas que o dono de empresa repete toda semana, com o pedido pronto pra colar no Claude ou no ChatGPT, e o modelo do documento pra guardar os pedidos que deram certo.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">IA no trabalho · Comece esta semana</div>
+<h1>10 tarefas da sua semana pra passar pra IA hoje.</h1>
+<p class="lead">Escolha só 1. Passe pra IA (Claude ou ChatGPT). Quando o resultado ficar bom, guarde o pedido no seu documento (modelo no fim da página). Daqui a 30 dias, conte quantas horas voltaram. Troque o que está entre [colchetes] pelo seu caso.</p>
+
+<section class="p"><div class="k">01 / Resposta de orçamento</div><h2>O cliente pediu preço</h2>
+<pre id="t1">Sou [o que você faz]. Um cliente mandou esta mensagem pedindo orçamento: [cole a mensagem].
+Escreva uma resposta curta (até 6 linhas), simpática e direta, com o preço [valor] e o que está incluso: [itens].
+Termine com uma pergunta que marque o próximo passo (ex.: um horário pra conversar).</pre><button onclick="copiar('t1',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">02 / Follow-up</div><h2>Quem sumiu depois da proposta</h2>
+<pre id="t2">Mandei uma proposta para [nome/empresa] há [dias] dias e a pessoa não respondeu.
+O que ela me disse na reunião: [cole as palavras dela, a dor principal].
+Escreva uma mensagem de WhatsApp de até 4 linhas, usando as palavras dela, sem pressão, que termine com uma pergunta simples de sim ou não.</pre><button onclick="copiar('t2',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">03 / Resumo da reunião</div><h2>O que ficou combinado</h2>
+<pre id="t3">Aqui estão minhas anotações (ou a transcrição) da reunião com [cliente]: [cole].
+Me devolva: 1) o que o cliente quer, em 2 linhas; 2) o que ficou combinado; 3) quem faz o quê e até quando; 4) uma mensagem de resumo pra mandar pro cliente hoje.</pre><button onclick="copiar('t3',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">04 / Post da semana</div><h2>A pergunta do cliente vira post</h2>
+<pre id="t4">Essa semana um cliente me perguntou: [cole a pergunta].
+Escreva um post curto pro [Instagram/LinkedIn] respondendo essa pergunta com um exemplo prático, frases curtas, sem emoji em excesso, terminando com um convite pra pessoa me chamar no direct.</pre><button onclick="copiar('t4',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">05 / Perguntas frequentes</div><h2>Responder a mesma coisa 10 vezes</h2>
+<pre id="t5">Estas são as perguntas que meus clientes mais fazem: [liste 5 a 10].
+Escreva uma resposta curta e clara pra cada uma, no tom de quem atende bem no WhatsApp. Onde faltar informação (preço, prazo, política), deixe [PREENCHER] em vez de inventar.</pre><button onclick="copiar('t5',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">06 / Planilha de vendas</div><h2>O que os números da semana dizem</h2>
+<pre id="t6">Vou anexar a planilha de vendas/atendimentos da semana.
+Me diga em linguagem simples: quanto vendi, de onde vieram os clientes, o que caiu em relação à semana passada e 2 coisas que eu deveria olhar primeiro. Não invente número que não esteja na planilha.</pre><button onclick="copiar('t6',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">07 / E-mail difícil</div><h2>Cobrar, negar, dar má notícia</h2>
+<pre id="t7">Preciso mandar um e-mail para [quem] sobre [situação: atraso de pagamento / recusar um pedido / avisar um atraso].
+Quero firmeza e educação, até 8 linhas, sem pedir desculpa em excesso, com o próximo passo claro no final.</pre><button onclick="copiar('t7',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">08 / Treinar quem entrou</div><h2>O passo a passo que só está na sua cabeça</h2>
+<pre id="t8">Vou te explicar, do meu jeito, como eu faço [tarefa: ex. atender um cliente novo]: [explique em texto corrido ou cole um áudio transcrito].
+Transforme isso num passo a passo numerado de 1 página, simples, pra uma pessoa nova da equipe seguir sozinha, com os erros mais comuns no final.</pre><button onclick="copiar('t8',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">09 / Ideia de oferta</div><h2>Pensar antes de lançar</h2>
+<pre id="t9">Estou pensando em lançar [produto/serviço] por [preço] para [cliente].
+Me faça 7 perguntas que um cliente desconfiado faria antes de comprar. Depois, me diga quais dessas eu ainda não sei responder com base no que te contei.</pre><button onclick="copiar('t9',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">10 / Planejar a semana</div><h2>Tirar tudo da cabeça</h2>
+<pre id="t10">Aqui está tudo o que está na minha cabeça pra essa semana, sem ordem: [despeje a lista].
+Organize em: o que só eu posso fazer, o que posso delegar, o que pode esperar. Depois monte um plano de segunda a sexta com no máximo 3 prioridades por dia.</pre><button onclick="copiar('t10',this)">Copiar pedido</button></section>
+
+<section class="p"><div class="k">Modelo / Meus pedidos</div><h2>O documento que fica com você</h2><p class="s">Crie um documento (Google Docs, Notas, Word) e cole este modelo. Se um dia você trocar de ferramenta de IA, seus pedidos vão junto.</p>
+<pre id="m1">MEUS PEDIDOS QUE FUNCIONAM
+
+Tarefa: [nome da tarefa]
+Quando uso: [ex.: toda segunda, quando chega orçamento]
+Pedido: [cole o pedido que deu certo]
+O que eu ajusto antes de usar: [ex.: confiro o preço]
+Tempo que eu levava: [minutos]  |  Tempo agora: [minutos]
+
+(repita o bloco pra cada tarefa)</pre><button onclick="copiar('m1',this)">Copiar modelo</button></section>
+
+<div class="aviso"><strong>Antes de colar.</strong> Não cole CPF, dado de saúde, senha ou contrato assinado de cliente. Troque nomes por [cliente] quando puder. Leia tudo o que a IA escrever antes de mandar: quem responde pelo texto é você.</div>
+<p class="rod">Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
