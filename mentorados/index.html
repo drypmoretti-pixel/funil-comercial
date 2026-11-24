@@ -764,6 +764,10 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .ev-data{flex:0 0 52px;height:56px;border-radius:12px;background:var(--accent-wash);color:var(--on-wash);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .ev-data b{font-family:var(--f-title);font-size:1.3rem;font-weight:800;line-height:1}.ev-data span{font-family:var(--f-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em}
 .ev-item-tx{min-width:0;flex:1}.ev-item-tx b{display:block;font-family:var(--f-title);font-size:.94rem;margin-top:4px}.ev-item-tx small{display:block;color:var(--muted);font-size:.76rem;margin-top:2px}
+.ev-aviso{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--accent-wash);border:1px solid var(--accent);border-radius:16px;padding:14px 18px;margin-bottom:14px}
+.ev-aviso-ic{width:42px;height:42px;border-radius:12px;background:var(--accent-fill);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ev-aviso-tx{flex:1;min-width:220px}.ev-aviso-tx b{display:block;font-family:var(--f-title);font-size:1.02rem;color:var(--text-primary);margin-bottom:2px}.ev-aviso-tx span{font-size:.86rem;color:var(--text-secondary);line-height:1.4}
+.ev-aviso-bt{display:flex;gap:8px;flex-wrap:wrap}
 .ev-item-bt{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .ev-mini.vivo{border-color:rgba(194,59,46,.45)}.ev-mini.vivo .kicker{color:var(--critical)}
 /* ---------- INDICAÇÕES ---------- */
@@ -872,7 +876,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .dr-nome{font-weight:600;font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .dr-nome small{display:block;color:var(--muted);font-size:.72rem;font-weight:500}
 .dr-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.dr-card{border:1px solid var(--border);background:var(--surface-1);border-radius:13px;overflow:hidden}
+.dr-card{position:relative;border:1px solid var(--border);background:var(--surface-1);border-radius:13px;overflow:hidden}
 .dr-card[draggable=true],.dr-linha[draggable=true]{cursor:grab}
 .dr-thumb{display:flex;align-items:center;justify-content:center;width:100%;height:128px;border:0;background:var(--field-bg);overflow:hidden;padding:0}
 .dr-thumb img{width:100%;height:100%;object-fit:cover;display:block}
@@ -881,7 +885,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .dr-pe{display:flex;align-items:center;gap:6px;padding:8px 4px 8px 12px}
 .dr-pe .dr-nome{flex:1}
 .dr-tabela{border:1px solid var(--border);border-radius:12px;background:var(--surface-1);overflow:hidden}
-.dr-linha{display:grid;grid-template-columns:minmax(0,1fr) 110px 90px 40px;align-items:center;gap:10px;padding:0 6px 0 12px;min-height:50px;border-bottom:1px solid var(--grid)}
+.dr-linha{display:grid;grid-template-columns:26px minmax(0,1fr) 110px 90px 40px;align-items:center;gap:10px;padding:0 6px 0 12px;min-height:50px;border-bottom:1px solid var(--grid)}
 .dr-linha:last-child{border-bottom:0}
 .dr-linha.cab{min-height:36px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--field-bg)}
 .dr-linha:not(.cab):hover{background:var(--field-bg)}
@@ -906,7 +910,20 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .dr-env-item.ok .bar i{background:var(--good)}
 .dr-env-item.erro .bar i{background:var(--critical)}
 .dr-env-item.erro .dr-env-linha span:last-child{color:var(--critical)}
-@media (max-width:780px){.dr-linha{grid-template-columns:minmax(0,1fr) 40px}.dr-linha .dr-meta,.dr-linha.cab span:nth-child(2),.dr-linha.cab span:nth-child(3){display:none}.dr-envio{bottom:100px}}
+@media (max-width:780px){.dr-linha{grid-template-columns:26px minmax(0,1fr) 40px}.dr-linha .dr-meta,.dr-linha.cab span:nth-child(3),.dr-linha.cab span:nth-child(4){display:none}.dr-envio{bottom:100px}}
+
+.dr-chk{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;border-radius:7px;border:1.5px solid var(--text-secondary);background:var(--surface-1);color:transparent;flex-shrink:0}
+.dr-chk[aria-pressed=true]{background:var(--accent-fill,var(--accent));border-color:var(--accent-fill,var(--accent));color:#fff}
+.dr-card .dr-chk{position:absolute;top:8px;left:8px;z-index:2;opacity:0}
+.dr-card:hover .dr-chk,.dr-doc.tem-sel .dr-chk,.dr-card .dr-chk:focus-visible{opacity:1}
+.dr-card.sel{outline:2px solid var(--accent);outline-offset:-2px;background:var(--accent-wash)}
+.dr-linha.sel{background:var(--accent-wash)!important}
+.dr-linha.cab .dr-chk{opacity:0}.dr-doc:hover .dr-linha.cab .dr-chk,.dr-doc.tem-sel .dr-linha.cab .dr-chk{opacity:1}
+.dr-selbar{position:sticky;bottom:16px;z-index:30;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;width:fit-content;max-width:100%;margin:18px auto 0;padding:8px 10px 8px 18px;border-radius:99px;background:var(--ink-solid);color:#fff;box-shadow:var(--sombra-3);font-weight:700;font-size:.88rem}
+.dr-selbar[hidden]{display:none}
+.dr-marq{position:fixed;z-index:480;pointer-events:none;border:1.5px solid var(--accent);background:var(--accent-glow);border-radius:4px}
+@media (hover:none){.dr-card .dr-chk,.dr-linha.cab .dr-chk{opacity:1}}
+@media (max-width:780px){.dr-selbar{bottom:92px;border-radius:18px}}
 
 
 /* ---------- responsivo ---------- */
@@ -1161,6 +1178,7 @@ const ICO = {
   doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
   link: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/>',
   check: '<path d="M20 6 9 17l-5-5"/>',
+  grupo: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
   chama: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.3 1-3a2.5 2.5 0 0 0 2.5 2.5Z"/>',
   alvo: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
   usuario: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
@@ -2599,7 +2617,7 @@ async function vModelo(ctx) {
    Pasta é uma coluna de texto (subpasta = "A/B"). Pasta vazia só vive no navegador de quem criou.
    ===================================================================== */
 const PASTAS_PADRAO = ['Plano de ação', 'Posts', 'Materiais de isca', 'Gravações', 'Outros'];
-let DR = { cli: null, arquivos: [], caminho: '', vista: lsGet('drive-vista') || 'grade', busca: '', ro: false, urls: {}, menu: null };
+let DR = { cli: null, arquivos: [], caminho: '', vista: lsGet('drive-vista') || 'grade', busca: '', ro: false, urls: {}, menu: null, sel: new Set(), baixando: false };
 
 const semAcento = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const extDe = n => (/\.([a-z0-9]{1,5})$/i.exec(n || '') || [, ''])[1].toLowerCase();
@@ -2638,12 +2656,12 @@ async function carregarDrive() {
   DR.arquivos = await paginado(() => sb.from('cli_arquivos').select('*').eq('cliente_id', DR.cli).order('id'));
 }
 async function vDrive(ctx) {
-  DR.cli = ctx.clienteId; DR.ro = ctx.modo === 'preview'; DR.caminho = ''; DR.busca = '';
+  DR.cli = ctx.clienteId; DR.ro = ctx.modo === 'preview'; DR.caminho = ''; DR.busca = ''; DR.sel = new Set();
   await carregarDrive();
   return { kicker: 'Seus arquivos', titulo: 'Drive', refrescavel: false, html: '<div id="drive-root"></div>', depois: desenharDrive };
 }
 async function driveConteudo(ctx) {   // aba "Drive" do admin
-  DR.cli = ctx.clienteId; DR.ro = false; DR.caminho = ''; DR.busca = '';
+  DR.cli = ctx.clienteId; DR.ro = false; DR.caminho = ''; DR.busca = ''; DR.sel = new Set();
   await carregarDrive(); return '<div id="drive-root"></div>';
 }
 
@@ -2669,20 +2687,24 @@ function desenharDrive() {
   root.innerHTML = `<div class="dr-doc" data-drop="${esc(DR.caminho)}">
     <div class="dr-topo">${DR.ro ? '' : `<button class="btn btn-primary" data-act="dr-novo">${svg('mais', 16)} Novo</button>`}
       <input type="search" class="dr-busca" id="dr-busca" placeholder="Buscar nos seus arquivos" value="${esc(DR.busca)}" aria-label="Buscar arquivos">
+      ${pdfsNoEscopo().length > 1 ? `<button class="btn" data-act="dr-baixar-pdfs">${svg('baixar', 16)} Baixar todos os PDFs (${pdfsNoEscopo().length})</button>` : ''}
       <div class="dr-vistas" role="group" aria-label="Modo de exibição"><button class="${DR.vista === 'grade' ? 'ativa' : ''}" data-act="dr-vista" data-v="grade" aria-label="Grade" title="Grade">${svg('grade', 16)}</button><button class="${DR.vista === 'lista' ? 'ativa' : ''}" data-act="dr-vista" data-v="lista" aria-label="Lista" title="Lista">${svg('lista', 16)}</button></div></div>
-    ${crumbs}${corpo}<input type="file" id="dr-file" multiple hidden data-chg="dr-upload"></div>`;
+    ${crumbs}${corpo}<input type="file" id="dr-file" multiple hidden data-chg="dr-upload">
+    <div class="dr-selbar" id="dr-selbar" role="region" aria-label="Arquivos selecionados" hidden><span id="dr-selinfo" aria-live="polite"></span>
+      <button class="btn btn-sm btn-primary" id="dr-selbaixar" data-act="dr-sel-baixar"></button><button class="btn btn-sm" data-act="dr-sel-tudo">Selecionar tudo</button><button class="btn btn-sm" data-act="dr-sel-limpar">Limpar</button></div></div>`;
   const b = $('#dr-busca');
   b.oninput = () => { DR.busca = b.value; const pos = b.selectionStart; desenharDrive(); const nb = $('#dr-busca'); nb.focus(); nb.setSelectionRange(pos, pos); };
-  carregarMiniaturas();
+  carregarMiniaturas(); atualizarSel();
 }
 function arquivosHtml(arqs, comPasta) {
   const acoes = a => DR.ro ? '' : `<button class="ic-btn" data-act="dr-menu" data-tipo="arq" data-id="${a.id}" aria-label="Opções de ${esc(a.nome)}">⋮</button>`;
   const arrasta = a => DR.ro ? '' : `draggable="true" data-fid="${a.id}"`;
-  if (DR.vista === 'lista') return `<div class="dr-tabela"><div class="dr-linha cab"><span>Nome</span><span>Enviado</span><span>Tamanho</span><span></span></div>${arqs.map(a => `<div class="dr-linha" ${arrasta(a)}>
-    <button class="dr-nomecel" data-act="dr-abrir" data-id="${a.id}">${icoArq(a)}<span class="dr-nome">${esc(a.nome)}${comPasta && a.pasta ? `<small>${esc(a.pasta)}</small>` : ''}</span></button>
+  const chk = a => a.url ? '' : `<button class="dr-chk" data-act="dr-sel" data-id="${a.id}" aria-pressed="false" aria-label="Selecionar ${esc(a.nome)}">${svg('check', 14)}</button>`;
+  if (DR.vista === 'lista') return `<div class="dr-tabela"><div class="dr-linha cab"><button class="dr-chk dr-chk-todos" data-act="dr-sel-todos" aria-pressed="false" aria-label="Selecionar todos os arquivos desta lista">${svg('check', 14)}</button><span>Nome</span><span>Enviado</span><span>Tamanho</span><span></span></div>${arqs.map(a => `<div class="dr-linha" data-aid="${a.id}" ${arrasta(a)}>
+    ${chk(a) || '<span></span>'}<button class="dr-nomecel" data-act="dr-abrir" data-id="${a.id}">${icoArq(a)}<span class="dr-nome">${esc(a.nome)}${comPasta && a.pasta ? `<small>${esc(a.pasta)}</small>` : ''}</span></button>
     <span class="dr-meta">${esc(fmtData(isoLocal(new Date(a.created_at))))}</span><span class="dr-meta">${esc(fmtBytes(a.tamanho))}</span>${acoes(a)}</div>`).join('')}</div>`;
-  return `<div class="dr-grade">${arqs.map(a => `<div class="dr-card" ${arrasta(a)}>
-    <button class="dr-thumb" data-act="dr-abrir" data-id="${a.id}" data-img="${ehImg(a) ? 1 : 0}" aria-label="Abrir ${esc(a.nome)}">${icoArq(a)}</button>
+  return `<div class="dr-grade">${arqs.map(a => `<div class="dr-card" data-aid="${a.id}" ${arrasta(a)}>
+    ${chk(a)}<button class="dr-thumb" data-act="dr-abrir" data-id="${a.id}" data-img="${ehImg(a) ? 1 : 0}" aria-label="Abrir ${esc(a.nome)}">${icoArq(a)}</button>
     <div class="dr-pe"><div class="dr-nome" title="${esc(a.nome)}">${esc(a.nome)}${comPasta && a.pasta ? `<small>${esc(a.pasta)}</small>` : ''}</div>${acoes(a)}</div></div>`).join('')}</div>`;
 }
 async function carregarMiniaturas() {
@@ -2695,7 +2717,7 @@ async function carregarMiniaturas() {
   }
   alvos.forEach(el => { const a = arq(el.dataset.id); if (a && urlCache(DR.urls, a.path)) el.innerHTML = `<img src="${esc(urlCache(DR.urls, a.path))}" alt="" loading="lazy">`; });
 }
-ACT['dr-ir'] = el => { DR.caminho = el.dataset.p; DR.busca = ''; desenharDrive(); };
+ACT['dr-ir'] = el => { DR.caminho = el.dataset.p; DR.busca = ''; DR.sel = new Set(); desenharDrive(); };
 ACT['dr-vista'] = el => { DR.vista = el.dataset.v; lsSet('drive-vista', DR.vista); desenharDrive(); };
 const arqPorId = id => DR.arquivos.find(a => a.id === Number(id));
 
@@ -2723,7 +2745,7 @@ async function abrirArquivo(a) {
 }
 ACT['dr-abrir'] = el => abrirArquivo(arqPorId(el.dataset.id));
 ACT['dr-fechar-viewer'] = () => { const v = $('#dr-viewer'); if (v) { v.classList.remove('aberto'); v.innerHTML = ''; } };
-document.addEventListener('keydown', ev => { if (ev.key === 'Escape') ACT['dr-fechar-viewer'](); });
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') { ACT['dr-fechar-viewer'](); if (DR.sel.size && !DR.baixando && $('#drive-root')) { DR.sel = new Set(); atualizarSel(); } } });
 
 /* ---------- menu ⋮ ---------- */
 function fecharMenuDrive() { const m = $('#dr-menu'); if (m) m.remove(); }
@@ -2741,7 +2763,8 @@ ACT['dr-menu'] = el => {
 };
 ACT['dr-novo'] = el => abrirMenuDrive(el, [['dr-nova-pasta', 'Nova pasta'], ['dr-enviar', 'Enviar arquivos']]);
 ACT['dr-abrir-m'] = el => { fecharMenuDrive(); return ACT['dr-abrir'](el); };
-ACT['dr-baixar'] = async el => { fecharMenuDrive(); const a = arqPorId(el.dataset.id); if (a.url) { window.open(a.url, '_blank', 'noopener'); return; } const url = await urlAssinada(a.path, 120, a.nome); const l = document.createElement('a'); l.href = url; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove(); };
+async function baixarUm(a) { const url = await urlAssinada(a.path, 120, a.nome); const l = document.createElement('a'); l.href = url; l.download = a.nome; document.body.appendChild(l); l.click(); l.remove(); }
+ACT['dr-baixar'] = async el => { fecharMenuDrive(); const a = arqPorId(el.dataset.id); if (a.url) { window.open(a.url, '_blank', 'noopener'); return; } await baixarUm(a); };
 ACT['dr-enviar'] = () => { fecharMenuDrive(); $('#dr-file').click(); };
 ACT['dr-nova-pasta'] = () => {
   fecharMenuDrive(); const nome = (prompt('Nome da nova pasta:') || '').trim().replace(/\//g, '-'); if (!nome) return;
@@ -2829,6 +2852,117 @@ document.addEventListener('drop', async ev => {
     if (arrastando != null) { const id = arrastando; arrastando = null; await moverArquivo(id, destino); }
     else if (ev.dataTransfer.files && ev.dataTransfer.files.length) await enviarArquivos(ev.dataTransfer.files, destino);
   } catch (e) { erroAcao(e); }
+});
+
+/* ---------- selecionar vários (clique, Ctrl/⌘/Shift+clique ou arrastar um retângulo) e baixar tudo num .zip ---------- */
+const ehPdf = a => !a.url && (extDe(a.nome) === 'pdf' || a.mime === 'application/pdf');
+// o que está na tela agora (busca ou pasta aberta) — só arquivos baixáveis (gravação do Meet é link, não arquivo)
+function visiveis() {
+  const busca = semAcento(DR.busca.trim());
+  return (busca ? DR.arquivos.filter(a => semAcento(a.nome).includes(busca)) : DR.arquivos.filter(a => a.pasta === DR.caminho)).filter(a => !a.url);
+}
+// escopo do botão "Baixar todos os PDFs": a pasta aberta e tudo dentro dela (na raiz, o drive inteiro); com busca, só o resultado
+function pdfsNoEscopo() {
+  const busca = semAcento(DR.busca.trim());
+  return DR.arquivos.filter(a => ehPdf(a) && (busca ? semAcento(a.nome).includes(busca) : !DR.caminho || dentroDe(a, DR.caminho)));
+}
+function atualizarSel() {
+  const doc = $('.dr-doc'); if (!doc) return;
+  DR.sel = new Set([...DR.sel].filter(id => { const a = arqPorId(id); return a && !a.url; }));
+  $$('[data-aid]').forEach(el => { const on = DR.sel.has(Number(el.dataset.aid)); el.classList.toggle('sel', on); const b = el.querySelector('.dr-chk'); if (b) b.setAttribute('aria-pressed', on); });
+  doc.classList.toggle('tem-sel', DR.sel.size > 0);
+  const vis = visiveis(), todos = vis.length > 0 && vis.every(a => DR.sel.has(a.id)), h = $('.dr-chk-todos'); if (h) h.setAttribute('aria-pressed', todos);
+  const bar = $('#dr-selbar'); if (!bar) return;
+  bar.hidden = !DR.sel.size; if (DR.baixando) return;
+  const n = DR.sel.size;
+  $('#dr-selinfo').textContent = `${n} ${n === 1 ? 'selecionado' : 'selecionados'}`;
+  $('#dr-selbaixar').innerHTML = `${svg('baixar', 15)} ${n > 1 ? 'Baixar tudo (.zip)' : 'Baixar'}`;
+}
+ACT['dr-sel'] = el => { const id = Number(el.dataset.id); DR.sel.has(id) ? DR.sel.delete(id) : DR.sel.add(id); atualizarSel(); };
+const selecionarTudo = () => { visiveis().forEach(a => DR.sel.add(a.id)); atualizarSel(); };
+ACT['dr-sel-tudo'] = selecionarTudo;
+ACT['dr-sel-todos'] = () => { const vis = visiveis(); if (vis.length && vis.every(a => DR.sel.has(a.id))) vis.forEach(a => DR.sel.delete(a.id)); else selecionarTudo(); atualizarSel(); };
+ACT['dr-sel-limpar'] = () => { DR.sel = new Set(); atualizarSel(); };
+ACT['dr-sel-baixar'] = el => baixarArquivos([...DR.sel].map(arqPorId).filter(Boolean), el);
+ACT['dr-baixar-pdfs'] = el => baixarArquivos(pdfsNoEscopo(), el);
+
+let JSZIP = null;
+function carregarJsZip() {
+  if (window.JSZip) return Promise.resolve(window.JSZip);
+  if (!JSZIP) JSZIP = new Promise((ok, falha) => {
+    const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    s.onload = () => ok(window.JSZip); s.onerror = () => { JSZIP = null; falha(new Error('Não consegui carregar o compactador de arquivos. Confira a internet e tente de novo.')); };
+    document.head.appendChild(s);
+  });
+  return JSZIP;
+}
+// caminho dentro do .zip: as pastas do drive a partir da pasta aberta; nomes repetidos ganham " (2)"
+function nomeNoZip(a, usados) {
+  const p = a.pasta || '', rel = DR.caminho && (p === DR.caminho || p.startsWith(DR.caminho + '/')) ? p.slice(DR.caminho.length + 1) : p;
+  const base = (rel ? rel + '/' : '') + String(a.nome).replace(/[\\/]+/g, '-'), ext = extDe(a.nome), raiz = ext ? base.slice(0, -(ext.length + 1)) : base;
+  let nome = base, n = 2; while (usados.has(nome.toLowerCase())) nome = `${raiz} (${n++})${ext ? '.' + ext : ''}`;
+  usados.add(nome.toLowerCase()); return nome;
+}
+async function baixarArquivos(lista, btn) {
+  lista = lista.filter(a => a && !a.url);
+  if (!lista.length) { toast('Não há arquivos pra baixar aqui.', true); return; }
+  if (DR.baixando) return;
+  if (lista.length === 1) { await baixarUm(lista[0]); return; }
+  const total = lista.reduce((s, a) => s + (a.tamanho || 0), 0);
+  if (total > 400 * 1048576 && !confirm(`São ${fmtBytes(total)} no total. Pode demorar e pesar no seu computador. Baixar mesmo assim?`)) return;
+  DR.baixando = true; if (btn) btn.disabled = true;
+  const info = $('#dr-selinfo'), msg = t => { if (info && !$('#dr-selbar').hidden) info.textContent = t; else toast(t); };
+  try {
+    msg('Preparando…');
+    const JSZip = await carregarJsZip(), zip = new JSZip(), usados = new Set(), falhas = [];
+    const { data: urls, error } = await sb.storage.from(BUCKET).createSignedUrls(lista.map(a => a.path), 900); if (error) throw error;
+    const porPath = Object.fromEntries((urls || []).map(r => [r.path, r.signedUrl])); let feitos = 0;
+    const fila = lista.slice();
+    await Promise.all([0, 1, 2].map(async () => {
+      for (let a; (a = fila.shift());) {
+        try { const r = await fetch(porPath[a.path]); if (!r.ok) throw new Error(r.status); zip.file(nomeNoZip(a, usados), await r.blob()); }
+        catch (e) { falhas.push(a.nome); }
+        msg(`Baixando ${++feitos} de ${lista.length}…`);
+      }
+    }));
+    if (falhas.length === lista.length) throw new Error('Não consegui baixar os arquivos. Tente de novo.');
+    msg('Compactando…');
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+    baixarBlob(`arquivos-demanda-infinita-${hojeISO()}.zip`, blob);
+    toast(falhas.length ? `Baixei ${lista.length - falhas.length} de ${lista.length}. Não vieram: ${falhas.slice(0, 3).join(', ')}${falhas.length > 3 ? '…' : ''}` : `${lista.length} arquivos baixados num .zip.`, !!falhas.length);
+  } catch (e) { erroAcao(e); }
+  finally { DR.baixando = false; if (btn && btn.isConnected) btn.disabled = false; atualizarSel(); }
+}
+
+// Ctrl/⌘/Shift + clique marca sem abrir; arrastar num espaço vazio desenha um retângulo e marca o que ele toca
+document.addEventListener('click', ev => {
+  if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey) || !$('#drive-root')) return;
+  const c = ev.target.closest && ev.target.closest('[data-aid]'); if (!c || ev.target.closest('.dr-chk,[data-act="dr-menu"]') || !c.querySelector('.dr-chk')) return;
+  ev.preventDefault(); ev.stopPropagation(); const id = Number(c.dataset.aid); DR.sel.has(id) ? DR.sel.delete(id) : DR.sel.add(id); atualizarSel();
+}, true);
+let marq = null;
+document.addEventListener('mousedown', ev => {
+  if (ev.button !== 0 || !$('#drive-root') || !ev.target.closest) return;
+  if (!(ev.target.closest('.dr-doc') || ev.target.id === 'view') || ev.target.closest('.dr-card,.dr-linha,.dr-pasta,button,a,input,select,textarea,.dr-selbar')) return;
+  ev.preventDefault();   // sem isso o arrasto vira seleção de texto
+  marq = { x: ev.clientX, y: ev.clientY, mov: false, box: null, base: (ev.shiftKey || ev.ctrlKey || ev.metaKey) ? new Set(DR.sel) : new Set() };
+});
+document.addEventListener('mousemove', ev => {
+  if (!marq) return;
+  if (!marq.mov) {
+    if (Math.hypot(ev.clientX - marq.x, ev.clientY - marq.y) < 5) return;
+    marq.mov = true; marq.box = document.createElement('div'); marq.box.className = 'dr-marq'; document.body.appendChild(marq.box);
+  }
+  const x1 = Math.min(marq.x, ev.clientX), x2 = Math.max(marq.x, ev.clientX), y1 = Math.min(marq.y, ev.clientY), y2 = Math.max(marq.y, ev.clientY);
+  Object.assign(marq.box.style, { left: x1 + 'px', top: y1 + 'px', width: x2 - x1 + 'px', height: y2 - y1 + 'px' });
+  const sel = new Set(marq.base);
+  $$('[data-aid]').forEach(el => { if (!el.querySelector('.dr-chk')) return; const r = el.getBoundingClientRect(); if (r.right >= x1 && r.left <= x2 && r.bottom >= y1 && r.top <= y2) sel.add(Number(el.dataset.aid)); });
+  DR.sel = sel; atualizarSel();
+});
+document.addEventListener('mouseup', () => {
+  if (!marq) return;
+  if (!marq.mov && DR.sel.size && !marq.base.size) { DR.sel = new Set(); atualizarSel(); }   // clique num espaço vazio desmarca
+  if (marq.box) marq.box.remove(); marq = null;
 });
 
 /* =====================================================================
@@ -4006,6 +4140,8 @@ function icsEvento(e) {
     'BEGIN:VALARM', 'TRIGGER:-PT30M', 'ACTION:DISPLAY', 'DESCRIPTION:Lembrete', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].filter(Boolean).join('\r\n');
 }
 let EVS = [];
+const grupoBtn = (e, cls) => urlSegura(e.grupo_url) ? `<a class="${cls}" href="${esc(urlSegura(e.grupo_url))}" target="_blank" rel="noopener noreferrer">${svg('grupo', 15)} Entrar no grupo do WhatsApp</a>` : '';
+const emBreve = e => { const ms = new Date(e.inicio) - Date.now(); return ms > 0 && ms < 48 * 36e5; };   // faltam menos de 48 h: vira lembrete
 ACT['ev-ics'] = el => { const e = EVS.find(x => x.id === Number(el.dataset.id)); if (e) baixarBlob(`${e.titulo}.ics`, new Blob([icsEvento(e)], { type: 'text/calendar;charset=utf-8' })); };
 const gravacaoHref = (ctx, e) => e.aula_id ? lnk(ctx, 'aulas/' + e.aula_id) : urlSegura(e.gravacao_url);
 async function vEventos(ctx) {
@@ -4016,22 +4152,28 @@ async function vEventos(ctx) {
   const dataBloco = e => { const d = new Date(e.inicio); return `<div class="ev-data"><b>${d.getDate()}</b><span>${MES_CURTO[d.getMonth()]}</span></div>`; };
   const sala = (e, forte) => urlSegura(e.sala_url) ? `<a class="${forte ? 'cine-btn-play' : 'btn btn-sm'}" href="${esc(urlSegura(e.sala_url))}" target="_blank" rel="noopener noreferrer">${svg('link', 15)} Entrar na sala</a>` : '';
   const agenda = (e, claro) => `<a class="${claro ? 'cine-btn-sec' : 'btn btn-sm'}" href="${esc(linkGoogle(e))}" target="_blank" rel="noopener noreferrer">${svg('calendario', 15)} Google Agenda</a><button class="${claro ? 'cine-btn-sec' : 'btn btn-sm'}" data-act="ev-ics" data-id="${e.id}">${svg('baixar', 15)} Outras agendas (.ics)</button>`;
-  let hero;
+  let hero, aviso = '';
   if (top) {
     const aoVivo = vivo.includes(top), c = contagem(top), ini = new Date(top.inicio);
+    if (!aoVivo && emBreve(top)) {
+      const q2 = quandoEvento(top);
+      aviso = `<div class="ev-aviso" role="status"><div class="ev-aviso-ic">${svg('eventos', 22)}</div>
+        <div class="ev-aviso-tx"><b>Lembrete: ${esc(q2)} tem evento</b><span>${esc(top.titulo)}.${urlSegura(top.grupo_url) ? ' Entre no grupo do WhatsApp pra receber o link e os avisos, e chame quem quiser junto.' : ' Salve na sua agenda pra não esquecer.'}</span></div>
+        <div class="ev-aviso-bt">${grupoBtn(top, 'btn btn-primary')}${urlSegura(top.sala_url) ? `<a class="btn" href="${esc(urlSegura(top.sala_url))}" target="_blank" rel="noopener noreferrer">${svg('link', 15)} Link da sala</a>` : ''}</div></div>`;
+    }
     hero = `<div class="ev-hero ${aoVivo ? 'vivo' : ''}"><div class="ev-hero-tx"><div class="cine-hero-k">${aoVivo ? '<span class="ev-aovivo">● ao vivo</span>' : 'Próximo'} · ${esc(TIPO_EVENTO[top.tipo] || 'Evento')}</div>
         <h1>${esc(top.titulo)}</h1><p class="ev-quando">${esc(DIAS_LONGO[ini.getDay()][0].toUpperCase() + DIAS_LONGO[ini.getDay()].slice(1))}, ${ini.getDate()} de ${esc(MESES[ini.getMonth()])} · ${esc(hora(ini))} às ${esc(hora(fimEvento(top)))}</p>
         ${top.descricao ? `<p class="ev-desc">${esc(top.descricao.slice(0, 300))}</p>` : ''}
-        <div class="cine-hero-bt">${sala(top, true) || (aoVivo ? '' : '<span class="ev-sem-sala">O link da sala aparece aqui antes do encontro.</span>')}${aoVivo ? '' : agenda(top, true)}</div></div>
+        <div class="cine-hero-bt">${sala(top, true) || (aoVivo ? '' : '<span class="ev-sem-sala">O link da sala aparece aqui antes do encontro.</span>')}${aoVivo ? '' : agenda(top, true)}${aviso ? '' : grupoBtn(top, 'cine-btn-sec')}</div></div>
       ${aoVivo ? '<div class="ev-cont"><b>AGORA</b><span>já começou</span></div>' : c ? `<div class="ev-cont"><span>começa em</span><b>${c[0]}</b><span>${c[1]}</span></div>` : ''}</div>`;
   } else hero = `<div class="ev-hero vazio"><div class="ev-hero-tx"><div class="cine-hero-k">Agenda</div><h1>Nenhum encontro marcado agora</h1><p class="ev-desc">Quando o Igor marcar o próximo, ele aparece aqui com o link da sala e o botão pra salvar na sua agenda.</p></div></div>`;
   const outros = prox.filter(e => e !== top);
   const proxHtml = outros.length ? `<div class="apv-sec-cab"><h2>Também na agenda</h2></div><div class="ev-lista">${outros.map(e => `<div class="ev-item">${dataBloco(e)}<div class="ev-item-tx"><span class="chip neutro sem-dot">${esc(TIPO_EVENTO[e.tipo] || 'Evento')}</span><b>${esc(e.titulo)}</b><small>${esc(quandoEvento(e))} · ${e.duracao_min} min</small></div>
-      <div class="ev-item-bt">${sala(e)}<a class="btn btn-sm" href="${esc(linkGoogle(e))}" target="_blank" rel="noopener noreferrer">${svg('calendario', 14)} Agenda</a></div></div>`).join('')}</div>` : '';
+      <div class="ev-item-bt">${sala(e)}${grupoBtn(e, 'btn btn-sm')}<a class="btn btn-sm" href="${esc(linkGoogle(e))}" target="_blank" rel="noopener noreferrer">${svg('calendario', 14)} Agenda</a></div></div>`).join('')}</div>` : '';
   const passHtml = pass.length ? `<div class="apv-sec-cab"><h2>Já aconteceram</h2><span class="muted">com a gravação, quando houver</span></div><div class="ev-lista">${pass.map(e => { const g = gravacaoHref(ctx, e);
       return `<div class="ev-item passado">${dataBloco(e)}<div class="ev-item-tx"><span class="chip neutro sem-dot">${esc(TIPO_EVENTO[e.tipo] || 'Evento')}</span><b>${esc(e.titulo)}</b><small>${esc(fmtData(isoLocal(new Date(e.inicio))))}</small></div>
       <div class="ev-item-bt">${g ? `<a class="btn btn-sm btn-primary" href="${esc(g)}" ${e.aula_id ? '' : 'target="_blank" rel="noopener noreferrer"'}>${svg('tutorial', 14)} Assistir a gravação</a>` : '<span class="muted" style="font-size:.8rem">gravação em breve</span>'}</div></div>`; }).join('')}</div>` : '';
-  return { kicker: 'Agenda', titulo: 'Eventos', refrescavel: false, html: hero + proxHtml + passHtml };
+  return { kicker: 'Agenda', titulo: 'Eventos', refrescavel: false, html: aviso + hero + proxHtml + passHtml };
 }
 
 /* ---------- Início: próximo encontro + continue assistindo ---------- */
@@ -4045,7 +4187,7 @@ async function cardsInicioExtras(ctx) {
     if (e && new Date(e.inicio) - agora < 14 * 864e5) {
       const vivo = new Date(e.inicio) <= agora;
       html += `<div class="card ev-mini ${vivo ? 'vivo' : ''}"><div class="kicker">${vivo ? '● ao vivo agora' : 'Próximo encontro'}</div><h2>${esc(e.titulo)}</h2><p class="desc" style="margin:2px 0 12px">${esc(quandoEvento(e))}</p>
-        <div class="row" style="gap:8px">${urlSegura(e.sala_url) && (vivo || new Date(e.inicio) - agora < 36e5) ? `<a class="btn btn-primary btn-sm" href="${esc(urlSegura(e.sala_url))}" target="_blank" rel="noopener noreferrer">Entrar na sala</a>` : ''}<a class="btn btn-sm" href="${lnk(ctx, 'eventos')}">Ver na agenda</a></div></div>`;
+        <div class="row" style="gap:8px">${urlSegura(e.sala_url) && (vivo || new Date(e.inicio) - agora < 36e5) ? `<a class="btn btn-primary btn-sm" href="${esc(urlSegura(e.sala_url))}" target="_blank" rel="noopener noreferrer">Entrar na sala</a>` : ''}${emBreve(e) ? grupoBtn(e, 'btn btn-sm') : ''}<a class="btn btn-sm" href="${lnk(ctx, 'eventos')}">Ver na agenda</a></div></div>`;
     }
     if (perfil) {
       const pr = await q(sb.from('cli_aula_progresso').select('aula_id,posicao_seg,duracao_seg,atualizado_em').eq('perfil_id', perfil).is('assistida_em', null).gt('posicao_seg', 5).order('atualizado_em', { ascending: false }).limit(1));
@@ -4231,6 +4373,7 @@ function modalEvento(e) {
     <div class="grid2" style="gap:10px"><div class="campo"><label class="lbl" for="ev-h">Hora</label><input type="time" id="ev-h" required value="${d ? pad(d.getHours()) + ':' + pad(d.getMinutes()) : '19:00'}"></div>
     <div class="campo"><label class="lbl" for="ev-du">Duração (min)</label><input type="number" id="ev-du" min="5" max="1440" required value="${e ? e.duracao_min : 90}"></div></div></div>
     <div class="campo"><label class="lbl" for="ev-s">Link da sala (Meet, Zoom…)</label><input type="url" id="ev-s" maxlength="500" value="${esc(e ? e.sala_url || '' : '')}" placeholder="https://meet.google.com/…"></div>
+    <div class="campo"><label class="lbl" for="ev-gr">Link do grupo do WhatsApp (opcional)</label><input type="url" id="ev-gr" maxlength="500" value="${esc(e ? e.grupo_url || '' : '')}" placeholder="https://chat.whatsapp.com/…"><div class="hint">Aparece no lembrete da aba Eventos (a partir de 48 h antes) e no Início.</div></div>
     <div class="campo"><label class="lbl" for="ev-ds">Descrição (opcional)</label><textarea id="ev-ds" rows="3" maxlength="4000">${esc(e ? e.descricao || '' : '')}</textarea></div>
     <div class="campo"><label class="lbl" for="ev-g">Link da gravação (depois do evento)</label><input type="url" id="ev-g" maxlength="500" value="${esc(e ? e.gravacao_url || '' : '')}" placeholder="https://youtu.be/…"></div>
     ${quemVe('ev', e)}
@@ -4240,12 +4383,13 @@ function modalEvento(e) {
 ACT['ev-novo'] = () => modalEvento(null);
 ACT['ev-editar'] = el => modalEvento(EVS.find(x => x.id === Number(el.dataset.id)));
 SUB['ev'] = async f => {
-  const id = Number(f.id.value) || null, sala = $('#ev-s').value.trim(), grav = $('#ev-g').value.trim();
+  const id = Number(f.id.value) || null, sala = $('#ev-s').value.trim(), grav = $('#ev-g').value.trim(), grupo = $('#ev-gr').value.trim();
+  if (grupo && !urlSegura(grupo)) { toast('O link do grupo precisa começar com https://', true); return; }
   if (sala && !urlSegura(sala)) { toast('O link da sala precisa começar com https://', true); return; }
   if (grav && !urlSegura(grav)) { toast('O link da gravação precisa começar com https://', true); return; }
   const ini = new Date(`${$('#ev-d').value}T${$('#ev-h').value}`); if (isNaN(ini)) { toast('Confira a data e a hora.', true); return; }
   const d = { titulo: $('#ev-t').value.trim(), tipo: $('#ev-tp').value, inicio: ini.toISOString(), duracao_min: Math.max(5, Math.min(1440, parseInt($('#ev-du').value) || 60)),
-    sala_url: sala || null, descricao: $('#ev-ds').value.trim() || null, gravacao_url: grav || null, publicado: $('#ev-p').checked, tipos: lerQuemVe('ev') };
+    sala_url: sala || null, grupo_url: grupo || null, descricao: $('#ev-ds').value.trim() || null, gravacao_url: grav || null, publicado: $('#ev-p').checked, tipos: lerQuemVe('ev') };
   if (id) { const { error } = await sb.from('cli_eventos').update(d).eq('id', id); if (error) throw error; }
   else { const { error } = await sb.from('cli_eventos').insert(d); if (error) throw error; }
   fecharModal(); toast('Evento salvo.'); await render();
