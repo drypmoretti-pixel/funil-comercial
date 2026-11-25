@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skills do Claude: ensine uma vez, ele repete sempre | Método Demanda Infinita®</title>
+<meta name="description" content="O passo a passo, tela por tela, e 3 skills prontas pra copiar: ensine uma vez e o Claude repete sempre.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}h3{font-size:19px;margin:18px 0 8px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Dicas do Claude · Skills</div>
+<h1>Skills do Claude: ensine uma vez, ele repete sempre</h1>
+<p class="lead">O passo a passo, tela por tela, e 3 skills prontas pra copiar.</p>
+<p class="lead"><strong>O que é uma skill.</strong> Skill é um manual que o Claude lê antes de trabalhar. Você escreve uma vez como quer uma tarefa (o tom, o formato, o que não pode faltar). Quando você pede aquela tarefa, em qualquer conversa, ele abre o manual sozinho.<br>Diferença pro Projeto: o Projeto guarda o ASSUNTO (arquivos e instruções de um tema). A skill guarda o JEITO DE FAZER uma tarefa, e vale em todas as conversas.</p>
+<section class="p"><div class="k">01 / Ligar</div><h2>Passo 1: ligar (uma vez só)</h2>
+<pre id="p0">1. No Claude, abra Configurações → Capacidades (Settings → Capabilities).
+2. Ligue "Criar e editar arquivos" (no inglês: "Code execution and file creation", ou "Create and edit files" no layout novo).
+3. Abra Customize → Skills (link direto: https://claude.ai/customize/skills).
+
+Segundo a central de ajuda oficial, vale nos planos Free, Pro, Max e Ultra. Em conta Team ou Enterprise, o dono da conta libera antes em Organization settings.</pre></section>
+<section class="p"><div class="k">02 / Testar</div><h2>Passo 2: teste uma que já vem pronta</h2><p class="s">A Anthropic já deixa skills de Excel, Word, PowerPoint e PDF. Com "Criar e editar arquivos" ligado, ele usa sozinho. Pedido pra testar (botão copiar):</p>
+<pre id="p1">Monta uma planilha de orçamentos com as colunas cliente, valor, situação (enviado, aprovado, perdido) e data pra cobrar a resposta. Deixa 5 linhas de exemplo e destaca em amarelo os que passaram da data.</pre><button onclick="copiar('p1',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">03 / Criar</div><h2>Passo 3: crie a sua sem programar</h2>
+<pre id="p2">1. Em Customize → Skills, ligue a skill "skill-creator" (aparece como sendo da Anthropic).
+2. Numa conversa nova, cole o pedido de uma das 3 skills abaixo, ou escreva: "Usa a skill-creator e cria comigo uma skill pra [tarefa]. Me faz perguntas antes."
+3. Leia o manual que ele montou e ajuste o que quiser.
+4. Pra guardar: a skill é uma pasta com um arquivo SKILL.md dentro. Compacte a pasta em .zip e envie em Customize → Skills, no botão "+". Depois ligue a skill.</pre></section>
+<section class="p"><div class="k">04 / Usar</div><h2>Passo 4: use em qualquer conversa</h2>
+<pre id="p3">Digite / na caixa de mensagem e escolha a skill. Ou só peça a tarefa: quando o pedido bate com a descrição da skill, ele abre o manual sozinho.</pre></section>
+<section class="p"><div class="k">05 / Skills prontas</div><h2>3 skills prontas</h2><p class="s">Cada uma com botão copiar; cole no Claude depois de ligar a skill-creator.</p>
+<h3>1. Proposta comercial no seu padrão</h3>
+<pre id="p4">Usa a skill-creator e cria comigo uma skill chamada proposta-comercial. Ela deve: 1) sempre me perguntar o nome do cliente, o problema dele, o que vou entregar, o prazo e o valor, se eu não disser; 2) escrever a proposta nesta ordem: o problema do cliente nas palavras dele, o que muda depois, o que está incluso, prazo, investimento e próximo passo com data; 3) usar frases curtas, sem jargão, no meu tom: [descreva seu tom, ex.: direto e próximo]; 4) nunca inventar número, resultado ou depoimento. Me faz perguntas antes de montar.</pre><button onclick="copiar('p4',this)">Copiar pedido</button>
+<h3>2. Resposta a cliente no WhatsApp</h3>
+<pre id="p5">Usa a skill-creator e cria comigo uma skill chamada resposta-cliente. Quando eu colar a mensagem de um cliente, ela deve: 1) responder em até 4 linhas, no meu tom: [seu tom]; 2) responder primeiro o que ele perguntou; 3) terminar com uma pergunta ou um próximo passo com dia e hora; 4) se faltar informação (preço, prazo, disponibilidade), me perguntar em vez de inventar. Me faz perguntas antes de montar.</pre><button onclick="copiar('p5',this)">Copiar pedido</button>
+<h3>3. Post a partir de uma pergunta de cliente</h3>
+<pre id="p6">Usa a skill-creator e cria comigo uma skill chamada post-de-pergunta. Quando eu mandar uma pergunta que um cliente me fez, ela deve: 1) escrever um post curto que abre com a pergunta do jeito que o cliente falou; 2) responder em 3 a 5 frases simples, com um exemplo do dia a dia; 3) fechar convidando a pessoa a me chamar no direct; 4) sem emoji em excesso e sem hashtag no meio do texto. Me faz perguntas antes de montar.</pre><button onclick="copiar('p6',this)">Copiar pedido</button></section>
+<div class="aviso"><strong>3 regras pra não dar ruim</strong><br>1. Uma skill pra cada tarefa. Comece pela que você mais repete.<br>2. Só instale skill de quem você confia (a central de ajuda avisa: skills de terceiros não são revisadas pela Anthropic).<br>3. Abra e leia o arquivo SKILL.md antes de ligar.</div>
+<p class="rod">Fonte: central de ajuda oficial do Claude, "Use skills in Claude" (support.claude.com/en/articles/12512180) e "Create custom skills" (claude.com/docs/skills), lidas em 24/11/2026.<br>Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
