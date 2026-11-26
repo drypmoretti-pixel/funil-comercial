@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feche o mês com IA: 4 pedidos prontos | Método Demanda Infinita®</title>
+<meta name="description" content="4 pedidos prontos pra conferir o extrato, cobrar atrasados, separar despesas e montar o resumo do contador com ChatGPT ou Claude.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}h3{font-size:19px;margin:18px 0 8px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Dicas de IA · Fechamento do mês</div>
+<h1>Feche o mês com IA: 4 pedidos prontos</h1>
+<p class="lead">Funciona no ChatGPT ou no Claude, com o extrato do banco e a sua planilha. Sem plugin.</p>
+<div class="aviso"><strong>Antes de começar</strong><br>Baixe o extrato do mês em CSV ou PDF no app do banco. Antes de subir, tire senha, número de conta completo e CPF de cliente. A IA prepara rascunhos: confira cada número antes de mandar pro contador.</div>
+<section class="p"><div class="k">01</div><h2>1. Confira o extrato com a planilha</h2><pre id="p0">Vou te mandar o extrato do banco de [mês] e a minha planilha de vendas. Compare os dois e me devolva uma tabela com 3 partes: (1) o que entrou no banco e não está na planilha, (2) o que está na planilha e não entrou no banco, (3) valores que aparecem duas vezes. Mostre data, valor e descrição de cada linha. Não invente nada: se não tiver certeza, marque 'conferir'.</pre><button onclick="copiar('p0',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">02</div><h2>2. Cobre quem atrasou</h2><pre id="p1">Da lista do que está na planilha e não entrou no banco, separe quem está atrasado há mais de [5] dias. Para cada um, escreva uma mensagem curta e educada de cobrança pelo WhatsApp, com o valor e a data combinada. Tom: [amigável e direto].</pre><button onclick="copiar('p1',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">03</div><h2>3. Separe as despesas</h2><pre id="p2">Agora olhe as saídas do extrato. Separe por categoria: [fornecedores, salários, impostos, ferramentas, marketing, outros]. Some cada uma e me mostre as 5 maiores despesas do mês. Marque as que parecem assinatura que eu talvez nem use.</pre><button onclick="copiar('p2',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">04</div><h2>4. Monte o resumo pro contador</h2><pre id="p3">Monte um resumo do mês de [mês] pro meu contador: total que entrou, total que saiu, saldo, lista do que ficou pendente de conferir e as dúvidas que eu preciso tirar com ele. Em tópicos curtos, sem jargão.</pre><button onclick="copiar('p3',this)">Copiar pedido</button></section>
+<section class="p"><h2>E o plugin novo do ChatGPT?</h2><p class="s">Em 18/11/2026, a OpenAI lançou o plugin Accounting no ChatGPT. Ele concilia transações, prepara lançamentos de notas e recibos e monta o relatório do fim do mês. Funciona no app do ChatGPT para Mac ou Windows. No plano Business, o membro pode instalar direto; no Enterprise, o administrador precisa aprovar antes. Ele conecta com sistemas como QuickBooks Online, Xero, Oracle NetSuite, FreshBooks e BILL. Se o seu sistema não está na lista, os 4 pedidos acima fazem o básico com planilha.</p></section>
+<div class="aviso"><strong>Cuidados</strong><br>• A própria OpenAI pede: confira datas, moeda, taxas e possíveis duplicados antes de aprovar qualquer lançamento.<br>• A IA não substitui o seu contador. Ela entrega a conferência pronta pra ele.<br>• Nunca cole senha de banco nem dê acesso à sua conta bancária.</div>
+<p class="rod">Fontes (lidas em 25/11/2026):<br><a href="https://help.openai.com/en/articles/20001709-using-chatgpt-for-accounting-work">help.openai.com/en/articles/20001709</a><br><a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes">help.openai.com/en/articles/6825453</a><br><a href="https://www.tokenpost.com/news/technology/61014">TokenPost, 19/11/2026</a><br><a href="https://newsable.asianetnews.com/business/openai-launches-new-accounting-plugin-for-chatgpt-to-streamline-work-articleshow-nozdvst">Asianet Newsable, 19/11/2026</a><br>Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
