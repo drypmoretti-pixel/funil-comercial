@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A memória do Claude: ler, corrigir, ensinar e trazer a do ChatGPT | Método Demanda Infinita®</title>
+<meta name="description" content="O Claude anota quem você é enquanto vocês conversam. Aqui está como mandar nesse caderno.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}h3{font-size:19px;margin:18px 0 8px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Dicas do Claude · Memória</div>
+<h1>A memória do Claude: ler, corrigir, ensinar e trazer a do ChatGPT</h1>
+<p class="lead">O Claude anota quem você é enquanto vocês conversam. Aqui está como mandar nesse caderno.</p>
+<p class="lead"><strong>O que é.</strong> O Claude guarda tópicos sobre você a partir das conversas: seu trabalho, seus projetos, seu jeito de escrever. A memória vem ligada nos planos Free, Pro, Max e Ultra (no site, no app de computador e no celular). Nos planos Team e Enterprise, quem decide é o dono da conta.</p>
+<section class="p"><div class="k">01</div><h2>1. Leia o que ele anotou</h2><p class="s">Cole numa conversa nova:</p><pre id="p0">Escreva tudo o que você lembra de mim, exatamente como está na sua memória.</pre><button onclick="copiar('p0',this)">Copiar pedido</button><p class="s">Ou abra Configurações → Your Claude → Manage (ao lado de Your memory). Tudo aparece em Topics. No layout antigo, o caminho é Configurações → Memory.</p></section>
+<section class="p"><div class="k">02</div><h2>2. Corrija o que está velho</h2><pre id="p1">Esqueça que [informação velha]. O certo agora é [informação nova].</pre><button onclick="copiar('p1',this)">Copiar pedido</button><p class="s">A mudança vale a partir da próxima conversa. Também dá pra editar ou apagar cada tópico na tela Manage.</p></section>
+<section class="p"><div class="k">03</div><h2>3. Ensine o que ele deve saber sempre</h2><pre id="p2">Lembre sempre disto sobre mim: minha empresa é [o que você vende], meu cliente é [quem compra de você], eu escrevo [como você fala: curto, direto, sem palavras difíceis] e nunca [o que ele não deve fazer].</pre><button onclick="copiar('p2',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">04</div><h2>4. Traga o que o ChatGPT já sabe de você</h2><h3>Passo 1</h3><p class="s">No ChatGPT (ou outra IA), cole:</p><pre id="p3">Estou mudando para outro serviço e preciso exportar meus dados. Liste todas as memórias que você guardou sobre mim e todo o contexto que aprendeu nas nossas conversas. Escreva tudo em um único bloco de código, um item por linha, para eu copiar.</pre><button onclick="copiar('p3',this)">Copiar pedido</button><h3>Passo 2</h3><p class="s">No Claude (site ou app de computador): Configurações → Your Claude → Start import. No layout antigo: Configurações → Capacidades → Start import.</p><h3>Passo 3</h3><p class="s">Cole o texto que o ChatGPT devolveu e clique em Add to memory.</p><h3>Passo 4</h3><p class="s">Abra uma conversa nova e cole:</p><pre id="p4">Atualizei sua memória. O que você aprendeu sobre mim?</pre><button onclick="copiar('p4',this)">Copiar pedido</button><div class="aviso" style="margin-top:0"><strong>A importação ainda é experimental.</strong> O Claude foca em assuntos de trabalho e pode não guardar detalhes pessoais.</div></section>
+<section class="p"><div class="k">05</div><h2>5. Conversa que não vai pro caderno</h2><p class="s">Use o modo anônimo: numa conversa nova, clique no ícone de fantasma no canto de cima. Essa conversa não entra na memória nem no histórico. Outra opção: antes da primeira mensagem, clique em + e desligue Memory só naquela conversa.</p></section>
+<div class="aviso"><strong>Antes de usar, saiba</strong><br>• Por padrão, ele não guarda temas pessoais e sensíveis, como saúde, religião e política.<br>• Ele nunca guarda número de documento nem de conta bancária.<br>• Pausar a memória guarda o que já existe, mas para de usar. Apagar (Reset) apaga tudo, inclusive a memória dos projetos, e não tem volta.<br>• Cada projeto tem a sua própria memória.</div>
+<p class="rod">Fontes (central de ajuda oficial do Claude, lidas em 25/11/2026):<br><a href="https://support.claude.com/en/articles/11817273-using-claude-s-chat-search-and-memory-to-build-on-previous-context">support.claude.com/en/articles/11817273</a><br><a href="https://support.claude.com/en/articles/12123587-importing-and-exporting-your-memory-from-claude">support.claude.com/en/articles/12123587</a><br>Material do Método Demanda Infinita®. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
