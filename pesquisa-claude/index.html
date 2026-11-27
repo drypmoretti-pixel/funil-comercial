@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pesquisa do Claude: 3 pedidos prontos | Demanda Infinita</title>
+<meta name="description" content="A Pesquisa do Claude busca várias vezes na internet e entrega um relatório com o link de cada informação.">
+<style>
+:root{--g:#10A060;--gd:#0A6B40;--bg:#F8F7F4;--card:#fff;--t:#111;--gray:#6B6B6B;--line:#D8D5CE}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:18px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 20px 80px}.logo{width:64px;height:64px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--gd);text-transform:uppercase;margin-top:18px}
+h1{font-size:38px;line-height:1.12;margin:8px 0 12px}h2{font-size:26px;margin:6px 0 4px}h3{font-size:19px;margin:18px 0 8px}.lead{color:var(--gray)}
+.p{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:22px}
+.k{font:600 12px ui-monospace,Menlo,monospace;letter-spacing:1.4px;color:var(--g);text-transform:uppercase}.s{color:var(--gray);margin:0 0 12px}
+pre{white-space:pre-wrap;background:#161616;color:#f2f2f2;border-radius:12px;padding:16px;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0 0 12px}
+button{background:var(--g);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:15px;cursor:pointer}button:active{background:var(--gd)}
+.aviso{border-left:4px solid var(--g);background:#fff;padding:16px 18px;margin-top:28px;border-radius:0 12px 12px 0}
+.rod{margin-top:36px;color:var(--gray);font-size:14px}
+</style></head><body><div class="w">
+<img class="logo" src="logo-demanda-infinita.png" alt="Demanda Infinita">
+<div class="kicker">Dicas do Claude · Pesquisa</div>
+<h1>Pesquisa do Claude: um relatório com fontes no lugar de 20 abas</h1>
+<p class="lead">A Pesquisa (Research) faz o Claude buscar várias vezes na internet, uma busca puxando a outra, e te entregar um relatório com o link de cada informação. Abaixo, como ligar e 3 pedidos prontos pra copiar.</p>
+<section class="p"><div class="k">Passo a passo</div><h2>Como ligar (2 cliques)</h2><p class="s">1. Abra uma conversa nova no Claude (site claude.ai, app de computador ou celular).<br>2. Clique no botão "+" embaixo, à esquerda da caixa de texto, e depois em "Research" (no app em português o nome pode aparecer traduzido como "Pesquisa").<br>3. Aparece uma marquinha azul embaixo da conversa: está ligado. Clique nela de novo pra desligar.<br>4. A busca na web precisa estar ligada. Se o Claude não pesquisar, escreva no começo do pedido: "Claude, use a pesquisa para...".</p></section>
+<section class="p"><div class="k">01</div><h2>Pedido 1: comparar fornecedores</h2><pre id="p0">Pesquise 5 fornecedores de [produto] que entregam em [cidade]. Compare preço, prazo de entrega, pedido mínimo e avaliações de clientes. Me diga qual você escolheria pro meu caso e por quê. Me entregue numa tabela, com o link de onde veio cada informação.</pre><button onclick="copiar('p0',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">02</div><h2>Pedido 2: ver o que o concorrente está fazendo</h2><pre id="p1">Pesquise o que [concorrente] vende, quanto cobra e do que os clientes reclamam dele na internet (avaliações, redes sociais, sites de reclamação). Termine com 3 brechas que eu posso usar na minha oferta. Me entregue numa tabela, com o link de onde veio cada informação.</pre><button onclick="copiar('p1',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">03</div><h2>Pedido 3: chegar na reunião sabendo quem é o cliente</h2><pre id="p2">Pesquise a empresa [nome da empresa]: o que ela vende, pra quem vende, o que saiu sobre ela nos últimos meses e quem são os principais concorrentes. Termine com 3 perguntas boas pra eu fazer na reunião. Me entregue numa tabela, com o link de onde veio cada informação.</pre><button onclick="copiar('p2',this)">Copiar pedido</button></section>
+<section class="p"><div class="k">04</div><h2>A frase que muda o resultado</h2><pre id="p3">Me entregue numa tabela, com o link de onde veio cada informação.</pre><button onclick="copiar('p3',this)">Copiar pedido</button><p class="s">Cole essa frase no final de qualquer pesquisa. Sem ela, vem um texto longo. Com ela, vem uma tabela pra decidir rápido e o link pra conferir.</p></section>
+<div class="aviso"><strong>Antes de usar</strong><br>• A Pesquisa existe nos planos pagos do Claude: Pro, Max, Ultra, Team e Enterprise.<br>• Ela gasta o seu limite de uso mais rápido que uma conversa normal, porque lê muitas páginas.<br>• No computador (site ou app), ela também pode olhar o Gmail, a Agenda e os Documentos do Google, se você tiver conectado. No celular, ela só pesquisa na internet.<br>• A IA pode errar: abra 2 ou 3 links do relatório e confira antes de tomar uma decisão.</div>
+<p class="rod">Fonte: Central de ajuda oficial do Claude, "Use research on Claude", lida em 26/11/2026:<br><a href="https://support.claude.com/en/articles/11088861-use-research-on-claude">support.claude.com/en/articles/11088861</a><br>Material da Demanda Infinita. Siga @igorr_miguel no Instagram. Pense sempre em gerar demanda infinita.</p>
+</div>
+<script>function copiar(id,b){navigator.clipboard.writeText(document.getElementById(id).innerText).then(function(){var o=b.textContent;b.textContent='Copiado!';setTimeout(function(){b.textContent=o},1500)})}</script>
+</body></html>
